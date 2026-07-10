@@ -297,6 +297,10 @@
       <p class="d"><b>Cambia modello.</b> Passi tra Opus, Sonnet e Haiku a seconda che ti serva più profondità o più velocità.</p>
     </div>
     <div class="cmdcard">
+      <div class="c">/effort</div>
+      <p class="d"><b>Cambia il livello di ragionamento</b> della sessione (da <span class="mono">low</span> a <span class="mono">max</span>): quanto a fondo Claude pensa prima di agire.</p>
+    </div>
+    <div class="cmdcard">
       <div class="c">/init</div>
       <p class="d"><b>Genera il <span class="mono">CLAUDE.md</span></b> del progetto: un file con le istruzioni e il contesto che Claude leggerà a ogni sessione.</p>
     </div>
@@ -307,6 +311,10 @@
     <div class="cmdcard">
       <div class="c">/mcp</div>
       <p class="d"><b>Stato e gestione dei server MCP</b>: i connettori che collegano Claude a strumenti esterni (Gmail, GitHub, database…).</p>
+    </div>
+    <div class="cmdcard">
+      <div class="c">/usage</div>
+      <p class="d"><b>Mostra l'utilizzo</b>: token e costo stimato della sessione e, sui piani Pro/Max, quanto hai consumato rispetto ai limiti.</p>
     </div>
     <div class="cmdcard" style="grid-column:1/-1">
       <div class="c">/resume</div>
@@ -381,19 +389,20 @@
 <section id="s5"><div class="wrap reveal">
   <div class="kicker"><span class="n">05</span> Effort &amp; ragionamento</div>
   <h2>Quanto far <span class="em">ragionare</span> Claude</h2>
-  <p class="lead">Puoi chiedere a Claude di ragionare più a fondo prima di rispondere. Basta usare queste parole nel prompt: più sali, più pensa — ma impiega più tempo. Trascina il cursore.</p>
+  <p class="lead">Puoi decidere quanto a fondo Claude ragiona prima di rispondere. Il comando <span class="cmd">/effort</span> imposta il livello su una scala di cinque: più sali, più pensa — ma impiega più tempo. Trascina il cursore.</p>
 
   <div class="panel effgrid">
     <div class="effhead">
-      <div class="effname" id="effName">think</div>
-      <div class="efftag" id="effTag">ragionamento base</div>
+      <div class="effname" id="effName">low</div>
+      <div class="efftag" id="effTag">ragionamento minimo</div>
     </div>
-    <input type="range" id="effRange" min="0" max="3" step="1" value="0">
+    <input type="range" id="effRange" min="0" max="4" step="1" value="1">
     <div class="ticks" id="effTicks">
-      <span data-i="0">think</span>
-      <span data-i="1">think hard</span>
-      <span data-i="2">think harder</span>
-      <span data-i="3">ultrathink</span>
+      <span data-i="0">low</span>
+      <span data-i="1">medium</span>
+      <span data-i="2">high</span>
+      <span data-i="3">xhigh</span>
+      <span data-i="4">max</span>
     </div>
     <div class="meters">
       <div class="meter">
@@ -409,9 +418,9 @@
   </div>
 
   <div class="callout">
-    <b>Due leve vicine.</b> L'effort dice <i>quanto</i> ragionare; <span class="cmd">/model</span> sceglie <i>con quale</i> modello (Opus ragiona più a fondo, Haiku è più rapido). E <b>Plan mode</b> è il posto naturale dove alzare l'effort: stai progettando, non ancora eseguendo.
+    <b>Due leve vicine.</b> <span class="cmd">/effort</span> dice <i>quanto</i> ragionare; <span class="cmd">/model</span> sceglie <i>con quale</i> modello (Opus ragiona più a fondo, Haiku è più rapido). I modelli recenti dosano già il ragionamento in automatico in base alla difficoltà — con <span class="cmd">/effort</span> alzi o abbassi il tetto. E <b>Plan mode</b> è il posto naturale dove tenerlo alto: stai progettando, non ancora eseguendo.
   </div>
-  <p class="hint">Quando alzarlo: bug ostici, decisioni di architettura, problemi che richiedono più passaggi logici. Per compiti semplici, lasciare basso è più veloce ed economico.</p>
+  <p class="hint">Quando alzarlo: bug ostici, decisioni di architettura, problemi che richiedono più passaggi logici. Per compiti semplici, tenerlo basso è più veloce ed economico.</p>
 </div></section>
 
 <!-- ============ SHORTCUTS ============ -->
@@ -430,8 +439,11 @@
     </div>
     <div class="scutc">
       <div class="k"><span class="kbd">Ctrl+V</span></div>
-      <p class="d"><b>Incolla immagini</b> direttamente nel prompt: uno screenshot di un errore, un mockup, un grafico da spiegare.</p>
+      <p class="d"><b>Incolla un'immagine</b> nel prompt: uno screenshot di un errore, un mockup, un grafico. Su macOS usa <span class="kbd">Ctrl+V</span> (con <span class="kbd">⌘V</span> incolli solo il <i>percorso</i> del file). In alternativa, <b>trascina</b> il file nel terminale.</p>
     </div>
+  </div>
+  <div class="callout" style="margin-top:26px">
+    <b>Windows o macOS?</b> Queste tre scorciatoie sono <b>identiche</b> sulle due piattaforme. In generale, le combinazioni che su macOS usano <span class="kbd">⌘ Cmd</span> diventano <span class="kbd">Ctrl</span> su Windows — ma <span class="kbd">Esc</span> resta <span class="kbd">Esc</span> ovunque.
   </div>
 </div></section>
 
@@ -518,14 +530,16 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
 /* ---------- EFFORT slider ---------- */
 (function(){
   const data=[
-    {n:'think',tag:'ragionamento base',depth:25,time:20,
-     d:'Claude riflette un momento prima di rispondere. Adatto alla <b>maggior parte dei compiti</b> quotidiani: veloce e diretto.'},
-    {n:'think hard',tag:'ragionamento esteso',depth:50,time:45,
-     d:'Un giro di riflessione in più. Utile quando c\'è <b>qualche passaggio logico</b> o una scelta da ponderare.'},
-    {n:'think harder',tag:'ragionamento profondo',depth:75,time:72,
-     d:'Analisi approfondita: valuta più alternative. Per <b>bug ostici</b> e problemi con diverse strade possibili.'},
-    {n:'ultrathink',tag:'massimo ragionamento',depth:100,time:100,
-     d:'Il massimo sforzo. Per le <b>decisioni difficili</b> — architettura, problemi complessi a più passi. Più lento e costoso: usalo quando serve davvero.'}
+    {n:'low',tag:'ragionamento minimo',depth:18,time:12,
+     d:'Risposte rapide e dirette. Adatto a <b>compiti semplici e ripetitivi</b>, dove non serve pensarci molto.'},
+    {n:'medium',tag:'ragionamento equilibrato',depth:42,time:38,
+     d:'Buon compromesso tra velocità e riflessione. Un <b>default sensato</b> per il lavoro di tutti i giorni.'},
+    {n:'high',tag:'ragionamento esteso',depth:64,time:60,
+     d:'Valuta più strade prima di agire. Utile quando il problema ha <b>diversi passaggi logici</b>.'},
+    {n:'xhigh',tag:'ragionamento profondo',depth:84,time:82,
+     d:'Analisi molto approfondita. Per <b>bug ostici</b> e decisioni delicate che richiedono cautela.'},
+    {n:'max',tag:'massimo ragionamento',depth:100,time:100,
+     d:'Il massimo sforzo. Per i <b>problemi più difficili</b> — architettura, casi complessi a più passi. Il più lento e costoso: usalo quando serve davvero.'}
   ];
   const range=document.getElementById('effRange');
   const name=document.getElementById('effName'),tag=document.getElementById('effTag'),desc=document.getElementById('effDesc');
