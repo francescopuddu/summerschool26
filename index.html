@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Summer School 2026 — AI, Arte e Lavoro</title>
-<meta name="description" content="Programma della Summer School 2026 — Oasi Zegna, 13–17 luglio">
+<title>The Coexistence of AI and Me — Summer School 2026</title>
+<meta name="description" content="The Coexistence of Artificial Intelligence and Me · 3ª edizione — Summer School del Politecnico di Milano, Oasi Zegna, 13–17 luglio 2026">
 <style>
   /* ---------- Artific — unico typeface del sistema aidea ---------- */
   @font-face { font-family:"Artific"; src:url("fonts/Artific-Light.woff2") format("woff2");     font-weight:300; font-style:normal; font-display:swap; }
@@ -70,13 +70,17 @@
   }
   .kicker::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--yellow-500); }
   h1 {
-    font-size:clamp(40px,6.5vw,76px); font-weight:800; letter-spacing:-.035em; line-height:1.02;
-    max-width:14ch;
+    font-size:clamp(36px,5.8vw,68px); font-weight:800; letter-spacing:-.03em; line-height:1.04;
+    max-width:18ch;
   }
   h1 .grad {
     background:var(--gradient-cool); -webkit-background-clip:text; background-clip:text; color:transparent;
   }
-  .hero p.sub { margin-top:22px; font-size:18px; font-weight:300; color:var(--fg-2); max-width:52ch; }
+  .edition {
+    display:inline-block; margin-top:14px; font-size:14px; font-weight:600;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--yellow-500);
+  }
+  .hero p.sub { margin-top:20px; font-size:18px; font-weight:300; color:var(--fg-2); max-width:56ch; }
   .hero .meta { display:flex; flex-wrap:wrap; gap:28px; margin-top:36px; }
   .hero .meta div { font-size:14px; color:var(--fg-3); }
   .hero .meta strong { display:block; font-size:16px; font-weight:600; color:var(--fg); margin-bottom:2px; }
@@ -115,9 +119,9 @@
     justify-self:end; font-size:11.5px; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
     padding:4px 11px; border-radius:999px; border:1px solid var(--border-strong); color:var(--fg-2); white-space:nowrap;
   }
-  .who.puddu   { border-color:rgba(143,63,255,.5);  color:var(--violet-300); }
-  .who.rios    { border-color:rgba(255,83,255,.45); color:#ff92ff; }
-  .who.daniele { border-color:rgba(18,116,255,.5);  color:#4a95ff; }
+  .who.francesco { border-color:rgba(143,63,255,.5);  color:var(--violet-300); }
+  .who.federico  { border-color:rgba(255,83,255,.45); color:#ff92ff; }
+  .who.daniele   { border-color:rgba(18,116,255,.5);  color:#4a95ff; }
 
   .slot.break { grid-template-columns:130px 1fr; padding:8px 26px; }
   .slot.break .title { font-size:12.5px; font-weight:400; color:var(--fg-4); letter-spacing:.05em; text-transform:uppercase; }
@@ -137,7 +141,7 @@
   a.lesson:hover { color:var(--yellow-500); border-color:var(--yellow-500); }
   a.lesson:hover::after { transform:translate(2px,-2px); }
 
-  .slot.event .title { color:var(--fg-2); font-weight:400; font-style:normal; }
+  .slot.event .title { color:var(--fg-2); font-weight:400; }
 
   /* ---------- Footer ---------- */
   footer { border-top:1px solid var(--border); padding:34px 0 46px; }
@@ -160,20 +164,21 @@
 
 <header>
   <div class="wrap nav">
-    <div class="brand">summer school <span class="dot">’26</span> <small>terza edizione</small></div>
+    <div class="brand">summer school <span class="dot">’26</span> <small>Politecnico di Milano</small></div>
     <a class="cta" href="#programma">Programma</a>
   </div>
 </header>
 
 <section class="hero">
   <div class="wrap">
-    <div class="kicker">Oasi Zegna · 13–17 luglio 2026</div>
-    <h1>AI, arte e <span class="grad">nuovi modi</span> di lavorare</h1>
-    <p class="sub">Cinque giornate tra teoria, hands-on e project work: dagli agenti AI al vibe coding, fino alla prima app in produzione.</p>
+    <div class="kicker">Politecnico di Milano · Oasi Zegna · 13–17 luglio 2026</div>
+    <h1>The Coexistence of <span class="grad">Artificial Intelligence</span> and Me</h1>
+    <span class="edition">Terza edizione</span>
+    <p class="sub">Cinque giornate immersive nelle Alpi Biellesi sul rapporto tra intelligenza artificiale e identità umana: lezioni teoriche e hands-on — dagli agenti AI al vibe coding — insieme ad attività dedicate allo sviluppo personale e al lavoro di squadra, fino al project work finale.</p>
     <div class="meta">
-      <div><strong>5 giornate</strong>lezioni + project work</div>
-      <div><strong>Oasi Zegna</strong>Valdilana (BI)</div>
-      <div><strong>Hands-on</strong>ogni giornata</div>
+      <div><strong>5 giornate</strong>teoria, hands-on e project work</div>
+      <div><strong>Oasi Zegna</strong>Alpi Biellesi, Piemonte</div>
+      <div><strong>Project work</strong>presentazione finale venerdì</div>
     </div>
   </div>
 </section>
@@ -195,14 +200,16 @@
           <span class="day-date">13 luglio</span>
         </div>
         <div class="slots">
-          <div class="slot event"><span class="time">8:30 – 10:00</span><span class="title">Partenza per Oasi Zegna</span></div>
-          <div class="slot event"><span class="time">10:00 – 11:00</span><span class="title">Introduzione — Michela Longo + Bertoli</span></div>
+          <div class="slot event"><span class="time">8:30 – 10:00</span><span class="title">Viaggio verso Oasi Zegna</span></div>
+          <div class="slot"><span class="time">10:00 – 11:00</span><span class="title">Introduzione alla Summer School</span><span class="who">Michela Longo · Franco Bertoli</span></div>
           <div class="slot break"><span class="time">11:00 – 11:15</span><span class="title">Coffee break</span></div>
-          <div class="slot event"><span class="time">11:15 – 13:00</span><span class="title">Continua introduzione + Setup PC</span></div>
+          <div class="slot"><span class="time">11:15 – 13:00</span><span class="title">Introduzione alla Summer School</span><span class="who">Michela Longo · Franco Bertoli</span></div>
           <div class="slot break"><span class="time">13:00 – 14:00</span><span class="title">Lunch</span></div>
-          <div class="slot"><span class="time">14:00 – 16:00</span><span class="title"><a class="lesson" href="artifacts/lezione1_supporto.html" target="_blank" rel="noopener">Intelligenza Artificiale: Applicazione della Teoria</a></span><span class="who rios">Rios</span></div>
+          <div class="slot"><span class="time">14:00 – 16:00</span><span class="title"><a class="lesson" href="artifacts/lezione1_supporto.html" target="_blank" rel="noopener">Intelligenza Artificiale: Applicazione della Teoria</a></span><span class="who federico">Federico</span></div>
           <div class="slot break"><span class="time">16:00 – 16:15</span><span class="title">Coffee break</span></div>
-          <div class="slot"><span class="time">16:15 – 18:00</span><span class="title"><a class="lesson" href="artifacts/lezione1_parte2_supporto.html" target="_blank" rel="noopener">Large Language Models</a></span><span class="who rios">Rios</span></div>
+          <div class="slot"><span class="time">16:15 – 18:00</span><span class="title"><a class="lesson" href="artifacts/lezione1_parte2_supporto.html" target="_blank" rel="noopener">Large Language Models</a></span><span class="who federico">Federico</span></div>
+          <div class="slot break"><span class="time">18:00 – 20:30</span><span class="title">Free time e cena</span></div>
+          <div class="slot"><span class="time">20:30 – 22:30</span><span class="title">I numeri come linguaggio</span><span class="who">Nicole Bertoli</span></div>
         </div>
       </article>
 
@@ -214,13 +221,14 @@
           <span class="day-date">14 luglio</span>
         </div>
         <div class="slots">
-          <div class="slot"><span class="time">8:30 – 11:00</span><span class="title"><a class="lesson" href="artifacts/supporto_context_window.html" target="_blank" rel="noopener">Introduzione agli Agenti e Context Management</a></span><span class="who puddu">Puddu</span></div>
+          <div class="slot"><span class="time">8:30 – 11:00</span><span class="title"><a class="lesson" href="artifacts/supporto_context_window.html" target="_blank" rel="noopener">Introduzione agli Agenti e Context Management</a></span><span class="who francesco">Francesco</span></div>
           <div class="slot break"><span class="time">11:00 – 11:15</span><span class="title">Coffee break</span></div>
-          <div class="slot"><span class="time">11:15 – 13:00</span><span class="title">Hands on: Project &amp; Connettori</span><span class="who puddu">Puddu</span></div>
+          <div class="slot"><span class="time">11:15 – 13:00</span><span class="title">Hands on: Project &amp; Connettori</span><span class="who francesco">Francesco · Federico</span></div>
           <div class="slot break"><span class="time">13:00 – 14:00</span><span class="title">Lunch</span></div>
-          <div class="slot"><span class="time">14:00 – 16:00</span><span class="title">Claude Cowork: Introduzione al Vibe Working</span><span class="who rios">Rios</span></div>
+          <div class="slot"><span class="time">14:00 – 16:00</span><span class="title">Claude Cowork: Introduzione al Vibe Working</span><span class="who federico">Federico</span></div>
           <div class="slot break"><span class="time">16:00 – 16:15</span><span class="title">Coffee break</span></div>
-          <div class="slot"><span class="time">16:15 – 18:00</span><span class="title">Claude Cowork: Hands on</span><span class="who rios">Rios</span></div>
+          <div class="slot event"><span class="time">16:15 – 19:00</span><span class="title">Passeggiata nel bosco</span></div>
+          <div class="slot break"><span class="time">19:00 – 21:00</span><span class="title">Free time e cena</span></div>
         </div>
       </article>
 
@@ -232,13 +240,15 @@
           <span class="day-date">15 luglio</span>
         </div>
         <div class="slots">
-          <div class="slot"><span class="time">8:30 – 11:00</span><span class="title">Claude Code: Introduzione al vibe coding</span><span class="who puddu">Puddu</span></div>
+          <div class="slot event"><span class="time">7:30 – 8:00</span><span class="title">Yoga session</span></div>
+          <div class="slot"><span class="time">8:30 – 11:00</span><span class="title">Claude Code: Introduzione al vibe coding</span><span class="who francesco">Francesco</span></div>
           <div class="slot break"><span class="time">11:00 – 11:15</span><span class="title">Coffee break</span></div>
-          <div class="slot"><span class="time">11:15 – 13:00</span><span class="title">Hands on: La mia prima automazione</span><span class="who puddu">Puddu</span></div>
+          <div class="slot"><span class="time">11:15 – 13:00</span><span class="title">Hands on: La mia prima automazione</span><span class="who francesco">Francesco</span></div>
           <div class="slot break"><span class="time">13:00 – 14:00</span><span class="title">Lunch</span></div>
-          <div class="slot"><span class="time">14:00 – 16:00</span><span class="title">Deploy e Infrastruttura</span><span class="who rios">Rios</span></div>
+          <div class="slot"><span class="time">14:00 – 16:00</span><span class="title">Deploy e Infrastruttura</span><span class="who federico">Federico</span></div>
           <div class="slot break"><span class="time">16:00 – 16:15</span><span class="title">Coffee break</span></div>
-          <div class="slot"><span class="time">16:15 – 18:00</span><span class="title">La prima app in produzione</span><span class="who rios">Rios</span></div>
+          <div class="slot"><span class="time">16:15 – 18:00</span><span class="title">La prima app in produzione</span><span class="who federico">Federico</span></div>
+          <div class="slot break"><span class="time">18:00 – 21:00</span><span class="title">Free time e cena</span></div>
         </div>
       </article>
 
@@ -254,7 +264,8 @@
           <div class="slot break"><span class="time">11:00 – 11:15</span><span class="title">Coffee break</span></div>
           <div class="slot"><span class="time">11:15 – 13:00</span><span class="title">Hands on: API e Flusso informativo</span><span class="who daniele">Daniele</span></div>
           <div class="slot break"><span class="time">13:00 – 14:00</span><span class="title">Lunch</span></div>
-          <div class="slot event"><span class="time">14:00 – 18:00</span><span class="title">Gita — Bertoli</span></div>
+          <div class="slot event"><span class="time">16:00 – 17:00</span><span class="title">Esperienza al labirinto</span></div>
+          <div class="slot event"><span class="time">17:00</span><span class="title">Rientro a Milano</span></div>
         </div>
       </article>
 
@@ -266,10 +277,12 @@
           <span class="day-date">17 luglio</span>
         </div>
         <div class="slots">
-          <div class="slot event"><span class="time">8:30 – 16:00</span><span class="title">Project Work</span></div>
+          <div class="slot event"><span class="time">8:30 – 13:00</span><span class="title">Project Work</span></div>
+          <div class="slot break"><span class="time">13:00 – 14:00</span><span class="title">Lunch</span></div>
+          <div class="slot event"><span class="time">14:00 – 16:00</span><span class="title">Project Work</span></div>
           <div class="slot break"><span class="time">16:00 – 16:15</span><span class="title">Coffee break</span></div>
           <div class="slot event"><span class="time">16:15 – 18:00</span><span class="title">Presentazione dei Project Work</span></div>
-          <div class="slot event"><span class="time">18:00 – 21:00</span><span class="title">Aperitivo finale</span></div>
+          <div class="slot event"><span class="time">18:00</span><span class="title">Aperitivo finale</span></div>
         </div>
       </article>
 
@@ -279,7 +292,7 @@
 
 <footer>
   <div class="wrap">
-    <p>Summer School 2026 · Terza edizione · Oasi Zegna</p>
+    <p>The Coexistence of Artificial Intelligence and Me · 3ª edizione · Politecnico di Milano</p>
     <p>a project by <a href="https://aidea.team" target="_blank" rel="noopener">aidea</a></p>
   </div>
 </footer>
