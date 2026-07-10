@@ -310,8 +310,8 @@
       </div>
       <div>
         <div class="cap" style="margin:0 0 6px">la superficie dell'errore</div>
-        <canvas id="cLoss" height="240"></canvas>
-        <div class="cap" style="margin-top:6px">più scuro = errore minore. La pallina scende lungo il gradiente.</div>
+        <canvas id="cLoss" height="280"></canvas>
+        <div class="cap" style="margin-top:6px">la pallina scivola sulla superficie verso il minimo (più scuro = errore minore).</div>
       </div>
     </div>
     <div class="ctrls" style="margin-top:16px">
@@ -701,29 +701,73 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   document.getElementById('fitB').textContent=b.toFixed(1);
   document.getElementById('fitL').textContent=loss(W,b).toFixed(2);
  }
- const Wm=-0.3,WM=0.5,bm=4,bM=22;let lossBg=null,lossBgW=0,lossBgH=0;
- function buildLoss(cw,ch){const off=document.createElement('canvas');off.width=cw;off.height=ch;
-  const ox=off.getContext('2d');const img=ox.createImageData(cw,ch);let lmax=0;const cache=new Float64Array(cw*ch);
-  for(let py=0;py<ch;py++){const bb=bM-(py/ch)*(bM-bm);for(let px=0;px<cw;px++){const w=Wm+(px/cw)*(WM-Wm);
-    const l=loss(w,bb);cache[py*cw+px]=l;if(l>lmax)lmax=l;}}
-  for(let i=0;i<cw*ch;i++){const l=cache[i]/lmax;const t=Math.pow(1-l,1.5);const idx=i*4;
-   img.data[idx]=Math.floor(lerp(233,67,t));img.data[idx+1]=Math.floor(lerp(230,56,t));
-   img.data[idx+2]=Math.floor(lerp(221,202,t));img.data[idx+3]=255;}
-  ox.putImageData(img,0,0);lossBg=off;lossBgW=cw;lossBgH=ch;}
+ const Wm=-0.3,WM=0.5,bm=4,bM=22;
+ /* --- superficie 3D della loss (proiezione assonometrica, stile figura del libro) --- */
+ const AZ=-0.96,EL=0.61,cA=Math.cos(AZ),sA=Math.sin(AZ),sE=Math.sin(EL);
+ const Lmax=Math.max(loss(Wm,bm),loss(Wm,bM),loss(WM,bm),loss(WM,bM)); // MSE convessa: max ai vertici
+ let path=[[W,b,loss(W,b)]];
+ let geo=null;
+ function calcGeo(cw,ch){const sx=(cw-70)/2.8, sy=Math.min(sx*0.62,(ch-120)/1.6), zs=ch*0.30;
+  return {sx,sy,zs,cx:cw/2,cy:ch-36-0.8*sy};}
+ function P(w,bb,l,g){const xN=((w-Wm)/(WM-Wm))*2-1, yN=((bb-bm)/(bM-bm))*2-1, zN=Math.min(1,l/Lmax);
+  const rx=xN*cA-yN*sA, ry=xN*sA+yN*cA;
+  return [g.cx+rx*g.sx, g.cy+ry*sE*g.sy-zN*g.zs];}
+ let lossBg=null,lossBgW=0,lossBgH=0;
+ function buildLoss(cw,ch){const dpr=Math.max(1,window.devicePixelRatio||1);
+  const off=document.createElement('canvas');off.width=Math.round(cw*dpr);off.height=Math.round(ch*dpr);
+  const ox=off.getContext('2d');ox.setTransform(dpr,0,0,dpr,0,0);
+  const g=calcGeo(cw,ch);geo=g;
+  // assi alla base
+  const a0=P(WM,bm,0,g),a1=P(Wm,bm,0,g),a2=P(Wm,bM,0,g);
+  ox.strokeStyle=CO.lineS;ox.lineWidth=1.2;
+  ox.beginPath();ox.moveTo(a0[0],a0[1]);ox.lineTo(a1[0],a1[1]);ox.lineTo(a2[0],a2[1]);ox.stroke();
+  ox.fillStyle=CO.mut;ox.font='11px '+mono();ox.textAlign='center';
+  const lw=P((Wm+WM)/2,bm,0,g);ox.fillText('W',lw[0]+10,lw[1]+18);
+  const lb=P(Wm,(bm+bM)/2,0,g);ox.fillText('b',lb[0]-18,lb[1]+14);
+  ox.save();ox.translate(13,ch*0.40);ox.rotate(-Math.PI/2);ox.textAlign='center';ox.fillText('errore',0,0);ox.restore();
+  // mesh: quad ordinati dal più lontano al più vicino (painter's algorithm)
+  const N=32;const quads=[];
+  for(let i=0;i<N;i++)for(let j=0;j<N;j++){
+   const w0=Wm+i/N*(WM-Wm),w1=Wm+(i+1)/N*(WM-Wm);
+   const b0=bm+j/N*(bM-bm),b1=bm+(j+1)/N*(bM-bm);
+   const zAvg=(loss(w0,b0)+loss(w1,b0)+loss(w1,b1)+loss(w0,b1))/4/Lmax;
+   const xN=((w0+w1)/2-Wm)/(WM-Wm)*2-1, yN=((b0+b1)/2-bm)/(bM-bm)*2-1;
+   // pendenza locale lungo w → shading direzionale (luce da sinistra): dà volume alla scodella
+   const bc=(b0+b1)/2, sh=(loss(w0,bc)-loss(w1,bc))/Lmax;
+   quads.push({d:xN*sA+yN*cA, z:zAvg, sh,
+    pts:[P(w0,b0,loss(w0,b0),g),P(w1,b0,loss(w1,b0),g),P(w1,b1,loss(w1,b1),g),P(w0,b1,loss(w0,b1),g)]});}
+  quads.sort((q1,q2)=>q1.d-q2.d);
+  quads.forEach(q=>{const t=Math.pow(1-q.z,1.35);
+   const k=Math.max(0.74,Math.min(1.16,1+q.sh*2.4));
+   const r=Math.floor(Math.min(255,lerp(233,67,t)*k)),gg=Math.floor(Math.min(255,lerp(230,56,t)*k)),bl=Math.floor(Math.min(255,lerp(221,202,t)*k));
+   ox.fillStyle='rgb('+r+','+gg+','+bl+')';
+   ox.strokeStyle='rgba(95,94,90,.20)';ox.lineWidth=0.6;
+   ox.beginPath();ox.moveTo(q.pts[0][0],q.pts[0][1]);for(let k=1;k<4;k++)ox.lineTo(q.pts[k][0],q.pts[k][1]);
+   ox.closePath();ox.fill();ox.stroke();});
+  lossBg=off;lossBgW=cw;lossBgH=ch;}
  function invalidateLoss(){lossBg=null;}
  function drawLoss(){const x=lossC.fit();const cw=lossC.c.clientWidth,ch=lossC.h;
   if(!lossBg||lossBgW!==cw||lossBgH!==ch)buildLoss(cw,ch);
   x.drawImage(lossBg,0,0,cw,ch);
-  function PX(w){return (w-Wm)/(WM-Wm)*cw;}function PY(bb){return (bM-bb)/(bM-bm)*ch;}
-  x.strokeStyle=CO.teal;x.lineWidth=2;x.beginPath();x.arc(PX(trueW),PY(trueB),6,0,7);x.stroke();
-  x.fillStyle=CO.amber;x.strokeStyle='#fff';x.lineWidth=2;x.beginPath();x.arc(PX(W),PY(b),7,0,7);x.fill();x.stroke();
-  x.fillStyle='#fff';x.font='10px '+mono();x.textAlign='left';x.fillText('W→',cw-28,ch-6);x.fillText('b↑',6,14);
+  const g=geo;
+  // anello del minimo
+  const pm=P(trueW,trueB,loss(trueW,trueB),g);
+  x.strokeStyle=CO.teal;x.lineWidth=2;x.beginPath();x.arc(pm[0],pm[1],7,0,7);x.stroke();
+  // traccia della discesa (arancione, come la pallina)
+  if(path.length>1){x.strokeStyle='rgba(180,83,9,.8)';x.lineWidth=2;x.beginPath();
+   path.forEach((p,i)=>{const q=P(p[0],p[1],p[2],g);i?x.lineTo(q[0],q[1]):x.moveTo(q[0],q[1]);});x.stroke();}
+  // stelo verticale + pallina
+  const l=loss(W,b);const pb=P(W,b,l,g),pz=P(W,b,0,g);
+  x.setLineDash([3,3]);x.strokeStyle='rgba(95,94,90,.5)';x.lineWidth=1;x.beginPath();x.moveTo(pb[0],pb[1]);x.lineTo(pz[0],pz[1]);x.stroke();x.setLineDash([]);
+  x.fillStyle=CO.amber;x.strokeStyle='#fff';x.lineWidth=2;x.beginPath();x.arc(pb[0],pb[1],6.5,0,7);x.fill();x.stroke();
  }
  function redraw(){drawFit();drawLoss();document.getElementById('epoch').textContent=epoch;}
- function step(){const[gw,gb]=grad();W-=0.00045*gw;b-=0.02*gb;epoch++;redraw();
+ function step(){const[gw,gb]=grad();W-=0.00045*gw;b-=0.02*gb;epoch++;
+   path.push([W,b,loss(W,b)]);if(path.length>500)path.shift();
+   redraw();
    if(epoch<400&&(Math.abs(gw)>0.02||Math.abs(gb)>0.02))anim=requestAnimationFrame(step);else anim=null;}
  document.getElementById('trainBtn').addEventListener('click',()=>{if(anim)return;step();});
- document.getElementById('resetBtn').addEventListener('click',()=>{if(anim){cancelAnimationFrame(anim);anim=null;}W=-0.3+Math.random()*0.7;b=6+Math.random()*12;epoch=0;redraw();});
+ document.getElementById('resetBtn').addEventListener('click',()=>{if(anim){cancelAnimationFrame(anim);anim=null;}W=-0.3+Math.random()*0.7;b=6+Math.random()*12;epoch=0;path=[[W,b,loss(W,b)]];redraw();});
  onResize(()=>{invalidateLoss();redraw();});requestAnimationFrame(redraw);
 })();
 

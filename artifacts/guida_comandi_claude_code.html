@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Claude Code — Guida ai comandi | Summer School Giornata 3</title>
+<style>
+  :root{
+    --paper:#f1efe8; --paper-2:#e9e6dd;
+    --card:#ffffff; --card-2:#faf8f6;
+    --ink:#1a1a1a; --ink-2:#5f5e5a; --muted:#8a887f;
+    --line:#d9d6cc; --line-strong:#b4b2a9;
+    --accent:#DC2626; --accent-2:#B91C1C; --accent-soft:#fdecec; --accent-soft2:#f9d6d6;
+    --green:#0F766E; --green-soft:#e2f2ef;
+    --amber:#B45309; --amber-soft:#fbeedd;
+    --slate:#334155; --slate-soft:#eaeef3;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(var(--paper-2) 0.5px, transparent 0.5px);background-size:22px 22px;}
+
+  #prog{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:60;transition:width .1s linear}
+  #dots{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:55;display:flex;flex-direction:column;gap:10px}
+  #dots a{width:9px;height:9px;border-radius:50%;background:var(--line-strong);opacity:.55;transition:all .2s;position:relative}
+  #dots a.on{background:var(--accent);opacity:1;transform:scale(1.35)}
+  #dots a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:11px;
+    color:var(--ink-2);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:2px 7px;opacity:0;pointer-events:none;transition:opacity .15s}
+  #dots a:hover span{opacity:1}
+  @media(max-width:900px){#dots{display:none}}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:0 28px}
+  section{padding:60px 0;border-top:1px solid var(--line)}
+  section:first-of-type{border-top:0}
+
+  .kicker{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);
+    display:flex;align-items:center;gap:10px;margin:0 0 14px}
+  .kicker .n{font-family:var(--mono);background:var(--accent);color:#fff;border-radius:5px;padding:1px 7px;font-size:11px;letter-spacing:.05em}
+  h1{font-size:clamp(40px,8vw,84px);line-height:.98;letter-spacing:-.02em;font-weight:850;margin:0 0 18px}
+  h2{font-size:clamp(27px,4.4vw,44px);line-height:1.04;letter-spacing:-.015em;font-weight:850;margin:0 0 16px;max-width:22ch}
+  h3{font-size:19px;font-weight:750;margin:30px 0 6px}
+  .lead{font-size:clamp(17px,2vw,21px);color:var(--ink-2);max-width:62ch;margin:0 0 10px}
+  p{max-width:64ch;font-size:16.5px}
+  .em{color:var(--accent);font-weight:600}
+  .mut{color:var(--muted)}
+
+  .hero{padding-top:78px;min-height:82vh;display:flex;flex-direction:column;justify-content:center}
+  .hero .tag{font-family:var(--mono);font-size:12px;color:var(--ink-2);border:1px solid var(--line-strong);
+    border-radius:999px;padding:5px 13px;display:inline-flex;gap:8px;align-items:center;margin-bottom:24px;background:var(--card-2);width:max-content}
+  .hero .tag b{color:var(--accent)}
+  .hero h1 span{color:var(--accent)}
+  .hero .sub{font-size:clamp(18px,2.4vw,24px);font-weight:600;color:var(--ink);max-width:38ch;margin:0 0 8px}
+  .hero .subm{font-size:16px;color:var(--ink-2);max-width:58ch}
+  .arc{display:flex;gap:8px;flex-wrap:wrap;margin-top:30px}
+  .arc .step{font-family:var(--mono);font-size:11px;color:var(--ink-2);border:1px solid var(--line);border-radius:20px;padding:6px 11px;white-space:nowrap;background:var(--card-2)}
+  .arc .step b{color:var(--accent)}
+  .scrollcue{margin-top:36px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+  .scrollcue .a{animation:bob 1.6s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+
+  .callout{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;
+    padding:16px 20px;margin:22px 0;font-size:16.5px;color:#7c1d1d;max-width:66ch}
+  .callout b{color:var(--accent)}
+  .pull{font-family:var(--serif);font-size:clamp(23px,3.1vw,34px);line-height:1.2;font-weight:600;color:var(--ink);max-width:22ch;margin:34px 0;padding-left:26px;border-left:4px solid var(--accent)}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:26px;
+    box-shadow:0 1px 0 var(--line),0 18px 40px -32px rgba(0,0,0,.35)}
+  .panel.star{border-color:var(--accent-soft2);box-shadow:0 1px 0 var(--accent-soft2),0 22px 50px -30px rgba(220,38,38,.4);background:linear-gradient(180deg,#fff,#fffafa)}
+  .panel .badge{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);
+    display:inline-flex;align-items:center;gap:7px;margin-bottom:14px}
+  .panel .badge .dotp{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 1.8s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+  .hint{font-size:13px;color:var(--muted);margin-top:12px;max-width:68ch}
+  .cap{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:10px}
+
+  code,.mono{font-family:var(--mono)}
+  .cmd{font-family:var(--mono);font-weight:700;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-soft2);border-radius:6px;padding:2px 8px;font-size:.92em;white-space:nowrap}
+  .kbd{font-family:var(--mono);font-size:.85em;font-weight:700;color:var(--ink);background:var(--card);border:1px solid var(--line-strong);border-bottom-width:2px;border-radius:6px;padding:2px 8px;white-space:nowrap;box-shadow:0 1px 0 var(--line)}
+
+  /* command grid */
+  .cmds{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}
+  @media(max-width:720px){.cmds{grid-template-columns:1fr}}
+  .cmdcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;transition:transform .12s,box-shadow .12s,border-color .12s}
+  .cmdcard:hover{transform:translateY(-2px);border-color:var(--accent-soft2);box-shadow:0 14px 30px -24px rgba(220,38,38,.5)}
+  .cmdcard .c{font-family:var(--mono);font-weight:800;font-size:17px;color:var(--accent);margin-bottom:5px;display:flex;align-items:center;gap:8px}
+  .cmdcard .d{font-size:14.5px;color:var(--ink-2);margin:0}
+  .cmdcard .d b{color:var(--ink)}
+
+  /* two-box compare */
+  .why{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0}
+  @media(max-width:720px){.why{grid-template-columns:1fr}}
+  .wbox{border-radius:14px;padding:18px 20px;border:1px solid}
+  .wbox h4{margin:0 0 8px;font-size:15px;display:flex;align-items:center;gap:9px;font-family:var(--mono)}
+  .wbox h4::before{content:"";width:9px;height:9px;border-radius:50%}
+  .wbox p{margin:0 0 8px;font-size:14.5px;max-width:none}
+  .wbox p:last-child{margin-bottom:0}
+  .wbox.clear{background:var(--accent-soft);border-color:var(--accent-soft2)}
+  .wbox.clear h4{color:var(--accent-2)} .wbox.clear h4::before{background:var(--accent)}
+  .wbox.compact{background:var(--green-soft);border-color:#c6e5dd}
+  .wbox.compact h4{color:var(--green)} .wbox.compact h4::before{background:var(--green)}
+
+  /* GIT pipeline */
+  .gitflow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:stretch;gap:0;margin-top:20px}
+  @media(max-width:720px){.gitflow{grid-template-columns:1fr;gap:14px}.gitflow .arrow{transform:rotate(90deg);justify-self:center;margin:2px 0}}
+  .stage{background:var(--card-2);border:1.5px solid var(--line);border-radius:14px;padding:16px;text-align:center;transition:all .35s}
+  .stage.hot{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 10px 30px -20px rgba(220,38,38,.6);transform:translateY(-3px)}
+  .stage .icn{font-size:26px;line-height:1}
+  .stage .nm{font-weight:800;font-size:15px;margin-top:8px}
+  .stage .sub{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);margin-top:2px}
+  .stage .file{margin-top:12px;height:26px;display:flex;align-items:center;justify-content:center;gap:6px}
+  .dot{width:12px;height:12px;border-radius:3px;background:var(--line-strong);transition:all .35s;transform:scale(.6);opacity:.35}
+  .stage.hot .dot{background:var(--accent);transform:scale(1);opacity:1}
+  .stage.done .dot{background:var(--green);transform:scale(1);opacity:1}
+  .arrow{display:flex;align-items:center;justify-content:center;color:var(--line-strong);font-size:22px;padding:0 6px}
+  .gitcmd{font-family:var(--mono);font-size:12px;color:var(--accent-2);margin-top:8px;font-weight:700}
+
+  /* mode cycler */
+  .modewrap{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;margin-top:22px;align-items:start}
+  @media(max-width:720px){.modewrap{grid-template-columns:1fr}}
+  .modestage{background:#14110f;border-radius:14px;padding:20px;color:#eee;font-family:var(--mono);min-height:200px;position:relative;overflow:hidden;border:1px solid #2a2622}
+  .modestage .barbadge{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;letter-spacing:.04em}
+  .modestage .prompt{margin-top:18px;font-size:13.5px;color:#cfcac4;line-height:1.5}
+  .modestage .prompt .u{color:#8a887f}
+  .modestage .flash{position:absolute;inset:0;background:var(--accent);opacity:0;pointer-events:none}
+  .modestage.flash-on .flash{animation:fl .4s ease}
+  @keyframes fl{0%{opacity:.22}100%{opacity:0}}
+  .modelist{display:flex;flex-direction:column;gap:10px}
+  .modeitem{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--card);transition:all .2s;cursor:pointer}
+  .modeitem.on{border-color:var(--accent);background:var(--accent-soft)}
+  .modeitem .t{font-weight:800;font-size:14.5px;display:flex;align-items:center;gap:8px}
+  .modeitem .t .pill{width:9px;height:9px;border-radius:50%;background:var(--line-strong)}
+  .modeitem.on .t .pill{background:var(--accent)}
+  .modeitem .w{font-size:13px;color:var(--ink-2);margin:4px 0 0}
+  .cycbtn{font-family:var(--sans);font-size:14px;font-weight:700;background:var(--ink);color:#fff;border:0;border-radius:10px;padding:11px 18px;cursor:pointer;transition:transform .05s,background .15s;display:inline-flex;align-items:center;gap:10px}
+  .cycbtn:hover{background:#000}.cycbtn:active{transform:translateY(1px)}
+  .cycbtn .kbd{background:#2c2822;color:#fff;border-color:#4a453e}
+
+  /* effort slider */
+  .effgrid{margin-top:22px}
+  .effhead{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px}
+  .effname{font-family:var(--mono);font-weight:800;font-size:22px;color:var(--accent)}
+  .efftag{font-family:var(--mono);font-size:12px;color:var(--ink-2)}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:6px;background:var(--paper-2);outline:none;border:1px solid var(--line);margin:22px 0 6px}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 0 4px rgba(220,38,38,.16)}
+  input[type=range]::-moz-range-thumb{width:20px;height:20px;border:none;border-radius:50%;background:var(--accent);cursor:pointer}
+  .ticks{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .ticks span{cursor:pointer;transition:color .15s}
+  .ticks span.on{color:var(--accent);font-weight:700}
+  .meters{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+  @media(max-width:520px){.meters{grid-template-columns:1fr}}
+  .meter label{font-family:var(--mono);font-size:12px;color:var(--ink-2);display:flex;justify-content:space-between}
+  .meter .track{height:8px;border-radius:8px;background:var(--paper-2);border:1px solid var(--line);margin-top:6px;overflow:hidden}
+  .meter .fill{height:100%;border-radius:8px;transition:width .35s ease}
+  .meter .fill.depth{background:var(--accent)}
+  .meter .fill.time{background:var(--amber)}
+  .effdesc{margin-top:18px;font-size:15px;color:var(--ink-2);min-height:46px}
+  .effdesc b{color:var(--ink)}
+
+  /* shortcuts */
+  .scut{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:22px}
+  @media(max-width:720px){.scut{grid-template-columns:1fr}}
+  .scutc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .scutc .k{margin-bottom:10px}
+  .scutc .d{font-size:14px;color:var(--ink-2);margin:0}
+  .scutc .d b{color:var(--ink)}
+
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  footer{padding:50px 0 90px;color:var(--ink-2);font-size:13.5px;border-top:1px solid var(--line)}
+  footer b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<nav id="dots"></nav>
+
+<!-- ============ HERO ============ -->
+<section id="s0" class="hero"><div class="wrap reveal">
+  <div class="tag">Summer School 2026 · Giornata 3 · <b>Claude Code</b></div>
+  <h1>Claude Code<br><span>guida ai comandi</span></h1>
+  <p class="sub">Tutto quello che ti serve per lavorare in coppia con Claude dal terminale: versionare il codice, guidare la conversazione, scegliere quanto farlo ragionare.</p>
+  <p class="subm">Una guida da tenere aperta di fianco durante l'hands-on. Nessuna esperienza di programmazione richiesta.</p>
+  <div class="arc">
+    <span class="step"><b>1</b> · Git &amp; GitHub</span>
+    <span class="step"><b>2</b> · Comandi <span class="mono">/</span></span>
+    <span class="step"><b>3</b> · Modalità <span class="mono">Shift+Tab</span></span>
+    <span class="step"><b>4</b> · Effort</span>
+    <span class="step"><b>5</b> · Scorciatoie</span>
+  </div>
+  <div class="scrollcue"><span class="a">↓</span> scorri per iniziare</div>
+</div></section>
+
+<!-- ============ GIT ============ -->
+<section id="s1"><div class="wrap reveal">
+  <div class="kicker"><span class="n">01</span> Git &amp; GitHub in 5 minuti</div>
+  <h2>Prima dei comandi: <span class="em">versionare</span> il codice</h2>
+  <p class="lead">Quando lavori con Claude Code modifichi dei file. Git è lo strumento che tiene la storia di quelle modifiche — così puoi tornare indietro in qualsiasi momento e non perdere mai il lavoro.</p>
+
+  <div class="why">
+    <div class="wbox clear">
+      <h4>Versionare</h4>
+      <p>Significa salvare delle <b>istantanee</b> del progetto man mano che lavori. Ogni istantanea è una foto di com'erano i file in quel momento.</p>
+      <p>Se qualcosa si rompe, torni all'istantanea di prima. È il "salva partita" del codice.</p>
+    </div>
+    <div class="wbox compact">
+      <h4>GitHub</h4>
+      <p>È il posto <b>nel cloud</b> dove queste istantanee vengono conservate. Una copia online del tuo progetto.</p>
+      <p>Serve come backup e per condividere il lavoro con altri (o con i tuoi altri computer).</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <b>Locale vs cloud.</b> Git vive sul tuo computer (locale). GitHub è il servizio online. Git funziona anche senza GitHub — GitHub serve per mettere il codice al sicuro e condividerlo.
+  </div>
+
+  <h3>Creare una repository</h3>
+  <p>Una <b>repo</b> (repository) è semplicemente la cartella di un progetto messa sotto controllo di Git. Si parte così:</p>
+  <div class="panel">
+    <div class="badge"><span class="dotp"></span>Avvio di un progetto</div>
+    <p style="margin:0 0 10px"><span class="cmd">git init</span> &nbsp;→ dice a Git di iniziare a tracciare questa cartella.</p>
+    <p style="margin:0">Poi si crea la repo gemella su GitHub (dal sito, pulsante <b>New repository</b>) e si collega. Da quel momento le tue istantanee possono salire online.</p>
+    <p class="hint">In pratica Claude Code può eseguire questi comandi per te: spesso basta chiedere "inizializza una repo e collegala a GitHub".</p>
+  </div>
+
+  <h3>Committare e pushare — i due gesti fondamentali</h3>
+  <p class="lead">Sono le due parole che sentirai di più. Sono due passi distinti:</p>
+
+  <div class="panel star">
+    <div class="gitflow" id="gitflow">
+      <div class="stage" data-s="0">
+        <div class="icn">✏️</div>
+        <div class="nm">Working directory</div>
+        <div class="sub">i file che stai modificando</div>
+        <div class="file"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="gitcmd">&nbsp;</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="stage" data-s="1">
+        <div class="icn">📸</div>
+        <div class="nm">Commit</div>
+        <div class="sub">istantanea, sul tuo PC</div>
+        <div class="file"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="gitcmd">git commit -m "…"</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="stage" data-s="2">
+        <div class="icn">☁️</div>
+        <div class="nm">Push</div>
+        <div class="sub">online, su GitHub</div>
+        <div class="file"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="gitcmd">git push</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:18px">
+      <button class="cycbtn" id="gitPlay">▶ Fai partire una modifica</button>
+    </div>
+    <p class="cap" id="gitStatus" style="text-align:center">Premi il pulsante per seguire una modifica lungo i tre stati.</p>
+  </div>
+
+  <div class="why" style="margin-top:26px">
+    <div class="wbox clear">
+      <h4>Committare</h4>
+      <p><span class="cmd">git add</span> sceglie <i>quali</i> modifiche includere, poi <span class="cmd">git commit -m "messaggio"</span> le sigilla in un'istantanea.</p>
+      <p>Il messaggio spiega <b>cosa</b> hai cambiato ("aggiunta pagina di login"). Resta tutto <b>sul tuo computer</b>.</p>
+    </div>
+    <div class="wbox compact">
+      <h4>Pushare</h4>
+      <p><span class="cmd">git push</span> prende i commit fatti in locale e li <b>manda su GitHub</b>.</p>
+      <p>Finché non pushi, il tuo lavoro è solo sul tuo PC. Dopo il push è al sicuro nel cloud e visibile agli altri.</p>
+    </div>
+  </div>
+  <p class="pull">"Committare e pushare" = salva un'istantanea, poi mandala online.</p>
+</div></section>
+
+<!-- ============ COMMANDS ============ -->
+<section id="s2"><div class="wrap reveal">
+  <div class="kicker"><span class="n">02</span> I comandi essenziali</div>
+  <h2>Guidare la sessione con i comandi <span class="em">/</span></h2>
+  <p class="lead">Dentro Claude Code, digitando <span class="cmd">/</span> apri i comandi rapidi. Questi sono quelli che userai davvero ogni giorno.</p>
+
+  <div class="cmds">
+    <div class="cmdcard">
+      <div class="c">/clear</div>
+      <p class="d"><b>Azzera il contesto.</b> Come iniziare una conversazione nuova: Claude dimentica tutto quello detto finora.</p>
+    </div>
+    <div class="cmdcard">
+      <div class="c">/compact</div>
+      <p class="d"><b>Riassume e comprime</b> il contesto mantenendo il filo del discorso. Continui lo stesso lavoro con meno "peso".</p>
+    </div>
+    <div class="cmdcard">
+      <div class="c">/model</div>
+      <p class="d"><b>Cambia modello.</b> Passi tra Opus, Sonnet e Haiku a seconda che ti serva più profondità o più velocità.</p>
+    </div>
+    <div class="cmdcard">
+      <div class="c">/init</div>
+      <p class="d"><b>Genera il <span class="mono">CLAUDE.md</span></b> del progetto: un file con le istruzioni e il contesto che Claude leggerà a ogni sessione.</p>
+    </div>
+    <div class="cmdcard">
+      <div class="c">/agents</div>
+      <p class="d"><b>Crea e gestisce i subagent</b>: aiutanti specializzati a cui Claude delega pezzi di lavoro in parallelo.</p>
+    </div>
+    <div class="cmdcard">
+      <div class="c">/mcp</div>
+      <p class="d"><b>Stato e gestione dei server MCP</b>: i connettori che collegano Claude a strumenti esterni (Gmail, GitHub, database…).</p>
+    </div>
+    <div class="cmdcard" style="grid-column:1/-1">
+      <div class="c">/resume</div>
+      <p class="d"><b>Riprende una sessione precedente.</b> Ritrovi una conversazione di ieri esattamente dov'era rimasta, con tutto il suo contesto.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- ============ CLEAR vs COMPACT ============ -->
+<section id="s3"><div class="wrap reveal">
+  <div class="kicker"><span class="n">03</span> Gestire il contesto</div>
+  <h2><span class="em">/clear</span> o <span class="em">/compact</span>?</h2>
+  <p class="lead">Il "contesto" è tutto ciò che Claude ha in memoria nella sessione. Più si riempie, più diventa lento e dispersivo. Questi due comandi lo gestiscono in modi opposti.</p>
+
+  <div class="why">
+    <div class="wbox clear">
+      <h4>/clear — riparti da zero</h4>
+      <p>Usalo quando <b>cambi argomento</b>: hai finito un compito e ne inizi un altro scollegato.</p>
+      <p>Cancella tutto. Nessun residuo del lavoro precedente a confondere le acque.</p>
+    </div>
+    <div class="wbox compact">
+      <h4>/compact — alleggerisci, ma resta</h4>
+      <p>Usalo quando <b>stai ancora sullo stesso lavoro</b> ma la conversazione è diventata lunga.</p>
+      <p>Claude riassume quanto fatto e prosegue: mantiene il filo, libera spazio.</p>
+    </div>
+  </div>
+  <div class="callout">
+    <b>Auto-compact.</b> Quando il contesto si riempie davvero, Claude Code fa il <span class="cmd">/compact</span> da solo per non bloccarsi. Ma farlo tu al momento giusto — a fine di un sotto-compito — tiene la sessione più pulita.
+  </div>
+</div></section>
+
+<!-- ============ MODES ============ -->
+<section id="s4"><div class="wrap reveal">
+  <div class="kicker"><span class="n">04</span> Le modalità operative</div>
+  <h2>Quanta libertà dai a Claude — <span class="em">Shift+Tab</span></h2>
+  <p class="lead">Premendo <span class="kbd">Shift+Tab</span> cicli tra le modalità: cambiano quanto Claude chiede il permesso prima di agire. Provale qui sotto.</p>
+
+  <div class="modewrap">
+    <div>
+      <div class="modestage" id="modeStage">
+        <span class="barbadge" id="modeBadge">● NORMAL</span>
+        <div class="prompt" id="modePrompt"></div>
+        <div class="flash"></div>
+      </div>
+      <div style="text-align:center;margin-top:16px">
+        <button class="cycbtn" id="modeCyc"><span class="kbd">Shift+Tab</span> cambia modalità</button>
+      </div>
+    </div>
+    <div class="modelist" id="modeList">
+      <div class="modeitem" data-i="0">
+        <div class="t"><span class="pill"></span> Normal / Edit</div>
+        <p class="w">Chiede conferma prima di ogni azione. Il default prudente: vedi e approvi ogni modifica.</p>
+      </div>
+      <div class="modeitem" data-i="1">
+        <div class="t"><span class="pill"></span> Auto-accept edits</div>
+        <p class="w">Applica le modifiche ai file senza chiedere. Veloce quando ti fidi della direzione.</p>
+      </div>
+      <div class="modeitem" data-i="2">
+        <div class="t"><span class="pill"></span> Plan mode</div>
+        <p class="w">Esplora e progetta <b>senza toccare nulla</b>, poi ti propone un piano da approvare prima di agire.</p>
+      </div>
+      <div class="modeitem" data-i="3">
+        <div class="t"><span class="pill"></span> Auto mode</div>
+        <p class="w">Claude procede in autonomia fino al risultato, incatenando le azioni senza fermarsi a ogni passo.</p>
+      </div>
+    </div>
+  </div>
+  <p class="hint">Regola pratica: <b>Plan mode</b> per compiti nuovi o delicati (prima capisci, poi agisci) · <b>Normal</b> per lavorare con controllo · <b>Auto-accept / Auto</b> quando la strada è chiara e vuoi andare spedito.</p>
+</div></section>
+
+<!-- ============ EFFORT ============ -->
+<section id="s5"><div class="wrap reveal">
+  <div class="kicker"><span class="n">05</span> Effort &amp; ragionamento</div>
+  <h2>Quanto far <span class="em">ragionare</span> Claude</h2>
+  <p class="lead">Puoi chiedere a Claude di ragionare più a fondo prima di rispondere. Basta usare queste parole nel prompt: più sali, più pensa — ma impiega più tempo. Trascina il cursore.</p>
+
+  <div class="panel effgrid">
+    <div class="effhead">
+      <div class="effname" id="effName">think</div>
+      <div class="efftag" id="effTag">ragionamento base</div>
+    </div>
+    <input type="range" id="effRange" min="0" max="3" step="1" value="0">
+    <div class="ticks" id="effTicks">
+      <span data-i="0">think</span>
+      <span data-i="1">think hard</span>
+      <span data-i="2">think harder</span>
+      <span data-i="3">ultrathink</span>
+    </div>
+    <div class="meters">
+      <div class="meter">
+        <label>Profondità <span id="depthV">25%</span></label>
+        <div class="track"><div class="fill depth" id="depthF" style="width:25%"></div></div>
+      </div>
+      <div class="meter">
+        <label>Tempo / costo <span id="timeV">25%</span></label>
+        <div class="track"><div class="fill time" id="timeF" style="width:25%"></div></div>
+      </div>
+    </div>
+    <p class="effdesc" id="effDesc"></p>
+  </div>
+
+  <div class="callout">
+    <b>Due leve vicine.</b> L'effort dice <i>quanto</i> ragionare; <span class="cmd">/model</span> sceglie <i>con quale</i> modello (Opus ragiona più a fondo, Haiku è più rapido). E <b>Plan mode</b> è il posto naturale dove alzare l'effort: stai progettando, non ancora eseguendo.
+  </div>
+  <p class="hint">Quando alzarlo: bug ostici, decisioni di architettura, problemi che richiedono più passaggi logici. Per compiti semplici, lasciare basso è più veloce ed economico.</p>
+</div></section>
+
+<!-- ============ SHORTCUTS ============ -->
+<section id="s6"><div class="wrap reveal">
+  <div class="kicker"><span class="n">06</span> Scorciatoie utili</div>
+  <h2>Tre gesti da tastiera che <span class="em">salvano tempo</span></h2>
+
+  <div class="scut">
+    <div class="scutc">
+      <div class="k"><span class="kbd">Esc</span></div>
+      <p class="d"><b>Interrompi Claude.</b> Sta andando nella direzione sbagliata? Fermalo subito e riscrivi il prompt.</p>
+    </div>
+    <div class="scutc">
+      <div class="k"><span class="kbd">Esc</span> <span class="kbd">Esc</span> <span class="mut">oppure</span> <span class="cmd">/rewind</span></div>
+      <p class="d"><b>Torna indietro.</b> Riavvolge la conversazione a un punto precedente, <b>cancellando tutto</b> ciò che è venuto dopo.</p>
+    </div>
+    <div class="scutc">
+      <div class="k"><span class="kbd">Ctrl+V</span></div>
+      <p class="d"><b>Incolla immagini</b> direttamente nel prompt: uno screenshot di un errore, un mockup, un grafico da spiegare.</p>
+    </div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <b>Summer School 2026 — Giornata 3</b> · Claude Code: Introduzione al vibe coding &amp; La mia prima automazione.<br>
+  Guida di supporto ai comandi principali. Tienila aperta durante l'hands-on.
+</div></footer>
+
+<script>
+/* ---------- reveal + progress + dots ---------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+let _scrTick=false;const _prog=document.getElementById('prog');
+addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimationFrame(()=>{_scrTick=false;
+  const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight);_prog.style.width=(p*100)+'%';});});
+(function(){const labels={s0:'Intro',s1:'Git & GitHub',s2:'Comandi /',s3:'Contesto',s4:'Modalità',s5:'Effort',s6:'Scorciatoie'};
+ const nav=document.getElementById('dots');const secs=[...document.querySelectorAll('section')];
+ secs.forEach(s=>{const a=document.createElement('a');a.href='#'+s.id;a.innerHTML='<span>'+(labels[s.id]||s.id)+'</span>';a.dataset.id=s.id;nav.appendChild(a);});
+ const links=[...nav.querySelectorAll('a')];
+ const ob=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.dataset.id===e.target.id));}});},{rootMargin:'-45% 0px -45% 0px'});
+ secs.forEach(s=>ob.observe(s));
+})();
+
+/* ---------- GIT pipeline animation ---------- */
+(function(){
+  const stages=[...document.querySelectorAll('#gitflow .stage')];
+  const status=document.getElementById('gitStatus');
+  const btn=document.getElementById('gitPlay');
+  const msgs=[
+    'Stai modificando i file nella cartella di lavoro…',
+    'git commit — istantanea salvata sul tuo computer 📸',
+    'git push — istantanea inviata su GitHub, ora è al sicuro ☁️'
+  ];
+  let running=false;
+  function reset(){stages.forEach(s=>{s.classList.remove('hot','done');});}
+  function play(){
+    if(running)return;running=true;reset();btn.disabled=true;btn.style.opacity=.6;
+    let i=0;
+    function stepTo(){
+      stages.forEach((s,k)=>{s.classList.toggle('hot',k===i);s.classList.toggle('done',k<i);});
+      status.textContent=msgs[i];
+      i++;
+      if(i<=2){setTimeout(stepTo,1150);}
+      else{setTimeout(()=>{stages.forEach((s,k)=>{s.classList.remove('hot');s.classList.add('done');});
+        status.textContent='Fatto: la modifica è passata da locale a online. ✅';
+        running=false;btn.disabled=false;btn.style.opacity=1;},1000);}
+    }
+    stepTo();
+  }
+  btn.addEventListener('click',play);
+})();
+
+/* ---------- MODE cycler ---------- */
+(function(){
+  const modes=[
+    {n:'NORMAL',col:'#eab308',bg:'#3a2f0a',
+     p:'<span class="u">›</span> aggiungi un pulsante di login\n\n<span style="color:#eab308">Vorrei modificare</span> <b>App.jsx</b>.\n<span style="color:#8a887f">Procedo? [s/n] ▍</span>'},
+    {n:'AUTO-ACCEPT EDITS',col:'#22c55e',bg:'#0c2a17',
+     p:'<span class="u">›</span> aggiungi un pulsante di login\n\n<span style="color:#22c55e">✓ Modifico</span> <b>App.jsx</b>\n<span style="color:#22c55e">✓ Applicato</span> senza chiedere ▍'},
+    {n:'PLAN MODE',col:'#DC2626',bg:'#2e0d0d',
+     p:'<span class="u">›</span> aggiungi un pulsante di login\n\n<span style="color:#f87171">Piano (nessun file toccato):</span>\n 1. nuovo componente Login\n 2. rotta /login\n <span style="color:#8a887f">Approvi il piano? ▍</span>'},
+    {n:'AUTO MODE',col:'#a855f7',bg:'#22103a',
+     p:'<span class="u">›</span> aggiungi un pulsante di login\n\n<span style="color:#c084fc">▸ creo componente…\n▸ aggiungo rotta…\n▸ eseguo test… </span>autonomo ▍'}
+  ];
+  const stage=document.getElementById('modeStage');
+  const badge=document.getElementById('modeBadge');
+  const prompt=document.getElementById('modePrompt');
+  const items=[...document.querySelectorAll('#modeList .modeitem')];
+  let cur=0;
+  function render(){
+    const m=modes[cur];
+    badge.textContent='● '+m.n;badge.style.color=m.col;badge.style.background=m.col+'22';
+    stage.style.background=m.bg;
+    prompt.innerHTML=m.p.replace(/\n/g,'<br>');
+    items.forEach((it,k)=>it.classList.toggle('on',k===cur));
+    stage.classList.remove('flash-on');void stage.offsetWidth;stage.classList.add('flash-on');
+  }
+  function next(){cur=(cur+1)%modes.length;render();}
+  document.getElementById('modeCyc').addEventListener('click',next);
+  items.forEach(it=>it.addEventListener('click',()=>{cur=+it.dataset.i;render();}));
+  render();
+})();
+
+/* ---------- EFFORT slider ---------- */
+(function(){
+  const data=[
+    {n:'think',tag:'ragionamento base',depth:25,time:20,
+     d:'Claude riflette un momento prima di rispondere. Adatto alla <b>maggior parte dei compiti</b> quotidiani: veloce e diretto.'},
+    {n:'think hard',tag:'ragionamento esteso',depth:50,time:45,
+     d:'Un giro di riflessione in più. Utile quando c\'è <b>qualche passaggio logico</b> o una scelta da ponderare.'},
+    {n:'think harder',tag:'ragionamento profondo',depth:75,time:72,
+     d:'Analisi approfondita: valuta più alternative. Per <b>bug ostici</b> e problemi con diverse strade possibili.'},
+    {n:'ultrathink',tag:'massimo ragionamento',depth:100,time:100,
+     d:'Il massimo sforzo. Per le <b>decisioni difficili</b> — architettura, problemi complessi a più passi. Più lento e costoso: usalo quando serve davvero.'}
+  ];
+  const range=document.getElementById('effRange');
+  const name=document.getElementById('effName'),tag=document.getElementById('effTag'),desc=document.getElementById('effDesc');
+  const depthF=document.getElementById('depthF'),timeF=document.getElementById('timeF');
+  const depthV=document.getElementById('depthV'),timeV=document.getElementById('timeV');
+  const ticks=[...document.querySelectorAll('#effTicks span')];
+  function render(){
+    const i=+range.value,d=data[i];
+    name.textContent=d.n;tag.textContent=d.tag;desc.innerHTML=d.d;
+    depthF.style.width=d.depth+'%';timeF.style.width=d.time+'%';
+    depthV.textContent=d.depth+'%';timeV.textContent=d.time+'%';
+    ticks.forEach((t,k)=>t.classList.toggle('on',k===i));
+  }
+  range.addEventListener('input',render);
+  ticks.forEach(t=>t.addEventListener('click',()=>{range.value=t.dataset.i;render();}));
+  render();
+})();
+</script>
+</body>
+</html>
