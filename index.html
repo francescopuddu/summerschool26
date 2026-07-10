@@ -1,12 +1,288 @@
 <!doctype html>
 <html lang="it">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Summer School 2026</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Summer School 2026 — AI, Arte e Lavoro</title>
+<meta name="description" content="Programma della Summer School 2026 — Oasi Zegna, 13–17 luglio">
+<style>
+  /* ---------- Artific — unico typeface del sistema aidea ---------- */
+  @font-face { font-family:"Artific"; src:url("fonts/Artific-Light.woff2") format("woff2");     font-weight:300; font-style:normal; font-display:swap; }
+  @font-face { font-family:"Artific"; src:url("fonts/Artific-Regular.woff2") format("woff2");   font-weight:400; font-style:normal; font-display:swap; }
+  @font-face { font-family:"Artific"; src:url("fonts/Artific-Medium.woff2") format("woff2");    font-weight:500; font-style:normal; font-display:swap; }
+  @font-face { font-family:"Artific"; src:url("fonts/Artific-SemiBold.woff2") format("woff2");  font-weight:600; font-style:normal; font-display:swap; }
+  @font-face { font-family:"Artific"; src:url("fonts/Artific-Bold.woff2") format("woff2");      font-weight:700; font-style:normal; font-display:swap; }
+  @font-face { font-family:"Artific"; src:url("fonts/Artific-SuperBold.woff2") format("woff2"); font-weight:800; font-style:normal; font-display:swap; }
+
+  :root {
+    --violet-700:#4300de; --violet-500:#8f3fff; --violet-300:#c89aff; --violet-100:#f2e6ff;
+    --yellow-500:#fff94a; --orange-500:#ff8222; --magenta-500:#ff53ff; --blue-600:#1274ff;
+    --black:#0a0a12; --ink:#15151f;
+    --bg:#0a0a12; --bg-raised:#14141f; --bg-card:#111119;
+    --fg:#ffffff; --fg-2:#d6d6e5; --fg-3:#8a8aa3; --fg-4:#5a5a74;
+    --border:rgba(255,255,255,.08); --border-strong:rgba(255,255,255,.18);
+    --gradient-cool:linear-gradient(135deg,#4300de,#ff53ff 60%,#1274ff);
+    --font:"Artific",system-ui,-apple-system,"Segoe UI",sans-serif;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    font-family:var(--font); background:var(--bg); color:var(--fg);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+
+  .wrap { max-width:1180px; margin:0 auto; padding:0 24px; }
+
+  /* ---------- Header ---------- */
+  header {
+    position:sticky; top:0; z-index:10;
+    background:rgba(10,10,18,.82); backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
+  }
+  .nav { display:flex; align-items:center; justify-content:space-between; height:64px; }
+  .brand { display:flex; align-items:baseline; gap:10px; font-weight:800; font-size:18px; letter-spacing:-.02em; }
+  .brand .dot { color:var(--yellow-500); }
+  .brand small { font-weight:500; color:var(--fg-3); font-size:12px; letter-spacing:.08em; text-transform:uppercase; }
+  .nav a.cta {
+    font-size:13px; font-weight:600; color:var(--black); text-decoration:none;
+    background:var(--yellow-500); padding:8px 16px; border-radius:999px;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .nav a.cta:hover { transform:translateY(-1px); box-shadow:0 4px 20px rgba(255,249,74,.25); }
+
+  /* ---------- Hero ---------- */
+  .hero { position:relative; padding:96px 0 72px; overflow:hidden; }
+  .hero::before {
+    content:""; position:absolute; inset:-40% -20% auto; height:130%;
+    background:
+      radial-gradient(600px 420px at 18% 30%, rgba(67,0,222,.45), transparent 65%),
+      radial-gradient(520px 380px at 78% 18%, rgba(255,83,255,.16), transparent 60%),
+      radial-gradient(480px 360px at 60% 70%, rgba(18,116,255,.14), transparent 60%);
+    pointer-events:none;
+  }
+  .hero .wrap { position:relative; }
+  .kicker {
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--violet-300); border:1px solid var(--border-strong);
+    padding:6px 14px; border-radius:999px; margin-bottom:28px;
+  }
+  .kicker::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--yellow-500); }
+  h1 {
+    font-size:clamp(40px,6.5vw,76px); font-weight:800; letter-spacing:-.035em; line-height:1.02;
+    max-width:14ch;
+  }
+  h1 .grad {
+    background:var(--gradient-cool); -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero p.sub { margin-top:22px; font-size:18px; font-weight:300; color:var(--fg-2); max-width:52ch; }
+  .hero .meta { display:flex; flex-wrap:wrap; gap:28px; margin-top:36px; }
+  .hero .meta div { font-size:14px; color:var(--fg-3); }
+  .hero .meta strong { display:block; font-size:16px; font-weight:600; color:var(--fg); margin-bottom:2px; }
+
+  /* ---------- Programma ---------- */
+  .program { padding:48px 0 110px; }
+  .section-head { display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:36px; flex-wrap:wrap; }
+  .section-head h2 { font-size:28px; font-weight:700; letter-spacing:-.02em; }
+  .section-head span { font-size:13px; color:var(--fg-3); }
+
+  .days { display:grid; gap:20px; }
+  .day {
+    background:var(--bg-card); border:1px solid var(--border); border-radius:18px;
+    overflow:hidden;
+  }
+  .day-head {
+    display:flex; align-items:baseline; gap:14px; padding:20px 26px 16px;
+    border-bottom:1px solid var(--border);
+  }
+  .day-num {
+    font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--violet-300);
+  }
+  .day-name { font-size:19px; font-weight:700; letter-spacing:-.01em; }
+  .day-date { margin-left:auto; font-size:13px; color:var(--fg-3); font-weight:500; }
+
+  .slots { padding:10px 0; }
+  .slot {
+    display:grid; grid-template-columns:130px 1fr auto; gap:18px; align-items:center;
+    padding:13px 26px;
+  }
+  .slot + .slot { border-top:1px solid rgba(255,255,255,.04); }
+  .slot .time { font-size:13px; font-weight:600; color:var(--fg-3); font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .slot .title { font-size:15.5px; font-weight:500; color:var(--fg); }
+  .slot .who {
+    justify-self:end; font-size:11.5px; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+    padding:4px 11px; border-radius:999px; border:1px solid var(--border-strong); color:var(--fg-2); white-space:nowrap;
+  }
+  .who.puddu   { border-color:rgba(143,63,255,.5);  color:var(--violet-300); }
+  .who.rios    { border-color:rgba(255,83,255,.45); color:#ff92ff; }
+  .who.daniele { border-color:rgba(18,116,255,.5);  color:#4a95ff; }
+
+  .slot.break { grid-template-columns:130px 1fr; padding:8px 26px; }
+  .slot.break .title { font-size:12.5px; font-weight:400; color:var(--fg-4); letter-spacing:.05em; text-transform:uppercase; }
+  .slot.break .time { color:var(--fg-4); font-weight:400; }
+
+  /* lezione con artifact → link */
+  a.lesson {
+    display:inline-flex; align-items:center; gap:8px;
+    color:var(--fg); text-decoration:none; font-weight:600;
+    border-bottom:1px dashed rgba(255,249,74,.45);
+    transition:color .15s ease, border-color .15s ease;
+  }
+  a.lesson::after {
+    content:"↗"; font-size:13px; color:var(--yellow-500);
+    transition:transform .15s ease;
+  }
+  a.lesson:hover { color:var(--yellow-500); border-color:var(--yellow-500); }
+  a.lesson:hover::after { transform:translate(2px,-2px); }
+
+  .slot.event .title { color:var(--fg-2); font-weight:400; font-style:normal; }
+
+  /* ---------- Footer ---------- */
+  footer { border-top:1px solid var(--border); padding:34px 0 46px; }
+  footer .wrap { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  footer p { font-size:13px; color:var(--fg-4); }
+  footer p a { color:var(--fg-3); text-decoration:none; }
+  footer p a:hover { color:var(--fg); }
+
+  @media (max-width:640px) {
+    .slot { grid-template-columns:1fr; gap:4px; padding:14px 20px; }
+    .slot .who { justify-self:start; }
+    .slot.break { grid-template-columns:1fr; }
+    .day-head { padding:18px 20px 14px; flex-wrap:wrap; }
+    .day-date { margin-left:0; width:100%; }
+    .hero { padding:64px 0 48px; }
+  }
+</style>
 </head>
 <body>
-  <h1>Summer School 2026</h1>
-  <p>Benvenuti.</p>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand">summer school <span class="dot">’26</span> <small>terza edizione</small></div>
+    <a class="cta" href="#programma">Programma</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="kicker">Oasi Zegna · 13–17 luglio 2026</div>
+    <h1>AI, arte e <span class="grad">nuovi modi</span> di lavorare</h1>
+    <p class="sub">Cinque giornate tra teoria, hands-on e project work: dagli agenti AI al vibe coding, fino alla prima app in produzione.</p>
+    <div class="meta">
+      <div><strong>5 giornate</strong>lezioni + project work</div>
+      <div><strong>Oasi Zegna</strong>Valdilana (BI)</div>
+      <div><strong>Hands-on</strong>ogni giornata</div>
+    </div>
+  </div>
+</section>
+
+<main class="program" id="programma">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Il programma</h2>
+      <span>Le lezioni con ↗ aprono il materiale di supporto in una nuova scheda</span>
+    </div>
+
+    <div class="days">
+
+      <!-- Giornata 1 -->
+      <article class="day">
+        <div class="day-head">
+          <span class="day-num">Giorno 1</span>
+          <span class="day-name">Lunedì</span>
+          <span class="day-date">13 luglio</span>
+        </div>
+        <div class="slots">
+          <div class="slot event"><span class="time">8:30 – 10:00</span><span class="title">Partenza per Oasi Zegna</span></div>
+          <div class="slot event"><span class="time">10:00 – 11:00</span><span class="title">Introduzione — Michela Longo + Bertoli</span></div>
+          <div class="slot break"><span class="time">11:00 – 11:15</span><span class="title">Coffee break</span></div>
+          <div class="slot event"><span class="time">11:15 – 13:00</span><span class="title">Continua introduzione + Setup PC</span></div>
+          <div class="slot break"><span class="time">13:00 – 14:00</span><span class="title">Lunch</span></div>
+          <div class="slot"><span class="time">14:00 – 16:00</span><span class="title"><a class="lesson" href="artifacts/lezione1_supporto.html" target="_blank" rel="noopener">Intelligenza Artificiale: Applicazione della Teoria</a></span><span class="who rios">Rios</span></div>
+          <div class="slot break"><span class="time">16:00 – 16:15</span><span class="title">Coffee break</span></div>
+          <div class="slot"><span class="time">16:15 – 18:00</span><span class="title"><a class="lesson" href="artifacts/lezione1_parte2_supporto.html" target="_blank" rel="noopener">Large Language Models</a></span><span class="who rios">Rios</span></div>
+        </div>
+      </article>
+
+      <!-- Giornata 2 -->
+      <article class="day">
+        <div class="day-head">
+          <span class="day-num">Giorno 2</span>
+          <span class="day-name">Martedì</span>
+          <span class="day-date">14 luglio</span>
+        </div>
+        <div class="slots">
+          <div class="slot"><span class="time">8:30 – 11:00</span><span class="title"><a class="lesson" href="artifacts/supporto_context_window.html" target="_blank" rel="noopener">Introduzione agli Agenti e Context Management</a></span><span class="who puddu">Puddu</span></div>
+          <div class="slot break"><span class="time">11:00 – 11:15</span><span class="title">Coffee break</span></div>
+          <div class="slot"><span class="time">11:15 – 13:00</span><span class="title">Hands on: Project &amp; Connettori</span><span class="who puddu">Puddu</span></div>
+          <div class="slot break"><span class="time">13:00 – 14:00</span><span class="title">Lunch</span></div>
+          <div class="slot"><span class="time">14:00 – 16:00</span><span class="title">Claude Cowork: Introduzione al Vibe Working</span><span class="who rios">Rios</span></div>
+          <div class="slot break"><span class="time">16:00 – 16:15</span><span class="title">Coffee break</span></div>
+          <div class="slot"><span class="time">16:15 – 18:00</span><span class="title">Claude Cowork: Hands on</span><span class="who rios">Rios</span></div>
+        </div>
+      </article>
+
+      <!-- Giornata 3 -->
+      <article class="day">
+        <div class="day-head">
+          <span class="day-num">Giorno 3</span>
+          <span class="day-name">Mercoledì</span>
+          <span class="day-date">15 luglio</span>
+        </div>
+        <div class="slots">
+          <div class="slot"><span class="time">8:30 – 11:00</span><span class="title">Claude Code: Introduzione al vibe coding</span><span class="who puddu">Puddu</span></div>
+          <div class="slot break"><span class="time">11:00 – 11:15</span><span class="title">Coffee break</span></div>
+          <div class="slot"><span class="time">11:15 – 13:00</span><span class="title">Hands on: La mia prima automazione</span><span class="who puddu">Puddu</span></div>
+          <div class="slot break"><span class="time">13:00 – 14:00</span><span class="title">Lunch</span></div>
+          <div class="slot"><span class="time">14:00 – 16:00</span><span class="title">Deploy e Infrastruttura</span><span class="who rios">Rios</span></div>
+          <div class="slot break"><span class="time">16:00 – 16:15</span><span class="title">Coffee break</span></div>
+          <div class="slot"><span class="time">16:15 – 18:00</span><span class="title">La prima app in produzione</span><span class="who rios">Rios</span></div>
+        </div>
+      </article>
+
+      <!-- Giornata 4 -->
+      <article class="day">
+        <div class="day-head">
+          <span class="day-num">Giorno 4</span>
+          <span class="day-name">Giovedì</span>
+          <span class="day-date">16 luglio</span>
+        </div>
+        <div class="slots">
+          <div class="slot"><span class="time">8:30 – 11:00</span><span class="title">Processi Produttivi e Use Case: LLM in the Loop</span><span class="who daniele">Daniele</span></div>
+          <div class="slot break"><span class="time">11:00 – 11:15</span><span class="title">Coffee break</span></div>
+          <div class="slot"><span class="time">11:15 – 13:00</span><span class="title">Hands on: API e Flusso informativo</span><span class="who daniele">Daniele</span></div>
+          <div class="slot break"><span class="time">13:00 – 14:00</span><span class="title">Lunch</span></div>
+          <div class="slot event"><span class="time">14:00 – 18:00</span><span class="title">Gita — Bertoli</span></div>
+        </div>
+      </article>
+
+      <!-- Giornata 5 -->
+      <article class="day">
+        <div class="day-head">
+          <span class="day-num">Giorno 5</span>
+          <span class="day-name">Venerdì</span>
+          <span class="day-date">17 luglio</span>
+        </div>
+        <div class="slots">
+          <div class="slot event"><span class="time">8:30 – 16:00</span><span class="title">Project Work</span></div>
+          <div class="slot break"><span class="time">16:00 – 16:15</span><span class="title">Coffee break</span></div>
+          <div class="slot event"><span class="time">16:15 – 18:00</span><span class="title">Presentazione dei Project Work</span></div>
+          <div class="slot event"><span class="time">18:00 – 21:00</span><span class="title">Aperitivo finale</span></div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Summer School 2026 · Terza edizione · Oasi Zegna</p>
+    <p>a project by <a href="https://aidea.team" target="_blank" rel="noopener">aidea</a></p>
+  </div>
+</footer>
+
 </body>
 </html>

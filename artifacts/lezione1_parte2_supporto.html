@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Dentro gli LLM: dalle parole ai vettori — supporto Lezione 1 · parte 2</title>
+<style>
+  :root{
+    --paper:#f1efe8; --paper-2:#e9e6dd;
+    --card:#ffffff; --card-2:#faf8f6;
+    --ink:#1a1a1a; --ink-2:#5f5e5a; --muted:#8a887f;
+    --line:#d9d6cc; --line-strong:#b4b2a9;
+    --accent:#1D9E75; --accent-2:#157a5a; --accent-soft:#e4f4ee; --accent-soft2:#cfece0;
+    --violet:#4338CA; --violet-soft:#ebe9fb;
+    --amber:#B45309; --amber-soft:#fbeedd;
+    --blue:#2f7ec9; --blue-soft:#e7f0fa;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(var(--paper-2) 0.5px, transparent 0.5px);background-size:22px 22px;}
+
+  #prog{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:60;transition:width .1s linear}
+  #dots{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:55;display:flex;flex-direction:column;gap:10px}
+  #dots a{width:9px;height:9px;border-radius:50%;background:var(--line-strong);opacity:.55;transition:all .2s;position:relative}
+  #dots a.on{background:var(--accent);opacity:1;transform:scale(1.35)}
+  #dots a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:11px;
+    color:var(--ink-2);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:2px 7px;opacity:0;pointer-events:none;transition:opacity .15s}
+  #dots a:hover span{opacity:1}
+  @media(max-width:900px){#dots{display:none}}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:0 28px}
+  section{padding:60px 0;border-top:1px solid var(--line)}
+  section:first-of-type{border-top:0}
+
+  .kicker{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);
+    display:flex;align-items:center;gap:10px;margin:0 0 14px}
+  .kicker .n{font-family:var(--mono);background:var(--accent);color:#fff;border-radius:5px;padding:1px 7px;font-size:11px;letter-spacing:.05em}
+  h1{font-size:clamp(40px,8vw,86px);line-height:.98;letter-spacing:-.02em;font-weight:850;margin:0 0 18px}
+  h2{font-size:clamp(27px,4.4vw,46px);line-height:1.04;letter-spacing:-.015em;font-weight:850;margin:0 0 16px;max-width:20ch}
+  h3{font-size:19px;font-weight:750;margin:30px 0 6px}
+  .lead{font-size:clamp(17px,2vw,21px);color:var(--ink-2);max-width:62ch;margin:0 0 10px}
+  p{max-width:64ch;font-size:16.5px}
+  .em{color:var(--accent);font-weight:600}
+  .mut{color:var(--muted)}
+
+  .hero{padding-top:80px;min-height:80vh;display:flex;flex-direction:column;justify-content:center}
+  .hero .tag{font-family:var(--mono);font-size:12px;color:var(--ink-2);border:1px solid var(--line-strong);
+    border-radius:999px;padding:5px 13px;display:inline-flex;gap:8px;align-items:center;margin-bottom:24px;background:var(--card-2);width:max-content}
+  .hero .tag b{color:var(--accent)}
+  .hero h1 span{color:var(--accent)}
+  .hero .sub{font-size:clamp(18px,2.4vw,24px);font-weight:600;color:var(--ink);max-width:34ch;margin:0 0 8px}
+  .hero .subm{font-size:16px;color:var(--ink-2);max-width:56ch}
+  .arc{display:flex;gap:8px;flex-wrap:wrap;margin-top:30px}
+  .arc .step{font-family:var(--mono);font-size:11px;color:var(--ink-2);border:1px solid var(--line);border-radius:20px;padding:6px 11px;white-space:nowrap;background:var(--card-2)}
+  .arc .step b{color:var(--accent)}
+  .scrollcue{margin-top:36px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+  .scrollcue .a{animation:bob 1.6s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+
+  .callout{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;
+    padding:16px 20px;margin:22px 0;font-size:16.5px;color:#12664b;max-width:66ch}
+  .callout b{color:var(--accent-2)}
+  .pull{font-family:var(--serif);font-size:clamp(23px,3.1vw,34px);line-height:1.2;font-weight:600;color:var(--ink);max-width:24ch;margin:34px 0;padding-left:26px;border-left:4px solid var(--accent)}
+  .eq{font-family:var(--mono);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:3px 9px;display:inline-block;font-size:.92em;color:var(--ink)}
+  .eq b{color:var(--accent)}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:26px;
+    box-shadow:0 1px 0 var(--line),0 18px 40px -32px rgba(0,0,0,.35)}
+  .panel.star{border-color:var(--accent-soft2);box-shadow:0 1px 0 var(--accent-soft2),0 22px 50px -30px rgba(29,158,117,.4);background:linear-gradient(180deg,#fff,#fafdfb)}
+  .panel .badge{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);
+    display:inline-flex;align-items:center;gap:7px;margin-bottom:14px}
+  .panel .badge .dotp{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 1.8s infinite}
+  .panel .badge.violb{color:var(--violet)} .panel .badge.violb .dotp{background:var(--violet)}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+  .phd{display:flex;align-items:center;gap:10px;margin-bottom:2px}
+  .phd strong{font-size:16px}
+
+  .ctrls{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-top:14px}
+  .ctrl{display:flex;flex-direction:column;gap:4px;min-width:150px;flex:1}
+  .ctrl label{font-family:var(--mono);font-size:12px;color:var(--ink-2);display:flex;justify-content:space-between;gap:10px}
+  .ctrl label b{color:var(--accent)}
+  input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--paper-2);outline:none;border:1px solid var(--line)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 0 4px rgba(29,158,117,.16)}
+  input[type=range]::-moz-range-thumb{width:17px;height:17px;border:none;border-radius:50%;background:var(--accent);cursor:pointer}
+  button.b{font-family:inherit;font-size:14px;font-weight:600;background:var(--ink);color:#fff;border:0;border-radius:9px;padding:9px 16px;cursor:pointer;transition:transform .05s,background .15s}
+  button.b:hover{background:#000}button.b:active{transform:translateY(1px)}
+  button.b.ghost{background:transparent;color:var(--ink-2);border:1px solid var(--line-strong)}
+  button.b.ghost:hover{background:var(--card-2);color:var(--ink)}
+  button.b.acc{background:var(--accent)}button.b.acc:hover{background:var(--accent-2)}
+  .toggle{display:inline-flex;border:1px solid var(--line-strong);border-radius:9px;overflow:hidden}
+  .toggle button{font-family:inherit;font-size:13px;font-weight:600;background:var(--card-2);color:var(--ink-2);border:none;padding:8px 14px;cursor:pointer}
+  .toggle button.on{background:var(--accent);color:#fff}
+  .readout{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);margin-top:12px;display:flex;gap:16px;flex-wrap:wrap}
+  .readout b{color:var(--ink)}
+  .hint{font-size:13px;color:var(--muted);margin-top:12px;max-width:68ch}
+  .cap{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:10px}
+  canvas{display:block;width:100%;border-radius:12px;background:var(--card-2);border:1px solid var(--line)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr}}
+  .chip{display:inline-block;font-family:var(--mono);font-size:12px;padding:4px 10px;border-radius:6px;border:1px solid var(--line);margin:3px 4px 0 0;background:var(--card-2)}
+
+  /* codifica ingenua */
+  .naive{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}
+  .naive .w{display:flex;flex-direction:column;align-items:center;gap:3px}
+  .naive .w .t{font-size:14.5px;background:var(--card-2);border:1px solid var(--line);border-radius:8px;padding:5px 11px}
+  .naive .w .num{font-family:var(--mono);font-size:12px;color:var(--amber);font-weight:700}
+  table.naiveT{border-collapse:collapse;font-family:var(--mono);font-size:12.5px;margin-top:10px;width:100%;max-width:520px}
+  table.naiveT td,table.naiveT th{border:1px solid var(--line);padding:6px 10px;text-align:left}
+  table.naiveT th{background:var(--card-2);font-weight:700;color:var(--ink-2)}
+  table.naiveT td b{color:var(--amber)}
+
+  /* word buttons (one-hot, tokenizer) */
+  .wbtns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+  .wbtn{font-family:inherit;font-size:13.5px;font-weight:600;background:var(--card-2);color:var(--ink-2);
+    border:1px solid var(--line-strong);border-radius:8px;padding:7px 13px;cursor:pointer;transition:all .15s}
+  .wbtn:hover{color:var(--ink);background:#fff}
+  .wbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  /* tokenizer */
+  .tokout{min-height:52px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--card-2);
+    border:1px dashed var(--line-strong);border-radius:12px;padding:12px 14px;margin-top:6px}
+  .tok{font-family:var(--mono);font-size:14px;font-weight:600;border-radius:7px;padding:5px 10px;border:1px solid transparent;animation:pop .25s ease}
+  @keyframes pop{0%{transform:scale(.7);opacity:0}100%{transform:scale(1);opacity:1}}
+
+  /* attention */
+  .attWrap{position:relative;margin-top:8px}
+  .attToks{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+  .attToks button{font-family:var(--mono);font-size:14px;font-weight:600;background:var(--card-2);color:var(--ink-2);
+    border:1px solid var(--line-strong);border-radius:8px;padding:7px 12px;cursor:pointer;transition:all .15s}
+  .attToks button.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+  .attToks button.src{border-color:var(--accent);color:var(--accent-2);background:var(--accent-soft)}
+  .qkv{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:18px}
+  @media(max-width:760px){.qkv{grid-template-columns:1fr}}
+  .qkv .c{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--card-2)}
+  .qkv .c h4{margin:0 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.1em}
+  .qkv .c.q h4{color:var(--accent-2)} .qkv .c.k h4{color:var(--blue)} .qkv .c.v h4{color:var(--amber)}
+  .qkv .c p{font-size:13.5px;margin:0 0 8px;color:var(--ink-2)}
+  .qkv .c .eq{font-size:11.5px}
+
+  /* generazione / step log */
+  .ctxbox{font-family:var(--mono);font-size:14px;background:var(--card-2);border:1px solid var(--line);border-radius:12px;
+    padding:14px 16px;line-height:2;transition:box-shadow .3s}
+  .ctxbox.reading{box-shadow:0 0 0 3px rgba(29,158,117,.25)}
+  .ctxbox .gt{background:var(--accent-soft);border:1px solid var(--accent-soft2);color:#12664b;border-radius:6px;padding:2px 7px;margin:0 2px;animation:pop .3s ease;display:inline-block}
+  .ctxbox .gt.end{background:var(--amber-soft);border-color:#eeD9bd;color:var(--amber)}
+  .prefRows{font-family:var(--mono);font-size:12.5px;margin-top:8px;display:flex;flex-direction:column;gap:5px}
+  .prefRows .r{display:flex;gap:10px;align-items:baseline}
+  .prefRows .r .in{color:var(--ink-2)}
+  .prefRows .r .arr{color:var(--muted)}
+  .prefRows .r .out{color:var(--accent-2);font-weight:700}
+
+  /* domande retoriche */
+  .qlist{display:flex;flex-direction:column;gap:14px;margin:24px 0;max-width:60ch}
+  .qlist .q{font-family:var(--serif);font-size:clamp(17px,2.2vw,21px);font-style:italic;color:var(--ink);
+    border-left:3px solid var(--accent-soft2);padding-left:16px}
+
+  /* da portare a casa */
+  .takes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:26px}
+  @media(max-width:760px){.takes{grid-template-columns:1fr}}
+  .take{border-radius:16px;padding:20px;border:1px solid var(--line)}
+  .take.g{background:linear-gradient(160deg,var(--accent-soft),#fff)}
+  .take.v{background:linear-gradient(160deg,var(--violet-soft),#fff)}
+  .take.a{background:linear-gradient(160deg,var(--amber-soft),#fff)}
+  .take .kn{font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+  .take.g .kn{color:var(--accent-2)} .take.v .kn{color:var(--violet)} .take.a .kn{color:var(--amber)}
+  .take h4{margin:0 0 8px;font-size:17px;line-height:1.25}
+  .take p{font-size:14px;color:var(--ink-2);margin:0}
+
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  footer{padding:50px 0 90px;color:var(--ink-2);font-size:13.5px;border-top:1px solid var(--line)}
+  footer .mono{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:10px}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<nav id="dots"></nav>
+
+<!-- HERO -->
+<section id="s0" class="hero"><div class="wrap reveal">
+  <div class="tag">Summer School · Giornata 1 · <b>Federico Rios</b> · parte 2</div>
+  <h1>Dentro gli LLM:<br>dalle <span>parole</span><br>ai vettori.</h1>
+  <p class="sub">ChatGPT, Claude, Gemini: la stessa tecnologia delle reti viste finora. Il paradigma rimane lo stesso, ciò che cambia sono i dettagli.</p>
+  <p class="subm">Parametri allenati tramite gradient descent, input e output che sono vettori. Il primo aspetto controintuitivo: come possono essere vettori, se noi non comunichiamo scrivendo liste di numeri?</p>
+  <div class="arc">
+    <span class="step"><b>01</b> Input</span>
+    <span class="step"><b>02</b> Word embedding</span>
+    <span class="step"><b>03</b> Token</span>
+    <span class="step"><b>04</b> Architettura</span>
+    <span class="step"><b>05</b> Attention</span>
+    <span class="step"><b>06</b> Training e output</span>
+    <span class="step"><b>07</b> Comportamento</span>
+  </div>
+  <div class="scrollcue"><span class="a">↓</span> scorri · frecce ← → per navigare</div>
+</div></section>
+
+<!-- 01 INPUT -->
+<section id="s1"><div class="wrap reveal">
+  <div class="kicker"><span class="n">01</span> Input degli LLM</div>
+  <h2>Trasformare le parole in matematica</h2>
+  <p class="lead">Un primo modo: costruire una lista di termini e assegnare a ciascuno un numero. In ordine alfabetico, "abaco" prende il numero 1, "abate" il numero 2, e così via — fino alle ~270.000 parole di un dizionario.</p>
+
+  <div class="panel">
+    <div class="badge"><span class="dotp"></span> interattivo</div>
+    <div class="phd"><strong>La codifica ingenua — e il suo difetto</strong></div>
+    <div class="naive" id="naivePhrase"></div>
+    <p style="margin-top:14px;font-size:15px">Già così una frase diventa un vettore. Ma dentro la rete i calcoli assomigliano a <span class="eq">y = <b>w</b>x + q</span>: se x è il numero della parola, allora "abate" è trattato come <b>il doppio</b> di "abaco", matematicamente. Muovi il peso w e osserva: i risultati restano incatenati l'uno all'altro.</p>
+    <div class="ctrls">
+      <div class="ctrl" style="max-width:280px"><label>peso w <b id="nwv">1.00</b></label><input id="nw" type="range" min="0.2" max="3" step="0.05" value="1"></div>
+    </div>
+    <table class="naiveT" id="naiveT">
+      <tr><th>parola</th><th>x</th><th>y = w·x + q</th></tr>
+    </table>
+    <p class="hint">Con q = 5 fisso. Qualunque valore prenda w, <b>y(abate) − q</b> vale sempre il doppio di <b>y(abaco) − q</b>, e "con" domina tutto solo perché sta in fondo al dizionario. Una semplice codifica numerica impone una dipendenza forte tra i risultati su parole diverse — noi vorremmo invece che i calcoli su parole diverse fossero significativamente diversi e indipendenti.</p>
+  </div>
+
+  <h3>La soluzione: one-hot encoding</h3>
+  <p>Associamo ad ogni parola un vettore con 270.000 dimensioni — una per ogni possibile parola — dove ogni dimensione vale 0, eccetto quella corrispondente alla posizione della parola nel dizionario. Un'unica posizione "calda", portatrice di informazione; tutte le altre "fredde". La costruzione può sembrare arbitraria: osserviamo cosa succede applicando la stessa operazione <span class="eq">y = <b>W</b>x + b</span>, dove ora x è un vettore e W una matrice.</p>
+
+  <div class="panel star">
+    <div class="badge"><span class="dotp"></span> interattivo</div>
+    <div class="phd"><strong>W per un one-hot = selezionare una colonna di W</strong></div>
+    <p style="margin-top:6px;font-size:15px">Scegli una parola: il suo one-hot ha un 1 in una sola posizione. Tutti i prodotti colonna-per-elemento sono nulli tranne uno — e il risultato di Wx è esattamente <b>quella colonna</b> di W.</p>
+    <div class="wbtns" id="ohBtns"></div>
+    <canvas id="cOneHot" height="300"></canvas>
+    <div class="readout">Wx = colonna <b id="ohCol">4</b> di W · dimensione dell'embedding <b>d = 6</b></div>
+    <p class="hint">Ad ogni parola corrisponde una colonna di W, e il contenuto di ciascuna colonna è indipendente dal contenuto delle altre. Questa matrice, come tutti i parametri delle reti neurali, viene allenata tramite gradient descent: i vettori che rappresentano le parole <em>emergono dal training</em>.</p>
+  </div>
+
+  <div class="callout"><b>Il punto.</b> Moltiplicare W per un vettore one-hot equivale sostanzialmente a selezionare una specifica colonna di W stessa. Questo elimina ogni dipendenza tra i risultati di y = Wx + b per parole diverse. Il vettore di dimensione d che ne esce è la prima rappresentazione della parola dentro la rete: il suo <b>word embedding</b>.</div>
+</div></section>
+
+<!-- 02 WORD EMBEDDING -->
+<section id="s2"><div class="wrap reveal">
+  <div class="kicker"><span class="n">02</span> Word embedding</div>
+  <h2>Uno spazio dove il significato è geometria</h2>
+  <p class="lead">Gli embedding hanno migliaia di dimensioni; qui li proiettiamo in 2 per poterli disegnare, ma le peculiarità geometriche valgono anche negli spazi di partenza.</p>
+  <p><b>Prima proprietà:</b> parole che si riferiscono a concetti simili vengono trasformate in vettori geometricamente vicini. Gli strati successivi al primo non "sanno" che in input c'era "abaco" piuttosto che "abate": ricevono solo un vettore di dimensione d. Quei vettori devono quindi contenere da soli tutto il significato della parola — e parole simili "condividono" una parte del loro significato abitando una regione simile dello spazio.</p>
+
+  <div class="panel">
+    <div class="badge"><span class="dotp"></span> interattivo</div>
+    <div class="phd"><strong>Zone di significato</strong></div>
+    <canvas id="cClust" height="300"></canvas>
+    <div class="readout"><span id="clustRead">passa il mouse sulle parole</span></div>
+  </div>
+
+  <h3>Seconda proprietà: le direzioni codificano concetti</h3>
+  <p>Esiste la stessa relazione geometrica tra vettori che corrispondono a parole che hanno la stessa relazione semantica. Il vettore differenza tra "donna" e "uomo" codifica la differenza tra femminile e maschile <em>in generale</em>: applicato a "re", produce "regina". Quella direzione codifica quel concetto — e altre direzioni ne codificano altri.</p>
+
+  <div class="panel star">
+    <div class="badge"><span class="dotp"></span> interattivo</div>
+    <div class="toggle" id="anaTog">
+      <button data-m="gen" class="on">Genere &amp; regalità</button>
+      <button data-m="cap">Stato → capitale</button>
+    </div>
+    <canvas id="cAna" height="300" style="margin-top:14px"></canvas>
+    <div class="ctrls">
+      <button class="b acc" id="anaBtn">▶ Applica la direzione</button>
+      <button class="b ghost" id="anaReset">↺ Reset</button>
+    </div>
+    <div class="readout"><span id="anaRead">re + (donna − uomo) = ?</span></div>
+    <p class="hint">Le due proiezioni in 2D sono distinte: i piani dei due esempi non sono lo stesso — per questo direzioni diverse possono <em>sembrare</em> simili tra un grafico e l'altro.</p>
+  </div>
+
+  <h3>Perché servono migliaia di dimensioni</h3>
+  <p>In due dimensioni possiamo avere al più due direzioni genuinamente indipendenti. Se i concetti da codificare sono di più, le direzioni cominciano necessariamente a interferire tra loro. Per questo, nella pratica, gli embedding hanno migliaia di dimensioni.</p>
+  <div class="panel">
+    <div class="badge"><span class="dotp"></span> interattivo</div>
+    <div class="phd"><strong>Direzioni in 2D: aggiungi concetti e guarda l'interferenza</strong></div>
+    <div class="grid2">
+      <div><canvas id="cDirs" height="240"></canvas></div>
+      <div>
+        <div class="ctrls" style="flex-direction:column;align-items:stretch;gap:12px;margin-top:0">
+          <div class="ctrl"><label>direzioni (concetti) <b id="dirNv">2</b></label><input id="dirN" type="range" min="2" max="12" step="1" value="2"></div>
+        </div>
+        <div class="readout" style="flex-direction:column;gap:6px;align-items:flex-start">
+          <span>angolo tra direzioni vicine <b id="dirAng">90°</b></span>
+          <span>interferenza <b id="dirInt">nulla</b></span>
+        </div>
+        <p class="hint" style="margin-top:14px">In uno spazio a 8192 dimensioni le direzioni perfettamente indipendenti sono 8192 — tante, ma non abbastanza per tutte le complessità del linguaggio. Dal training emerge però un numero <b>esponenzialmente maggiore</b> di direzioni "quasi indipendenti", che empiricamente codificano un'enorme quantità di concetti.</p>
+        </div>
+    </div>
+  </div>
+
+  <div class="callout"><b>La geometria è il significato.</b> Concetti simili → vettori vicini. Stessa relazione semantica → stessa relazione geometrica. L'intero spazio d-dimensionale deve poter codificare ogni possibile significato di ogni possibile parola.</div>
+</div></section>
+
+<!-- 03 TOKEN -->
+<section id="s3"><div class="wrap reveal">
+  <div class="kicker"><span class="n">03</span> Token</div>
+  <h2>Non parole: token</h2>
+  <p class="lead">C'è un'assunzione implicita da smontare in ciò che abbiamo detto finora: gli LLM non prendono in realtà parole in input, ma <b>sottounità dette token</b>.</p>
+  <p>Per costruirli si prende un grande numero di testi scritti — un <em>corpus</em> — e se ne estraggono le sequenze di lettere più frequenti. Ne esce un vocabolario non di parole ma di token, che possono essere composti tra loro per ottenere le parole. I token vengono a loro volta codificati one-hot, e il primo prodotto matriciale li trasforma in embedding.</p>
+
+  <div class="panel">
+    <div class="badge"><span class="dotp"></span> interattivo</div>
+    <div class="phd"><strong>Un embedding per "respir", non per "respirare"</strong></div>
+    <p style="margin-top:6px;font-size:15px">Clicca le parole: ogni token ha un colore. Lo stesso token — e quindi <b>lo stesso embedding</b> — viene riutilizzato da parole diverse.</p>
+    <div class="wbtns" id="tkBtns"></div>
+    <div class="tokout" id="tkOut"><span class="mut" style="font-size:13.5px">scegli una o più parole…</span></div>
+    <div class="readout" id="tkRead"></div>
+    <p class="hint">"respir" finisce per rappresentare i concetti relativi alla respirazione; "are" resta generico — e torna utile in "mangiare" come in "pescare". Ogni sub-unità è riutilizzabile.</p>
+  </div>
+
+  <div class="callout"><b>Un dettaglio implementativo.</b> Tutto questo non cambia il discorso sulla semantica degli spazi vettoriali degli embedding: è semplicemente un dettaglio implementativo che serve a migliorare l'efficienza di queste reti neurali.</div>
+</div></section>
+
+<!-- 04 ARCHITETTURA -->
+<section id="s4"><div class="wrap reveal">
+  <div class="kicker"><span class="n">04</span> Architettura</div>
+  <h2>Una dorsale e tanti blocchi</h2>
+  <p class="lead">Il testo diventa token, i token diventano embedding. Ma gli LLM non sono composti solo di questo primo strato.</p>
+  <p>Gli embedding entrano in una <b>dorsale</b>, che è la base di ogni altra operazione. Numerosi blocchi, simili tra loro per architettura, <b>leggono</b> gli embedding nella dorsale, li <b>trasformano</b> con qualche operazione su vettori, e <b>sommano</b> il risultato al precedente contenuto della dorsale. Ogni blocco, sostanzialmente, modifica i vettori che rappresentano i token.</p>
+
+  <div class="panel star">
+    <div class="badge"><span class="dotp"></span> animato</div>
+    <div class="phd"><strong>Segui un embedding lungo la dorsale</strong></div>
+    <canvas id="cDors" height="290"></canvas>
+    <div class="ctrls">
+      <button class="b acc" id="dorsNext">Avanti →</button>
+      <button class="b ghost" id="dorsAuto">▶ Auto</button>
+      <button class="b ghost" id="dorsReset">↺ Reset</button>
+      <span class="readout" style="margin:0" id="dorsRead">l'embedding di «pesca» entra nella dorsale</span>
+    </div>
+  </div>
+
+  <div class="callout"><b>Non un unico spazio.</b> La rete neurale non contiene un unico spazio vettoriale che codifica informazione, ma numerosi spazi simili — uno per ogni trasformazione. La rappresentazione e il significato di un token saranno in generale diversi all'inizio della rete, a metà, e alla fine.</div>
+</div></section>
+
+<!-- 05 ATTENTION -->
+<section id="s5"><div class="wrap reveal">
+  <div class="kicker"><span class="n">05</span> Attention</div>
+  <h2>I token si parlano</h2>
+  <p class="lead">Ogni blocco ha due componenti: <b>attention</b> e <b>feedforward</b>. L'attention è un'operazione su vettori che permette all'embedding di un token di raccogliere e processare informazioni provenienti da altri token — per considerare le connessioni che una parola ha con le altre nella frase.</p>
+  <p>Consideriamo: <em>"Andrea prese la pesca dal cesto e la mangiò"</em>. La parola "pesca", da sola, è ambigua: il frutto, o l'attività di pescare? Il suo token, necessariamente, contiene entrambi i significati — è ambiguo <em>per costruzione</em>. Per ogni token vengono costruiti tre vettori: <b>query</b>, <b>key</b> e <b>value</b>.</p>
+
+  <div class="panel star">
+    <div class="badge"><span class="dotp"></span> interattivo</div>
+    <div class="phd"><strong>Chi ascolta chi — clicca un token evidenziato</strong></div>
+    <div class="attWrap">
+      <canvas id="cAtt" height="150" style="background:transparent;border:none;border-radius:0"></canvas>
+      <div class="attToks" id="attToks"></div>
+    </div>
+    <div class="qkv" id="qkvBox">
+      <div class="c q"><h4>Query</h4><p id="qTxt">—</p><span class="eq">Query = <b>W</b><sub>query</sub> x + b</span></div>
+      <div class="c k"><h4>Key</h4><p id="kTxt">—</p><span class="eq">Key = <b>W</b><sub>key</sub> x + b</span></div>
+      <div class="c v"><h4>Value</h4><p id="vTxt">—</p><span class="eq">Value = <b>W</b><sub>value</sub> x + b</span></div>
+    </div>
+    <div class="readout" style="margin-top:16px"><span id="attRead">—</span></div>
+    <p class="hint">La query seleziona le key più vicine — quella vicinanza <em>è</em> l'attention, e dà il nome all'operazione. I value vengono sommati, ciascuno pesato con l'attenzione ricevuta. Tre vettori, nessuna magia: sono tre operazioni y = Wx + b, con W e b appresi via gradient descent come ogni altro parametro.</p>
+  </div>
+
+  <h3>E il feedforward?</h3>
+  <p>Il sotto-blocco successivo è una piccola rete neurale — qualche strato <span class="eq">y = <b>W</b>x + b</span> e qualche non-linearità come la ReLU — che processa ulteriormente l'embedding dopo che è stato arricchito con nuovo contesto dagli altri. Un LLM è costituito quasi interamente di blocchi di questo tipo, che rielaborano numerose volte l'embedding di ciascun token.</p>
+
+  <div class="callout"><b>Uno spazio di lavoro.</b> Negli strati successivi al primo, l'embedding di un token smette di rappresentare davvero quel token: diventa qualcosa che possiamo meglio concepire come uno "spazio di lavoro per il modello" — codifica ciò che è utile codificare, che sia il token in quella posizione o meno.</div>
+</div></section>
+
+<!-- 06 TRAINING E OUTPUT -->
+<section id="s6"><div class="wrap reveal">
+  <div class="kicker"><span class="n">06</span> Training e output</div>
+  <h2>Prevedere la parola successiva</h2>
+  <p class="lead">Si costruisce un corpus immenso di testi. Ogni testo viene diviso in parti, tokenizzato, e per ogni parte si separa l'ultima parola: l'LLM riceve l'inizio e produce in output <b>un singolo token</b>. La differenza con il token vero è l'errore, minimizzato via gradient descent.</p>
+  <p>Gli ultimi strati attuano un'operazione inversa all'input: la rappresentazione finale viene confrontata — per similarità, cioè vicinanza — con gli embedding di ogni token del vocabolario. Le similarità diventano probabilità, e il token di output viene <b>estratto randomicamente</b>: i più simili hanno probabilità maggiore, i meno simili minore.</p>
+
+  <div class="panel star">
+    <div class="badge"><span class="dotp"></span> interattivo</div>
+    <div class="phd"><strong>«Nel mezzo del cammin di nostra…» — chi esce?</strong></div>
+    <canvas id="cProb" height="250"></canvas>
+    <div class="ctrls">
+      <button class="b acc" id="probBtn">🎲 Estrai un token</button>
+      <button class="b ghost" id="probMany">×20</button>
+      <button class="b ghost" id="probReset">↺ Azzera</button>
+      <span class="readout" style="margin:0">estrazioni <b id="probN">0</b> · ultimo token <b id="probLast">—</b></span>
+    </div>
+    <p class="hint">Stessa rappresentazione finale, estrazioni diverse: è la componente <b>stocastica</b> degli LLM. "vita" esce quasi sempre — ma non sempre.</p>
+  </div>
+
+  <h3>Un token alla volta</h3>
+  <p>Il processo produce un singolo token. Per produrre una frase viene ripetuto numerose volte: il modello legge tutto, completa con il primo token, poi <b>rilegge da capo l'intero testo</b> — incluso il nuovo token — e produce il secondo, e così via. La fine arriva quando esce uno specifico token che non corrisponde a nessuna parte di parola, ma codifica la fine del testo.</p>
+
+  <div class="panel">
+    <div class="badge"><span class="dotp"></span> animato</div>
+    <div class="phd"><strong>Il ciclo di generazione</strong></div>
+    <div class="ctxbox" id="genBox"></div>
+    <div class="ctrls">
+      <button class="b acc" id="genNext">Genera un token →</button>
+      <button class="b ghost" id="genAuto">▶ Auto</button>
+      <button class="b ghost" id="genReset">↺ Reset</button>
+      <span class="readout" style="margin:0">token riletti a questo passo <b id="genCount">7</b></span>
+    </div>
+  </div>
+
+  <h3>E gli output degli altri token?</h3>
+  <p>Un aspetto controintuitivo: durante il training si usano anche gli output dei token intermedi, come previsioni per parti di testo più piccole. Questo parallelizza il training e lo rende efficiente. In inferenza — quando usiamo ChatGPT o Claude — quegli output sono inutili e semplicemente non vengono considerati.</p>
+  <div class="panel">
+    <div class="phd"><strong>Un solo passaggio, tante previsioni (solo in training)</strong></div>
+    <div class="prefRows">
+      <div class="r"><span class="in">Nel</span><span class="arr">→</span><span class="out">mezzo</span></div>
+      <div class="r"><span class="in">Nel mezzo</span><span class="arr">→</span><span class="out">del</span></div>
+      <div class="r"><span class="in">Nel mezzo del</span><span class="arr">→</span><span class="out">cammin</span></div>
+      <div class="r"><span class="in">Nel mezzo del cammin</span><span class="arr">→</span><span class="out">di</span></div>
+      <div class="r"><span class="in">Nel mezzo del cammin di</span><span class="arr">→</span><span class="out">nostra</span></div>
+      <div class="r"><span class="in">Nel mezzo del cammin di nostra</span><span class="arr">→</span><span class="out">vita</span></div>
+    </div>
+  </div>
+
+  <div class="callout"><b>Prevedere basta.</b> La minimizzazione dell'errore ottimizza tutti i parametri visti finora: embedding, matrici di query/key/value, strati di feedforward. La semplice operazione di previsione del testo è sostanzialmente sufficiente a far emergere le capacità di questi modelli — come leggere e scrivere.</div>
+</div></section>
+
+<!-- 07 COMPORTAMENTO -->
+<section id="s7"><div class="wrap reveal">
+  <div class="kicker"><span class="n">07</span> Comportamento</div>
+  <h2>Quasi troppo semplice</h2>
+  <p class="lead">Il sistema può apparire complicato — ma paradossalmente anche troppo semplice per le capacità che esibisce. Operazioni matriciali su vettori, allenate su testi neanche troppo scelti: eppure il risultato scrive email cogliendo il registro, soppesa pro e contro, insegna virtualmente qualsiasi argomento.</p>
+  <p>Sono <b>comportamenti emergenti</b>: fenomeni di sistemi complessi le cui capacità emergono dall'interazione di parti singolarmente più semplici. Conoscere lo scibile umano, ragionare in maniera sostanzialmente analoga a una persona, riconoscere l'emozione e il sottinteso di una frase — tutte conseguenze del task per cui questi modelli sono allenati. Prevedere la prossima parola di infiniti testi <em>richiede</em> queste capacità:</p>
+
+  <div class="qlist">
+    <div class="q">Come si può completare una frase di un libro di chimica, se non conoscendo la chimica?</div>
+    <div class="q">Come si può completare un ragionamento, se non comprendendolo?</div>
+    <div class="q">Come si può completare una poesia, se non intuendo ciò che intende ma non dice?</div>
+  </div>
+
+  <p>Per farlo un LLM fa "solo calcoli" — un'affermazione vera tanto quanto dire che il nostro cervello fa solo "interazioni elettrochimiche", e altrettanto incapace di cogliere il comportamento effettivo di questi oggetti.</p>
+
+  <p class="pull">Sufficienti calcoli, sufficientemente corretti, producono qualcosa che funziona come il ragionamento umano.</p>
+
+  <p>Questo non li rende perfetti, infallibili o umani. Sono ottimi approssimatori della funzione che associa a ogni pezzo di testo il suo completamento — ma l'approssimazione non è perfetta. Non è raro che sbaglino a completare, e quindi a rispondere: a questi errori diamo il nome di <b>allucinazioni</b>.</p>
+
+  <div class="callout"><b>Da dove vengono le allucinazioni.</b> La causa è sostanzialmente l'imperfezione dell'approssimazione: l'errore della rete neurale nel prevedere il token successivo non è nullo. Ciononostante, gli LLM sono la massima espressione di intelligenza artificiale che abbiamo prodotto finora.</div>
+</div></section>
+
+<!-- 08 SINTESI -->
+<section id="s8"><div class="wrap reveal">
+  <div class="kicker"><span class="n">08</span> Da portare a casa</div>
+  <h2>Tre idee, una tecnologia</h2>
+  <div class="takes">
+    <div class="take g">
+      <div class="kn">01 · sempre la stessa operazione</div>
+      <h4>Tutto è y = Wx + b</h4>
+      <p>Embedding, query, key, value, feedforward: semplici operazioni su matrici e vettori, con parametri allenati via gradient descent. Il paradigma rimane lo stesso, cambiano i dettagli.</p>
+    </div>
+    <div class="take v">
+      <div class="kn">02 · il significato è geometria</div>
+      <h4>Vettori vicini, concetti vicini</h4>
+      <p>Concetti simili abitano regioni vicine dello spazio; le direzioni codificano relazioni semantiche. L'attention permette a ogni token di raccogliere informazione dagli altri.</p>
+    </div>
+    <div class="take a">
+      <div class="kn">03 · un task, tante capacità</div>
+      <h4>Prevedere il prossimo token</h4>
+      <p>Un token alla volta, estratto con una componente di caso. Dalla sola previsione del testo emergono le capacità — e dall'errore non nullo, le allucinazioni.</p>
+    </div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div>Arco della lezione · input &amp; one-hot → word embedding → token → architettura → <b>attention</b> → training e output → comportamento</div>
+  <div class="mono">Supporto alla spiegazione · Summer School · Giornata 1, seconda parte · frecce ← → per navigare tra le sezioni</div>
+</div></footer>
+
+<script>
+"use strict";
+/* ---------- palette (JS side, coerente col CSS) ---------- */
+const CO={ink:'#1a1a1a',ink2:'#5f5e5a',mut:'#8a887f',line:'#d9d6cc',lineS:'#b4b2a9',
+  paper2:'#e9e6dd',card2:'#faf8f6',accent:'#1D9E75',accent2:'#157a5a',accentSoft:'#e4f4ee',
+  violet:'#4338CA',violetSoft:'#ebe9fb',amber:'#B45309',amberSoft:'#fbeedd',blue:'#2f7ec9',blueSoft:'#e7f0fa'};
+function mono(){return "ui-monospace,'SF Mono',Menlo,Consolas,monospace";}
+function sans(){return "ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif";}
+
+/* ---------- canvas helper (DPR-safe) ---------- */
+function C(id){const c=document.getElementById(id);const dpr=Math.max(1,window.devicePixelRatio||1);const x=c.getContext('2d');
+  const h=+c.getAttribute('height');
+  function fit(){const w=c.clientWidth||600;const bw=Math.round(w*dpr),bh=Math.round(h*dpr);
+    if(c.width!==bw||c.height!==bh){c.width=bw;c.height=bh;}
+    x.setTransform(dpr,0,0,dpr,0,0);return x;}
+  return {c,ctx:x,fit,dpr,h};}
+function lerp(a,b,t){return a+(b-a)*t;}
+function roundRect(x,px,py,w,h,r){x.beginPath();x.moveTo(px+r,py);x.arcTo(px+w,py,px+w,py+h,r);x.arcTo(px+w,py+h,px,py+h,r);x.arcTo(px,py+h,px,py,r);x.arcTo(px,py,px+w,py,r);x.closePath();}
+function arrowHead(x,x1,y1,x2,y2,col,s){const a=Math.atan2(y2-y1,x2-x1);x.fillStyle=col;x.beginPath();
+  x.moveTo(x2,y2);x.lineTo(x2-(s||10)*Math.cos(a-0.42),y2-(s||10)*Math.sin(a-0.42));
+  x.lineTo(x2-(s||10)*Math.cos(a+0.42),y2-(s||10)*Math.sin(a+0.42));x.fill();}
+
+/* ---------- resize + reveal + progress + dots + tastiera ---------- */
+const _resizeCbs=[];function onResize(fn){_resizeCbs.push(fn);}
+let _rzT=null;addEventListener('resize',()=>{if(_rzT)clearTimeout(_rzT);
+  _rzT=setTimeout(()=>{_rzT=null;requestAnimationFrame(()=>_resizeCbs.forEach(fn=>fn()));},120);});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+let _scrTick=false;const _prog=document.getElementById('prog');
+addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimationFrame(()=>{_scrTick=false;
+  const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight);_prog.style.width=(p*100)+'%';});});
+(function(){const labels={s0:'Intro',s1:'Input',s2:'Word embedding',s3:'Token',s4:'Architettura',s5:'Attention',s6:'Training e output',s7:'Comportamento',s8:'Sintesi'};
+ const nav=document.getElementById('dots');const secs=[...document.querySelectorAll('section')];
+ secs.forEach(s=>{const a=document.createElement('a');a.href='#'+s.id;a.innerHTML='<span>'+(labels[s.id]||s.id)+'</span>';a.dataset.id=s.id;nav.appendChild(a);});
+ const links=[...nav.querySelectorAll('a')];
+ const ob=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.dataset.id===e.target.id));}});},{rootMargin:'-45% 0px -45% 0px'});
+ secs.forEach(s=>ob.observe(s));
+ function curSec(){let best=0,bd=1e9;secs.forEach((s,i)=>{const d=Math.abs(s.getBoundingClientRect().top);if(d<bd){bd=d;best=i;}});return best;}
+ document.addEventListener('keydown',e=>{
+   if(/input|textarea/i.test(e.target.tagName||''))return;
+   if(e.key==='ArrowRight'){e.preventDefault();secs[Math.min(secs.length-1,curSec()+1)].scrollIntoView({behavior:'smooth'});}
+   if(e.key==='ArrowLeft'){e.preventDefault();secs[Math.max(0,curSec()-1)].scrollIntoView({behavior:'smooth'});}
+ });
+})();
+
+/* ================= 01a CODIFICA INGENUA ================= */
+(function(){
+ const phrase=[["L'",138291],["abate",2],["contò",62381],["con",62367],["l'",138291],["abaco",1]];
+ const ph=document.getElementById('naivePhrase');
+ phrase.forEach(w=>{const d=document.createElement('div');d.className='w';
+   d.innerHTML='<span class="t">'+w[0]+'</span><span class="num">'+w[1].toLocaleString('it-IT')+'</span>';ph.appendChild(d);});
+ const rows=[["abaco",1],["abate",2],["con",62367]];const q=5;
+ const tb=document.getElementById('naiveT');
+ const trs=rows.map(r=>{const tr=document.createElement('tr');
+   tr.innerHTML='<td>'+r[0]+'</td><td>'+r[1].toLocaleString('it-IT')+'</td><td><b></b></td>';tb.appendChild(tr);return tr;});
+ const sl=document.getElementById('nw');
+ function upd(){const w=+sl.value;document.getElementById('nwv').textContent=w.toFixed(2);
+   trs.forEach((tr,i)=>{tr.querySelector('b').textContent=(w*rows[i][1]+q).toLocaleString('it-IT',{maximumFractionDigits:1});});}
+ sl.addEventListener('input',upd);upd();
+})();
+
+/* ================= 01b ONE-HOT × W ================= */
+(function(){const {c,fit,h}=C('cOneHot');
+ const words=['abaco','abate','albero','con','contò','gatto','pesca','re'];
+ const d=6;let sel=4; // "contò"
+ // valori pseudo-casuali stabili per W
+ const W=[];for(let r=0;r<d;r++){W.push([]);for(let cc=0;cc<words.length;cc++){
+   W[r].push(Math.sin(r*3.7+cc*12.9)*0.9);}}
+ const btnBox=document.getElementById('ohBtns');
+ words.forEach((w,i)=>{const b=document.createElement('button');b.className='wbtn'+(i===sel?' on':'');b.textContent=w;
+   b.addEventListener('click',()=>{sel=i;[...btnBox.children].forEach((x,j)=>x.classList.toggle('on',j===sel));draw();});
+   btnBox.appendChild(b);});
+ function cellCol(v,hot){const a=Math.min(1,Math.abs(v));
+   if(hot)return v>=0?'rgba(29,158,117,'+(0.25+a*0.6)+')':'rgba(21,122,90,'+(0.25+a*0.6)+')';
+   return v>=0?'rgba(95,94,90,'+(0.06+a*0.18)+')':'rgba(95,94,90,'+(0.06+a*0.18)+')';}
+ function draw(){const x=fit();const cw=c.clientWidth,ch=h;x.clearRect(0,0,cw,ch);
+  const n=words.length;
+  const cell=Math.min(34,Math.max(16,(cw-210)/n));
+  const gx=60,gy=70;const gw=n*cell,gh=d*cell;
+  x.fillStyle=CO.ink2;x.font='italic 12px '+sans();x.textAlign='left';
+  x.fillText('x = one-hot di «'+words[sel]+'»',gx,14);
+  // vettore one-hot in alto
+  x.font='700 11px '+mono();x.textAlign='center';
+  for(let j=0;j<n;j++){const px=gx+j*cell;
+    x.fillStyle=j===sel?CO.accent:CO.card2;x.strokeStyle=j===sel?CO.accent2:CO.lineS;x.lineWidth=1;
+    roundRect(x,px+2,26,cell-4,20,4);x.fill();x.stroke();
+    x.fillStyle=j===sel?'#fff':CO.mut;x.fillText(j===sel?'1':'0',px+cell/2,40);}
+  // frecce dal one-hot alla colonna
+  x.strokeStyle=CO.accent;x.lineWidth=1.6;x.setLineDash([3,3]);
+  x.beginPath();x.moveTo(gx+sel*cell+cell/2,48);x.lineTo(gx+sel*cell+cell/2,gy-4);x.stroke();x.setLineDash([]);
+  // matrice W
+  for(let r=0;r<d;r++)for(let j=0;j<n;j++){
+    const px=gx+j*cell,py=gy+r*cell;
+    x.fillStyle=cellCol(W[r][j],j===sel);
+    roundRect(x,px+2,py+2,cell-4,cell-4,4);x.fill();
+    if(j===sel){x.strokeStyle=CO.accent2;x.lineWidth=1;x.stroke();}}
+  // cornice colonna selezionata
+  x.strokeStyle=CO.accent;x.lineWidth=2.2;roundRect(x,gx+sel*cell,gy-2,cell,gh+4,6);x.stroke();
+  x.fillStyle=CO.ink2;x.font='italic 12px '+sans();x.textAlign='center';
+  x.fillText('W',gx-22,gy+gh/2+4);
+  // etichette parole sotto le colonne
+  x.save();x.font='10.5px '+mono();x.fillStyle=CO.mut;
+  for(let j=0;j<n;j++){x.save();x.translate(gx+j*cell+cell/2,gy+gh+10);x.rotate(0.6);x.textAlign='left';
+    x.fillStyle=j===sel?CO.accent2:CO.mut;x.fillText(words[j],0,0);x.restore();}
+  x.restore();
+  // = risultato: la colonna estratta
+  const rx=gx+gw+56;
+  x.fillStyle=CO.ink;x.font='700 18px '+mono();x.textAlign='center';x.fillText('=',rx-28,gy+gh/2+6);
+  for(let r=0;r<d;r++){const py=gy+r*cell;
+    x.fillStyle=cellCol(W[r][sel],true);roundRect(x,rx,py+2,cell-4,cell-4,4);x.fill();
+    x.strokeStyle=CO.accent2;x.lineWidth=1;x.stroke();
+    x.fillStyle='#0d3d2e';x.font='700 9.5px '+mono();
+    x.fillText(W[r][sel].toFixed(1),rx+(cell-4)/2,py+cell/2+3);}
+  x.fillStyle=CO.accent2;x.font='italic 12px '+sans();
+  x.fillText('embedding',rx+(cell-4)/2,gy+gh+22);
+  x.fillText('di «'+words[sel]+'»',rx+(cell-4)/2,gy+gh+37);
+  document.getElementById('ohCol').textContent=(sel+1);
+ }
+ onResize(draw);requestAnimationFrame(draw);
+})();
+
+/* ================= 02a CLUSTER 2D ================= */
+(function(){const {c,fit,h}=C('cClust');
+ const groups=[
+  {name:'animali',col:CO.accent,soft:'rgba(29,158,117,.10)',cx:0.24,cy:0.34,
+   words:[['gatto',-0.06,-0.07],['cane',0.05,-0.02],['cavallo',-0.02,0.08],['delfino',0.09,0.06]]},
+  {name:'paesi',col:CO.violet,soft:'rgba(67,56,202,.09)',cx:0.72,cy:0.28,
+   words:[['Italia',-0.05,-0.05],['Francia',0.07,-0.03],['Germania',0.02,0.08],['Giappone',-0.08,0.05]]},
+  {name:'mezzi di trasporto',col:CO.amber,soft:'rgba(180,83,9,.09)',cx:0.48,cy:0.74,
+   words:[['treno',-0.07,-0.04],['auto',0.06,-0.06],['bicicletta',0.08,0.05],['aereo',-0.03,0.07]]}];
+ let hov=null;
+ function pts(cw){const out=[];groups.forEach(g=>g.words.forEach(w=>{
+   out.push({t:w[0],g,x:(g.cx+w[1])*cw,y:(g.cy+w[2])*h});}));return out;}
+ function draw(){const x=fit();const cw=c.clientWidth;x.clearRect(0,0,cw,h);
+  // assi leggeri
+  x.strokeStyle=CO.line;x.lineWidth=1;
+  x.beginPath();x.moveTo(30,h-24);x.lineTo(cw-14,h-24);x.moveTo(30,h-24);x.lineTo(30,14);x.stroke();
+  x.fillStyle=CO.mut;x.font='10.5px '+mono();x.textAlign='left';
+  x.fillText('proiezione 2D dello spazio di embedding',38,h-9);
+  // zone
+  groups.forEach(g=>{x.fillStyle=g.soft;
+    x.beginPath();x.ellipse(g.cx*cw,g.cy*h,cw*0.135,h*0.20,0,0,7);x.fill();
+    x.fillStyle=g.col;x.font='italic 11.5px '+sans();x.textAlign='center';
+    x.fillText(g.name,g.cx*cw,g.cy*h-h*0.20-6);});
+  // punti
+  pts(cw).forEach(p=>{const on=hov===p.t;
+    x.fillStyle=p.g.col;x.beginPath();x.arc(p.x,p.y,on?6:4.5,0,7);x.fill();
+    if(on){x.strokeStyle=p.g.col;x.lineWidth=1.5;x.beginPath();x.arc(p.x,p.y,10,0,7);x.stroke();}
+    x.fillStyle=on?CO.ink:CO.ink2;x.font=(on?'700 ':'')+'12px '+mono();x.textAlign='center';
+    x.fillText(p.t,p.x,p.y-10);});
+ }
+ c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();
+   const mx=e.clientX-r.left,my=(e.clientY-r.top)*(h/r.height);
+   const cw=c.clientWidth;let best=null,bd=28;
+   pts(cw).forEach(p=>{const d2=Math.hypot(p.x-mx*(cw/r.width),p.y-my);if(d2<bd){bd=d2;best=p;}});
+   const nh=best?best.t:null;
+   if(nh!==hov){hov=nh;draw();
+     document.getElementById('clustRead').innerHTML=best?
+      ('«<b>'+best.t+'</b>» abita la zona <b>'+best.g.name+'</b> — vicino agli altri vettori che condividono parte del suo significato'):
+      'passa il mouse sulle parole';}});
+ c.addEventListener('mouseleave',()=>{hov=null;draw();});
+ onResize(draw);requestAnimationFrame(draw);
+})();
+
+/* ================= 02b ANALOGIE VETTORIALI ================= */
+(function(){const {c,fit,h}=C('cAna');
+ let mode='gen',t=0,anim=null,done=false;
+ const scenes={
+  gen:{pts:[['uomo',0.22,0.72],['donna',0.52,0.62],['re',0.34,0.30],['regina',0.64,0.20]],
+    from:'re',diff:['uomo','donna'],target:'regina',
+    axes:[{a:'uomo',b:'donna',label:'direzione del genere',col:CO.accent},
+          {a:'uomo',b:'re',label:'direzione della regalità',col:CO.violet}],
+    read:'re + (donna − uomo) = <b>regina</b> — la stessa direzione sposta qualsiasi concetto lungo lo spettro del genere'},
+  cap:{pts:[['Italia',0.20,0.66],['Roma',0.38,0.30],['Francia',0.50,0.72],['Parigi',0.68,0.36],['Germania',0.74,0.62]],
+    from:'Germania',diff:['Italia','Roma'],target:'Berlino',targetPos:[0.92,0.26],
+    axes:[{a:'Italia',b:'Roma',label:'direzione stato → capitale',col:CO.accent},
+          {a:'Francia',b:'Parigi',label:'',col:CO.accent}],
+    read:'Germania + (Roma − Italia) = <b>Berlino</b> — la direzione stato→capitale è la stessa per tutti gli stati'}};
+ function P(s,name){const p=s.pts.find(q=>q[0]===name);return p?[p[1],p[2]]:s.targetPos;}
+ function draw(){const x=fit();const cw=c.clientWidth;x.clearRect(0,0,cw,h);
+  const s=scenes[mode];
+  function X(u){return 40+u*(cw-80);}function Y(u){return 20+u*(h-60);}
+  x.strokeStyle=CO.line;x.lineWidth=1;x.beginPath();x.moveTo(30,h-24);x.lineTo(cw-14,h-24);x.moveTo(30,h-24);x.lineTo(30,14);x.stroke();
+  // frecce-direzione di riferimento
+  s.axes.forEach(ax=>{const a=P(s,ax.a),b=P(s,ax.b);
+    x.strokeStyle=ax.col;x.lineWidth=2;x.setLineDash([5,4]);
+    x.beginPath();x.moveTo(X(a[0]),Y(a[1]));x.lineTo(X(b[0]),Y(b[1]));x.stroke();x.setLineDash([]);
+    arrowHead(x,X(a[0]),Y(a[1]),X(b[0]),Y(b[1]),ax.col);
+    if(ax.label){x.fillStyle=ax.col;x.font='italic 11px '+sans();x.textAlign='center';
+      x.fillText(ax.label,(X(a[0])+X(b[0]))/2,(Y(a[1])+Y(b[1]))/2-8);}});
+  // animazione: trasla il vettore differenza sul punto di partenza
+  const a=P(s,s.diff[0]),b=P(s,s.diff[1]),f=P(s,s.from);
+  const dx=b[0]-a[0],dy=b[1]-a[1];
+  if(t>0){const tt=Math.min(1,t);
+    x.strokeStyle=CO.amber;x.lineWidth=2.6;
+    x.beginPath();x.moveTo(X(f[0]),Y(f[1]));x.lineTo(X(f[0]+dx*tt),Y(f[1]+dy*tt));x.stroke();
+    arrowHead(x,X(f[0]),Y(f[1]),X(f[0]+dx*tt),Y(f[1]+dy*tt),CO.amber,11);}
+  // punti
+  s.pts.forEach(p=>{x.fillStyle=CO.ink;x.beginPath();x.arc(X(p[1]),Y(p[2]),5,0,7);x.fill();
+    x.fillStyle=CO.ink;x.font='700 12.5px '+mono();x.textAlign='center';x.fillText(p[0],X(p[1]),Y(p[2])-11);});
+  // punto d'arrivo
+  const gp=s.targetPos||P(s,s.target);
+  if(done){x.fillStyle=CO.accent;x.beginPath();x.arc(X(f[0]+dx),Y(f[1]+dy),7,0,7);x.fill();
+    x.strokeStyle=CO.accent;x.lineWidth=1.6;x.beginPath();x.arc(X(f[0]+dx),Y(f[1]+dy),12,0,7);x.stroke();
+    x.fillStyle=CO.accent2;x.font='700 13px '+mono();x.textAlign='center';
+    x.fillText('≈ '+s.target,X(f[0]+dx),Y(f[1]+dy)+26);}
+  else if(s.targetPos){/* target non ancora rivelato */}
+ }
+ function play(){if(anim)cancelAnimationFrame(anim);t=0;done=false;
+   function stepA(){t+=0.03;if(t>=1){t=1;done=true;draw();
+     document.getElementById('anaRead').innerHTML=scenes[mode].read;return;}
+     draw();anim=requestAnimationFrame(stepA);}
+   stepA();}
+ function reset(){if(anim)cancelAnimationFrame(anim);t=0;done=false;draw();
+   document.getElementById('anaRead').innerHTML=(mode==='gen'?'re + (donna − uomo) = ?':'Germania + (Roma − Italia) = ?');}
+ document.querySelectorAll('#anaTog button').forEach(btn=>btn.addEventListener('click',()=>{
+   mode=btn.dataset.m;document.querySelectorAll('#anaTog button').forEach(b=>b.classList.toggle('on',b===btn));reset();}));
+ document.getElementById('anaBtn').addEventListener('click',play);
+ document.getElementById('anaReset').addEventListener('click',reset);
+ onResize(()=>draw());requestAnimationFrame(()=>reset());
+})();
+
+/* ================= 02c DIREZIONI QUASI INDIPENDENTI ================= */
+(function(){const {c,fit,h}=C('cDirs');
+ const sl=document.getElementById('dirN');
+ function draw(){const x=fit();const cw=c.clientWidth;x.clearRect(0,0,cw,h);
+  const n=+sl.value;const cx=cw/2,cy=h-30,R=Math.min(cw*0.4,h-52);
+  x.strokeStyle=CO.line;x.beginPath();x.moveTo(14,cy);x.lineTo(cw-14,cy);x.stroke();
+  const ang=Math.PI/n;
+  for(let i=0;i<n;i++){const a=Math.PI-(i+0.5)*ang;
+   const ex=cx+R*Math.cos(a),ey=cy-R*Math.sin(a);
+   const deg=ang*180/Math.PI;
+   const col=deg>=88?CO.accent:(deg>=45?CO.amber:'#c0392b');
+   x.strokeStyle=col;x.lineWidth=2.4;x.beginPath();x.moveTo(cx,cy);x.lineTo(ex,ey);x.stroke();
+   arrowHead(x,cx,cy,ex,ey,col);}
+  x.fillStyle=CO.mut;x.font='10.5px '+mono();x.textAlign='center';
+  x.fillText('concetti come direzioni di un piano (2D)',cx,h-8);
+  const deg=Math.round(ang*180/Math.PI);
+  document.getElementById('dirNv').textContent=n;
+  document.getElementById('dirAng').textContent=deg+'°';
+  const it=document.getElementById('dirInt');
+  it.textContent=deg>=88?'nulla — genuinamente indipendenti':(deg>=45?'moderata':'forte — le direzioni si disturbano');
+  it.style.color=deg>=88?CO.accent2:(deg>=45?CO.amber:'#c0392b');
+ }
+ sl.addEventListener('input',draw);
+ onResize(draw);requestAnimationFrame(draw);
+})();
+
+/* ================= 03 TOKENIZER ================= */
+(function(){
+ const vocab={
+  'respirare':['respir','are'],'respirazione':['respir','azione'],
+  'mangiare':['mangi','are'],'mangiavano':['mangi','avano'],
+  'pescare':['pesc','are'],'pescatore':['pesc','atore'],
+  'cantare':['cant','are'],'cantavano':['cant','avano']};
+ const tokCols={};const palette=[
+  ['rgba(29,158,117,.16)','#12664b','rgba(29,158,117,.5)'],
+  ['rgba(67,56,202,.12)','#37308f','rgba(67,56,202,.4)'],
+  ['rgba(180,83,9,.13)','#8a4207','rgba(180,83,9,.45)'],
+  ['rgba(47,126,201,.13)','#1f5e99','rgba(47,126,201,.45)'],
+  ['rgba(158,29,113,.10)','#7d1e5c','rgba(158,29,113,.4)'],
+  ['rgba(90,120,20,.13)','#4a5e10','rgba(90,120,20,.45)'],
+  ['rgba(20,120,130,.13)','#0e5e66','rgba(20,120,130,.45)'],
+  ['rgba(120,90,60,.15)','#5e4630','rgba(120,90,60,.45)']];
+ let pi=0;function colOf(tok){if(!tokCols[tok]){tokCols[tok]=palette[pi%palette.length];pi++;}return tokCols[tok];}
+ const chosen=[];
+ const btnBox=document.getElementById('tkBtns');
+ const out=document.getElementById('tkOut');
+ Object.keys(vocab).forEach(w=>{const b=document.createElement('button');b.className='wbtn';b.textContent=w;
+   b.addEventListener('click',()=>{
+     const i=chosen.indexOf(w);
+     if(i>=0){chosen.splice(i,1);b.classList.remove('on');}else{chosen.push(w);b.classList.add('on');}
+     render();});
+   btnBox.appendChild(b);});
+ function render(){out.innerHTML='';
+   if(!chosen.length){out.innerHTML='<span class="mut" style="font-size:13.5px">scegli una o più parole…</span>';
+     document.getElementById('tkRead').innerHTML='';return;}
+   const counts={};
+   chosen.forEach((w,wi)=>{
+     vocab[w].forEach(tok=>{counts[tok]=(counts[tok]||0)+1;
+       const co=colOf(tok);const s=document.createElement('span');s.className='tok';
+       s.style.background=co[0];s.style.color=co[1];s.style.borderColor=co[2];
+       s.textContent=tok;out.appendChild(s);});
+     if(wi<chosen.length-1){const sep=document.createElement('span');sep.className='mut';sep.textContent='·';out.appendChild(sep);}});
+   const reused=Object.keys(counts).filter(t=>counts[t]>1);
+   const nTok=chosen.reduce((s,w)=>s+vocab[w].length,0);
+   document.getElementById('tkRead').innerHTML='token totali <b>'+nTok+'</b> · embedding distinti <b>'+Object.keys(counts).length+'</b>'+
+     (reused.length?(' · riutilizzati: '+reused.map(t=>'<b>'+t+'</b>×'+counts[t]).join(', ')):'');
+ }
+})();
+
+/* ================= 04 DORSALE ================= */
+(function(){const {c,fit,h}=C('cDors');
+ const NB=4;let step=0,timer=null;
+ const meanings=[
+  '«pesca» — il significato della parola stessa, ambiguo',
+  'arricchito: qualcosa che si prende da un cesto',
+  'più contesto: un frutto, non l’attività',
+  'significati più complessi, lontani dal token originale',
+  'uno "spazio di lavoro per il modello"'];
+ function draw(){const x=fit();const cw=c.clientWidth;x.clearRect(0,0,cw,h);
+  const y0=h-70;const x0=60,x1=cw-40;
+  // dorsale
+  x.strokeStyle=CO.lineS;x.lineWidth=8;x.lineCap='round';
+  x.beginPath();x.moveTo(x0,y0);x.lineTo(x1,y0);x.stroke();
+  // porzione percorsa
+  const prog=step/NB;
+  x.strokeStyle=CO.accent;x.beginPath();x.moveTo(x0,y0);x.lineTo(x0+(x1-x0)*prog,y0);x.stroke();
+  x.lineCap='butt';
+  arrowHead(x,x0,y0,x1+10,y0,step>=NB?CO.accent:CO.lineS,13);
+  x.fillStyle=CO.ink2;x.font='italic 12px '+sans();x.textAlign='left';x.fillText('dorsale',x0-4,y0+28);
+  // embedding in ingresso
+  x.fillStyle=CO.accentSoft;x.strokeStyle=CO.accent;x.lineWidth=2;
+  const ex=x0+(x1-x0)*prog;
+  roundRect(x,ex-16,y0-16,32,32,8);x.fill();x.stroke();
+  x.fillStyle=CO.accent2;x.font='700 11px '+mono();x.textAlign='center';x.fillText('emb',ex,y0+4);
+  // blocchi
+  const bw=Math.min(120,(x1-x0)/NB-24);const by=34;const bh=70;
+  for(let i=0;i<NB;i++){
+   const bx=x0+(x1-x0)*(i+0.5)/NB-bw/2;
+   const active=(step===i+1)||(timer&&step===i);
+   const donePast=step>i;
+   x.fillStyle=donePast?CO.accentSoft:'#fff';
+   x.strokeStyle=donePast?CO.accent:CO.lineS;x.lineWidth=donePast?2:1.4;
+   roundRect(x,bx,by,bw,bh,10);x.fill();x.stroke();
+   x.fillStyle=donePast?CO.accent2:CO.ink2;x.font='700 12px '+sans();x.textAlign='center';
+   x.fillText('blocco '+(i+1),bx+bw/2,by+26);
+   x.fillStyle=CO.mut;x.font='10.5px '+sans();
+   x.fillText('legge · trasforma',bx+bw/2,by+43);
+   x.fillText('somma',bx+bw/2,by+57);
+   // frecce leggi/somma
+   const cx1=bx+bw*0.30,cx2=bx+bw*0.70;
+   x.strokeStyle=donePast?CO.accent:CO.line;x.lineWidth=1.8;
+   x.beginPath();x.moveTo(cx1,y0-10);x.lineTo(cx1,by+bh+8);x.stroke();
+   arrowHead(x,cx1,y0-10,cx1,by+bh+6,donePast?CO.accent:CO.line,8);
+   x.beginPath();x.moveTo(cx2,by+bh+6);x.lineTo(cx2,y0-12);x.stroke();
+   arrowHead(x,cx2,by+bh+8,cx2,y0-10,donePast?CO.accent:CO.line,8);
+   if(donePast){x.fillStyle=CO.accent2;x.font='700 13px '+mono();x.fillText('+',cx2+10,y0-18);}
+  }
+  x.fillStyle=CO.mut;x.font='10.5px '+mono();x.textAlign='left';
+  x.fillText('ogni blocco: legge dalla dorsale → trasforma → somma il risultato',x0-4,16);
+ }
+ function upd(){document.getElementById('dorsRead').innerHTML=
+   (step===0?'l’embedding di «pesca» entra nella dorsale':'dopo il blocco '+step+': <b>'+meanings[step]+'</b>');draw();}
+ function go(){if(step>=NB)return false;step++;upd();return step<NB;}
+ document.getElementById('dorsNext').addEventListener('click',()=>{go();});
+ const autoB=document.getElementById('dorsAuto');
+ autoB.addEventListener('click',()=>{
+   if(timer){clearInterval(timer);timer=null;autoB.textContent='▶ Auto';return;}
+   autoB.textContent='❚❚ Pausa';
+   timer=setInterval(()=>{if(!go()){clearInterval(timer);timer=null;autoB.textContent='▶ Auto';}},1100);});
+ document.getElementById('dorsReset').addEventListener('click',()=>{
+   if(timer){clearInterval(timer);timer=null;autoB.textContent='▶ Auto';}step=0;upd();});
+ onResize(draw);requestAnimationFrame(upd);
+})();
+
+/* ================= 05 ATTENTION ================= */
+(function(){
+ const toks=['Andrea','prese','la','pesca','dal','cesto','e','la','mangiò'];
+ const data={
+  3:{att:{3:.30,8:.28,5:.20,1:.12,0:.04,2:.02,4:.02,6:.01,7:.01},
+     q:'«ho bisogno di sapere se sono un frutto o l’attività della pesca»',
+     k:'«riguardo un frutto o forse un’attività»',
+     v:'informazioni sul frutto pesca, e sull’attività',
+     res:'la somma pesata dei value porta l’informazione «<b>sono il frutto commestibile pesca</b>» — e perde il significato di pesca come attività'},
+  8:{att:{8:.26,3:.30,0:.22,1:.14,5:.05,2:.01,4:.01,6:.005,7:.005},
+     q:'«chi mangia, e che cosa viene mangiato?»',
+     k:'«riguardo cibo e cose commestibili»',
+     v:'il significato di mangiare cose commestibili',
+     res:'«mangiò» raccoglie soggetto e oggetto: <b>Andrea</b> mangia <b>la pesca</b>'},
+  7:{att:{7:.15,3:.55,8:.20,2:.05,0:.02,1:.01,4:.01,5:.005,6:.005},
+     q:'«a quale nome mi riferisco?»',
+     k:'«riguardo un articolo/pronome»',
+     v:'la funzione grammaticale di «la»',
+     res:'il secondo «la» punta quasi tutta la sua attenzione su «<b>pesca</b>»: è lei che viene mangiata'}};
+ const selectable=[3,8,7];let sel=3;
+ const box=document.getElementById('attToks');
+ const {c,fit,h}=C('cAtt');
+ const btns=toks.map((t,i)=>{const b=document.createElement('button');b.textContent=t;
+   if(selectable.includes(i)){b.classList.add('sel0');
+     b.addEventListener('click',()=>{sel=i;refresh();});}
+   else b.style.cursor='default';
+   box.appendChild(b);return b;});
+ function centers(){const r=box.getBoundingClientRect();
+   return btns.map(b=>{const br=b.getBoundingClientRect();
+     return {x:br.left-r.left+br.width/2,top:br.top-r.top};});}
+ function draw(){const x=fit();const cw=c.clientWidth;x.clearRect(0,0,cw,h);
+  const cs=centers();const d=data[sel];const sx=cs[sel].x;
+  Object.keys(d.att).forEach(k=>{const i=+k;if(i===sel)return;
+   const w=d.att[k];if(w<0.02)return;
+   const tx=cs[i].x;const midY=h-10-Math.min(h-24,Math.abs(tx-sx)*0.32+26);
+   x.strokeStyle='rgba(29,158,117,'+Math.min(0.9,0.15+w*2.2)+')';
+   x.lineWidth=1+w*9;x.lineCap='round';
+   x.beginPath();x.moveTo(sx,h-6);x.quadraticCurveTo((sx+tx)/2,midY,tx,h-6);x.stroke();
+   // peso
+   x.fillStyle=CO.accent2;x.font='700 10px '+mono();x.textAlign='center';
+   x.fillText(Math.round(w*100)+'%',(sx+tx)/2,midY+((sx+tx)/2===sx?0:14));});
+  x.lineCap='butt';
+ }
+ function refresh(){
+  btns.forEach((b,i)=>{b.classList.toggle('sel',i===sel);
+    b.classList.toggle('src',i!==sel&&selectable.includes(i));});
+  const d=data[sel];
+  document.getElementById('qTxt').textContent=d.q;
+  document.getElementById('kTxt').textContent=d.k;
+  document.getElementById('vTxt').textContent=d.v;
+  document.getElementById('attRead').innerHTML='attention di «'+toks[sel]+'» → '+d.res;
+  draw();}
+ onResize(draw);requestAnimationFrame(refresh);
+})();
+
+/* ================= 06a PROBABILITÀ & ESTRAZIONE ================= */
+(function(){const {c,fit,h}=C('cProb');
+ const vocab=[['vita',0.78],['via',0.07],['morte',0.05],['gente',0.04],['notte',0.03],['⟨altro⟩',0.03]];
+ const counts=new Array(vocab.length).fill(0);
+ let n=0,flash=-1,flashT=null;
+ function draw(){const x=fit();const cw=c.clientWidth;x.clearRect(0,0,cw,h);
+  const pad=30,bw=Math.min(90,(cw-2*pad)/vocab.length-18);
+  const base=h-52;
+  vocab.forEach((v,i)=>{
+   const bx=pad+ (cw-2*pad)*(i+0.5)/vocab.length - bw/2;
+   const bh=v[1]*(base-40);
+   const hot=i===flash;
+   x.fillStyle=hot?CO.accent:'rgba(29,158,117,'+(0.2+v[1]*0.7)+')';
+   roundRect(x,bx,base-bh,bw,bh,5);x.fill();
+   if(hot){x.strokeStyle=CO.accent2;x.lineWidth=2;x.stroke();}
+   x.fillStyle=CO.ink2;x.font='700 11.5px '+mono();x.textAlign='center';
+   x.fillText(Math.round(v[1]*100)+'%',bx+bw/2,base-bh-8);
+   x.fillStyle=hot?CO.accent2:CO.ink;x.font=(hot?'700 ':'')+'12.5px '+mono();
+   x.fillText(v[0],bx+bw/2,base+18);
+   if(counts[i]>0){x.fillStyle=CO.mut;x.font='10.5px '+mono();
+     x.fillText('estratto ×'+counts[i],bx+bw/2,base+34);}});
+  x.fillStyle=CO.mut;x.font='10.5px '+mono();x.textAlign='left';
+  x.fillText('similarità con gli embedding del vocabolario → probabilità di estrazione',pad,16);
+ }
+ function sample(){let r=Math.random(),i=0;
+  for(;i<vocab.length;i++){r-=vocab[i][1];if(r<=0)break;}
+  if(i>=vocab.length)i=vocab.length-1;
+  counts[i]++;n++;flash=i;
+  document.getElementById('probN').textContent=n;
+  document.getElementById('probLast').textContent=vocab[i][0];
+  draw();
+  if(flashT)clearTimeout(flashT);flashT=setTimeout(()=>{flash=-1;draw();},450);}
+ document.getElementById('probBtn').addEventListener('click',sample);
+ document.getElementById('probMany').addEventListener('click',()=>{let k=0;
+   const iv=setInterval(()=>{sample();if(++k>=20)clearInterval(iv);},70);});
+ document.getElementById('probReset').addEventListener('click',()=>{
+   counts.fill(0);n=0;flash=-1;
+   document.getElementById('probN').textContent='0';
+   document.getElementById('probLast').textContent='—';draw();});
+ onResize(draw);requestAnimationFrame(draw);
+})();
+
+/* ================= 06b CICLO DI GENERAZIONE ================= */
+(function(){
+ const base=['Nel','mezzo','del','cammin','di','nostra'];
+ const gen=['vita',',','mi','ritrovai','per','una','selva','oscura','⟨fine testo⟩'];
+ let i=0,timer=null;
+ const box=document.getElementById('genBox');
+ function render(){box.innerHTML='';
+  base.forEach(t=>{const s=document.createElement('span');s.textContent=t+' ';box.appendChild(s);});
+  for(let k=0;k<i;k++){const s=document.createElement('span');
+    s.className='gt'+(gen[k]==='⟨fine testo⟩'?' end':'');s.textContent=gen[k];box.appendChild(s);
+    box.appendChild(document.createTextNode(' '));}
+  document.getElementById('genCount').textContent=base.length+i;}
+ let busy=false;
+ function go(){if(i>=gen.length||busy)return false;
+  busy=true;box.classList.add('reading');
+  setTimeout(()=>{box.classList.remove('reading');if(i<gen.length){i++;render();}busy=false;},260);
+  return i<gen.length-1;}
+ document.getElementById('genNext').addEventListener('click',()=>{go();});
+ const autoB=document.getElementById('genAuto');
+ autoB.addEventListener('click',()=>{
+  if(timer){clearInterval(timer);timer=null;autoB.textContent='▶ Auto';return;}
+  autoB.textContent='❚❚ Pausa';
+  timer=setInterval(()=>{if(!go()){clearInterval(timer);timer=null;autoB.textContent='▶ Auto';}},900);});
+ document.getElementById('genReset').addEventListener('click',()=>{
+  if(timer){clearInterval(timer);timer=null;autoB.textContent='▶ Auto';}i=0;render();});
+ render();
+})();
+</script>
+</body>
+</html>

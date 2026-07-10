@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Agenti & Context Engineering — supporto alla lezione</title>
+<style>
+  :root{
+    --paper:#f1efe8; --paper-2:#e9e6dd;
+    --card:#ffffff; --card-2:#faf8f6;
+    --ink:#1a1a1a; --ink-2:#5f5e5a; --muted:#8a887f;
+    --line:#d9d6cc; --line-strong:#b4b2a9;
+    --accent:#c2410c; --accent-2:#D85A30; --accent-soft:#fdeee4; --accent-soft2:#fbe3d2;
+    --blue:#2f7ec9; --blue-soft:#e7f0fa;
+    --green:#1D9E75; --green-soft:#e4f4ee;
+    --purple:#7F77DD; --purple-soft:#eceafb;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(var(--paper-2) 0.5px, transparent 0.5px);background-size:22px 22px;}
+
+  #prog{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:60;transition:width .1s linear}
+  #dots{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:55;display:flex;flex-direction:column;gap:9px}
+  #dots a{width:9px;height:9px;border-radius:50%;background:var(--line-strong);opacity:.55;transition:all .2s;position:relative}
+  #dots a.on{background:var(--accent);opacity:1;transform:scale(1.35)}
+  #dots a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:11px;
+    color:var(--ink-2);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:2px 7px;opacity:0;pointer-events:none;transition:opacity .15s}
+  #dots a:hover span{opacity:1}
+  @media(max-width:900px){#dots{display:none}}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:0 28px}
+  section{padding:58px 0;border-top:1px solid var(--line)}
+  section:first-of-type{border-top:0}
+
+  .kicker{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+    display:flex;align-items:center;gap:10px;margin:0 0 14px}
+  .kicker .n{font-family:var(--mono);background:var(--accent);color:#fff;border-radius:5px;padding:1px 7px;font-size:11px;letter-spacing:.05em}
+  .kicker .act{color:var(--muted);font-weight:700}
+  h1{font-size:clamp(40px,8vw,86px);line-height:.98;letter-spacing:-.02em;font-weight:850;margin:0 0 18px}
+  h2{font-size:clamp(27px,4.4vw,46px);line-height:1.03;letter-spacing:-.015em;font-weight:850;margin:0 0 16px;max-width:19ch}
+  .lead{font-size:clamp(17px,2vw,21px);color:var(--ink-2);max-width:62ch;margin:0 0 8px}
+  p{max-width:64ch}
+  .em{color:var(--accent);font-weight:600}
+
+  .hero{padding-top:80px}
+  .hero .tag{font-family:var(--mono);font-size:12px;color:var(--ink-2);border:1px solid var(--line-strong);
+    border-radius:999px;padding:5px 13px;display:inline-flex;gap:8px;align-items:center;margin-bottom:24px;background:var(--card-2)}
+  .hero .tag b{color:var(--accent)}
+  .hero h1 span{color:var(--accent)}
+  .hero .sub{font-size:clamp(18px,2.4vw,26px);font-weight:600;color:var(--ink);max-width:28ch;margin:0 0 20px}
+  .scrollcue{margin-top:36px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+  .scrollcue .a{animation:bob 1.6s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+
+  .pillars{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:30px;max-width:760px}
+  @media(max-width:720px){.pillars{grid-template-columns:1fr}}
+  .pill{border:1px solid var(--line);border-radius:14px;padding:16px 18px;background:var(--card)}
+  .pill .pk{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+  .pill h4{margin:0 0 4px;font-size:17px}
+  .pill p{font-size:13.5px;color:var(--ink-2);margin:0}
+
+  .callout{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;
+    padding:16px 20px;margin:22px 0;font-size:17px;color:#5a3520;max-width:66ch}
+  .callout b{color:var(--accent)}
+  .quote{font-family:var(--serif);font-size:clamp(18px,2.2vw,24px);line-height:1.32;font-weight:600;color:var(--ink);
+    max-width:40ch;margin:26px 0;padding-left:24px;border-left:4px solid var(--accent)}
+  .quote code{font-family:var(--mono);font-size:.82em;background:var(--paper-2);padding:1px 5px;border-radius:4px}
+  .quote cite{display:block;font-family:var(--sans);font-size:13px;font-weight:600;font-style:normal;color:var(--muted);margin-top:10px;letter-spacing:.02em}
+  .pull{font-family:var(--serif);font-size:clamp(24px,3.2vw,36px);line-height:1.18;font-weight:600;color:var(--ink);max-width:22ch;margin:30px 0;padding-left:26px;border-left:4px solid var(--accent)}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:26px;
+    box-shadow:0 1px 0 var(--line),0 18px 40px -32px rgba(0,0,0,.35)}
+  .panel .badge{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);
+    display:inline-flex;align-items:center;gap:7px;margin-bottom:16px}
+  .panel .badge .dotp{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 1.8s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+  .ctrls{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-top:4px}
+  button.b{font-family:inherit;font-size:14px;font-weight:600;background:var(--ink);color:#fff;border:0;border-radius:9px;padding:9px 16px;cursor:pointer;transition:transform .05s,background .15s}
+  button.b:hover{background:#000}button.b:active{transform:translateY(1px)}
+  button.b.ghost{background:transparent;color:var(--ink-2);border:1px solid var(--line-strong)}
+  button.b.ghost:hover{background:var(--card-2);color:var(--ink)}
+  button.b.acc{background:var(--accent)}button.b.acc:hover{background:var(--accent-2)}
+  button.b:disabled{opacity:.4;cursor:default}
+  .hint{font-size:13px;color:var(--muted);margin-top:12px;max-width:68ch}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+
+  /* chat + TXT */
+  .chat{display:flex;flex-direction:column;gap:8px}
+  .msg{border-radius:12px;padding:9px 13px;font-size:14px;max-width:92%;border:1px solid transparent}
+  .msg .who{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.7;margin-bottom:2px}
+  .msg.sys{background:var(--purple-soft);border-color:#dcd8f6;color:#3d379a;align-self:stretch;max-width:100%}
+  .msg.usr{background:var(--blue-soft);border-color:#d3e4f5;color:#1c5a94;align-self:flex-end}
+  .msg.ast{background:var(--green-soft);border-color:#cfece0;color:#12664b;align-self:flex-start}
+  .txtbox{background:#20201e;color:#e9e6dd;border-radius:12px;padding:14px;font-family:var(--mono);font-size:12.5px;line-height:1.5;white-space:pre-wrap;overflow:auto;max-height:340px}
+  .txtbox .lb{color:#e6864f;font-weight:700}
+  .txtbox .xtag{color:#e6864f;font-weight:700}.txtbox .xph{color:#8fb8e6}
+  .counter{font-family:var(--mono);font-size:12px;color:var(--ink-2);margin-top:10px;display:flex;gap:16px;flex-wrap:wrap}
+  .counter b{color:var(--accent)}
+
+  /* token gen */
+  .tg-out{font-size:20px;line-height:1.7;min-height:64px;background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .tg-out .tok{border-radius:5px;padding:1px 3px}
+  .tg-out .tok.new{background:var(--accent);color:#fff;animation:pop .35s ease}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  .tg-cursor{display:inline-block;width:9px;height:22px;background:var(--accent);vertical-align:-4px;animation:blink 1s steps(2) infinite;border-radius:1px}
+  @keyframes blink{50%{opacity:0}}
+  .rank{margin-top:8px;display:flex;flex-direction:column;gap:7px}
+  .rrow{display:grid;grid-template-columns:88px 1fr 48px;align-items:center;gap:10px;font-size:13px}
+  .rrow .lbl{font-family:var(--mono);text-align:right;color:var(--ink-2)}
+  .rtrack{height:22px;background:var(--paper-2);border-radius:6px;position:relative;overflow:hidden}
+  .rfill{position:absolute;left:0;top:0;bottom:0;background:var(--line-strong);border-radius:6px;transition:width .4s cubic-bezier(.2,.7,.2,1)}
+  .rrow.win .rfill{background:var(--accent)}
+  .rrow.win .lbl{color:var(--accent);font-weight:700}
+  .rval{font-family:var(--mono);color:var(--ink-2);text-align:right}
+  .rrow.win .rval{color:var(--accent);font-weight:700}
+
+  /* see / not see + trio */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:720px){.cols{grid-template-columns:1fr}}
+  .col{border-radius:14px;padding:16px;border:1px solid var(--line)}
+  .col.yes{background:var(--green-soft);border-color:#cfece0}
+  .col.no{background:#f6ebe8;border-color:#ecccc2}
+  .col h4{margin:0 0 12px;font-size:15px;display:flex;align-items:center;gap:8px}
+  .col.yes h4{color:#12664b}.col.no h4{color:#a23a1e}
+  .chip{display:block;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:9px 12px;margin-bottom:8px;font-size:13.5px;transition:transform .12s;position:relative;padding-left:30px}
+  .chip:hover{transform:translateX(3px)}
+  .chip::before{content:"";position:absolute;left:11px;top:50%;transform:translateY(-50%);width:8px;height:8px;border-radius:50%}
+  .col.yes .chip::before{background:var(--green)}
+  .col.no .chip::before{background:var(--accent)}
+  .trio{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
+  @media(max-width:720px){.trio{grid-template-columns:1fr}}
+  .tcard{border:1px solid var(--line);border-radius:14px;padding:16px 18px;background:var(--card)}
+  .tcard .tx{font-size:20px;font-weight:800;color:var(--accent);line-height:1}
+  .tcard h4{margin:10px 0 5px;font-size:16px}
+  .tcard p{font-size:13.5px;color:var(--ink-2);margin:0}
+
+  /* fill meter */
+  .bignum{font-size:clamp(48px,11vw,116px);font-weight:850;letter-spacing:-.03em;line-height:.9;color:var(--accent)}
+  .bignum small{font-size:.28em;color:var(--ink-2);font-weight:700;letter-spacing:0;display:block;margin-top:6px}
+  .window{height:56px;background:var(--paper-2);border:1px solid var(--line-strong);border-radius:12px;position:relative;overflow:hidden;display:flex}
+  .wseg{height:100%;transition:width .5s cubic-bezier(.2,.7,.2,1);position:relative}
+  .wcap{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--mono);font-size:11px;color:#fff;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+  .wfree{flex:1;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .fmlegend{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+  .fmadd{font-family:inherit;font-size:13px;border:1px dashed var(--line-strong);background:var(--card-2);border-radius:9px;padding:8px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--ink-2)}
+  .fmadd:hover{border-style:solid;color:var(--ink)}
+  .fmadd .sw{width:11px;height:11px;border-radius:3px}
+  .models{margin-top:22px;display:flex;flex-direction:column;gap:12px}
+  .mrow{display:grid;grid-template-columns:150px 1fr;align-items:center;gap:12px}
+  .mname{font-size:13px;font-weight:600}.mname span{display:block;font-size:11px;color:var(--muted);font-weight:400}
+  .mbar{height:26px;background:var(--paper-2);border-radius:7px;position:relative;overflow:hidden}
+  .mbar .mf{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--accent-2),var(--accent));border-radius:7px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;color:#fff;font-family:var(--mono);font-size:11px}
+
+  /* books */
+  .bk-pick{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+  .bk-pick button{font-family:inherit;font-size:12.5px;border:1px solid var(--line-strong);background:var(--card-2);border-radius:8px;padding:7px 11px;cursor:pointer;color:var(--ink-2)}
+  .bk-pick button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .bk-meta{font-size:13px;color:var(--muted);margin:4px 0 14px;font-family:var(--mono)}
+  .bk-row{display:grid;grid-template-columns:150px 1fr;align-items:center;gap:12px;margin-bottom:12px}
+  .bk-glyphs{display:flex;align-items:center;gap:3px;flex-wrap:wrap;min-height:26px}
+  .bk-book{width:15px;height:22px;border-radius:2px 3px 3px 2px;background:var(--accent);box-shadow:inset -2px 0 0 rgba(0,0,0,.18);flex:none}
+  .bk-book.frac{opacity:.4}
+  .bk-x{font-family:var(--mono);font-weight:700;color:var(--accent);margin-left:6px;font-size:13px}
+  .bk-note{background:var(--accent-soft);border-radius:10px;padding:12px 14px;font-size:14.5px;color:#5a3520;margin-top:6px}
+
+  /* triptych generic (augmented / reusable) */
+  .tri{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:10px}
+  @media(max-width:720px){.tri{grid-template-columns:1fr}}
+  .tri .rc{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--card)}
+  .tri .rc .rh{font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
+  .tri .rc .ic{font-size:18px}
+  .tri .rc p{font-size:13.5px;color:var(--ink-2);margin:8px 0 0}
+  .tri .rc.b1{border-top:3px solid var(--blue)} .tri .rc.b2{border-top:3px solid var(--accent)} .tri .rc.b3{border-top:3px solid var(--green)}
+
+  /* tool round-trip */
+  .tu-flow{display:flex;flex-direction:column;gap:0}
+  .tu-step{opacity:.22;transition:opacity .35s;padding:5px 0}
+  .tu-step.on{opacity:1}
+  .tu-lbl{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+  .tu-arrow{text-align:center;color:var(--line-strong);font-size:16px;line-height:1;margin:3px 0}
+  .tu-bound{border:1px dashed var(--accent);background:var(--accent-soft);border-radius:12px;padding:13px 15px;color:#5a3520;font-size:14px}
+  .tu-bound b{color:var(--accent)}
+  .tu-note{font-size:12.5px;color:var(--muted);margin-top:6px}
+  .tu-note b{color:var(--accent)}
+
+  /* agent loop */
+  .al-ring{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;margin:2px 0 18px}
+  .al-ph{border:1px solid var(--line);border-radius:999px;padding:8px 15px;font-size:13px;font-weight:700;background:var(--card-2);color:var(--ink-2);display:flex;align-items:center;gap:8px;transition:all .25s}
+  .al-ph.on{border-color:var(--accent);background:var(--accent-soft);color:#5a3520;transform:translateY(-1px)}
+  .al-ph .d{width:8px;height:8px;border-radius:50%;background:var(--line-strong)}
+  .al-ph.on .d{background:var(--accent)}
+  .al-sep{color:var(--line-strong);font-size:15px}
+  .al-log{display:flex;flex-direction:column;gap:8px;margin-top:4px;min-height:60px}
+  .al-row{border-left:3px solid var(--line-strong);padding:7px 12px;font-size:14px;background:var(--card-2);border-radius:0 9px 9px 0;opacity:0;transform:translateX(-6px);transition:all .3s}
+  .al-row.on{opacity:1;transform:none}
+  .al-row.gather{border-color:var(--blue)}.al-row.act{border-color:var(--accent)}.al-row.verify{border-color:var(--green)}
+  .al-row b{color:var(--ink)}
+  .al-tag{font-family:var(--mono);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-right:8px;padding:1px 6px;border-radius:5px}
+  .al-tag.gather{background:var(--blue-soft);color:#1c5a94}.al-tag.act{background:var(--accent-soft);color:var(--accent)}.al-tag.verify{background:var(--green-soft);color:#12664b}
+  .al-done{border:1.5px solid var(--green);background:var(--green-soft);border-radius:12px;padding:12px 14px;color:#124e3c;font-size:14.5px;margin-top:12px;display:none}
+  .al-done.on{display:block}
+
+  /* families grid */
+  .fam{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:10px}
+  @media(max-width:720px){.fam{grid-template-columns:1fr}}
+  .fcard{border:1px solid var(--line);border-radius:12px;padding:13px 15px;background:var(--card)}
+  .fcard .fh{font-weight:700;font-size:14.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .fcard .fi{font-family:var(--mono);font-size:11px;background:var(--paper-2);border-radius:5px;padding:1px 6px;color:var(--accent)}
+  .fcard p{font-size:13px;color:var(--ink-2);margin:6px 0 0}
+
+  /* workflow vs agent */
+  .wf{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+  @media(max-width:720px){.wf{grid-template-columns:1fr}}
+  .wcard{border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--card)}
+  .wcard .wk{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+  .wcard h4{margin:0 0 6px;font-size:17px}
+  .wcard p{font-size:14px;color:var(--ink-2);margin:0}
+  .wf .a1 .wk{color:var(--blue)}.wf .a2 .wk{color:var(--accent)}
+  .wf .a1{border-top:3px solid var(--blue)}.wf .a2{border-top:3px solid var(--accent)}
+
+  /* desk vs cabinet */
+  .desk{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
+  @media(max-width:720px){.desk{grid-template-columns:1fr}}
+  .dcard{border:1px solid var(--line);border-radius:14px;padding:16px 18px;background:var(--card-2)}
+  .dcard h4{margin:0 0 6px;font-size:15px;display:flex;gap:8px;align-items:center}
+  .dcard p{font-size:13.5px;color:var(--ink-2);margin:0}
+  .dcard.short{border-left:3px solid var(--accent)}
+  .dcard.long{border-left:3px solid var(--blue)}
+
+  /* markdown split */
+  .md-split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:720px){.md-split{grid-template-columns:1fr}}
+  .md-src{width:100%;min-height:230px;font-family:var(--mono);font-size:13px;line-height:1.55;border:1px solid var(--line);border-radius:12px;padding:14px;background:#20201e;color:#e9e6dd;resize:vertical}
+  .md-render{border:1px solid var(--line);border-radius:12px;padding:6px 18px;background:var(--card-2);overflow:auto;min-height:230px}
+  .md-render h1{font-size:22px;margin:14px 0 8px;line-height:1.2}
+  .md-render h2{font-size:18px;margin:14px 0 6px;max-width:none}
+  .md-render h3{font-size:15px;margin:12px 0 4px;font-weight:800}
+  .md-render p{font-size:14px;margin:6px 0;max-width:none}
+  .md-render ul{margin:6px 0;padding-left:20px}.md-render li{font-size:14px;margin:2px 0}
+  .md-render code{font-family:var(--mono);background:var(--paper-2);padding:1px 5px;border-radius:4px;font-size:12.5px}
+  .md-render pre{background:#20201e;color:#e9e6dd;border-radius:8px;padding:10px 12px;overflow:auto}
+  .md-render pre code{background:none;color:inherit;padding:0}
+  .md-tokrow{display:flex;gap:22px;flex-wrap:wrap;font-family:var(--mono);font-size:12.5px;color:var(--ink-2);margin-top:12px}
+  .md-tokrow b{color:var(--accent)}
+
+  /* assembler */
+  .asm{display:grid;grid-template-columns:230px 1fr;gap:16px}
+  @media(max-width:720px){.asm{grid-template-columns:1fr}}
+  .asm-toggle{display:block;width:100%;text-align:left;font-family:inherit;font-size:13.5px;border:1px solid var(--line);background:var(--card-2);border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer;color:var(--ink-2);transition:all .12s;position:relative;padding-left:34px}
+  .asm-toggle::before{content:"+";position:absolute;left:12px;top:50%;transform:translateY(-50%);font-weight:800;color:var(--muted)}
+  .asm-toggle.on{border-color:var(--accent);background:var(--accent-soft);color:#5a3520}
+  .asm-toggle.on::before{content:"✓";color:var(--accent)}
+  .asm-toggle small{display:block;font-size:11px;color:var(--muted);font-weight:400}
+  .asm-toggle.on small{color:#9a6b4c}
+  .asm-prev{background:#20201e;color:#e9e6dd;border-radius:12px;padding:16px;font-family:var(--mono);font-size:12.5px;line-height:1.6;white-space:pre-wrap;overflow:auto;max-height:420px;min-height:200px}
+  .asm-prev .xtag{color:#e6864f;font-weight:700}
+  .asm-prev .xph{color:#8fb8e6}
+  .asm-empty{color:#6a6a64;font-style:italic}
+
+  /* progressive discovery */
+  .pd{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:720px){.pd{grid-template-columns:1fr}}
+  .pd-col h4{margin:0 0 10px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .pd-item{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-family:var(--mono);font-size:12.5px;background:var(--card-2);transition:all .35s;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .pd-item.ghost{opacity:.4}
+  .pd-item .tagx{font-family:var(--sans);font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:20px}
+  .tag-always{background:var(--purple-soft);color:#4b45b0}
+  .tag-doc{background:var(--blue-soft);color:#1c5a94}
+  .tag-skill{background:var(--green-soft);color:#12664b}
+  .pd-ctx{border:1.5px solid var(--accent);border-radius:12px;padding:12px;min-height:140px;background:var(--accent-soft)}
+  .pd-ctx .pd-item{background:#fff;border-color:#eccdbf;opacity:1}
+  .pd-tok{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:700;margin-top:8px}
+  .pd-log{font-size:13px;color:var(--ink-2);margin-top:14px;min-height:22px}
+  .pd-log b{color:var(--accent)}
+
+  /* supervisor / worker */
+  .sw-stage{display:flex;flex-direction:column;align-items:center;gap:14px}
+  .sw-node{border:1px solid var(--line);border-radius:12px;padding:12px 16px;text-align:center;background:var(--card-2);min-width:180px}
+  .sw-sup{border-color:var(--accent);background:var(--accent-soft)}
+  .sw-title{font-weight:700;font-size:14px}.sw-sub{font-size:11px;color:var(--muted);font-family:var(--mono)}
+  .sw-workers{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+  .sw-w{border:1px solid var(--line);border-radius:12px;padding:10px 12px;width:180px;background:var(--card-2)}
+  .sw-wbar{height:8px;background:var(--paper-2);border-radius:5px;overflow:hidden;margin-top:8px}
+  .sw-wfill{height:100%;width:0;background:var(--blue);border-radius:5px;transition:width .6s linear}
+  .sw-wtok{font-family:var(--mono);font-size:11px;color:var(--ink-2);margin-top:5px;display:flex;justify-content:space-between}
+  .sw-ret{color:var(--green);font-weight:700;opacity:0;transition:opacity .3s}
+  .sw-ret.on{opacity:1}
+  .sw-readout{display:flex;gap:20px;flex-wrap:wrap;font-family:var(--mono);font-size:13px;margin-top:6px}
+  .sw-readout b{font-size:18px}
+  .sw-readout .big-tot{color:var(--blue)}.sw-readout .big-sup{color:var(--accent)}
+  .levers{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+  .lever{display:flex;gap:12px;align-items:baseline;font-size:14.5px;border-bottom:1px dashed var(--line);padding-bottom:8px}
+  .lever code{font-family:var(--mono);font-size:12.5px;background:var(--paper-2);color:var(--accent);padding:1px 7px;border-radius:5px;white-space:nowrap}
+  .lever span{color:var(--ink-2)}
+
+  /* mcp */
+  .mcp-count{font-family:var(--mono);font-size:14px;margin:2px 0 10px;color:var(--ink-2)}
+  .mcp-count b{font-size:24px;color:var(--accent)}
+
+  /* takeaways */
+  .takes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px}
+  @media(max-width:720px){.takes{grid-template-columns:1fr}}
+  .take{border-radius:16px;padding:20px;color:#fff;position:relative;overflow:hidden;min-height:150px}
+  .take:nth-child(1){background:linear-gradient(150deg,#2f7ec9,#245c93)}
+  .take:nth-child(2){background:linear-gradient(150deg,var(--accent-2),var(--accent))}
+  .take:nth-child(3){background:linear-gradient(150deg,#1D9E75,#157a5a)}
+  .take .tn{font-family:var(--mono);font-size:12px;opacity:.8}
+  .take h4{margin:6px 0 8px;font-size:19px;line-height:1.15}
+  .take p{font-size:13.5px;opacity:.92;margin:0;max-width:none}
+
+  footer{padding:40px 0 70px;color:var(--muted);font-size:12.5px;text-align:center;border-top:1px solid var(--line)}
+  footer code{font-family:var(--mono);color:var(--ink-2)}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<nav id="dots"></nav>
+
+<div class="wrap">
+
+<!-- HERO -->
+<section id="s0" class="hero" data-title="Apertura">
+  <div class="tag"><b>●</b> Supporto alla lezione · <b>Introduzione agli Agenti e Context Engineering</b></div>
+  <div class="kicker"><span class="n">00</span> Il filo che regge tutta la lezione</div>
+  <h1>Agenti &amp; <span>Context&nbsp;Engineering</span></h1>
+  <div class="sub">Un LLM, da solo, sa fare una cosa sola: completare testo. Tutto il resto lo costruiamo noi.</div>
+  <p class="lead">Non ha memoria tra una richiesta e l'altra, non vede nulla al di fuori di ciò che gli passiamo, non può agire sul mondo. Da questo unico limite nascono le <b>due mosse</b> di oggi.</p>
+  <div class="pillars">
+    <div class="pill"><div class="pk">Mossa A · Agenti</div><h4>Estendere il modello</h4><p>Gli diamo strumenti per informarsi e agire, e un ciclo per usarli. Smette di «solo rispondere» e inizia a <em>fare</em>.</p></div>
+    <div class="pill"><div class="pk">Mossa B · Context Engineering</div><h4>Governare uno spazio finito</h4><p>Tutto passa dalla context window, che ha una capacità massima. Cosa ci mettiamo, in che ordine, cosa ne teniamo fuori.</p></div>
+  </div>
+  <div class="scrollcue"><span class="a">↓</span> Scorri, oppure usa le frecce ← →</div>
+</section>
+
+<!-- ============ ATTO 0 ============ -->
+
+<!-- 1 · recap token -->
+<section id="s1" data-title="Predice il prossimo token">
+  <div class="kicker"><span class="n">01</span> <span class="act">Atto 0 · Cosa fa un LLM da solo</span></div>
+  <h2>Ripartiamo da ieri: predice il prossimo token</h2>
+  <p class="lead">Rios ci ha mostrato il motore. In una frase: il modello <b>assorbe tutto il contesto in un colpo solo</b> e poi genera la risposta <b>un token alla volta</b>, scegliendo ogni volta il più probabile. C'è anche una componente <b>stocastica</b>: non è sempre identico.</p>
+  <div class="panel">
+    <span class="badge"><span class="dotp"></span> Grafica interattiva · genera la risposta un token alla volta</span>
+    <div style="font-family:var(--mono);font-size:13px;color:var(--ink-2);margin-bottom:6px">Input: <span style="color:var(--accent)">«Ciao, come va?»</span></div>
+    <div class="tg-out" id="tg-out"><span class="tg-cursor"></span></div>
+    <div style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:16px 0 4px">Classifica dei candidati per il <b style="color:var(--accent)">prossimo</b> token</div>
+    <div class="rank" id="tg-rank"></div>
+    <div class="ctrls" style="margin-top:16px">
+      <button class="b acc" id="tg-next">Prossimo token →</button>
+      <button class="b ghost" id="tg-auto">▶ Auto</button>
+      <button class="b ghost" id="tg-reset">Reset</button>
+    </div>
+    <div class="hint">A ogni passo il modello assegna un punteggio a ogni token del vocabolario; il <b>softmax</b> li trasforma in probabilità e di norma si sceglie il più probabile (<i>argmax</i>).</div>
+  </div>
+</section>
+
+<!-- 2 · cosa NON sa fare -->
+<section id="s2" data-title="I tre limiti">
+  <div class="kicker"><span class="n">02</span> <span class="act">Atto 0 · Cosa fa un LLM da solo</span></div>
+  <h2>Cosa un LLM <em>non</em> sa fare da solo</h2>
+  <p class="lead">Preso da solo, il modello produce testo e nient'altro. Le capacità cognitive ci sono, ma sono <b>isolate dal mondo e dalla memoria</b>. Tre limiti concreti:</p>
+  <div class="trio">
+    <div class="tcard"><div class="tx">✕ Ricordare</div><h4>È stateless</h4><p>Ogni chiamata «nasce e muore»: non ricorda le richieste precedenti, se non gliele ripassiamo noi.</p></div>
+    <div class="tcard"><div class="tx">✕ Accedere</div><h4>Non vede il mondo</h4><p>Niente web in tempo reale, niente file su disco, niente database: solo ciò che è nella chiamata.</p></div>
+    <div class="tcard"><div class="tx">✕ Agire</div><h4>Non tocca niente</h4><p>Non manda una mail, non aggiorna un record, non lancia un comando. Può solo <em>scrivere</em>.</p></div>
+  </div>
+  <div class="callout">Questi tre limiti non sono difetti da nascondere: sono <b>il punto di partenza</b>. Tutta la mattinata è la storia di come li superiamo.</div>
+</section>
+
+<!-- 3 · le due mosse -->
+<section id="s3" data-title="Le due mosse">
+  <div class="kicker"><span class="n">03</span> <span class="act">Atto 0 · Cosa fa un LLM da solo</span></div>
+  <h2>Due mosse, uno stesso limite</h2>
+  <p class="lead">Se il modello da solo è così vincolato, ci sono due modi — complementari — per renderlo davvero utile. Sono le due facce di questa lezione.</p>
+  <div class="grid2">
+    <div class="panel" style="margin-top:8px;border-color:var(--blue)">
+      <div style="font-size:13px;font-weight:800;color:var(--blue);letter-spacing:.06em;text-transform:uppercase">A · Estendere → gli agenti</div>
+      <p style="margin:8px 0 0;font-size:15px;color:var(--ink-2)">Gli diamo <b>strumenti</b> per raccogliere informazioni e compiere azioni, e un <b>ciclo</b> per usarli in autonomia. Ogni informazione che raccoglie <b>rientra nel contesto</b>.</p>
+    </div>
+    <div class="panel" style="margin-top:8px;border-color:var(--accent)">
+      <div style="font-size:13px;font-weight:800;color:var(--accent);letter-spacing:.06em;text-transform:uppercase">B · Governare → context engineering</div>
+      <p style="margin:8px 0 0;font-size:15px;color:var(--ink-2)">Tutto passa dalla <b>context window</b>, che è finita. Decidere cosa ci mettiamo, in che ordine e cosa ne teniamo fuori è la disciplina ingegneristica centrale.</p>
+    </div>
+  </div>
+  <div class="pull">Riempirlo di capacità, e insieme tenerlo in ordine: lo stesso contesto, due lavori diversi.</div>
+</section>
+
+<!-- ============ ATTO 1 ============ -->
+
+<!-- 4 · dal prompt al contesto -->
+<section id="s4" data-title="Dal prompt al contesto">
+  <div class="kicker"><span class="n">04</span> <span class="act">Atto 1 · Il contesto è uno spazio finito</span></div>
+  <h2>Dal prompt al contesto</h2>
+  <p class="lead">Il «prompt» è solo un pezzo. Il <b>contesto</b> è tutto ciò che il modello riceve in <em>una</em> chiamata: system prompt + storia della conversazione + (più avanti) le definizioni dei tool, i loro risultati, gli allegati. Una conversazione non è che questa tripletta che si allunga.</p>
+  <div class="callout">Tutto questo testo viene <b>unito in un unico blocco</b> — come un grande file di testo con etichette <code>System / User / Assistant</code> — <b>tokenizzato</b>, e mandato al modello in un colpo solo.</div>
+  <div class="panel">
+    <span class="badge"><span class="dotp"></span> Grafica interattiva · aggiungi turni e guarda il contesto crescere</span>
+    <div class="grid2">
+      <div>
+        <div class="chat" id="c1-chat"></div>
+        <div class="ctrls" style="margin-top:14px">
+          <button class="b acc" id="c1-add">+ Aggiungi turno</button>
+          <button class="b ghost" id="c1-reset">Reset</button>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Cosa arriva davvero al modello</div>
+        <div class="txtbox" id="c1-txt"></div>
+        <div class="counter"><span>≈ <b id="c1-tok">0</b> token</span><span><b id="c1-turns">1</b> messaggi</span><span>1 solo blocco di testo</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · vede / non vede -->
+<section id="s5" data-title="Vede / non vede">
+  <div class="kicker"><span class="n">05</span> <span class="act">Atto 1 · Il contesto è uno spazio finito</span></div>
+  <h2>Cosa il modello vede — e cosa no</h2>
+  <p class="lead">Ogni chiamata è <b>stateless</b>: il modello vede <b>solo ed esclusivamente</b> ciò che gli passiamo in quella chiamata. Fuori da lì, per lui, non esiste nulla.</p>
+  <div class="panel">
+    <span class="badge"><span class="dotp"></span> Le due facce del contesto</span>
+    <div class="cols">
+      <div class="col yes">
+        <h4>✓ Dentro la context window</h4>
+        <div class="chip">Il system prompt</div>
+        <div class="chip">Tutta la storia della chat che gli passiamo</div>
+        <div class="chip">Il nuovo messaggio dell'utente</div>
+        <div class="chip">Le tool definition (funzioni disponibili)</div>
+        <div class="chip">I tool result delle chiamate precedenti</div>
+        <div class="chip">File e immagini allegati → convertiti in token</div>
+      </div>
+      <div class="col no">
+        <h4>✕ Fuori dal suo mondo</h4>
+        <div class="chip">Le conversazioni che non abbiamo incluso</div>
+        <div class="chip">Il file system e il database</div>
+        <div class="chip">I documenti che non gli abbiamo passato</div>
+        <div class="chip">Internet in tempo reale (senza un tool)</div>
+        <div class="chip">Il system prompt di altri tool</div>
+        <div class="chip">La sua «memoria» tra una chiamata e l'altra</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 · illusione memoria -->
+<section id="s6" data-title="L'illusione della memoria">
+  <div class="kicker"><span class="n">06</span> <span class="act">Atto 1 · Il contesto è uno spazio finito</span></div>
+  <h2>Ma allora la «memoria» di ChatGPT?</h2>
+  <p class="lead">Due meccanismi, entrambi costruiti <b>sopra</b> il modello, non dentro:</p>
+  <div class="grid2">
+    <div class="panel" style="margin-top:16px">
+      <div style="font-size:13px;font-weight:800;color:var(--blue);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">Conversazione continuativa</div>
+      <p style="margin:0;font-size:15px;color:var(--ink-2)">Quando rispondi a un messaggio di due ore fa nella stessa chat, il tool sta in realtà <b>ri-mandando tutta la cronologia</b> al modello a ogni messaggio. Sembra memoria, è <b>ricontestualizzazione</b>.</p>
+    </div>
+    <div class="panel" style="margin-top:16px">
+      <div style="font-size:13px;font-weight:800;color:var(--purple);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">Memory feature</div>
+      <p style="margin:0;font-size:15px;color:var(--ink-2)">Le «memorie» di ChatGPT/Claude.ai sono <b>note salvate esternamente</b> e <b>re-iniettate nel system prompt</b> a ogni nuova conversazione. Sempre architettura sopra il modello, non capacità nativa.</p>
+    </div>
+  </div>
+  <div class="pull">Quel grande TXT con etichette System / User / Assistant è, letteralmente, tutto ciò che il modello sa.</div>
+</section>
+
+<!-- 7 · finestra finita + libri -->
+<section id="s7" data-title="Una finestra finita">
+  <div class="kicker"><span class="n">07</span> <span class="act">Atto 1 · Il contesto è uno spazio finito</span></div>
+  <h2>Una finestra, non un oceano</h2>
+  <p class="lead">La context window è la quantità <b>massima</b> di token che il modello può vedere in una chiamata. Input (system + user + storia) <b>e</b> output devono starci tutti dentro. È una quantità fissa, definita dal modello.</p>
+  <div class="bignum">200k<small>token — la finestra di Claude Sonnet 4.5</small></div>
+
+  <div class="panel">
+    <span class="badge"><span class="dotp"></span> Grafica interattiva · riempi la finestra e guarda quanto resta</span>
+    <div class="window" id="fm-win"></div>
+    <div class="counter" style="margin-top:12px"><span>Occupati: <b id="fm-used">2.000</b> / 200.000 token</span><span><b id="fm-pct">1%</b> della finestra</span></div>
+    <div class="fmlegend" id="fm-legend"></div>
+    <div class="ctrls" style="margin-top:12px"><button class="b ghost" id="fm-reset">Svuota</button></div>
+    <div class="hint">Nota chi occupa più spazio: non i messaggi dell'utente, ma i <b>risultati dei tool</b> — un report diagnostico o un allegato pesano decine di migliaia di token. Ci torniamo nell'Atto 3.</div>
+    <div class="models">
+      <div style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">La stessa finestra, a confronto</div>
+      <div class="mrow"><div class="mname">Claude Sonnet 4.5<span>Anthropic</span></div><div class="mbar"><div class="mf" style="width:20%">200k</div></div></div>
+      <div class="mrow"><div class="mname">GPT-4o<span>OpenAI</span></div><div class="mbar"><div class="mf" style="width:12.8%">128k</div></div></div>
+      <div class="mrow"><div class="mname">Gemini<span>Google</span></div><div class="mbar"><div class="mf" style="width:100%">1–2M</div></div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <span class="badge"><span class="dotp"></span> Grafica interattiva · quanto è grande? pensala in libri</span>
+    <div class="bk-pick" id="bk-pick"></div>
+    <div class="bk-meta" id="bk-meta"></div>
+    <div id="bk-rows"></div>
+    <div class="bk-note" id="bk-note"></div>
+    <div class="hint">Stime: ~1,3 token per parola. Un token è più o meno una manciata di caratteri; una finestra da 200k token è un intero romanzo, non un capitolo.</div>
+  </div>
+
+  <div class="callout"><b>Pieno ≠ meglio.</b> Man mano che il contesto si riempie, più informazione non significa risposta migliore: ogni token in più costa <b>latenza e denaro</b> e diluisce l'attenzione del modello su ciò che conta. Riempire ha rendimenti decrescenti.</div>
+</section>
+
+<!-- ============ ATTO 2 ============ -->
+
+<!-- 8 · LLM potenziato -->
+<section id="s8" data-title="L'LLM potenziato">
+  <div class="kicker"><span class="n">08</span> <span class="act">Atto 2 · Estendere il modello: gli agenti</span></div>
+  <h2>Cercare, agire, ricordare</h2>
+  <p class="lead">Prendiamo lo <b>stesso</b> modello di ieri e gli aggiungiamo tre capacità. È il primo momento in cui va oltre il «solo testo» — il mattone su cui si costruisce tutto il resto.</p>
+  <div class="tri">
+    <div class="rc b1"><div class="rh"><span class="ic">🔎</span> Cercare</div><p><b>Retrieval.</b> Recuperare informazioni che non sono nel contesto: un manuale, uno storico guasti, una normativa.</p></div>
+    <div class="rc b2"><div class="rh"><span class="ic">🔧</span> Agire</div><p><b>Tools.</b> Compiere azioni nel mondo: interrogare un database, aprire un ticket, aggiornare un piano di manutenzione.</p></div>
+    <div class="rc b3"><div class="rh"><span class="ic">🗄️</span> Ricordare</div><p><b>Memory.</b> Conservare qualcosa oltre la singola sessione, fuori dalla context window, e rileggerlo quando serve.</p></div>
+  </div>
+  <div class="callout">Un modello «potenziato» così — che raccoglie, agisce e ricorda in autonomia — è quello che chiamiamo <b>agente</b>. Vediamo il meccanismo, pezzo per pezzo.</div>
+</section>
+
+<!-- 9 · tool round-trip (NUOVO) -->
+<section id="s9" data-title="Il modello propone, l'app esegue">
+  <div class="kicker"><span class="n">09</span> <span class="act">Atto 2 · Estendere il modello: gli agenti</span></div>
+  <h2>I tool: il modello propone, l'applicazione esegue</h2>
+  <p class="lead">Il punto più frainteso di tutta la giornata: <b>il modello non esegue mai un tool</b>. Emette una <em>richiesta</em> di chiamata (un blocco JSON <code>tool_use</code>), si ferma, e aspetta. È l'<b>applicazione</b> — il software attorno al modello — che esegue davvero e gli restituisce il risultato.</p>
+  <div class="panel">
+    <span class="badge"><span class="dotp"></span> Grafica interattiva · segui il giro di andata e ritorno di una chiamata</span>
+    <div class="tu-flow" id="tu-flow">
+      <div class="tu-step on" data-i="0">
+        <div class="tu-lbl">1 · L'utente chiede</div>
+        <div class="msg usr" style="max-width:100%"><div class="who">User</div>Quanti guasti ha avuto la flotta ETR 400 nell'ultimo mese?</div>
+      </div>
+      <div class="tu-arrow">↓</div>
+      <div class="tu-step" data-i="1">
+        <div class="tu-lbl">2 · Il modello propone una chiamata</div>
+        <div class="txtbox"><span class="xtag">tool_use</span> {
+  "tool": "query_guasti",
+  "input": { "flotta": "ETR 400", "periodo": "ultimo_mese" }
+}</div>
+        <div class="tu-note">Il modello si ferma qui. Ha <b>solo scritto del testo strutturato</b>: non ha toccato nessun database.</div>
+      </div>
+      <div class="tu-arrow">↓</div>
+      <div class="tu-step" data-i="2">
+        <div class="tu-lbl">3 · Il confine di sicurezza</div>
+        <div class="tu-bound">L'<b>applicazione</b> riceve la richiesta, <b>controlla i permessi</b> (questo agente può leggere i guasti?), eventualmente chiede conferma, e solo allora esegue la query sul database reale. È qui che vivono sicurezza, sandbox e approvazioni.</div>
+      </div>
+      <div class="tu-arrow">↓</div>
+      <div class="tu-step" data-i="3">
+        <div class="tu-lbl">4 · Il risultato torna al modello</div>
+        <div class="txtbox"><span class="xtag">tool_result</span> {
+  "totale": 23,
+  "critici": 3,
+  "piu_frequente": "climatizzazione carrozza 4"
+}</div>
+      </div>
+      <div class="tu-arrow">↓</div>
+      <div class="tu-step" data-i="4">
+        <div class="tu-lbl">5 · Il modello prosegue</div>
+        <div class="msg ast" style="max-width:100%"><div class="who">Assistant</div>Nell'ultimo mese la flotta ETR 400 ha registrato 23 guasti, di cui 3 critici. Il più frequente riguarda la climatizzazione della carrozza 4.</div>
+        <div class="tu-note">Il <b>tool_result è rientrato nel contesto</b>: da qui in poi il modello «sa» quei numeri come se glieli avessimo scritti noi.</div>
+      </div>
+    </div>
+    <div class="ctrls" style="margin-top:16px">
+      <button class="b acc" id="tu-next">Avanti →</button>
+      <button class="b ghost" id="tu-reset">Reset</button>
+    </div>
+    <div class="hint">Una tool definition dice al modello: <b>nome</b>, <b>a cosa serve</b>, <b>quando usarlo</b>, lo <b>schema</b> di input/output e i suoi <b>effetti collaterali</b>. Il modello sceglie <em>se</em> e <em>come</em> chiamarlo; l'esecuzione — e la responsabilità — restano all'applicazione.</div>
+  </div>
+</section>
+
+<!-- 10 · agent loop (NUOVO) -->
+<section id="s10" data-title="L'agent loop">
+  <div class="kicker"><span class="n">10</span> <span class="act">Atto 2 · Estendere il modello: gli agenti</span></div>
+  <h2>L'agent loop: raccogli, agisci, verifica, ripeti</h2>
+  <p class="lead">Una chiamata sola non basta quasi mai. Un agente <b>gira in un ciclo</b>: raccoglie contesto, compie un'azione, <b>verifica</b> il risultato e decide se ha finito o se serve un altro giro. La verifica è ciò che lo rende affidabile. Con un agente <b>aspetti un processo</b>, non una singola risposta.</p>
+  <div class="panel">
+    <span class="badge"><span class="dotp"></span> Grafica interattiva · «perché il treno 9042 accumula ritardo?»</span>
+    <div class="al-ring" id="al-ring">
+      <div class="al-ph" data-ph="0"><span class="d"></span> Raccogli contesto</div>
+      <div class="al-sep">→</div>
+      <div class="al-ph" data-ph="1"><span class="d"></span> Agisci</div>
+      <div class="al-sep">→</div>
+      <div class="al-ph" data-ph="2"><span class="d"></span> Verifica</div>
+      <div class="al-sep">↺</div>
+    </div>
+    <div class="al-log" id="al-log"></div>
+    <div class="al-done" id="al-done"><b>Exit condition raggiunta.</b> Causa individuata → il modello smette di ciclare e risponde: «Il treno 9042 accumula ritardo per un cantiere sul nodo di Rho che impone un rallentamento; il recupero è previsto a valle.»</div>
+    <div class="counter" style="margin-top:14px"><span>≈ <b id="al-tok">0</b> token accumulati nel contesto</span><span><b id="al-iter">0</b> azioni compiute</span></div>
+    <div class="ctrls" style="margin-top:14px">
+      <button class="b acc" id="al-next">Prossimo passo →</button>
+      <button class="b ghost" id="al-auto">▶ Auto</button>
+      <button class="b ghost" id="al-reset">Reset</button>
+    </div>
+    <div class="hint">Il ciclo si ferma a una <b>exit condition</b>: il modello dichiara il task completo, oppure tocca un limite duro (numero massimo di giri). Ogni azione e ogni risultato <b>si accumulano nel contesto</b> — il gancio dell'Atto 3.</div>
+  </div>
+</section>
+
+<!-- 11 · harness -->
+<section id="s11" data-title="L'harness">
+  <div class="kicker"><span class="n">11</span> <span class="act">Atto 2 · Estendere il modello: gli agenti</span></div>
+  <h2>Nessuna magia: l'harness</h2>
+  <p class="lead">Un agente non è un modello nuovo. È lo <b>stesso LLM di ieri</b> avvolto in un <b>layer di ingegneria</b>: un system prompt curato, le definizioni dei tool, le regole di comportamento. Questo strato si chiama <b>harness</b>, ed <b>eredita tutti i limiti</b> del modello — context window finita, generazione token per token, componente stocastica.</p>
+  <div class="callout">L'harness è il <b>distillato di mesi di prompt engineering</b>: dice all'agente come pianificare, quando chiedere conferma, come usare i tool. Spesso vale quanto il modello stesso — è un <b>asset</b>.</div>
+  <p class="lead" style="font-size:17px">Un assaggio dal <b>system prompt di Claude Code</b> (emerso pubblicamente): si vede quanto lavoro c'è dietro il comportamento «intelligente» di un agente.</p>
+  <div class="panel">
+    <span class="badge">■ Estratti dall'harness · esempi illustrativi</span>
+    <div class="asm-prev">"You should be <span class="xtag">proactive</span>, but only when the user asks
+you to do something. Do not surprise the user with
+actions you take without asking."
+
+"Before making tool calls, <span class="xtag">plan</span> extensively... If the
+plan requires ambiguous choices, <span class="xtag">ask the user</span>."
+
+"When multiple independent operations are needed, invoke
+the relevant tools <span class="xtag">in parallel</span>. Do not call them one by one."</div>
+    <div class="hint">Nota il tema: <b>proattività controllata</b>, <b>pianificare prima di agire</b>, <b>mettere in discussione le richieste ambigue</b>, <b>parallelizzare</b>. Nulla di magico: sono istruzioni scritte, testate e limate.</div>
+  </div>
+</section>
+
+<!-- 12 · famiglie di tool -->
+<section id="s12" data-title="Le famiglie di tool">
+  <div class="kicker"><span class="n">12</span> <span class="act">Atto 2 · Estendere il modello: gli agenti</span></div>
+  <h2>Che cosa può fare un tool</h2>
+  <p class="lead">I tool coprono famiglie ricorrenti. Cambia il servizio dietro, ma il meccanismo è sempre lo stesso: il modello propone, l'applicazione esegue, il risultato rientra nel contesto.</p>
+  <div class="fam">
+    <div class="fcard"><div class="fh">🔎 Web search <span class="fi">retrieval</span></div><p>Cercare online in tempo reale: l'ultima circolare normativa sul segnalamento.</p></div>
+    <div class="fcard"><div class="fh">📚 RAG <span class="fi">retrieval</span></div><p>Interrogare una base documentale interna: i manuali di manutenzione del materiale rotabile.</p></div>
+    <div class="fcard"><div class="fh">🗃️ Database <span class="fi">query</span></div><p>Leggere dati strutturati: lo storico guasti, gli orari, i turni del personale.</p></div>
+    <div class="fcard"><div class="fh">⚙️ Code execution <span class="fi">compute</span></div><p>Eseguire codice per calcoli o analisi: elaborare i log diagnostici di un convoglio.</p></div>
+    <div class="fcard"><div class="fh">📁 Filesystem <span class="fi">super-tool</span></div><p>Leggere e scrivere file: è la porta d'ingresso a documenti, report e artefatti di contesto.</p></div>
+    <div class="fcard"><div class="fh">🔌 API esterne <span class="fi">action</span></div><p>Chiamare altri sistemi: aprire un intervento su SAP, notificare la sala operativa.</p></div>
+    <div class="fcard"><div class="fh">🖥️ Computer use <span class="fi">sperimentale</span></div><p>Usare un'interfaccia come farebbe una persona: cliccare, scrivere, navigare uno schermo.</p></div>
+    <div class="fcard"><div class="fh">🧩 MCP <span class="fi">connettori</span></div><p>Lo standard che collega tutto quanto sopra in modo uniforme → la prossima sezione.</p></div>
+  </div>
+</section>
+
+<!-- 13 · MCP -->
+<section id="s13" data-title="Connettori e MCP">
+  <div class="kicker"><span class="n">13</span> <span class="act">Atto 2 · Estendere il modello: gli agenti</span></div>
+  <h2>MCP: un connettore universale</h2>
+  <p class="lead">Gli agenti diventano utili quando si <b>collegano al mondo</b>: gli orari, il database guasti, il gestionale. Senza uno standard, ogni applicazione deve costruire un'integrazione su misura per ogni servizio → esplosione <b>N×M</b>. Con <b>MCP</b> (Model Context Protocol, standard aperto di Anthropic) chi gestisce il servizio scrive <em>un</em> server, e qualunque client lo usa con la stessa interfaccia → <b>N+M</b>.</p>
+  <div class="panel">
+    <span class="badge"><span class="dotp"></span> Grafica interattiva · attiva/disattiva MCP e conta le connessioni</span>
+    <div class="mcp-count">Integrazioni da costruire e mantenere: <b id="mcp-num">12</b> <span id="mcp-lbl" style="font-size:13px;color:var(--muted)">— senza MCP (N×M)</span></div>
+    <svg id="mcp-svg" viewBox="0 0 640 300" style="width:100%;display:block"></svg>
+    <div class="ctrls" style="margin-top:8px">
+      <button class="b acc" id="mcp-toggle">Attiva MCP →</button>
+    </div>
+    <div class="hint">Analogia: <b>uno standard di connessione universale</b>, come l'USB-C per i dispositivi. È esattamente ciò che vedremo nell'hands-on <em>Project &amp; Connettori</em>.</div>
+  </div>
+</section>
+
+<!-- 14 · workflow vs agente -->
+<section id="s14" data-title="Workflow vs agente">
+  <div class="kicker"><span class="n">14</span> <span class="act">Atto 2 · Estendere il modello: gli agenti</span></div>
+  <h2>Non tutto deve essere un agente</h2>
+  <p class="lead">Autonomia non è sempre la scelta giusta. Spesso un <b>percorso fisso</b> è più prevedibile e più sicuro. Vale la pena distinguere due modi di usare un LLM:</p>
+  <div class="wf">
+    <div class="wcard a1"><div class="wk">Workflow · percorso fisso</div><h4>Lo progetti tu</h4><p>I passi sono decisi in anticipo, sempre gli stessi: «estrai i dati → compila il report → invia». Prevedibile e ripetibile. Ideale per processi ben definiti.</p></div>
+    <div class="wcard a2"><div class="wk">Agente · sceglie i passi</div><h4>Decide il modello</h4><p>Il percorso non è noto in partenza: l'agente decide a runtime quali tool usare e in che ordine, in base a ciò che trova. Flessibile, per problemi aperti.</p></div>
+  </div>
+  <div class="callout"><b>Regola pratica:</b> usa la soluzione più semplice che funziona. L'agente conviene <b>quando devi osservare il risultato di un'azione per decidere il passo successivo</b> — come nell'indagine sul treno 9042. Altrimenti, un workflow basta e avanza.</div>
+</section>
+
+<!-- ============ ATTO 3 ============ -->
+
+<!-- 15 · markdown -->
+<section id="s15" data-title="Markdown">
+  <div class="kicker"><span class="n">15</span> <span class="act">Atto 3 · Governare lo spazio: context engineering</span></div>
+  <h2>Markdown: la lingua dell'AI agentica</h2>
+  <p class="lead">Ora che sappiamo <em>cosa</em> entra nel contesto, la domanda è <em>come</em> darvi forma. Si parte dal formato. Il markdown dà <b>struttura al testo con pochi simboli</b>: <code>#</code> per i titoli, <code>-</code> per gli elenchi, <code>**grassetto**</code>, i backtick per il codice. Nato per essere leggibile da un umano <em>e</em> da una macchina.</p>
+  <div class="grid2">
+    <div class="panel" style="margin-top:8px">
+      <div style="font-size:13px;font-weight:800;color:var(--accent);letter-spacing:.06em;text-transform:uppercase">Perché conta per gli agenti</div>
+      <p style="margin:8px 0 0;font-size:15px;color:var(--ink-2)">I modelli sono addestrati su <b>montagne di markdown</b> (README, documentazione, forum): lo «parlano» nativamente. La gerarchia — titoli, liste, tabelle — li aiuta a <b>orientarsi</b> nel contesto e riduce l'ambiguità.</p>
+    </div>
+    <div class="panel" style="margin-top:8px">
+      <div style="font-size:13px;font-weight:800;color:var(--accent);letter-spacing:.06em;text-transform:uppercase">Leggero in token</div>
+      <p style="margin:8px 0 0;font-size:15px;color:var(--ink-2)">La stessa struttura in HTML o JSON costa il doppio o il triplo dei token. Non a caso <b>quasi tutti gli artefatti di contesto</b> di un agente sono file markdown: <code>CLAUDE.md</code>, le skill, la documentazione, i piani di lavoro.</p>
+    </div>
+  </div>
+  <div class="panel">
+    <span class="badge"><span class="dotp"></span> Grafica interattiva · scrivi markdown a sinistra, guarda il risultato a destra</span>
+    <div class="md-split">
+      <textarea class="md-src" id="md-src" spellcheck="false"></textarea>
+      <div class="md-render" id="md-render"></div>
+    </div>
+    <div class="md-tokrow">
+      <span>Markdown: <b id="md-tok-md">0</b> token</span>
+      <span>Stesso contenuto in HTML: <b id="md-tok-html">0</b> token</span>
+      <span id="md-save" style="color:var(--green);font-weight:700"></span>
+    </div>
+  </div>
+</section>
+
+<!-- 16 · struttura XML -->
+<section id="s16" data-title="Strutturare il contesto">
+  <div class="kicker"><span class="n">16</span> <span class="act">Atto 3 · Governare lo spazio: context engineering</span></div>
+  <h2>Un contesto a capitoli</h2>
+  <p class="lead">Costruire il contesto è <b>ingegneria</b>: un prompt non è un blob di testo, conviene organizzarlo in sezioni con tag XML — <code>&lt;ruolo&gt;</code>, <code>&lt;contesto&gt;</code>, <code>&lt;task&gt;</code>, <code>&lt;vincoli&gt;</code>, <code>&lt;esempi&gt;</code>, <code>&lt;formato_output&gt;</code>. Assomiglia ai dati di training (il modello si orienta meglio), ti <b>obbliga a mettere in ordine le idee</b>, e rende esplicito cosa è istruzione, cosa è dato, cosa è vincolo.</p>
+  <div class="quote">"Organizza i prompt in sezioni distinte (<code>&lt;background_information&gt;</code>, <code>&lt;instructions&gt;</code>, <code>## Tool guidance</code>…) con tag XML o header Markdown — puntando sempre al minimo set di informazioni che descrive pienamente il comportamento atteso."
+    <cite>— Anthropic, <i>Effective context engineering for AI agents</i></cite></div>
+  <div class="panel">
+    <span class="badge"><span class="dotp"></span> Grafica interattiva · l'assemblatore di prompt — accendi i capitoli</span>
+    <div class="asm">
+      <div id="asm-toggles"></div>
+      <div>
+        <div style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Il prompt che si costruisce</div>
+        <div class="asm-prev" id="asm-prev"></div>
+        <div class="counter"><span>≈ <b id="asm-tok">0</b> token</span><span><b id="asm-n">0</b> capitoli attivi</span></div>
+        <div class="hint" id="asm-note"></div>
+      </div>
+    </div>
+  </div>
+  <div class="tri" style="margin-top:22px">
+    <div class="rc b1"><div class="rh">Structured output</div><p>Chiedi (o imponi via API) uno <b>schema garantito</b>, tipo JSON. Indispensabile quando l'output alimenta un'automazione.</p></div>
+    <div class="rc b2"><div class="rh">Few-shot</div><p>Pochi <b>esempi ben scelti</b> di input → output atteso valgono più di mille spiegazioni. Non serve elencare ogni caso.</p></div>
+    <div class="rc b3"><div class="rh">Chain of thought</div><p>Far <b>ragionare</b> il modello prima di rispondere migliora i compiti difficili. Trucco: il commento <em>prima</em> della conclusione.</p></div>
+  </div>
+</section>
+
+<!-- 17 · artefatti + dove vive la memoria -->
+<section id="s17" data-title="Artefatti di contesto">
+  <div class="kicker"><span class="n">17</span> <span class="act">Atto 3 · Governare lo spazio: context engineering</span></div>
+  <h2>Dove vive la memoria</h2>
+  <p class="lead">Il contesto migliore non si riscrive ogni volta: si <b>impacchetta in artefatti riutilizzabili</b>, quasi sempre file markdown che vivono nel progetto. Un'immagine utile per orientarsi:</p>
+  <div class="desk">
+    <div class="dcard short"><h4>🗒️ La scrivania</h4><p>La <b>context window</b>: la memoria di lavoro, ciò che il modello ha davanti <em>adesso</em>. Ampia ma finita, e si libera a fine sessione.</p></div>
+    <div class="dcard long"><h4>🗄️ Lo schedario</h4><p>La <b>memoria esterna</b>: file su disco a cui l'agente torna quando serve. Persistente, non occupa la scrivania finché non lo apri.</p></div>
+  </div>
+  <p class="lead">Gli artefatti stanno a diverse «distanze» dal modello — cioè quanto sono vicini alla scrivania:</p>
+  <div class="grid2">
+    <div class="panel" style="margin-top:8px">
+      <div style="font-size:13px;font-weight:800;color:#4b45b0;letter-spacing:.06em;text-transform:uppercase">CLAUDE.md · sempre presente</div>
+      <p style="margin:8px 0 0;font-size:15px;color:var(--ink-2)">Il file che l'agente legge <b>sempre all'avvio</b>: convenzioni, comandi, struttura del progetto, cosa fare e non fare. È il contesto di base che viaggia col repo. Sta <b>sulla scrivania</b>.</p>
+    </div>
+    <div class="panel" style="margin-top:8px">
+      <div style="font-size:13px;font-weight:800;color:#1c5a94;letter-spacing:.06em;text-transform:uppercase">Documentazione · on-demand</div>
+      <p style="margin:8px 0 0;font-size:15px;color:var(--ink-2)">Markdown esplicativi: informazione <b>su</b> qualcosa (architettura, policy, decisioni). Vive <b>nello schedario</b> e viene caricata <b>solo quando serve</b>.</p>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:16px;border-color:var(--green);background:var(--green-soft)">
+    <div style="font-size:13px;font-weight:800;color:#12664b;letter-spacing:.06em;text-transform:uppercase">Skill · il know-how, on-demand</div>
+    <p style="margin:8px 0 0;font-size:16px;color:#124e3c">Una skill è know-how su <b>come</b> fare qualcosa: un <code>SKILL.md</code> (più eventuali script) che l'agente carica <b>solo quando il task lo richiede</b>. Documentazione = «cosa»; skill = «come».</p>
+  </div>
+  <div class="callout"><b>Progressive discovery.</b> L'agente non ingoia tutto in una volta: parte da <code>CLAUDE.md</code>, esplora i file (vede i <em>nomi</em>, non i contenuti) e tira dentro una skill o un doc <b>solo al momento del bisogno</b>. Scopre il contesto per gradi — così la scrivania resta ordinata.</div>
+  <div class="panel">
+    <span class="badge"><span class="dotp"></span> Grafica interattiva · guarda l'agente scoprire il contesto un pezzo alla volta</span>
+    <div class="pd">
+      <div class="pd-col">
+        <h4>Repository (sul disco)</h4>
+        <div id="pd-shelf"></div>
+      </div>
+      <div class="pd-col">
+        <h4>Context window dell'agente</h4>
+        <div class="pd-ctx" id="pd-ctx"></div>
+        <div class="pd-tok" id="pd-tok">0 token nel contesto</div>
+      </div>
+    </div>
+    <div class="pd-log" id="pd-log">Premi <b>Avvia task</b>: «Pianifica la manutenzione del convoglio ETR 400 #12 e verifica la procedura di sicurezza sul binario».</div>
+    <div class="ctrls" style="margin-top:12px">
+      <button class="b acc" id="pd-next">Avvia task →</button>
+      <button class="b ghost" id="pd-auto">▶ Auto</button>
+      <button class="b ghost" id="pd-reset">Reset</button>
+    </div>
+  </div>
+</section>
+
+<!-- 18 · gestione attiva + subagenti -->
+<section id="s18" data-title="Gestione attiva e subagenti">
+  <div class="kicker"><span class="n">18</span> <span class="act">Atto 3 · Governare lo spazio: context engineering</span></div>
+  <h2>Tenere la scrivania in ordine</h2>
+  <p class="lead">Ricordi il gancio dell'agent loop? Ogni azione e ogni risultato <b>si accumulano nel contesto</b>. Su task lunghi la scrivania si riempie da sola — soprattutto per via dei <b>tool result</b> voluminosi. Servono leve per gestirla attivamente:</p>
+  <div class="levers">
+    <div class="lever"><code>/compact</code><span><b>Compaction.</b> Riassumo la conversazione e riparto con un contesto ripulito, conservando le decisioni importanti.</span></div>
+    <div class="lever"><code>note-taking</code><span><b>Appunti strutturati.</b> L'agente scrive note in un file fuori dal contesto (un TODO, uno scratchpad) e le rilegge quando serve.</span></div>
+    <div class="lever"><code>just-in-time</code><span><b>Retrieval on-demand.</b> Carico un dato solo nel momento in cui serve, invece di pre-caricare tutto in anticipo.</span></div>
+    <div class="lever"><code>/clear</code><span><b>Reset esplicito.</b> Task nuovo = conversazione nuova. Il modo più semplice per non trascinarsi contesto inutile.</span></div>
+  </div>
+  <p class="lead" style="margin-top:26px">E la leva più potente per i task grossi: <b>i subagenti</b>. Un supervisore scompone il lavoro e lo delega a worker specializzati, <b>ognuno con la propria scrivania pulita</b>. Ogni worker può bruciare decine di migliaia di token esplorando, ma restituisce solo un riassunto distillato.</p>
+  <div class="panel">
+    <span class="badge"><span class="dotp"></span> Grafica interattiva · avvia il flusso supervisor → worker → sintesi</span>
+    <div class="sw-stage">
+      <div class="sw-node sw-sup" id="sw-sup"><div class="sw-title">Supervisore</div><div class="sw-sub" id="sw-sup-sub">in attesa del task</div></div>
+      <div style="font-size:20px;color:var(--line-strong)">▼</div>
+      <div class="sw-workers" id="sw-workers"></div>
+    </div>
+    <div class="sw-readout" style="margin-top:18px">
+      <span>Lavoro totale svolto: <b class="big-tot" id="sw-tot">0</b> token</span>
+      <span>Rientrati nel supervisore: <b class="big-sup" id="sw-sup-tok">0</b> token</span>
+    </div>
+    <div class="ctrls" style="margin-top:14px">
+      <button class="b acc" id="sw-run">Avvia il lavoro</button>
+      <button class="b ghost" id="sw-reset">Reset</button>
+    </div>
+    <div class="hint">Il lavoro totale è enorme, ma il contesto del supervisore resta piccolo e ordinato: ecco perché i subagenti scalano dove un singolo agente si intasa.</div>
+  </div>
+</section>
+
+<!-- 19 · contesto riutilizzabile -->
+<section id="s19" data-title="Il contesto riutilizzabile">
+  <div class="kicker"><span class="n">19</span> <span class="act">Atto 3 · Governare lo spazio: context engineering</span></div>
+  <h2>Un buon contesto si riusa</h2>
+  <p class="lead">Costruire un buon contesto costa tempo e attenzione. Proprio per questo <b>non si butta via</b>: si impacchetta e si riusa. È il passaggio dal «prompt furbo» usa-e-getta al <b>contesto come asset</b>.</p>
+  <div class="callout">Un <b>Project</b> (su claude.ai) o una <b>skill</b> sono esattamente questo: un contesto impacchettato — istruzioni + file + tool — pronto all'uso. Più lo curi, più compone valore nel tempo.</div>
+  <div class="pull">È qui che «scrivere un buon prompt» diventa «progettare l'ambiente in cui l'agente lavora».</div>
+  <p class="lead"><b>Ed è esattamente il ponte all'hands-on:</b> tra poco costruiamo un contesto riutilizzabile con un <em>Project</em> e colleghiamo il modello al mondo con i <em>Connettori</em> (MCP).</p>
+</section>
+
+<!-- CLOSING -->
+<section id="s20" data-title="Da portare a casa">
+  <div class="kicker"><span class="n">20</span> Da portare a casa</div>
+  <h2>Tre idee, un solo filo</h2>
+  <p class="lead">Un LLM da solo completa testo. Tutto ciò che lo rende utile — estenderlo e governarlo — ruota attorno a un'unica risorsa: il contesto.</p>
+  <div class="takes">
+    <div class="take"><div class="tn">01</div><h4>Il contesto è tutto ciò che il modello sa</h4><p>Uno spazio finito e non gratuito. Fuori dalla context window, per lui non esiste niente: ogni token conta.</p></div>
+    <div class="take"><div class="tn">02</div><h4>Un agente estende il modello</h4><p>Stesso modello di ieri + strumenti + un ciclo che decide e verifica. Nessuna magia, gli stessi limiti di prima.</p></div>
+    <div class="take"><div class="tn">03</div><h4>Context engineering è la nuova competenza</h4><p>Non «scrivere un buon prompt», ma progettare e governare l'intero contesto: cosa entra, cosa resta, cosa esce.</p></div>
+  </div>
+</section>
+
+<footer>
+  Supporto visivo alla lezione <b>"Introduzione agli Agenti e Context Engineering"</b> · Giornata 2 · Palette e motivi grafici ripresi dalle illustrazioni del libro.<br>
+  <code>← →</code> per navigare tra le sezioni · file autonomo, funziona offline a schermo intero.
+</footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var NS="http://www.w3.org/2000/svg";
+  function SE(t,a){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);return e;}
+  function fmt(n){return Math.round(n).toLocaleString("it-IT");}
+
+  /* ---------- progress + dot nav ---------- */
+  var secs=$$("section"), dots=$("#dots");
+  secs.forEach(function(s){var a=document.createElement("a");a.href="#"+s.id;a.innerHTML='<span>'+(s.getAttribute("data-title")||"")+'</span>';dots.appendChild(a);});
+  var dotEls=$$("#dots a");
+  function onScroll(){
+    var h=document.documentElement, p=h.scrollTop/(h.scrollHeight-h.clientHeight);
+    $("#prog").style.width=(p*100)+"%";
+    var mid=h.scrollTop+window.innerHeight*0.4, cur=0;
+    secs.forEach(function(s,i){if(s.offsetTop<=mid)cur=i;});
+    dotEls.forEach(function(d,i){d.classList.toggle("on",i===cur);});
+  }
+  window.addEventListener("scroll",onScroll,{passive:true});
+  window.addEventListener("resize",onScroll);
+  function curSec(){var t=document.documentElement.scrollTop+window.innerHeight*0.4,c=0;secs.forEach(function(s,i){if(s.offsetTop<=t)c=i;});return c;}
+  document.addEventListener("keydown",function(e){
+    if(/input|textarea/i.test((e.target.tagName||"")))return;
+    if(e.key==="ArrowRight"){e.preventDefault();secs[Math.min(secs.length-1,curSec()+1)].scrollIntoView();}
+    if(e.key==="ArrowLeft"){e.preventDefault();secs[Math.max(0,curSec()-1)].scrollIntoView();}
+  });
+
+  /* ---------- token generation (recap) ---------- */
+  (function(){
+    var out=$("#tg-out"),rank=$("#tg-rank"),nextB=$("#tg-next"),autoB=$("#tg-auto"),resetB=$("#tg-reset");
+    var steps=[
+      [["Tutto",41],["Ciao",27],["Bene",17],["Sto",9],["altro…",6]],
+      [["bene",72],["a posto",12],["ok",9],["così",4],["altro…",3]],
+      [[",",61],["!",22],["grazie",11],[".",6]],
+      [["grazie",48],["e tu",26],["oggi",15],["davvero",11]],
+      [["!",55],[",",30],[".",12],["…",3]],
+      [["E",47],["Tu",21],["Come",18],["Spero",14]],
+      [["tu?",92],["voi?",4],["lei?",2],["te?",2]]
+    ];
+    var chosen=["Tutto","bene",",","grazie","!","E","tu?"];
+    var joinSpace=[false,true,false,true,false,true,true];
+    var i=0,timer=null;
+    function drawRank(){
+      rank.innerHTML="";
+      if(i>=steps.length){rank.innerHTML='<div class="hint" style="margin:0">Risposta completa. La generazione si ferma quando il modello «decide» di aver finito.</div>';return;}
+      var list=steps[i], max=Math.max.apply(null,list.map(function(x){return x[1]}));
+      list.forEach(function(c){
+        var win=(c[0]===chosen[i]);
+        var row=document.createElement("div");row.className="rrow"+(win?" win":"");
+        row.innerHTML='<div class="lbl">'+c[0]+'</div><div class="rtrack"><div class="rfill" style="width:0%"></div></div><div class="rval">'+c[1]+'%</div>';
+        rank.appendChild(row);
+        var f=row.querySelector(".rfill");setTimeout(function(){f.style.width=(c[1]/max*100)+"%";},20);
+      });
+    }
+    function renderOut(){var html="";for(var k=0;k<i;k++){html+=(joinSpace[k]?" ":"")+'<span class="tok">'+chosen[k]+'</span>';}out.innerHTML=html+'<span class="tg-cursor"></span>';}
+    function step(){
+      if(i>=steps.length)return false;i++;
+      var html="";for(var k=0;k<i;k++){var isNew=(k===i-1);html+=(joinSpace[k]?" ":"")+'<span class="tok'+(isNew?" new":"")+'">'+chosen[k]+'</span>';}
+      out.innerHTML=html+(i<steps.length?'<span class="tg-cursor"></span>':"");
+      drawRank();nextB.disabled=i>=steps.length;return i<steps.length;
+    }
+    nextB.onclick=function(){step();};
+    autoB.onclick=function(){
+      if(timer){clearInterval(timer);timer=null;autoB.textContent="▶ Auto";return;}
+      if(i>=steps.length){i=0;renderOut();drawRank();}
+      autoB.textContent="❚❚ Pausa";
+      timer=setInterval(function(){if(!step()){clearInterval(timer);timer=null;autoB.textContent="▶ Auto";}},780);
+    };
+    resetB.onclick=function(){if(timer){clearInterval(timer);timer=null;autoB.textContent="▶ Auto";}i=0;renderOut();drawRank();nextB.disabled=false;};
+    renderOut();drawRank();
+  })();
+
+  /* ---------- context builder ---------- */
+  (function(){
+    var chat=$("#c1-chat"),txt=$("#c1-txt"),tokEl=$("#c1-tok"),turnsEl=$("#c1-turns"),addB=$("#c1-add"),resetB=$("#c1-reset");
+    var SYS="Sei un assistente per il personale di manutenzione ferroviaria. Rispondi in italiano, in modo conciso.";
+    var pairs=[
+      {u:"Ciao, ogni quanto va controllato il pantografo?",a:"Di norma ogni 30.000 km, o a intervallo semestrale."},
+      {u:"E per gli ETR 400?",a:"Per gli ETR 400 segui la scheda del costruttore: controllo dello strisciante ogni 20.000 km."},
+      {u:"Dove trovo la scheda?",a:"Nel manuale di manutenzione, sezione pantografi. Se vuoi te la cerco."},
+      {u:"Sì, grazie mille!",a:"Fatto: apri docs/manutenzione/pantografo.md, paragrafo 3."}
+    ];
+    var n=1;
+    function estTok(s){return Math.round(s.trim().split(/\s+/).filter(Boolean).length*1.35);}
+    function render(){
+      chat.innerHTML="";
+      var m=document.createElement("div");m.className="msg sys";m.innerHTML='<div class="who">System</div>'+SYS;chat.appendChild(m);
+      var raw='<span class="lb">&lt;System&gt;</span>\n'+SYS+'\n\n', count=0;
+      for(var i=0;i<n;i++){var p=pairs[i];
+        var mu=document.createElement("div");mu.className="msg usr";mu.innerHTML='<div class="who">User</div>'+p.u;chat.appendChild(mu);
+        var ma=document.createElement("div");ma.className="msg ast";ma.innerHTML='<div class="who">Assistant</div>'+p.a;chat.appendChild(ma);
+        raw+='<span class="lb">&lt;User&gt;</span>\n'+p.u+'\n\n<span class="lb">&lt;Assistant&gt;</span>\n'+p.a+'\n\n';count+=2;
+      }
+      txt.innerHTML=raw.replace(/\n$/,"");
+      var full=SYS+" "+pairs.slice(0,n).map(function(p){return p.u+" "+p.a}).join(" ");
+      tokEl.textContent=fmt(estTok(full));turnsEl.textContent=(count+1);
+      addB.disabled=n>=pairs.length;txt.scrollTop=txt.scrollHeight;
+    }
+    addB.onclick=function(){if(n<pairs.length){n++;render();}};
+    resetB.onclick=function(){n=1;render();};
+    render();
+  })();
+
+  /* ---------- fill meter ---------- */
+  (function(){
+    var win=$("#fm-win"),usedEl=$("#fm-used"),pctEl=$("#fm-pct"),legend=$("#fm-legend"),resetB=$("#fm-reset");
+    var CAP=200000;
+    var comps=[
+      {name:"System prompt",tok:2000,c:"#7F77DD",fixed:true,on:true},
+      {name:"Storia conversazione",tok:14000,c:"#2f7ec9"},
+      {name:"Tool definitions",tok:6000,c:"#1D9E75"},
+      {name:"Tool result · report diagnostico flotta (5.000 righe)",tok:42000,c:"#D85A30"},
+      {name:"Allegato · capitolato di segnalamento (40 pagine)",tok:26000,c:"#c2410c"}
+    ];
+    function render(){
+      win.innerHTML="";var used=0;
+      comps.forEach(function(cm){if(!cm.on)return;used+=cm.tok;
+        var seg=document.createElement("div");seg.className="wseg";seg.style.width=(cm.tok/CAP*100)+"%";seg.style.background=cm.c;
+        if(cm.tok/CAP>0.06){var cap=document.createElement("div");cap.className="wcap";cap.textContent=Math.round(cm.tok/1000)+"k";seg.appendChild(cap);}
+        win.appendChild(seg);
+      });
+      var free=document.createElement("div");free.className="wfree";
+      free.textContent=(used<CAP?(Math.round((CAP-used)/1000)+"k liberi"):"PIENA");
+      if(used>=CAP)free.style.color="var(--accent)";win.appendChild(free);
+      usedEl.textContent=fmt(used);pctEl.textContent=Math.min(100,Math.round(used/CAP*100))+"%";
+    }
+    function buildLegend(){legend.innerHTML="";comps.forEach(function(cm){
+      if(cm.fixed){var tag=document.createElement("div");tag.className="fmadd";tag.style.borderStyle="solid";tag.style.opacity=".7";tag.innerHTML='<span class="sw" style="background:'+cm.c+'"></span>'+cm.name+' · sempre presente';legend.appendChild(tag);return;}
+      var b=document.createElement("button");b.className="fmadd";
+      function label(){b.innerHTML='<span class="sw" style="background:'+cm.c+'"></span>'+(cm.on?"− ":"+ ")+cm.name+' · '+Math.round(cm.tok/1000)+'k';b.style.borderStyle=cm.on?"solid":"dashed";b.style.color=cm.on?"var(--ink)":"var(--ink-2)";}
+      b.onclick=function(){cm.on=!cm.on;label();render();};label();legend.appendChild(b);
+    });}
+    resetB.onclick=function(){comps.forEach(function(cm){if(!cm.fixed)cm.on=false;});buildLegend();render();};
+    buildLegend();render();
+  })();
+
+  /* ---------- books ---------- */
+  (function(){
+    var pick=$("#bk-pick"),meta=$("#bk-meta"),rows=$("#bk-rows"),note=$("#bk-note");
+    var books=[
+      {n:"La fattoria degli animali",a:"Orwell",w:30000,t:40000},
+      {n:"1984",a:"Orwell",w:89000,t:117000},
+      {n:"Guerra e pace",a:"Tolstoj",w:560000,t:730000},
+      {n:"Alla ricerca del tempo perduto",a:"Proust",w:1270000,t:1650000}
+    ];
+    var models=[{n:"GPT-4o",cap:128000},{n:"Claude Sonnet 4.5",cap:200000},{n:"Gemini",cap:2000000}];
+    var sel=1;
+    function itNum(x){return x.toLocaleString("it-IT",{maximumFractionDigits:x<10?1:0});}
+    function render(){
+      pick.innerHTML="";
+      books.forEach(function(b,i){var btn=document.createElement("button");btn.textContent=b.n;if(i===sel)btn.className="on";btn.onclick=function(){sel=i;render();};pick.appendChild(btn);});
+      var bk=books[sel];
+      meta.textContent="≈ "+fmt(bk.w)+" parole · ≈ "+fmt(bk.t)+" token · "+bk.a;
+      rows.innerHTML="";
+      models.forEach(function(m){
+        var copies=m.cap/bk.t;
+        var row=document.createElement("div");row.className="bk-row";
+        var name=document.createElement("div");name.className="mname";name.innerHTML=m.n+'<span>'+Math.round(m.cap/1000)+'k token</span>';
+        var g=document.createElement("div");g.className="bk-glyphs";
+        var whole=Math.floor(copies), frac=copies-whole, shown=Math.min(whole,14);
+        for(var k=0;k<shown;k++){var bg=document.createElement("div");bg.className="bk-book";g.appendChild(bg);}
+        if(whole>14){var more=document.createElement("span");more.className="bk-x";more.textContent="… ×"+itNum(copies);g.appendChild(more);}
+        else{if(frac>0.08){var bf=document.createElement("div");bf.className="bk-book frac";bf.style.width=(15*Math.max(.25,frac))+"px";g.appendChild(bf);}
+          var x=document.createElement("span");x.className="bk-x";x.textContent=copies>=1?("×"+itNum(copies)):(Math.round(copies*100)+"%");g.appendChild(x);}
+        row.appendChild(name);row.appendChild(g);rows.appendChild(row);
+      });
+      var c=200000/bk.t;
+      note.innerHTML="Nella finestra di <b>Claude (200k)</b> ci sta "+(c>=1?("<b>"+itNum(c)+" volte</b> «"+bk.n+"»"):("solo il <b>"+Math.round(c*100)+"%</b> di «"+bk.n+"»"))+". In quella di <b>Gemini (2M)</b>, "+itNum(2000000/bk.t)+" volte.";
+    }
+    render();
+  })();
+
+  /* ---------- tool round-trip (NUOVO) ---------- */
+  (function(){
+    var steps=$$("#tu-flow .tu-step"),arrows=$$("#tu-flow .tu-arrow"),nextB=$("#tu-next"),resetB=$("#tu-reset");
+    var i=0;
+    function draw(){
+      steps.forEach(function(s,k){s.classList.toggle("on",k<=i);});
+      arrows.forEach(function(a,k){a.style.opacity=(k<i)?"1":".25";});
+      nextB.disabled=i>=steps.length-1;
+      nextB.textContent=i>=steps.length-1?"Completo ✓":"Avanti →";
+    }
+    nextB.onclick=function(){if(i<steps.length-1){i++;draw();}};
+    resetB.onclick=function(){i=0;draw();};
+    draw();
+  })();
+
+  /* ---------- agent loop (NUOVO) ---------- */
+  (function(){
+    var phEls=$$("#al-ring .al-ph"),log=$("#al-log"),done=$("#al-done"),tokEl=$("#al-tok"),iterEl=$("#al-iter"),nextB=$("#al-next"),autoB=$("#al-auto"),resetB=$("#al-reset");
+    var steps=[
+      {ph:0,tag:"raccogli",cls:"gather",txt:"Legge la richiesta: «perché il treno 9042 accumula ritardo?»",tok:400,act:false},
+      {ph:1,tag:"agisci",cls:"act",txt:"Chiama <b>orari_treno(9042)</b> → il ritardo nasce dopo Rho.",tok:900,act:true},
+      {ph:2,tag:"verifica",cls:"verify",txt:"Non basta a spiegare la causa → serve un altro giro.",tok:200,act:false},
+      {ph:1,tag:"agisci",cls:"act",txt:"Chiama <b>storico_manutenzioni(9042)</b> → manutenzione regolare.",tok:1200,act:true},
+      {ph:2,tag:"verifica",cls:"verify",txt:"Nessuna anomalia sul convoglio → non è questo.",tok:200,act:false},
+      {ph:1,tag:"agisci",cls:"act",txt:"Chiama <b>alert_infrastruttura(Rho–Gallarate)</b> → cantiere attivo.",tok:1500,act:true},
+      {ph:2,tag:"verifica",cls:"verify",txt:"Causa individuata: rallentamento per lavori sul nodo di Rho.",tok:200,act:false}
+    ];
+    var i=0,tok=0,iter=0,timer=null;
+    function highlight(ph){phEls.forEach(function(e){e.classList.toggle("on",parseInt(e.getAttribute("data-ph"),10)===ph);});}
+    function go(){
+      if(i>=steps.length)return false;
+      var s=steps[i];
+      var row=document.createElement("div");row.className="al-row "+s.cls;
+      row.innerHTML='<span class="al-tag '+s.cls+'">'+s.tag+'</span>'+s.txt;
+      log.appendChild(row);requestAnimationFrame(function(){row.classList.add("on");});
+      highlight(s.ph);tok+=s.tok;if(s.act)iter++;
+      tokEl.textContent=fmt(tok);iterEl.textContent=iter;
+      i++;
+      if(i>=steps.length){done.classList.add("on");highlight(-1);nextB.disabled=true;nextB.textContent="Concluso ✓";return false;}
+      return true;
+    }
+    nextB.onclick=function(){go();};
+    autoB.onclick=function(){
+      if(timer){clearInterval(timer);timer=null;autoB.textContent="▶ Auto";return;}
+      if(i>=steps.length){reset();}
+      autoB.textContent="❚❚ Pausa";
+      timer=setInterval(function(){if(!go()){clearInterval(timer);timer=null;autoB.textContent="▶ Auto";}},1100);
+    };
+    function reset(){if(timer){clearInterval(timer);timer=null;autoB.textContent="▶ Auto";}i=0;tok=0;iter=0;log.innerHTML="";done.classList.remove("on");highlight(-1);tokEl.textContent="0";iterEl.textContent="0";nextB.disabled=false;nextB.textContent="Prossimo passo →";}
+    resetB.onclick=reset;
+    reset();
+  })();
+
+  /* ---------- markdown ---------- */
+  (function(){
+    var src=$("#md-src"),ren=$("#md-render"),tMd=$("#md-tok-md"),tHtml=$("#md-tok-html"),save=$("#md-save");
+    var sample="# Guida rapida\n\nBenvenuto nel **progetto**. Ecco i punti chiave:\n\n- Struttura *leggibile* da umani e macchine\n- Pochi simboli, tanta chiarezza\n- Perfetto per gli `agenti`\n\n## Comando principale\n\n`npm run build`";
+    src.value=sample;
+    function esc(t){return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+    function md(s){
+      var lines=esc(s).split("\n"),out=[],i=0;
+      function inline(t){return t
+        .replace(/`([^`]+)`/g,"<code>$1</code>")
+        .replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>")
+        .replace(/\*([^*]+)\*/g,"<em>$1</em>");}
+      while(i<lines.length){
+        var l=lines[i];
+        if(/^```/.test(l)){var buf=[];i++;while(i<lines.length&&!/^```/.test(lines[i])){buf.push(lines[i]);i++;}i++;out.push("<pre><code>"+buf.join("\n")+"</code></pre>");continue;}
+        if(/^###\s+/.test(l)){out.push("<h3>"+inline(l.replace(/^###\s+/,""))+"</h3>");i++;continue;}
+        if(/^##\s+/.test(l)){out.push("<h2>"+inline(l.replace(/^##\s+/,""))+"</h2>");i++;continue;}
+        if(/^#\s+/.test(l)){out.push("<h1>"+inline(l.replace(/^#\s+/,""))+"</h1>");i++;continue;}
+        if(/^\s*[-*]\s+/.test(l)){var items=[];while(i<lines.length&&/^\s*[-*]\s+/.test(lines[i])){items.push("<li>"+inline(lines[i].replace(/^\s*[-*]\s+/,""))+"</li>");i++;}out.push("<ul>"+items.join("")+"</ul>");continue;}
+        if(/^\s*$/.test(l)){i++;continue;}
+        out.push("<p>"+inline(l)+"</p>");i++;
+      }
+      return out.join("");
+    }
+    function tok(s){return Math.max(0,Math.round(s.trim().split(/\s+/).filter(Boolean).length*1.35+ (s.match(/[#*`_>\-]/g)||[]).length*0.4));}
+    function htmlEquivTok(s){
+      var words=s.trim().split(/\s+/).filter(Boolean).length;
+      var structural=(s.match(/^#{1,3}\s/gm)||[]).length + (s.match(/^\s*[-*]\s/gm)||[]).length;
+      return Math.round(words*1.35 + structural*6 + 10);
+    }
+    function upd(){
+      ren.innerHTML=md(src.value);
+      var a=tok(src.value), b=htmlEquivTok(src.value);
+      tMd.textContent=a;tHtml.textContent=b;
+      save.textContent=b>a?("→ "+Math.round((1-a/b)*100)+"% di token risparmiati"):"";
+    }
+    src.addEventListener("input",upd);upd();
+  })();
+
+  /* ---------- assembler ---------- */
+  (function(){
+    var tg=$("#asm-toggles"),prev=$("#asm-prev"),tokEl=$("#asm-tok"),nEl=$("#asm-n"),note=$("#asm-note");
+    var chapters=[
+      {tag:"ruolo",label:"Ruolo",desc:"chi è il modello",where:"system",on:true,body:"Sei un assistente della sala operativa di un operatore ferroviario regionale."},
+      {tag:"contesto",label:"Contesto",desc:"i dati della situazione",where:"user",on:true,body:"Treno 9042, tratta Milano–Domodossola. Ritardo attuale: 18 minuti, in aumento."},
+      {tag:"task",label:"Task",desc:"cosa deve fare",where:"user",on:true,body:"Classifica la gravità del ritardo e proponi una comunicazione ai passeggeri."},
+      {tag:"vincoli",label:"Vincoli",desc:"regole e limiti",where:"user",on:false,body:"Rispondi in italiano. Non promettere rimborsi. Massimo 4 frasi."},
+      {tag:"esempi",label:"Esempi (few-shot)",desc:"input → output attesi",where:"user",on:false,body:'Input: "Guasto alla linea di contatto" → { "gravita": "alta", "comunicazione": "..." }'},
+      {tag:"formato_output",label:"Formato output",desc:"struttura garantita",where:"user",on:false,body:'JSON: { "gravita": "bassa|media|alta", "comunicazione": "testo" }'}
+    ];
+    function esc(t){return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+    function render(){
+      tg.innerHTML="";
+      chapters.forEach(function(c,i){
+        var b=document.createElement("button");b.className="asm-toggle"+(c.on?" on":"");
+        b.innerHTML=c.label+"<small>"+c.desc+" · "+(c.where==="system"?"system":"user")+"</small>";
+        b.onclick=function(){c.on=!c.on;render();};tg.appendChild(b);
+      });
+      var active=chapters.filter(function(c){return c.on;});
+      if(!active.length){prev.innerHTML='<span class="asm-empty">Nessun capitolo attivo. Accendine qualcuno a sinistra.</span>';tokEl.textContent="0";nEl.textContent="0";note.textContent="";return;}
+      var html="",all="";
+      active.forEach(function(c){
+        html+='<span class="xtag">&lt;'+c.tag+'&gt;</span>\n  '+esc(c.body)+'\n<span class="xtag">&lt;/'+c.tag+'&gt;</span>\n\n';
+        all+=c.body+" ";
+      });
+      prev.innerHTML=html.replace(/\n$/,"");
+      tokEl.textContent=fmt(all.trim().split(/\s+/).filter(Boolean).length*1.35 + active.length*4);
+      nEl.textContent=active.length;
+      var hasRole=chapters[0].on;
+      note.innerHTML=(hasRole?"Il <b>ruolo</b> va tipicamente nel <b>system prompt</b>; ":"")+"contesto, task, vincoli, esempi e formato nello <b>user prompt</b>. Se usi un servizio già pronto, il ruolo lo ha già scritto il provider.";
+    }
+    render();
+  })();
+
+  /* ---------- progressive discovery ---------- */
+  (function(){
+    var shelf=$("#pd-shelf"),ctx=$("#pd-ctx"),tokEl=$("#pd-tok"),log=$("#pd-log"),nextB=$("#pd-next"),autoB=$("#pd-auto"),resetB=$("#pd-reset");
+    var items=[
+      {id:"claude",name:"CLAUDE.md",tag:"always",cls:"tag-always",lab:"sempre",tok:1200},
+      {id:"index",name:"indice dei file (glob/grep)",tag:"doc",cls:"tag-doc",lab:"solo i nomi",tok:300},
+      {id:"skill",name:"skills/manutenzione-programmata/SKILL.md",tag:"skill",cls:"tag-skill",lab:"skill",tok:2500},
+      {id:"doc",name:"docs/procedura-sicurezza-binario.md",tag:"doc",cls:"tag-doc",lab:"doc",tok:1800}
+    ];
+    var steps=[
+      {msg:'Avvio: l\'agente carica <b>CLAUDE.md</b> — il contesto sempre presente.',add:"claude"},
+      {msg:'Esplora il repository con <b>glob/grep</b>: vede i <b>nomi</b> dei file, non i contenuti.',add:"index"},
+      {msg:'Il task riguarda una manutenzione programmata → carica <b>la skill manutenzione</b> (il know-how, on-demand).',add:"skill"},
+      {msg:'Serve una regola di sicurezza sul binario → carica <b>il doc procedura</b> just-in-time.',add:"doc"},
+      {msg:'Fine: nel contesto è entrato <b>solo ciò che serviva</b>, un pezzo alla volta.',add:null}
+    ];
+    var inCtx=[],step=0,timer=null;
+    function draw(){
+      shelf.innerHTML="";
+      items.forEach(function(it){
+        var used=inCtx.indexOf(it.id)>=0;
+        var d=document.createElement("div");d.className="pd-item"+(used?" ghost":"");
+        d.innerHTML='<span>'+it.name+'</span><span class="tagx '+it.cls+'">'+it.lab+'</span>';
+        shelf.appendChild(d);
+      });
+      ctx.innerHTML="";var tot=0;
+      if(!inCtx.length){ctx.innerHTML='<div style="color:#9a6b4c;font-size:13px;font-family:var(--mono)">vuoto — in attesa del task</div>';}
+      inCtx.forEach(function(id){var it=items.filter(function(x){return x.id===id})[0];tot+=it.tok;
+        var d=document.createElement("div");d.className="pd-item";
+        d.innerHTML='<span>'+it.name+'</span><span class="tagx '+it.cls+'">+'+it.tok+'</span>';ctx.appendChild(d);});
+      tokEl.textContent=fmt(tot)+" token nel contesto";
+    }
+    function go(){
+      if(step>=steps.length)return false;
+      var s=steps[step];log.innerHTML=s.msg;if(s.add)inCtx.push(s.add);step++;draw();
+      nextB.textContent="Prossimo passo →";nextB.disabled=step>=steps.length;return step<steps.length;
+    }
+    nextB.onclick=function(){go();};
+    autoB.onclick=function(){
+      if(timer){clearInterval(timer);timer=null;autoB.textContent="▶ Auto";return;}
+      if(step>=steps.length){step=0;inCtx=[];draw();}
+      autoB.textContent="❚❚ Pausa";timer=setInterval(function(){if(!go()){clearInterval(timer);timer=null;autoB.textContent="▶ Auto";}},1300);
+    };
+    resetB.onclick=function(){if(timer){clearInterval(timer);timer=null;autoB.textContent="▶ Auto";}step=0;inCtx=[];draw();log.innerHTML='Premi <b>Avvia task</b>: «Pianifica la manutenzione del convoglio ETR 400 #12 e verifica la procedura di sicurezza sul binario».';nextB.textContent="Avvia task →";nextB.disabled=false;};
+    draw();
+  })();
+
+  /* ---------- supervisor / worker ---------- */
+  (function(){
+    var wrap=$("#sw-workers"),supSub=$("#sw-sup-sub"),totEl=$("#sw-tot"),supTokEl=$("#sw-sup-tok"),runB=$("#sw-run"),resetB=$("#sw-reset");
+    var workers=[
+      {name:"Worker · Guasti",sub:"interroga lo storico guasti",work:52000,ret:1600},
+      {name:"Worker · Log di bordo",sub:"legge i log diagnostici",work:38000,ret:1400},
+      {name:"Worker · Manuali",sub:"scorre i manuali di manutenzione",work:31000,ret:1200}
+    ];
+    var els=[],timers=[];
+    function build(){
+      wrap.innerHTML="";els=[];
+      workers.forEach(function(w){
+        var d=document.createElement("div");d.className="sw-w";
+        d.innerHTML='<div class="sw-title" style="font-size:13px">'+w.name+'</div><div class="sw-sub">'+w.sub+'</div>'+
+          '<div class="sw-wbar"><div class="sw-wfill"></div></div>'+
+          '<div class="sw-wtok"><span class="cur">0k</span><span class="sw-ret">↑ ≈'+Math.round(w.ret/1000*10)/10+'k</span></div>';
+        wrap.appendChild(d);els.push(d);
+      });
+    }
+    function clearTimers(){timers.forEach(clearTimeout);timers=[];}
+    function reset(){clearTimers();build();supSub.textContent="in attesa del task";totEl.textContent="0";supTokEl.textContent="0";runB.disabled=false;runB.textContent="Avvia il lavoro";}
+    function run(){
+      clearTimers();build();runB.disabled=true;runB.textContent="in corso…";supSub.textContent="delega ai worker…";
+      var tot=0,sup=0;
+      workers.forEach(function(w,i){
+        var fill=els[i].querySelector(".sw-wfill"),cur=els[i].querySelector(".cur"),ret=els[i].querySelector(".sw-ret");
+        timers.push(setTimeout(function(){fill.style.background="var(--blue)";fill.style.width="100%";
+          var t0=Date.now(),dur=1200;
+          var iv=setInterval(function(){var p=Math.min(1,(Date.now()-t0)/dur);cur.textContent=Math.round(w.work/1000*p)+"k";if(p>=1)clearInterval(iv);},60);
+          timers.push(iv);
+        },300+i*250));
+        timers.push(setTimeout(function(){ret.classList.add("on");fill.style.background="var(--green)";
+          tot+=w.work;sup+=w.ret;totEl.textContent=fmt(tot);supTokEl.textContent=fmt(sup);
+        },1700+i*250));
+      });
+      timers.push(setTimeout(function(){supSub.textContent="sintesi dei risultati → risposta finale ✓";runB.disabled=false;runB.textContent="Rilancia";},1700+workers.length*250+400));
+    }
+    runB.onclick=run;resetB.onclick=reset;
+    build();
+  })();
+
+  /* ---------- MCP ---------- */
+  (function(){
+    var svg=$("#mcp-svg"),numEl=$("#mcp-num"),lblEl=$("#mcp-lbl"),btn=$("#mcp-toggle");
+    var W=640,H=300, apps=["Claude","Assistente","Cursor"], svcs=["Orari treni","DB guasti","SAP MM","Manutenzione"];
+    var on=false;
+    var appY=apps.map(function(_,i){return 60+i*90;}), svcY=svcs.map(function(_,i){return 45+i*70;});
+    var AX=90, SX=550, HX=320, HY=150;
+    function node(x,y,label,fill,stroke){
+      var g=SE("g",{});
+      g.appendChild(SE("rect",{x:x-58,y:y-17,width:116,height:34,rx:9,fill:fill,stroke:stroke,"stroke-width":1.4}));
+      var t=SE("text",{x:x,y:y+5,"text-anchor":"middle","font-size":13,"font-weight":600,fill:"#1a1a1a","font-family":"var(--sans)"});t.textContent=label;g.appendChild(t);
+      return g;
+    }
+    function render(){
+      svg.innerHTML="";
+      var lines=SE("g",{});svg.appendChild(lines);
+      var count;
+      if(!on){
+        count=apps.length*svcs.length;
+        apps.forEach(function(_,i){svcs.forEach(function(_,j){
+          lines.appendChild(SE("line",{x1:AX+58,y1:appY[i],x2:SX-58,y2:svcY[j],stroke:"#c2410c","stroke-width":1,"stroke-opacity":.32}));
+        });});
+      }else{
+        count=apps.length+svcs.length;
+        apps.forEach(function(_,i){lines.appendChild(SE("line",{x1:AX+58,y1:appY[i],x2:HX-46,y2:HY,stroke:"#1D9E75","stroke-width":2,"stroke-opacity":.7}));});
+        svcs.forEach(function(_,j){lines.appendChild(SE("line",{x1:HX+46,y1:HY,x2:SX-58,y2:svcY[j],stroke:"#1D9E75","stroke-width":2,"stroke-opacity":.7}));});
+      }
+      apps.forEach(function(a,i){svg.appendChild(node(AX,appY[i],a,"#e7f0fa","#9cc3e8"));});
+      svcs.forEach(function(s,j){svg.appendChild(node(SX,svcY[j],s,"#faf8f6","#cdc6bf"));});
+      if(on){
+        svg.appendChild(SE("circle",{cx:HX,cy:HY,r:46,fill:"#fdeee4",stroke:"#c2410c","stroke-width":2}));
+        var t=SE("text",{x:HX,y:HY-2,"text-anchor":"middle","font-size":15,"font-weight":800,fill:"#c2410c","font-family":"var(--sans)"});t.textContent="MCP";svg.appendChild(t);
+        var t2=SE("text",{x:HX,y:HY+14,"text-anchor":"middle","font-size":9,fill:"#9a6b4c","font-family":"var(--sans)"});t2.textContent="un solo standard";svg.appendChild(t2);
+      }
+      var ca=SE("text",{x:AX,y:20,"text-anchor":"middle","font-size":10,"font-weight":700,fill:"#8a887f","letter-spacing":"1"});ca.textContent="APP / CLIENT";svg.appendChild(ca);
+      var cs=SE("text",{x:SX,y:20,"text-anchor":"middle","font-size":10,"font-weight":700,fill:"#8a887f","letter-spacing":"1"});cs.textContent="SERVIZI";svg.appendChild(cs);
+      numEl.textContent=count;
+      lblEl.textContent=on?("— con MCP (N+M = "+apps.length+"+"+svcs.length+")"):("— senza MCP (N×M = "+apps.length+"×"+svcs.length+")");
+      numEl.style.color=on?"#1D9E75":"#c2410c";
+    }
+    btn.onclick=function(){on=!on;render();btn.textContent=on?"↩ Torna a «senza MCP»":"Attiva MCP →";btn.className="b "+(on?"ghost":"acc");};
+    render();
+  })();
+
+  onScroll();
+})();
+</script>
+</body>
+</html>

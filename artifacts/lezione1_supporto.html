@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Dentro l'IA: dal neurone alla matematica — supporto Lezione 1</title>
+<style>
+  :root{
+    --paper:#f1efe8; --paper-2:#e9e6dd;
+    --card:#ffffff; --card-2:#faf8f6;
+    --ink:#1a1a1a; --ink-2:#5f5e5a; --muted:#8a887f;
+    --line:#d9d6cc; --line-strong:#b4b2a9;
+    --accent:#4338CA; --accent-2:#3730A3; --accent-soft:#ebe9fb; --accent-soft2:#ddd9f7;
+    --teal:#0F766E; --teal-soft:#e2f2ef;
+    --amber:#B45309; --amber-soft:#fbeedd;
+    --blue:#2f7ec9; --blue-soft:#e7f0fa;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(var(--paper-2) 0.5px, transparent 0.5px);background-size:22px 22px;}
+
+  #prog{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:60;transition:width .1s linear}
+  #dots{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:55;display:flex;flex-direction:column;gap:10px}
+  #dots a{width:9px;height:9px;border-radius:50%;background:var(--line-strong);opacity:.55;transition:all .2s;position:relative}
+  #dots a.on{background:var(--accent);opacity:1;transform:scale(1.35)}
+  #dots a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:11px;
+    color:var(--ink-2);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:2px 7px;opacity:0;pointer-events:none;transition:opacity .15s}
+  #dots a:hover span{opacity:1}
+  @media(max-width:900px){#dots{display:none}}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:0 28px}
+  section{padding:60px 0;border-top:1px solid var(--line)}
+  section:first-of-type{border-top:0}
+
+  .kicker{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);
+    display:flex;align-items:center;gap:10px;margin:0 0 14px}
+  .kicker .n{font-family:var(--mono);background:var(--accent);color:#fff;border-radius:5px;padding:1px 7px;font-size:11px;letter-spacing:.05em}
+  h1{font-size:clamp(40px,8vw,86px);line-height:.98;letter-spacing:-.02em;font-weight:850;margin:0 0 18px}
+  h2{font-size:clamp(27px,4.4vw,46px);line-height:1.04;letter-spacing:-.015em;font-weight:850;margin:0 0 16px;max-width:20ch}
+  h3{font-size:19px;font-weight:750;margin:30px 0 6px}
+  .lead{font-size:clamp(17px,2vw,21px);color:var(--ink-2);max-width:62ch;margin:0 0 10px}
+  p{max-width:64ch;font-size:16.5px}
+  .em{color:var(--accent);font-weight:600}
+  .mut{color:var(--muted)}
+
+  .hero{padding-top:80px;min-height:80vh;display:flex;flex-direction:column;justify-content:center}
+  .hero .tag{font-family:var(--mono);font-size:12px;color:var(--ink-2);border:1px solid var(--line-strong);
+    border-radius:999px;padding:5px 13px;display:inline-flex;gap:8px;align-items:center;margin-bottom:24px;background:var(--card-2);width:max-content}
+  .hero .tag b{color:var(--accent)}
+  .hero h1 span{color:var(--accent)}
+  .hero .sub{font-size:clamp(18px,2.4vw,24px);font-weight:600;color:var(--ink);max-width:34ch;margin:0 0 8px}
+  .hero .subm{font-size:16px;color:var(--ink-2);max-width:56ch}
+  .arc{display:flex;gap:8px;flex-wrap:wrap;margin-top:30px}
+  .arc .step{font-family:var(--mono);font-size:11px;color:var(--ink-2);border:1px solid var(--line);border-radius:20px;padding:6px 11px;white-space:nowrap;background:var(--card-2)}
+  .arc .step b{color:var(--accent)}
+  .scrollcue{margin-top:36px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+  .scrollcue .a{animation:bob 1.6s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+
+  .callout{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;
+    padding:16px 20px;margin:22px 0;font-size:16.5px;color:#2c256e;max-width:66ch}
+  .callout b{color:var(--accent)}
+  .pull{font-family:var(--serif);font-size:clamp(23px,3.1vw,34px);line-height:1.2;font-weight:600;color:var(--ink);max-width:22ch;margin:34px 0;padding-left:26px;border-left:4px solid var(--accent)}
+  .eq{font-family:var(--mono);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:3px 9px;display:inline-block;font-size:.92em;color:var(--ink)}
+  .eq b{color:var(--accent)}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:26px;
+    box-shadow:0 1px 0 var(--line),0 18px 40px -32px rgba(0,0,0,.35)}
+  .panel.star{border-color:var(--accent-soft2);box-shadow:0 1px 0 var(--accent-soft2),0 22px 50px -30px rgba(67,56,202,.4);background:linear-gradient(180deg,#fff, #fbfaff)}
+  .panel .badge{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);
+    display:inline-flex;align-items:center;gap:7px;margin-bottom:14px}
+  .panel .badge .dotp{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 1.8s infinite}
+  .panel .badge.tealb{color:var(--teal)} .panel .badge.tealb .dotp{background:var(--teal)}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+  .phd{display:flex;align-items:center;gap:10px;margin-bottom:2px}
+  .phd strong{font-size:16px}
+
+  .ctrls{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-top:14px}
+  .ctrl{display:flex;flex-direction:column;gap:4px;min-width:150px;flex:1}
+  .ctrl label{font-family:var(--mono);font-size:12px;color:var(--ink-2);display:flex;justify-content:space-between;gap:10px}
+  .ctrl label b{color:var(--accent)}
+  input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--paper-2);outline:none;border:1px solid var(--line)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 0 4px rgba(67,56,202,.16)}
+  input[type=range]::-moz-range-thumb{width:17px;height:17px;border:none;border-radius:50%;background:var(--accent);cursor:pointer}
+  button.b{font-family:inherit;font-size:14px;font-weight:600;background:var(--ink);color:#fff;border:0;border-radius:9px;padding:9px 16px;cursor:pointer;transition:transform .05s,background .15s}
+  button.b:hover{background:#000}button.b:active{transform:translateY(1px)}
+  button.b.ghost{background:transparent;color:var(--ink-2);border:1px solid var(--line-strong)}
+  button.b.ghost:hover{background:var(--card-2);color:var(--ink)}
+  button.b.acc{background:var(--accent)}button.b.acc:hover{background:var(--accent-2)}
+  .toggle{display:inline-flex;border:1px solid var(--line-strong);border-radius:9px;overflow:hidden}
+  .toggle button{font-family:inherit;font-size:13px;font-weight:600;background:var(--card-2);color:var(--ink-2);border:none;padding:8px 14px;cursor:pointer}
+  .toggle button.on{background:var(--accent);color:#fff}
+  .readout{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);margin-top:12px;display:flex;gap:16px;flex-wrap:wrap}
+  .readout b{color:var(--ink)}
+  .hint{font-size:13px;color:var(--muted);margin-top:12px;max-width:68ch}
+  .cap{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:10px}
+  canvas{display:block;width:100%;border-radius:12px;background:var(--card-2);border:1px solid var(--line)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr}}
+  .chip{display:inline-block;font-family:var(--mono);font-size:12px;padding:4px 10px;border-radius:6px;border:1px solid var(--line);margin:3px 4px 0 0;background:var(--card-2)}
+
+  .why{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0}
+  @media(max-width:760px){.why{grid-template-columns:1fr}}
+  .wbox{border-radius:14px;padding:18px 20px;border:1px solid}
+  .wbox h4{margin:0 0 8px;font-size:15px;display:flex;align-items:center;gap:9px}
+  .wbox h4::before{content:"";width:9px;height:9px;border-radius:50%}
+  .wbox p{margin:0;font-size:15px;max-width:none}
+  .wbox.data{background:var(--accent-soft);border-color:var(--accent-soft2)}
+  .wbox.data h4{color:var(--accent-2)} .wbox.data h4::before{background:var(--accent)}
+  .wbox.gpu{background:var(--teal-soft);border-color:#c6e5dd}
+  .wbox.gpu h4{color:var(--teal)} .wbox.gpu h4::before{background:var(--teal)}
+
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  footer{padding:50px 0 90px;color:var(--ink-2);font-size:13.5px;border-top:1px solid var(--line)}
+  footer .mono{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:10px}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<nav id="dots"></nav>
+
+<!-- HERO -->
+<section id="s0" class="hero"><div class="wrap reveal">
+  <div class="tag">Summer School · Giornata 1 · <b>Federico Rios</b></div>
+  <h1>Dentro l'IA:<br>dal <span>neurone</span><br>alla matematica.</h1>
+  <p class="sub">Una sola operazione — <span class="eq">y = <b>W</b>x + <b>b</b></span> — dal cervello biologico fino alle reti che approssimano qualsiasi funzione.</p>
+  <p class="subm">Supporto visivo alla prima lezione — scorri e mostra.</p>
+  <div class="arc">
+    <span class="step"><b>01</b> Neurone</span>
+    <span class="step"><b>02</b> Dati &amp; GPU</span>
+    <span class="step"><b>03</b> Vettori, matrici → il nesso</span>
+    <span class="step"><b>04</b> Approssimazione universale</span>
+    <span class="step"><b>05</b> Training</span>
+    <span class="step"><b>06</b> Limiti &amp; architettura</span>
+  </div>
+  <div class="scrollcue"><span class="a">↓</span> scorri</div>
+</div></section>
+
+<!-- 01 NEURONE -->
+<section id="s1"><div class="wrap reveal">
+  <div class="kicker"><span class="n">01</span> Il neurone</div>
+  <h2>Tutto comincia da un neurone</h2>
+  <p class="lead">L'IA di oggi nasce da un'idea vecchia di decenni: costruire algoritmi che apprendono <em>imitando il cervello</em>. E il mattone del cervello è il neurone.</p>
+  <p>Nel cervello ogni neurone è "in ascolto": raccoglie segnali dagli altri attraverso i <b>dendriti</b>, li integra nel <b>soma</b>, e se lo stimolo è abbastanza intenso <b>si attiva</b>, mandando il segnale lungo l'<b>assone</b> fino alla <b>sinapsi</b>, il punto di contatto col neurone successivo. Ciò che conta non è il singolo neurone, ma <em>come sono connessi</em>: 86 miliardi di neuroni, ~100 mila miliardi di sinapsi.</p>
+
+  <div class="panel">
+    <div class="phd"><strong>Anatomia di un neurone</strong></div>
+    <canvas id="cNeuroBio" height="230"></canvas>
+  </div>
+
+  <h3>Il neurone artificiale</h3>
+  <p>La rete neurale copia questo gesto in modo spudoratamente semplice. Ogni neurone artificiale <b>moltiplica ogni input per un peso</b>, <b>somma</b> tutto, e si accende solo se la somma <b>supera una soglia</b>. I pesi dicono quanto conta ciascun ingresso; la soglia, quanto stimolo serve per "accendersi". Muovi gli input e guarda quando scatta.</p>
+
+  <div class="panel">
+    <div class="badge"><span class="dotp"></span> interattivo</div>
+    <div class="grid2">
+      <div><canvas id="cPerc" height="250"></canvas></div>
+      <div>
+        <div class="ctrls" style="flex-direction:column;align-items:stretch;gap:12px">
+          <div class="ctrl"><label>input x₁ <b id="x1v">0.60</b></label><input id="x1" type="range" min="0" max="1" step="0.01" value="0.6"></div>
+          <div class="ctrl"><label>input x₂ <b id="x2v">0.40</b></label><input id="x2" type="range" min="0" max="1" step="0.01" value="0.4"></div>
+          <div class="ctrl"><label>input x₃ <b id="x3v">0.70</b></label><input id="x3" type="range" min="0" max="1" step="0.01" value="0.7"></div>
+          <div class="ctrl"><label>soglia <b id="thv">1.20</b></label><input id="th" type="range" min="0" max="2.5" step="0.01" value="1.2"></div>
+        </div>
+        <div class="readout">somma pesata <b id="nsum">—</b> · soglia <b id="nth">1.20</b> · stato <b id="nstate">—</b></div>
+      </div>
+    </div>
+    <p class="hint">Pesi fissi per l'esempio: <span class="chip">w₁ = 0.9</span><span class="chip">w₂ = 0.7</span><span class="chip">w₃ = 0.6</span> — è la <em>somma pesata</em> a comandare l'accensione.</p>
+  </div>
+</div></section>
+
+<!-- 02 GPU -->
+<section id="s2"><div class="wrap reveal">
+  <div class="kicker"><span class="n">02</span> Predominanza tecnica</div>
+  <h2>Perché oggi hanno vinto</h2>
+  <p class="lead">Non perché somigliano a noi. Le reti neurali sono state a lungo battute da altri metodi. Sono tornate a dominare per due motivi molto più concreti.</p>
+  <div class="why">
+    <div class="wbox data">
+      <h4>I dati</h4>
+      <p>Funzionano meglio di qualsiasi altro metodo quando c'è una montagna di esempi da cui imparare — e il mondo digitale ne produce in quantità senza precedenti.</p>
+    </div>
+    <div class="wbox gpu">
+      <h4>Le GPU</h4>
+      <p>Il loro calcolo è fatto di moltiplicazioni e somme semplici, ma <em>tante in parallelo</em>: gli output di uno stesso strato non dipendono l'uno dall'altro, quindi si calcolano tutti insieme. Esattamente ciò per cui le GPU sono nate.</p>
+    </div>
+  </div>
+  <p>Nel <b>2012 AlexNet</b> (Krizhevsky, Sutskever, Hinton) mette insieme i due ingredienti e cambia la storia.</p>
+  <div class="panel">
+    <div class="badge"><span class="dotp"></span> animato</div>
+    <div class="phd"><strong>La svolta del 2012 → l'esplosione della ricerca</strong></div>
+    <canvas id="cGrowth" height="250"></canvas>
+    <div class="cap">Curva illustrativa.</div>
+  </div>
+  <p class="pull">Il neurone era una bella storia. La vera sostanza, da qui in poi, è matematica.</p>
+</div></section>
+
+<!-- 03 MATMUL + NESSO -->
+<section id="s3"><div class="wrap reveal">
+  <div class="kicker"><span class="n">03</span> Vettori, matrici e il nesso</div>
+  <h2>La sostanza sono vettori e matrici</h2>
+  <p class="lead">Chi lavora con le reti non pensa "neuroni": pensa <b>vettori</b> e <b>matrici</b>. Ci arriviamo con tre passi semplici — e poi chiudiamo il cerchio.</p>
+
+  <h3>Il vettore</h3>
+  <p>Un <b>vettore</b> è solo una lista ordinata di numeri. In due dimensioni lo si legge come una freccia dall'origine: cambia i numeri, cambia la freccia. L'ordine conta — <span class="eq">(1, −4)</span> non è <span class="eq">(−4, 1)</span>.</p>
+  <div class="panel">
+    <div class="badge"><span class="dotp"></span> interattivo</div>
+    <div class="grid2">
+      <div><canvas id="cVec" height="240"></canvas></div>
+      <div>
+        <div class="ctrls" style="flex-direction:column;align-items:stretch;gap:12px">
+          <div class="ctrl"><label>componente x <b id="vxv">3.0</b></label><input id="vx" type="range" min="-5" max="5" step="0.1" value="3"></div>
+          <div class="ctrl"><label>componente y <b id="vyv">2.0</b></label><input id="vy" type="range" min="-5" max="5" step="0.1" value="2"></div>
+        </div>
+        <div class="readout">vettore <b id="vread">(3.0, 2.0)</b> · lunghezza <b id="vlen">—</b></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Le tre operazioni</h3>
+  <p>Sui vettori servono solo tre gesti: <b>sommarli</b> (testa-coda), <b>moltiplicarli per un numero</b> (allunga/accorcia), e il <b>dot product</b> (moltiplica elemento per elemento e somma → <em>un solo numero</em>, che dipende da tutti gli elementi). Quest'ultimo è il cuore di tutto.</p>
+  <div class="panel">
+    <div class="badge"><span class="dotp"></span> interattivo</div>
+    <div class="toggle" id="opTog">
+      <button data-op="sum" class="on">Somma</button>
+      <button data-op="scal">× scalare</button>
+      <button data-op="dot">Dot product</button>
+    </div>
+    <canvas id="cOps" height="260" style="margin-top:14px"></canvas>
+    <div class="ctrls" id="scalCtrl" style="display:none">
+      <div class="ctrl"><label>fattore k <b id="kv">2.0</b></label><input id="kSl" type="range" min="-2" max="2.5" step="0.1" value="2"></div>
+    </div>
+    <div class="readout" id="opRead">a + b = (1.0, 2.5)</div>
+  </div>
+
+  <h3>Matrici e prodotto matriciale</h3>
+  <p>Una <b>matrice</b> è una tabella di numeri: la si può vedere come tanti vettori impilati. L'operazione che ci serve, il <b>prodotto matriciale</b>, non è nulla di nuovo — ogni casella del risultato è il <em>dot product</em> di una riga con una colonna.</p>
+  <div class="panel">
+    <div class="badge tealb"><span class="dotp"></span> animato</div>
+    <div class="phd"><strong>Ogni casella = una riga × una colonna</strong></div>
+    <canvas id="cMat" height="310"></canvas>
+  </div>
+
+  <!-- NESSO -->
+  <div class="callout"><b>Il momento in cui si chiude il cerchio.</b> Dove sono finiti neuroni, assoni e dendriti? Sono <em>dentro</em> queste matrici.</div>
+
+  <div class="panel star">
+    <div class="badge"><span class="dotp"></span> il nesso rete ↔ matematica</div>
+    <div class="phd"><strong>Uno strato di neuroni <em>è</em> una moltiplicazione tra matrici</strong></div>
+    <p style="margin-top:6px">Il calcolo di un neurone — prendi gli input, moltiplica per i pesi, somma — <b>è</b> un dot product. Impila i pesi di tutti i neuroni e ottieni una matrice <span class="eq"><b>W</b></span>: allora un intero strato si scrive <span class="eq">v = ReLU(<b>W</b>·u + <b>b</b>)</span>. <b>Muovi i pesi</b> del neurone evidenziato: a sinistra cambia la rete, a destra la <em>stessa cosa</em> in forma di matrice.</p>
+    <div class="grid2" style="margin-top:16px">
+      <div>
+        <div class="cap" style="margin:0 0 6px">la rete</div>
+        <canvas id="cNexN" height="300"></canvas>
+      </div>
+      <div>
+        <div class="cap" style="margin:0 0 6px">la matematica — <b>una riga di W = i pesi di un neurone</b></div>
+        <canvas id="cNexM" height="300"></canvas>
+      </div>
+    </div>
+    <div class="ctrls" style="margin-top:16px">
+      <div class="ctrl"><label>peso w₁ <b id="w1v">0.50</b></label><input id="w1" type="range" min="-1" max="1" step="0.05" value="0.5"></div>
+      <div class="ctrl"><label>peso w₂ <b id="w2v">-0.30</b></label><input id="w2" type="range" min="-1" max="1" step="0.05" value="-0.3"></div>
+      <div class="ctrl"><label>peso w₃ <b id="w3v">0.80</b></label><input id="w3" type="range" min="-1" max="1" step="0.05" value="0.8"></div>
+      <div class="ctrl"><label>bias b (soglia) <b id="nbv">0.10</b></label><input id="nb" type="range" min="-1" max="1" step="0.05" value="0.1"></div>
+    </div>
+    <div class="readout"><span id="nexEq">w·u + b = —</span> · uscita <b id="nexV">—</b></div>
+    <div class="cap">La <b>ReLU</b> (tiene i positivi, azzera i negativi) è ciò che replica il "supera la soglia?".</div>
+  </div>
+
+  <p class="pull">Lavorare con le reti non è ragionare sui neuroni. È ragionare su matrici.</p>
+  <p class="mut">E non a caso: le GPU sono ottimizzate proprio per il prodotto tra matrici — lo stesso calcolo della grafica 3D.</p>
+</div></section>
+
+<!-- 04 UAT -->
+<section id="s4"><div class="wrap reveal">
+  <div class="kicker"><span class="n">04</span> Teorema di approssimazione universale</div>
+  <h2>Quante funzioni può calcolare?</h2>
+  <p class="lead">La risposta è vertiginosa: <b>qualsiasi</b>. Con abbastanza neuroni una rete può avvicinarsi quanto vuoi a <em>qualunque</em> funzione — una retta, una curva ondulata, una forma senza nome.</p>
+  <p>Aggiungi neuroni e guarda l'approssimante (in <b style="color:var(--teal)">verde</b>) inseguire la funzione obiettivo (in <b class="mut">grigio</b>): ogni neurone aggiunge un "pezzo" alla curva.</p>
+  <div class="panel">
+    <div class="badge tealb"><span class="dotp"></span> interattivo</div>
+    <canvas id="cUat" height="300"></canvas>
+    <div class="ctrls">
+      <div class="ctrl"><label>neuroni nascosti <b id="uatNv">4</b></label><input id="uatN" type="range" min="1" max="24" step="1" value="4"></div>
+    </div>
+    <div class="readout">errore di approssimazione <b id="uatErr">—</b></div>
+  </div>
+  <div class="callout">C'è un buco nella promessa: il teorema dice che i pesi giusti <b>esistono</b>. Non dice come <b>trovarli</b>. Ed è tutto il lavoro che viene dopo.</div>
+</div></section>
+
+<!-- 05 TRAINING -->
+<section id="s5"><div class="wrap reveal">
+  <div class="kicker"><span class="n">05</span> Training</div>
+  <h2>Come si trovano i pesi</h2>
+  <p class="lead">Nessuna formula magica. Solo un'idea: parti a caso, misura <b>quanto sbagli</b>, e <b>scivola verso l'errore minimo</b>. Passo dopo passo. È il <em>gradient descent</em>.</p>
+  <p>Un esempio concreto: le temperature di primavera. Ogni giorno una misura, con un po' di rumore. Cerchiamo la retta che le descrive meglio. Premi <b>Allena</b>: a sinistra la retta si sistema, a destra una pallina scende sulla "superficie dell'errore" verso il fondo.</p>
+  <div class="panel">
+    <div class="badge"><span class="dotp"></span> interattivo</div>
+    <div class="grid2">
+      <div>
+        <div class="cap" style="margin:0 0 6px">il dataset e la retta</div>
+        <canvas id="cFit" height="240"></canvas>
+        <div class="readout">y = <b id="fitW">-0.10</b>·giorno + <b id="fitB">20.0</b> · errore <b id="fitL">—</b></div>
+      </div>
+      <div>
+        <div class="cap" style="margin:0 0 6px">la superficie dell'errore</div>
+        <canvas id="cLoss" height="240"></canvas>
+        <div class="cap" style="margin-top:6px">più scuro = errore minore. La pallina scende lungo il gradiente.</div>
+      </div>
+    </div>
+    <div class="ctrls" style="margin-top:16px">
+      <button class="b acc" id="trainBtn">▶ Allena</button>
+      <button class="b ghost" id="resetBtn">↺ Ricomincia da valori a caso</button>
+      <span class="readout" style="margin:0">passo <b id="epoch">0</b></span>
+    </div>
+  </div>
+  <p class="mut">Nella realtà i pesi non sono 2 ma milioni (AlexNet ~60 milioni): la superficie non è più disegnabile, e il gradiente resta l'unica bussola — dice solo, localmente, da che parte scendere.</p>
+</div></section>
+
+<!-- 06 LIMITI / ARCHITETTURA -->
+<section id="s6"><div class="wrap reveal">
+  <div class="kicker"><span class="n">06</span> Limiti &amp; architettura</div>
+  <h2>Una retta non basta</h2>
+  <p class="lead">Prendi le temperature di <b>tutto l'anno</b>: salgono e scendono in modo ciclico, una retta non può seguirle. E c'è un tranello — <b>impilare neuroni "lineari" non aiuta</b>: due strati lineari collassano di nuovo in una sola retta.</p>
+  <p>La svolta è una funzione semplicissima, la <b>ReLU</b> (tiene i positivi, azzera i negativi): rompe la linearità e libera la rete. Attivala e aggiungi neuroni — la retta diventa una curva capace di seguire il ciclo. Cresci in <b>profondità</b> (più strati) e in <b>larghezza</b> (più neuroni).</p>
+  <div class="panel">
+    <div class="badge"><span class="dotp"></span> interattivo</div>
+    <canvas id="cArch" height="300"></canvas>
+    <div class="ctrls">
+      <div class="toggle" id="reluTog">
+        <button data-r="0">Senza ReLU</button>
+        <button data-r="1" class="on">Con ReLU</button>
+      </div>
+      <div class="ctrl"><label>neuroni <b id="archNv">6</b></label><input id="archN" type="range" min="1" max="20" step="1" value="6"></div>
+    </div>
+    <div class="readout">errore sul ciclo annuale <b id="archErr">—</b></div>
+  </div>
+  <p class="pull">Non è "più neuroni". È che l'architettura decide cosa la rete può imparare.</p>
+</div></section>
+
+<footer><div class="wrap">
+  <div>Arco della lezione · neurone → dati &amp; GPU → vettori/matrici → <b>il nesso W·u+b</b> → approssimazione universale → training → limiti &amp; architettura</div>
+  <div class="mono">Supporto alla spiegazione · Giornata 1.</div>
+</div></footer>
+
+<script>
+"use strict";
+/* ---------- palette (JS side, coerente col CSS) ---------- */
+const CO={ink:'#1a1a1a',ink2:'#5f5e5a',mut:'#8a887f',line:'#d9d6cc',lineS:'#b4b2a9',
+  paper2:'#e9e6dd',card2:'#faf8f6',accent:'#4338CA',accent2:'#3730A3',accentSoft:'#ebe9fb',
+  teal:'#0F766E',tealSoft:'#e2f2ef',amber:'#B45309',amberSoft:'#fbeedd',blue:'#2f7ec9'};
+function mono(){return "ui-monospace,'SF Mono',Menlo,Consolas,monospace";}
+function sans(){return "ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif";}
+
+/* ---------- canvas helper (DPR-safe) ---------- */
+function C(id){const c=document.getElementById(id);const dpr=Math.max(1,window.devicePixelRatio||1);const x=c.getContext('2d');
+  const h=+c.getAttribute('height');
+  function fit(){const w=c.clientWidth||600;const bw=Math.round(w*dpr),bh=Math.round(h*dpr);
+    if(c.width!==bw||c.height!==bh){c.width=bw;c.height=bh;}
+    x.setTransform(dpr,0,0,dpr,0,0);return x;}
+  return {c,ctx:x,fit,dpr,h};}
+function lerp(a,b,t){return a+(b-a)*t;}
+function relu(v){return v>0?v:0;}
+function fmt(n){return (n<0?'−':'')+Math.abs(n).toFixed(2);}
+/* linear solver + least squares (per UAT/training/arch) */
+function solve(A,y){const n=y.length;const M=A.map((r,i)=>r.concat([y[i]]));
+  for(let col=0;col<n;col++){let piv=col;for(let r=col+1;r<n;r++)if(Math.abs(M[r][col])>Math.abs(M[piv][col]))piv=r;
+    [M[col],M[piv]]=[M[piv],M[col]];const d=M[col][col]||1e-9;
+    for(let r=0;r<n;r++){if(r===col)continue;const f=M[r][col]/d;for(let k=col;k<=n;k++)M[r][k]-=f*M[col][k];}}
+  return M.map((r,i)=>r[n]/(M[i][i]||1e-9));}
+function lsq(feats,ys){const d=feats[0].length;const A=Array.from({length:d},()=>new Array(d).fill(0));const b=new Array(d).fill(0);
+  for(let i=0;i<feats.length;i++){const f=feats[i];for(let a=0;a<d;a++){b[a]+=f[a]*ys[i];for(let c=0;c<d;c++)A[a][c]+=f[a]*f[c];}}
+  for(let a=0;a<d;a++)A[a][a]+=1e-4; return solve(A,b);}
+function design(x,N,useReLU){const row=[1,x];if(useReLU){for(let i=1;i<=N;i++){const k=i/(N+1);row.push(relu(x-k));}}return row;}
+function roundRect(x,px,py,w,h,r){x.beginPath();x.moveTo(px+r,py);x.arcTo(px+w,py,px+w,py+h,r);x.arcTo(px+w,py+h,px,py+h,r);x.arcTo(px,py+h,px,py,r);x.arcTo(px,py,px+w,py,r);x.closePath();}
+
+/* ---------- resize + reveal + progress + dots ---------- */
+const _resizeCbs=[];function onResize(fn){_resizeCbs.push(fn);}
+let _rzT=null;addEventListener('resize',()=>{if(_rzT)clearTimeout(_rzT);
+  _rzT=setTimeout(()=>{_rzT=null;requestAnimationFrame(()=>_resizeCbs.forEach(fn=>fn()));},120);});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+let _scrTick=false;const _prog=document.getElementById('prog');
+addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimationFrame(()=>{_scrTick=false;
+  const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight);_prog.style.width=(p*100)+'%';});});
+/* dots nav */
+(function(){const labels={s0:'Intro',s1:'Neurone',s2:'Dati & GPU',s3:'Il nesso',s4:'Approssimazione',s5:'Training',s6:'Architettura'};
+ const nav=document.getElementById('dots');const secs=[...document.querySelectorAll('section')];
+ secs.forEach(s=>{const a=document.createElement('a');a.href='#'+s.id;a.innerHTML='<span>'+(labels[s.id]||s.id)+'</span>';a.dataset.id=s.id;nav.appendChild(a);});
+ const links=[...nav.querySelectorAll('a')];
+ const ob=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.dataset.id===e.target.id));}});},{rootMargin:'-45% 0px -45% 0px'});
+ secs.forEach(s=>ob.observe(s));
+})();
+
+/* ================= 01a NEURON BIOLOGICAL SCHEMA ================= */
+(function(){const {c,fit,h}=C('cNeuroBio');
+ function draw(){const x=fit();const cw=c.clientWidth,ch=h;x.clearRect(0,0,cw,ch);
+  const cy=ch*0.52;const somaX=cw*0.26,somaR=Math.min(34,cw*0.06);
+  // dendrites
+  x.strokeStyle=CO.blue;x.lineWidth=2;
+  const dOrigin=[somaX-somaR*0.7,cy];
+  [[-0.9,-1.2],[-1.15,-0.4],[-1.1,0.5],[-0.85,1.2],[-0.5,1.5]].forEach(d=>{
+    x.beginPath();x.moveTo(dOrigin[0],dOrigin[1]);
+    const ex=dOrigin[0]-Math.abs(d[0])*cw*0.14, ey=cy+d[1]*ch*0.24;
+    x.quadraticCurveTo(dOrigin[0]-cw*0.05,cy+d[1]*ch*0.10,ex,ey);x.stroke();
+    x.beginPath();x.moveTo(ex,ey);x.lineTo(ex-cw*0.03,ey-ch*0.06);x.stroke();
+    x.beginPath();x.moveTo(ex,ey);x.lineTo(ex-cw*0.035,ey+ch*0.04);x.stroke();});
+  // soma
+  x.fillStyle='#e7eefb';x.strokeStyle=CO.blue;x.lineWidth=2.5;x.beginPath();x.arc(somaX,cy,somaR,0,7);x.fill();x.stroke();
+  x.fillStyle=CO.blue;x.beginPath();x.arc(somaX,cy,somaR*0.28,0,7);x.fill();
+  // axon
+  const axStart=somaX+somaR,axEnd=cw*0.72;
+  x.strokeStyle=CO.lineS;x.lineWidth=2;x.beginPath();x.moveTo(axStart,cy);x.lineTo(axStart+cw*0.04,cy);x.stroke();
+  x.fillStyle=CO.amberSoft;x.strokeStyle=CO.amber;x.lineWidth=2;roundRect(x,axStart+cw*0.04,cy-9,cw*0.28,18,9);x.fill();x.stroke();
+  // signal arrow
+  x.fillStyle=CO.amber;const ax=axStart+cw*0.04+cw*0.14;x.beginPath();x.moveTo(ax-6,cy-5);x.lineTo(ax+6,cy);x.lineTo(ax-6,cy+5);x.fill();
+  // terminal + synapse
+  x.strokeStyle=CO.lineS;x.beginPath();x.moveTo(axStart+cw*0.04+cw*0.28,cy);x.lineTo(axEnd,cy);x.stroke();
+  x.fillStyle=CO.accent;x.beginPath();x.arc(axEnd,cy,7,0,7);x.fill();
+  x.setLineDash([4,3]);x.strokeStyle=CO.accent;x.lineWidth=1.5;x.beginPath();x.arc(axEnd+cw*0.045,cy,13,0,7);x.stroke();x.setLineDash([]);
+  // downstream neuron
+  x.fillStyle='#efeafb';x.strokeStyle=CO.accent;x.lineWidth=2;x.beginPath();x.arc(cw*0.92,cy,somaR*0.7,0,7);x.fill();x.stroke();
+  x.strokeStyle=CO.accent;x.beginPath();x.moveTo(axEnd+cw*0.058,cy);x.lineTo(cw*0.92-somaR*0.7,cy);x.stroke();
+  // labels
+  x.fillStyle=CO.ink;x.font='italic 13px '+sans();x.textAlign='center';
+  x.fillText('dendriti',dOrigin[0]-cw*0.08,cy-ch*0.30);
+  x.fillText('soma',somaX,cy+somaR+18);
+  x.fillText('assone',axStart+cw*0.18,cy-32);
+  x.fillStyle=CO.accent;x.fillText('sinapsi',axEnd+cw*0.045,cy-24);
+  x.fillStyle=CO.mut;x.font='11px '+sans();
+  x.fillText('ricevono i segnali',dOrigin[0]-cw*0.08,cy-ch*0.30+15);
+  x.fillText('integra e decide',somaX,cy+somaR+32);
+  x.fillText('trasmette a valle',axStart+cw*0.18,cy-18);
+ }
+ onResize(draw);requestAnimationFrame(draw);
+})();
+
+/* ================= 01b PERCEPTRON ================= */
+(function(){const {c,fit,h}=C('cPerc');const W=[0.9,0.7,0.6];
+ function v(id){return +document.getElementById(id).value;}
+ function draw(){const x=fit();const cw=c.clientWidth,ch=h;x.clearRect(0,0,cw,ch);
+  const xs=[v('x1'),v('x2'),v('x3')],th=v('th');
+  const sum=xs.reduce((s,xi,i)=>s+xi*W[i],0);const on=sum>=th;
+  const inX=cw*0.16,outX=cw*0.66,cy=ch/2,ys=[ch*0.26,ch*0.5,ch*0.74];
+  for(let i=0;i<3;i++){const contrib=xs[i]*W[i];
+   x.strokeStyle=on?'rgba(15,118,110,.55)':'rgba(67,56,202,.4)';x.lineWidth=1+contrib*5;
+   x.beginPath();x.moveTo(inX+16,ys[i]);x.lineTo(outX-30,cy);x.stroke();
+   x.fillStyle='#fff';x.strokeStyle=CO.lineS;x.lineWidth=1.5;x.beginPath();x.arc(inX,ys[i],15,0,7);x.fill();x.stroke();
+   x.fillStyle=CO.ink;x.font='12px '+mono();x.textAlign='center';x.fillText('x'+(i+1),inX,ys[i]+4);
+   x.fillStyle=CO.mut;x.font='11px '+mono();x.fillText('·'+W[i],(inX+outX)/2-24,ys[i]+ (i-1)*10-6);}
+  const glowA=on?Math.min(.85,0.3+(sum-th)):0.12;
+  x.fillStyle=on?('rgba(15,118,110,'+glowA+')'):'rgba(67,56,202,.10)';x.beginPath();x.arc(outX,cy,42,0,7);x.fill();
+  x.fillStyle='#fff';x.strokeStyle=on?CO.teal:CO.accent;x.lineWidth=3;x.beginPath();x.arc(outX,cy,30,0,7);x.fill();x.stroke();
+  x.fillStyle=on?CO.teal:CO.mut;x.font='700 13px '+mono();x.fillText(on?'ON':'off',outX,cy+4);
+  x.strokeStyle=on?CO.teal:CO.lineS;x.lineWidth=on?4:2;x.beginPath();x.moveTo(outX+30,cy);x.lineTo(cw-18,cy);x.stroke();
+  // readouts
+  document.getElementById('nsum').textContent=sum.toFixed(2);
+  document.getElementById('nth').textContent=th.toFixed(2);
+  const st=document.getElementById('nstate');st.textContent=on?'ACCESO':'spento';st.style.color=on?CO.teal:CO.mut;
+  ['x1','x2','x3','th'].forEach(k=>document.getElementById(k+'v').textContent=v(k).toFixed(2));
+ }
+ ['x1','x2','x3','th'].forEach(id=>document.getElementById(id).addEventListener('input',draw));
+ onResize(draw);requestAnimationFrame(draw);
+})();
+
+/* ================= 02 GROWTH ================= */
+(function(){const {c,fit,h}=C('cGrowth');let t=0,started=false;
+ function draw(){const x=fit();const cw=c.clientWidth,ch=h;const pad=42;x.clearRect(0,0,cw,ch);
+  x.strokeStyle=CO.line;x.lineWidth=1;x.beginPath();x.moveTo(pad,ch-pad);x.lineTo(cw-14,ch-pad);x.moveTo(pad,ch-pad);x.lineTo(pad,14);x.stroke();
+  const x0=2006,x1=2024;function px(yr){return pad+(yr-x0)/(x1-x0)*(cw-pad-20);}
+  function py(val){return (ch-pad)-val*(ch-pad-20);}
+  function curve(yr){const s=1/(1+Math.exp(-(yr-2015)/2.4));return 0.05+0.9*s;}
+  x.setLineDash([4,4]);x.strokeStyle='rgba(180,83,9,.6)';x.beginPath();x.moveTo(px(2012),16);x.lineTo(px(2012),ch-pad);x.stroke();x.setLineDash([]);
+  const tt=Math.min(1,t/120);const lastYr=x0+(x1-x0)*tt;
+  x.beginPath();x.moveTo(px(x0),py(curve(x0)));for(let yr=x0;yr<=lastYr;yr+=0.1)x.lineTo(px(yr),py(curve(yr)));
+  x.lineTo(px(lastYr),ch-pad);x.lineTo(px(x0),ch-pad);x.closePath();
+  const g=x.createLinearGradient(0,14,0,ch);g.addColorStop(0,'rgba(67,56,202,.30)');g.addColorStop(1,'rgba(67,56,202,0)');x.fillStyle=g;x.fill();
+  x.beginPath();x.moveTo(px(x0),py(curve(x0)));for(let yr=x0;yr<=lastYr;yr+=0.1)x.lineTo(px(yr),py(curve(yr)));
+  x.strokeStyle=CO.accent;x.lineWidth=2.5;x.stroke();
+  x.fillStyle=CO.amber;x.font='700 12px '+mono();x.textAlign='center';x.fillText('AlexNet · 2012',px(2012),ch-pad+30);
+  x.fillStyle=CO.mut;x.font='11px '+mono();[2006,2010,2016,2020,2024].forEach(yr=>x.fillText(yr,px(yr),ch-pad+16));
+  x.save();x.translate(14,ch/2);x.rotate(-Math.PI/2);x.textAlign='center';x.fillText('pubblicazioni IA',0,0);x.restore();
+  if(t<130){t+=1.4;requestAnimationFrame(draw);}
+ }
+ const ob=new IntersectionObserver(e=>{if(e[0].isIntersecting&&!started){started=true;t=0;draw();ob.disconnect();}},{threshold:.3});ob.observe(c);
+ onResize(()=>{if(started)draw();});
+})();
+
+/* ================= 03a VECTOR ================= */
+(function(){const {c,fit,h}=C('cVec');
+ function v(id){return +document.getElementById(id).value;}
+ function draw(){const x=fit();const cw=c.clientWidth,ch=h;x.clearRect(0,0,cw,ch);
+  const cx=cw/2,cy=ch/2,s=Math.min(cw,ch)/12;
+  function X(u){return cx+u*s;}function Y(u){return cy-u*s;}
+  x.strokeStyle=CO.line;x.lineWidth=1;for(let i=-5;i<=5;i++){x.beginPath();x.moveTo(X(i),0);x.lineTo(X(i),ch);x.stroke();x.beginPath();x.moveTo(0,Y(i));x.lineTo(cw,Y(i));x.stroke();}
+  x.strokeStyle=CO.lineS;x.lineWidth=1.4;x.beginPath();x.moveTo(0,Y(0));x.lineTo(cw,Y(0));x.moveTo(X(0),0);x.lineTo(X(0),ch);x.stroke();
+  const vx=v('vx'),vy=v('vy');
+  // components
+  x.strokeStyle='rgba(15,118,110,.5)';x.setLineDash([4,3]);x.lineWidth=1.5;
+  x.beginPath();x.moveTo(X(0),Y(0));x.lineTo(X(vx),Y(0));x.lineTo(X(vx),Y(vy));x.stroke();x.setLineDash([]);
+  // vector
+  x.strokeStyle=CO.accent;x.lineWidth=3;x.beginPath();x.moveTo(X(0),Y(0));x.lineTo(X(vx),Y(vy));x.stroke();
+  const ang=Math.atan2(-(Y(vy)-Y(0)),X(vx)-X(0));x.fillStyle=CO.accent;x.beginPath();
+  x.moveTo(X(vx),Y(vy));x.lineTo(X(vx)-11*Math.cos(ang-0.4),Y(vy)+11*Math.sin(ang-0.4));x.lineTo(X(vx)-11*Math.cos(ang+0.4),Y(vy)+11*Math.sin(ang+0.4));x.fill();
+  x.fillStyle=CO.accent;x.font='700 13px '+mono();x.textAlign='left';x.fillText('('+vx.toFixed(1)+', '+vy.toFixed(1)+')',X(vx)+8,Y(vy)-6);
+  document.getElementById('vxv').textContent=vx.toFixed(1);
+  document.getElementById('vyv').textContent=vy.toFixed(1);
+  document.getElementById('vread').textContent='('+vx.toFixed(1)+', '+vy.toFixed(1)+')';
+  document.getElementById('vlen').textContent=Math.hypot(vx,vy).toFixed(2);
+ }
+ ['vx','vy'].forEach(id=>document.getElementById(id).addEventListener('input',draw));
+ onResize(draw);requestAnimationFrame(draw);
+})();
+
+/* ================= 03b VECTOR OPERATIONS ================= */
+(function(){const {c,fit,h}=C('cOps');let mode='sum';
+ const a=[2,1],b=[-1,2];
+ function draw(){const x=fit();const cw=c.clientWidth,ch=h;x.clearRect(0,0,cw,ch);
+  const cx=cw*0.42,cy=ch*0.62,s=Math.min(cw,ch)/9;
+  function X(u){return cx+u*s;}function Y(u){return cy-u*s;}
+  x.strokeStyle=CO.line;for(let i=-6;i<=6;i++){x.beginPath();x.moveTo(X(i),0);x.lineTo(X(i),ch);x.stroke();x.beginPath();x.moveTo(0,Y(i));x.lineTo(cw,Y(i));x.stroke();}
+  x.strokeStyle=CO.lineS;x.lineWidth=1.3;x.beginPath();x.moveTo(0,Y(0));x.lineTo(cw,Y(0));x.moveTo(X(0),0);x.lineTo(X(0),ch);x.stroke();
+  function arrow(from,to,col,lw){x.strokeStyle=col;x.lineWidth=lw||3;x.beginPath();x.moveTo(X(from[0]),Y(from[1]));x.lineTo(X(to[0]),Y(to[1]));x.stroke();
+   const ang=Math.atan2(-(Y(to[1])-Y(from[1])),X(to[0])-X(from[0]));x.fillStyle=col;x.beginPath();
+   x.moveTo(X(to[0]),Y(to[1]));x.lineTo(X(to[0])-10*Math.cos(ang-0.4),Y(to[1])+10*Math.sin(ang-0.4));x.lineTo(X(to[0])-10*Math.cos(ang+0.4),Y(to[1])+10*Math.sin(ang+0.4));x.fill();}
+  const rd=document.getElementById('opRead');
+  if(mode==='sum'){
+   arrow([0,0],a,CO.accent);arrow(a,[a[0]+b[0],a[1]+b[1]],CO.amber);arrow([0,0],[a[0]+b[0],a[1]+b[1]],CO.teal);
+   x.fillStyle=CO.accent;x.font='700 12px '+mono();x.fillText('a',X(a[0])+6,Y(a[1])+4);
+   x.fillStyle=CO.amber;x.fillText('b',X(a[0]+b[0]/2)+6,Y(a[1]+b[1]/2));
+   x.fillStyle=CO.teal;x.fillText('a+b',X(a[0]+b[0])-6,Y(a[1]+b[1])-8);
+   rd.innerHTML='a + b = ('+(a[0]+b[0]).toFixed(1)+', '+(a[1]+b[1]).toFixed(1)+') — coda di b attaccata alla testa di a';
+  } else if(mode==='scal'){
+   const k=+document.getElementById('kSl').value;
+   arrow([0,0],[a[0]*k,a[1]*k],CO.teal,4);arrow([0,0],a,CO.accent);
+   x.fillStyle=CO.accent;x.font='700 12px '+mono();x.fillText('a',X(a[0])+6,Y(a[1])+4);
+   x.fillStyle=CO.teal;x.fillText(k.toFixed(1)+'·a',X(a[0]*k)+6,Y(a[1]*k));
+   document.getElementById('kv').textContent=k.toFixed(1);
+   rd.innerHTML=k.toFixed(1)+'·a = ('+(a[0]*k).toFixed(1)+', '+(a[1]*k).toFixed(1)+') — stessa direzione, lunghezza scalata';
+  } else {
+   arrow([0,0],a,CO.accent);arrow([0,0],b,CO.amber);
+   const dp=a[0]*b[0]+a[1]*b[1];
+   x.fillStyle=CO.accent;x.font='700 12px '+mono();x.fillText('a',X(a[0])+6,Y(a[1])+4);
+   x.fillStyle=CO.amber;x.fillText('b',X(b[0])-14,Y(b[1]));
+   rd.innerHTML='a · b = ('+a[0]+'·'+b[0]+') + ('+a[1]+'·'+b[1]+') = <b>'+dp+'</b> — un solo numero';
+  }
+ }
+ document.querySelectorAll('#opTog button').forEach(btn=>btn.addEventListener('click',()=>{
+   mode=btn.dataset.op;document.querySelectorAll('#opTog button').forEach(b=>b.classList.toggle('on',b===btn));
+   document.getElementById('scalCtrl').style.display=(mode==='scal')?'flex':'none';draw();}));
+ document.getElementById('kSl').addEventListener('input',draw);
+ onResize(draw);requestAnimationFrame(draw);
+})();
+
+/* ================= 03c MATRIX PRODUCT ================= */
+(function(){const {c,fit,h}=C('cMat');
+ const A=[[1,2,1],[3,1,2]],B=[[2,1],[1,3],[4,2]];const Cm=[[0,0],[0,0]];
+ for(let i=0;i<2;i++)for(let j=0;j<2;j++){let s=0;for(let k=0;k<3;k++)s+=A[i][k]*B[k][j];Cm[i][j]=s;}
+ let hi=0,t=0,visible=false,running=false;
+ function draw(){const x=fit();const cw=c.clientWidth,ch=h;x.clearRect(0,0,cw,ch);
+  const ai=Math.floor(hi/2),aj=hi%2;
+  const cell=Math.min(34,cw*0.062);const gap=Math.round(cell*0.55);
+  // schema "di Falk": A in basso a sinistra, B in alto, C all'incrocio
+  const totW=3*cell+gap+2*cell, totH=3*cell+gap+2*cell;
+  const ax=(cw-totW)/2, by=Math.max(20,(ch-40-totH)/2);
+  const bx=ax+3*cell+gap, ay=by+3*cell+gap;
+  // guide dell'incrocio (sotto le griglie): riga di A → cella di C ← colonna di B
+  const gyC=ay+ai*cell+cell/2, gxC=bx+aj*cell+cell/2;
+  x.strokeStyle='rgba(67,56,202,.45)';x.lineWidth=1.5;x.setLineDash([5,4]);
+  x.beginPath();x.moveTo(ax,gyC);x.lineTo(gxC,gyC);x.stroke();
+  x.beginPath();x.moveTo(gxC,by);x.lineTo(gxC,gyC);x.stroke();x.setLineDash([]);
+  function grid(gx,gy,M,rows,cols,hiRow,hiCol,label,labelPos){
+   x.fillStyle=CO.mut;x.font='italic 13px '+sans();x.textAlign='center';
+   if(labelPos==='left'){x.fillText(label,gx-16,gy+rows*cell/2+4);}
+   else if(labelPos==='right'){x.fillText(label,gx+cols*cell+14,gy+rows*cell/2+4);}
+   else{x.fillText(label,gx+cols*cell/2,gy-9);}
+   for(let i=0;i<rows;i++)for(let j=0;j<cols;j++){
+    const rH=(hiRow===i),cH=(hiCol===j),cellHi=(hiRow===i&&hiCol===j);
+    x.fillStyle=cellHi?CO.accentSoft:( (rH&&hiCol==null)||(cH&&hiRow==null)?CO.accentSoft:'#fff');
+    x.strokeStyle=(rH||cH)?CO.accent:CO.line;x.lineWidth=(rH||cH)?1.6:1;
+    x.fillRect(gx+j*cell,gy+i*cell,cell-2,cell-2);x.strokeRect(gx+j*cell,gy+i*cell,cell-2,cell-2);
+    x.fillStyle=CO.ink;x.font='13px '+mono();x.textAlign='center';x.fillText(M[i][j],gx+j*cell+cell/2-1,gy+i*cell+cell/2+4);}
+  }
+  grid(bx,by,B,3,2,null,aj,'B','top');
+  grid(ax,ay,A,2,3,ai,null,'A','left');
+  grid(bx,ay,Cm,2,2,ai,aj,'C = A·B','right');
+  // formula for highlighted cell
+  x.fillStyle=CO.accent;x.font='13px '+mono();x.textAlign='center';
+  const parts=[];for(let k=0;k<3;k++)parts.push(A[ai][k]+'·'+B[k][aj]);
+  x.fillText('c'+(ai+1)+(aj+1)+' = '+parts.join(' + ')+' = '+Cm[ai][aj],cw/2,ch-14);
+  t++;if(t%450===0)hi=(hi+1)%4;
+  if(visible&&!document.hidden){running=true;requestAnimationFrame(draw);}else running=false;
+ }
+ function kick(){if(visible&&!document.hidden&&!running){running=true;requestAnimationFrame(draw);}}
+ const ob=new IntersectionObserver(e=>{visible=e[0].isIntersecting;if(visible)kick();},{threshold:.25});ob.observe(c);
+ document.addEventListener('visibilitychange',kick);
+ onResize(()=>{if(!running)draw();});
+})();
+
+/* ================= 03d NEXUS (synchronized) ================= */
+(function(){
+ const nN=C('cNexN'),nM=C('cNexM');
+ const u=[0.6,0.9,0.4];              // input fissi
+ const other0=[0.2,0.7,-0.3],other2=[-0.5,0.1,0.4]; // altre righe (statiche, grigie)
+ function wArr(){return [+val('w1'),+val('w2'),+val('w3')];}
+ function val(id){return document.getElementById(id).value;}
+ function pre(){const w=wArr();return w[0]*u[0]+w[1]*u[1]+w[2]*u[2]+ (+val('nb'));}
+ function drawNeurons(){const x=nN.fit();const cw=nN.c.clientWidth,ch=nN.h;x.clearRect(0,0,cw,ch);
+  const w=wArr();const p=pre(),v=relu(p);
+  const inX=cw*0.17,outX=cw*0.72,cy=ch/2,ys=[ch*0.22,ch*0.5,ch*0.78];
+  for(let i=0;i<3;i++){const pos=w[i]>=0;
+   x.strokeStyle=pos?'rgba(15,118,110,.7)':'rgba(180,83,9,.7)';x.lineWidth=1+Math.abs(w[i])*4;
+   x.beginPath();x.moveTo(inX+19,ys[i]);x.lineTo(outX-32,cy);x.stroke();
+   x.fillStyle='#fff';x.strokeStyle=CO.lineS;x.lineWidth=1.5;x.beginPath();x.arc(inX,ys[i],19,0,7);x.fill();x.stroke();
+   x.fillStyle=CO.ink;x.font='13px '+mono();x.textAlign='center';x.fillText(u[i].toFixed(1),inX,ys[i]+4.5);
+   x.fillStyle=pos?CO.teal:CO.amber;x.font='700 12.5px '+mono();x.fillText('w'+(i+1)+'='+w[i].toFixed(2),(inX+outX)/2-6,ys[i]+(i-1)*9-8);}
+  const on=v>0;x.fillStyle=on?'rgba(15,118,110,'+Math.min(.8,0.25+v)+')':'rgba(67,56,202,.10)';x.beginPath();x.arc(outX,cy,46,0,7);x.fill();
+  x.fillStyle='#fff';x.strokeStyle=on?CO.teal:CO.accent;x.lineWidth=3;x.beginPath();x.arc(outX,cy,34,0,7);x.fill();x.stroke();
+  x.fillStyle=on?CO.teal:CO.mut;x.font='700 14px '+mono();x.fillText('v='+v.toFixed(2),outX,cy+5);
+  x.fillStyle=CO.mut;x.font='12.5px '+sans();x.textAlign='center';x.fillText('input u',inX,ch-12);x.fillText('neurone v',outX,ch-12);
+ }
+ function drawMatrix(){const x=nM.fit();const cw=nM.c.clientWidth,ch=nM.h;x.clearRect(0,0,cw,ch);
+  const w=wArr(),b=+val('nb'),p=pre(),v=relu(p);
+  const cell=Math.min(38,cw*0.078),gx=cw*0.09,gy=34;
+  const rows=[other0,w,other2];
+  x.fillStyle=CO.mut;x.font='italic 13px '+sans();x.textAlign='center';x.fillText('W',gx+1.5*cell,gy-10);
+  for(let i=0;i<3;i++)for(let j=0;j<3;j++){const active=(i===1);
+   x.fillStyle=active?CO.accentSoft:'#fff';x.strokeStyle=active?CO.accent:CO.line;x.lineWidth=active?1.6:1;
+   x.fillRect(gx+j*cell,gy+i*cell,cell-3,cell-3);x.strokeRect(gx+j*cell,gy+i*cell,cell-3,cell-3);
+   x.fillStyle=active?CO.accent:CO.mut;x.font=(active?'700 ':'')+'13px '+mono();x.textAlign='center';
+   x.fillText(rows[i][j].toFixed(1),gx+j*cell+cell/2-1.5,gy+i*cell+cell/2+4.5);}
+  // · u
+  let cxp=gx+3*cell+14;x.fillStyle=CO.ink;x.font='17px '+mono();x.textAlign='left';x.fillText('·',cxp,gy+1.5*cell+2);cxp+=18;
+  x.fillStyle=CO.mut;x.font='italic 13px '+sans();x.textAlign='center';x.fillText('u',cxp+cell/2,gy-10);
+  for(let i=0;i<3;i++){x.fillStyle='#fff';x.strokeStyle=CO.line;x.lineWidth=1;x.fillRect(cxp,gy+i*cell,cell-3,cell-3);x.strokeRect(cxp,gy+i*cell,cell-3,cell-3);
+   x.fillStyle=CO.ink;x.font='13px '+mono();x.fillText(u[i].toFixed(1),cxp+cell/2-1.5,gy+i*cell+cell/2+4.5);}
+  cxp+=cell+12;x.fillStyle=CO.ink;x.font='17px '+mono();x.textAlign='left';x.fillText('+ b',cxp,gy+1.5*cell+2);
+  // arithmetic of active row -> ReLU
+  const parts=[];for(let k=0;k<3;k++)parts.push(fmt(w[k])+'·'+u[k].toFixed(1));
+  const afs=cw<430?11.5:13.5; // font adattivo su schermi stretti
+  x.fillStyle=CO.accent;x.font='700 13px '+mono();x.textAlign='left';
+  x.fillText('riga di W · u + b:',gx,ch-72);
+  x.fillStyle=CO.ink2;x.font=afs+'px '+mono();x.fillText(parts.join(' + ')+' + '+fmt(b),gx,ch-48);
+  x.fillStyle=CO.ink;x.font='14px '+mono();
+  x.fillText('= '+fmt(p)+'   →   ReLU('+fmt(p)+') = ',gx,ch-22);
+  const tw=x.measureText('= '+fmt(p)+'   →   ReLU('+fmt(p)+') = ').width;
+  x.fillStyle=v>0?CO.teal:CO.mut;x.font='700 14px '+mono();x.fillText(fmt(v),gx+tw+2,ch-22);
+ }
+ function render(){drawNeurons();drawMatrix();
+  ['w1','w2','w3','nb'].forEach(id=>{const el=document.getElementById(id+ (id==='nb'?'v':'v'));});
+  document.getElementById('w1v').textContent=(+val('w1')).toFixed(2);
+  document.getElementById('w2v').textContent=(+val('w2')).toFixed(2);
+  document.getElementById('w3v').textContent=(+val('w3')).toFixed(2);
+  document.getElementById('nbv').textContent=(+val('nb')).toFixed(2);
+  const p=pre(),v=relu(p);
+  document.getElementById('nexEq').innerHTML='w·u + b = '+fmt(p);
+  const nv=document.getElementById('nexV');nv.textContent='v = '+fmt(v);nv.style.color=v>0?CO.teal:CO.mut;
+ }
+ ['w1','w2','w3','nb'].forEach(id=>document.getElementById(id).addEventListener('input',render));
+ onResize(render);requestAnimationFrame(render);
+})();
+
+/* ================= 04 UAT ================= */
+(function(){const {c,fit,h}=C('cUat');
+ function target(x){return 0.5+0.28*Math.sin(6.3*x)-0.16*Math.cos(3.1*x+0.6)-0.12*x;}
+ const S=[];for(let i=0;i<=120;i++){const xx=i/120;S.push([xx,target(xx)]);}
+ function draw(){const x=fit();const cw=c.clientWidth,ch=h;const pad=16;
+  const N=+document.getElementById('uatN').value;document.getElementById('uatNv').textContent=N;
+  function X(v){return pad+v*(cw-2*pad);}function Y(v){return ch-pad-v*(ch-2*pad);}
+  x.clearRect(0,0,cw,ch);
+  x.strokeStyle=CO.line;for(let i=0;i<=8;i++){x.beginPath();x.moveTo(X(i/8),pad);x.lineTo(X(i/8),ch-pad);x.stroke();}
+  x.strokeStyle=CO.lineS;x.lineWidth=2.5;x.beginPath();S.forEach((p,i)=>{i?x.lineTo(X(p[0]),Y(p[1])):x.moveTo(X(p[0]),Y(p[1]));});x.stroke();
+  const feats=S.map(p=>design(p[0],N,true));const w=lsq(feats,S.map(p=>p[1]));
+  let err=0;x.strokeStyle=CO.teal;x.lineWidth=2.5;x.beginPath();
+  S.forEach((p,i)=>{const f=design(p[0],N,true);let yh=0;for(let k=0;k<w.length;k++)yh+=w[k]*f[k];err+=(yh-p[1])**2;i?x.lineTo(X(p[0]),Y(yh)):x.moveTo(X(p[0]),Y(yh));});x.stroke();
+  document.getElementById('uatErr').textContent=Math.sqrt(err/S.length).toFixed(3);
+ }
+ document.getElementById('uatN').addEventListener('input',draw);onResize(draw);requestAnimationFrame(draw);
+})();
+
+/* ================= 05 TRAINING ================= */
+(function(){const fitC=C('cFit'),lossC=C('cLoss');
+ const data=[];let seed=7;function rnd(){seed=(seed*9301+49297)%233280;return seed/233280;}
+ for(let d=0;d<=60;d+=2){data.push([d,0.17*d+10+(rnd()-0.5)*4.5]);}
+ const trueW=0.17,trueB=10;let W=-0.1,b=20,epoch=0,anim=null;
+ function loss(w,bb){let s=0;data.forEach(p=>{const e=(w*p[0]+bb)-p[1];s+=e*e;});return s/data.length;}
+ function grad(){let gw=0,gb=0;data.forEach(p=>{const e=(W*p[0]+b)-p[1];gw+=2*e*p[0];gb+=2*e;});return[gw/data.length,gb/data.length];}
+ function drawFit(){const x=fitC.fit();const cw=fitC.c.clientWidth,ch=fitC.h;const pad=34;x.clearRect(0,0,cw,ch);
+  function X(d){return pad+d/60*(cw-pad-14);}function Y(t){return (ch-pad)-(t-4)/24*(ch-pad-14);}
+  x.strokeStyle=CO.line;x.beginPath();x.moveTo(pad,ch-pad);x.lineTo(cw-14,ch-pad);x.moveTo(pad,ch-pad);x.lineTo(pad,10);x.stroke();
+  x.fillStyle=CO.mut;x.font='10px '+mono();x.textAlign='center';x.fillText('giorno',cw/2,ch-8);
+  data.forEach(p=>{x.fillStyle=CO.amber;x.beginPath();x.arc(X(p[0]),Y(p[1]),3.4,0,7);x.fill();});
+  x.strokeStyle=CO.accent;x.lineWidth=3;x.beginPath();x.moveTo(X(0),Y(b));x.lineTo(X(60),Y(W*60+b));x.stroke();
+  document.getElementById('fitW').textContent=W.toFixed(2);
+  document.getElementById('fitB').textContent=b.toFixed(1);
+  document.getElementById('fitL').textContent=loss(W,b).toFixed(2);
+ }
+ const Wm=-0.3,WM=0.5,bm=4,bM=22;let lossBg=null,lossBgW=0,lossBgH=0;
+ function buildLoss(cw,ch){const off=document.createElement('canvas');off.width=cw;off.height=ch;
+  const ox=off.getContext('2d');const img=ox.createImageData(cw,ch);let lmax=0;const cache=new Float64Array(cw*ch);
+  for(let py=0;py<ch;py++){const bb=bM-(py/ch)*(bM-bm);for(let px=0;px<cw;px++){const w=Wm+(px/cw)*(WM-Wm);
+    const l=loss(w,bb);cache[py*cw+px]=l;if(l>lmax)lmax=l;}}
+  for(let i=0;i<cw*ch;i++){const l=cache[i]/lmax;const t=Math.pow(1-l,1.5);const idx=i*4;
+   img.data[idx]=Math.floor(lerp(233,67,t));img.data[idx+1]=Math.floor(lerp(230,56,t));
+   img.data[idx+2]=Math.floor(lerp(221,202,t));img.data[idx+3]=255;}
+  ox.putImageData(img,0,0);lossBg=off;lossBgW=cw;lossBgH=ch;}
+ function invalidateLoss(){lossBg=null;}
+ function drawLoss(){const x=lossC.fit();const cw=lossC.c.clientWidth,ch=lossC.h;
+  if(!lossBg||lossBgW!==cw||lossBgH!==ch)buildLoss(cw,ch);
+  x.drawImage(lossBg,0,0,cw,ch);
+  function PX(w){return (w-Wm)/(WM-Wm)*cw;}function PY(bb){return (bM-bb)/(bM-bm)*ch;}
+  x.strokeStyle=CO.teal;x.lineWidth=2;x.beginPath();x.arc(PX(trueW),PY(trueB),6,0,7);x.stroke();
+  x.fillStyle=CO.amber;x.strokeStyle='#fff';x.lineWidth=2;x.beginPath();x.arc(PX(W),PY(b),7,0,7);x.fill();x.stroke();
+  x.fillStyle='#fff';x.font='10px '+mono();x.textAlign='left';x.fillText('W→',cw-28,ch-6);x.fillText('b↑',6,14);
+ }
+ function redraw(){drawFit();drawLoss();document.getElementById('epoch').textContent=epoch;}
+ function step(){const[gw,gb]=grad();W-=0.00045*gw;b-=0.02*gb;epoch++;redraw();
+   if(epoch<400&&(Math.abs(gw)>0.02||Math.abs(gb)>0.02))anim=requestAnimationFrame(step);else anim=null;}
+ document.getElementById('trainBtn').addEventListener('click',()=>{if(anim)return;step();});
+ document.getElementById('resetBtn').addEventListener('click',()=>{if(anim){cancelAnimationFrame(anim);anim=null;}W=-0.3+Math.random()*0.7;b=6+Math.random()*12;epoch=0;redraw();});
+ onResize(()=>{invalidateLoss();redraw();});requestAnimationFrame(redraw);
+})();
+
+/* ================= 06 ARCHITECTURE (ReLU) ================= */
+(function(){const {c,fit,h}=C('cArch');let useReLU=1;
+ function target(x){return 0.5+0.4*Math.sin(2*Math.PI*x-Math.PI/2)*0.9;}
+ const S=[];let seed=3;function rnd(){seed=(seed*9301+49297)%233280;return seed/233280;}
+ for(let i=0;i<=90;i++){const xx=i/90;S.push([xx,target(xx)+(rnd()-0.5)*0.06]);}
+ function draw(){const x=fit();const cw=c.clientWidth,ch=h;const pad=16;
+  const N=+document.getElementById('archN').value;document.getElementById('archNv').textContent=N;
+  function X(v){return pad+v*(cw-2*pad);}function Y(v){return ch-pad-v*(ch-2*pad);}
+  x.clearRect(0,0,cw,ch);
+  x.strokeStyle=CO.line;for(let i=0;i<=8;i++){x.beginPath();x.moveTo(X(i/8),pad);x.lineTo(X(i/8),ch-pad);x.stroke();}
+  S.forEach(p=>{x.fillStyle='rgba(180,83,9,.5)';x.beginPath();x.arc(X(p[0]),Y(p[1]),2.6,0,7);x.fill();});
+  const feats=S.map(p=>design(p[0],N,!!useReLU));const w=lsq(feats,S.map(p=>p[1]));
+  let err=0;x.strokeStyle=useReLU?CO.teal:CO.accent;x.lineWidth=3;x.beginPath();
+  S.forEach((p,i)=>{const f=design(p[0],N,!!useReLU);let yh=0;for(let k=0;k<w.length;k++)yh+=w[k]*f[k];err+=(yh-p[1])**2;i?x.lineTo(X(p[0]),Y(yh)):x.moveTo(X(p[0]),Y(yh));});x.stroke();
+  document.getElementById('archErr').textContent=Math.sqrt(err/S.length).toFixed(3);
+ }
+ document.getElementById('archN').addEventListener('input',draw);
+ document.querySelectorAll('#reluTog button').forEach(btn=>btn.addEventListener('click',()=>{
+   useReLU=+btn.dataset.r;document.querySelectorAll('#reluTog button').forEach(b=>b.classList.toggle('on',b===btn));draw();}));
+ onResize(draw);requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>
