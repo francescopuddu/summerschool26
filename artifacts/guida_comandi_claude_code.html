@@ -191,6 +191,8 @@
     <span class="step"><b>3</b> · Modalità <span class="mono">Shift+Tab</span></span>
     <span class="step"><b>4</b> · Effort</span>
     <span class="step"><b>5</b> · Scorciatoie</span>
+    <span class="step"><b>6</b> · Da mobile</span>
+    <span class="step"><b>7</b> · In cloud</span>
   </div>
   <div class="scrollcue"><span class="a">↓</span> scorri per iniziare</div>
 </div></section>
@@ -447,6 +449,81 @@
   </div>
 </div></section>
 
+<!-- ============ REMOTE CONTROL ============ -->
+<section id="s7"><div class="wrap reveal">
+  <div class="kicker"><span class="n">07</span> Lavorare dal telefono</div>
+  <h2>Continua la sessione da mobile — <span class="em">/rc</span></h2>
+  <p class="lead">Hai avviato Claude Code sul computer e devi allontanarti? Con <b>Remote Control</b> prosegui e monitori la stessa sessione dal telefono, dal tablet o da un browser qualsiasi.</p>
+
+  <div class="panel star">
+    <div class="badge"><span class="dotp"></span>Come funziona</div>
+    <div style="display:grid;grid-template-columns:auto 1fr;gap:14px 16px;align-items:start">
+      <div class="mono" style="color:var(--accent);font-weight:800">1</div>
+      <p style="margin:0">Nel terminale digiti <span class="cmd">/remote-control</span> (in breve <span class="cmd">/rc</span>). Claude mostra un <b>link</b> e un <b>QR code</b>.</p>
+      <div class="mono" style="color:var(--accent);font-weight:800">2</div>
+      <p style="margin:0">Apri l'<b>app Claude</b> sul telefono (iOS/Android) nella scheda <b>Code</b>, oppure inquadri il QR, oppure vai su <span class="mono">claude.ai/code</span> da browser.</p>
+      <div class="mono" style="color:var(--accent);font-weight:800">3</div>
+      <p style="margin:0">Scrivi e segui l'avanzamento dal telefono: la conversazione resta <b>sincronizzata</b> con il terminale sul computer.</p>
+    </div>
+  </div>
+
+  <div class="callout" style="border-left-color:var(--amber);background:var(--amber-soft);color:#7a3c06">
+    <b>Attenzione:</b> la sessione gira sul <b>tuo computer</b>, che deve restare <b>acceso</b>. Se chiudi il terminale o lo spegni, la sessione remota finisce. Per far proseguire il lavoro a computer spento serve il cloud → sezione successiva.
+  </div>
+</div></section>
+
+<!-- ============ CLOUD ============ -->
+<section id="s8"><div class="wrap reveal">
+  <div class="kicker"><span class="n">08</span> Lavorare in cloud</div>
+  <h2>Va avanti anche a <span class="em">computer spento</span></h2>
+  <p class="lead"><b>Claude Code on the web</b> esegue i task su macchine in cloud gestite da Anthropic, non sul tuo PC. Puoi chiudere il browser, spegnere il computer, andare offline: la sessione <b>continua</b> e la ritrovi dov'era.</p>
+
+  <div class="panel">
+    <div class="badge"><span class="dotp"></span>Come dialoga con GitHub</div>
+    <div class="gitflow" style="margin-top:6px">
+      <div class="stage done">
+        <div class="icn">☁️</div>
+        <div class="nm">Macchina cloud</div>
+        <div class="sub">clona il repo da GitHub</div>
+        <div class="file"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="gitcmd">claude --cloud "…"</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="stage done">
+        <div class="icn">🌿</div>
+        <div class="nm">Branch</div>
+        <div class="sub">lavora e committa a parte</div>
+        <div class="file"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="gitcmd">git push</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="stage done">
+        <div class="icn">🔀</div>
+        <div class="nm">Pull Request</div>
+        <div class="sub">apre la PR da rivedere</div>
+        <div class="file"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="gitcmd">auto-fix su CI</div>
+      </div>
+    </div>
+    <p class="hint">Si avvia da <span class="mono">claude.ai/code</span> o da terminale con <span class="cmd">claude --cloud "sistema il bug X"</span>. Collega GitHub una volta (tramite l'app GitHub di Claude): da lì la macchina cloud clona il progetto, lavora su un <b>branch</b>, apre una <b>Pull Request</b> e — con l'auto-fix attivo — reagisce agli errori dei test (CI) e ai commenti di revisione.</p>
+  </div>
+
+  <h3>Remote Control o cloud? Non confonderli</h3>
+  <div class="why">
+    <div class="wbox clear">
+      <h4>Remote Control (/rc)</h4>
+      <p>La sessione gira sul <b>tuo computer</b>, che deve restare <b>acceso</b>.</p>
+      <p>Tu la controlli da <b>telefono/browser</b>. Ideale per seguire un lavoro già avviato mentre sei in giro.</p>
+    </div>
+    <div class="wbox compact">
+      <h4>Claude Code on the web</h4>
+      <p>La sessione gira <b>sui server di Anthropic</b>: va avanti anche a <b>computer spento</b>.</p>
+      <p>Dialoga con <b>GitHub</b> (branch + Pull Request). Ideale per delegare un task e ritrovarlo pronto.</p>
+    </div>
+  </div>
+  <p class="hint">Disponibile sui piani Pro, Max, Team ed Enterprise (in fase di preview).</p>
+</div></section>
+
 <footer><div class="wrap">
   <b>Summer School 2026 — Giornata 3</b> · Claude Code: Introduzione al vibe coding &amp; La mia prima automazione.<br>
   Guida di supporto ai comandi principali. Tienila aperta durante l'hands-on.
@@ -459,7 +536,7 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 let _scrTick=false;const _prog=document.getElementById('prog');
 addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimationFrame(()=>{_scrTick=false;
   const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight);_prog.style.width=(p*100)+'%';});});
-(function(){const labels={s0:'Intro',s1:'Git & GitHub',s2:'Comandi /',s3:'Contesto',s4:'Modalità',s5:'Effort',s6:'Scorciatoie'};
+(function(){const labels={s0:'Intro',s1:'Git & GitHub',s2:'Comandi /',s3:'Contesto',s4:'Modalità',s5:'Effort',s6:'Scorciatoie',s7:'Da mobile',s8:'In cloud'};
  const nav=document.getElementById('dots');const secs=[...document.querySelectorAll('section')];
  secs.forEach(s=>{const a=document.createElement('a');a.href='#'+s.id;a.innerHTML='<span>'+(labels[s.id]||s.id)+'</span>';a.dataset.id=s.id;nav.appendChild(a);});
  const links=[...nav.querySelectorAll('a')];
