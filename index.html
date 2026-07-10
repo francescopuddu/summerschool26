@@ -14,14 +14,15 @@
   @font-face { font-family:"Artific"; src:url("fonts/Artific-Bold.woff2") format("woff2");      font-weight:700; font-style:normal; font-display:swap; }
   @font-face { font-family:"Artific"; src:url("fonts/Artific-SuperBold.woff2") format("woff2"); font-weight:800; font-style:normal; font-display:swap; }
 
+  /* Palette ripresa dalla locandina Polimi: slate scuro, ambra, azzurro del visual */
   :root {
-    --violet-700:#4300de; --violet-500:#8f3fff; --violet-300:#c89aff; --violet-100:#f2e6ff;
-    --yellow-500:#fff94a; --orange-500:#ff8222; --magenta-500:#ff53ff; --blue-600:#1274ff;
-    --black:#0a0a12; --ink:#15151f;
-    --bg:#0a0a12; --bg-raised:#14141f; --bg-card:#111119;
-    --fg:#ffffff; --fg-2:#d6d6e5; --fg-3:#8a8aa3; --fg-4:#5a5a74;
-    --border:rgba(255,255,255,.08); --border-strong:rgba(255,255,255,.18);
-    --gradient-cool:linear-gradient(135deg,#4300de,#ff53ff 60%,#1274ff);
+    --amber-500:#eaa832; --amber-400:#f2bd58; --amber-300:#f8d489;
+    --blue-400:#7db4e0; --blue-500:#4f96cf; --orange-500:#e2833c;
+    --slate-950:#2b313d; --slate-900:#333a48; --slate-800:#3d4554; --slate-700:#4a5265;
+    --bg:var(--slate-950); --bg-raised:var(--slate-900); --bg-card:var(--slate-900);
+    --fg:#ffffff; --fg-2:#dbe0e9; --fg-3:#9aa4b5; --fg-4:#6d7788;
+    --border:rgba(255,255,255,.09); --border-strong:rgba(255,255,255,.2);
+    --gradient-warm:linear-gradient(135deg,#f2bd58,#eaa832 55%,#e2833c);
     --font:"Artific",system-ui,-apple-system,"Segoe UI",sans-serif;
   }
 
@@ -37,48 +38,50 @@
   /* ---------- Header ---------- */
   header {
     position:sticky; top:0; z-index:10;
-    background:rgba(10,10,18,.82); backdrop-filter:blur(14px);
+    background:rgba(43,49,61,.85); backdrop-filter:blur(14px);
     border-bottom:1px solid var(--border);
   }
   .nav { display:flex; align-items:center; justify-content:space-between; height:64px; }
   .brand { display:flex; align-items:baseline; gap:10px; font-weight:800; font-size:18px; letter-spacing:-.02em; }
-  .brand .dot { color:var(--yellow-500); }
+  .brand .dot { color:var(--amber-500); }
   .brand small { font-weight:500; color:var(--fg-3); font-size:12px; letter-spacing:.08em; text-transform:uppercase; }
   .nav a.cta {
-    font-size:13px; font-weight:600; color:var(--black); text-decoration:none;
-    background:var(--yellow-500); padding:8px 16px; border-radius:999px;
+    font-size:13px; font-weight:600; color:var(--slate-950); text-decoration:none;
+    background:var(--amber-500); padding:8px 16px; border-radius:999px;
     transition:transform .15s ease, box-shadow .15s ease;
   }
-  .nav a.cta:hover { transform:translateY(-1px); box-shadow:0 4px 20px rgba(255,249,74,.25); }
+  .nav a.cta:hover { transform:translateY(-1px); box-shadow:0 4px 20px rgba(234,168,50,.35); }
 
   /* ---------- Hero ---------- */
   .hero { position:relative; padding:96px 0 72px; overflow:hidden; }
   .hero::before {
     content:""; position:absolute; inset:-40% -20% auto; height:130%;
     background:
-      radial-gradient(600px 420px at 18% 30%, rgba(67,0,222,.45), transparent 65%),
-      radial-gradient(520px 380px at 78% 18%, rgba(255,83,255,.16), transparent 60%),
-      radial-gradient(480px 360px at 60% 70%, rgba(18,116,255,.14), transparent 60%);
+      radial-gradient(600px 420px at 18% 30%, rgba(234,168,50,.22), transparent 65%),
+      radial-gradient(520px 380px at 78% 18%, rgba(125,180,224,.18), transparent 60%),
+      radial-gradient(480px 360px at 60% 70%, rgba(226,131,60,.12), transparent 60%);
     pointer-events:none;
   }
   .hero .wrap { position:relative; }
   .kicker {
     display:inline-flex; align-items:center; gap:8px;
     font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
-    color:var(--violet-300); border:1px solid var(--border-strong);
+    color:var(--amber-300); border:1px solid var(--border-strong);
     padding:6px 14px; border-radius:999px; margin-bottom:28px;
   }
-  .kicker::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--yellow-500); }
+  .kicker::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--amber-500); }
   h1 {
     font-size:clamp(36px,5.8vw,68px); font-weight:800; letter-spacing:-.03em; line-height:1.04;
     max-width:18ch;
   }
   h1 .grad {
-    background:var(--gradient-cool); -webkit-background-clip:text; background-clip:text; color:transparent;
+    background:var(--gradient-warm); -webkit-background-clip:text; background-clip:text; color:transparent;
   }
+  h1 .nowrap { white-space:nowrap; }
+  h1 .me { color:var(--blue-400); }
   .edition {
     display:inline-block; margin-top:14px; font-size:14px; font-weight:600;
-    letter-spacing:.12em; text-transform:uppercase; color:var(--yellow-500);
+    letter-spacing:.12em; text-transform:uppercase; color:var(--amber-500);
   }
   .hero p.sub { margin-top:20px; font-size:18px; font-weight:300; color:var(--fg-2); max-width:56ch; }
   .hero .meta { display:flex; flex-wrap:wrap; gap:28px; margin-top:36px; }
@@ -102,7 +105,7 @@
   }
   .day-num {
     font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
-    color:var(--violet-300);
+    color:var(--amber-400);
   }
   .day-name { font-size:19px; font-weight:700; letter-spacing:-.01em; }
   .day-date { margin-left:auto; font-size:13px; color:var(--fg-3); font-weight:500; }
@@ -119,9 +122,9 @@
     justify-self:end; font-size:11.5px; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
     padding:4px 11px; border-radius:999px; border:1px solid var(--border-strong); color:var(--fg-2); white-space:nowrap;
   }
-  .who.francesco { border-color:rgba(143,63,255,.5);  color:var(--violet-300); }
-  .who.federico  { border-color:rgba(255,83,255,.45); color:#ff92ff; }
-  .who.daniele   { border-color:rgba(18,116,255,.5);  color:#4a95ff; }
+  .who.francesco { border-color:rgba(234,168,50,.55);  color:var(--amber-400); }
+  .who.federico  { border-color:rgba(125,180,224,.55); color:var(--blue-400); }
+  .who.daniele   { border-color:rgba(226,131,60,.55);  color:#eda06a; }
 
   .slot.break { grid-template-columns:130px 1fr; padding:8px 26px; }
   .slot.break .title { font-size:12.5px; font-weight:400; color:var(--fg-4); letter-spacing:.05em; text-transform:uppercase; }
@@ -131,14 +134,14 @@
   a.lesson {
     display:inline-flex; align-items:center; gap:8px;
     color:var(--fg); text-decoration:none; font-weight:600;
-    border-bottom:1px dashed rgba(255,249,74,.45);
+    border-bottom:1px dashed rgba(234,168,50,.5);
     transition:color .15s ease, border-color .15s ease;
   }
   a.lesson::after {
-    content:"↗"; font-size:13px; color:var(--yellow-500);
+    content:"↗"; font-size:13px; color:var(--amber-500);
     transition:transform .15s ease;
   }
-  a.lesson:hover { color:var(--yellow-500); border-color:var(--yellow-500); }
+  a.lesson:hover { color:var(--amber-400); border-color:var(--amber-400); }
   a.lesson:hover::after { transform:translate(2px,-2px); }
 
   .slot.event .title { color:var(--fg-2); font-weight:400; }
@@ -172,7 +175,7 @@
 <section class="hero">
   <div class="wrap">
     <div class="kicker">Politecnico di Milano · Oasi Zegna · 13–17 luglio 2026</div>
-    <h1>The Coexistence of <span class="grad">Artificial Intelligence</span> and Me</h1>
+    <h1>The Coexistence of <span class="grad">Artificial Intelligence</span> <span class="nowrap">and <span class="me">Me</span></span></h1>
     <span class="edition">Terza edizione</span>
     <p class="sub">Cinque giornate immersive nelle Alpi Biellesi sul rapporto tra intelligenza artificiale e identità umana: lezioni teoriche e hands-on — dagli agenti AI al vibe coding — insieme ad attività dedicate allo sviluppo personale e al lavoro di squadra, fino al project work finale.</p>
     <div class="meta">
