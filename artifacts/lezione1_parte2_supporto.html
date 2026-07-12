@@ -236,13 +236,14 @@
   .gOut .gt{font-size:16px;padding:5px 12px;font-weight:700;animation:none}
   .gOut .gt.emerge{animation:gEmerge .75s cubic-bezier(.22,1,.36,1)}
   @keyframes gEmerge{0%{transform:translateY(-86px);opacity:0}30%{opacity:1}100%{transform:translateY(0);opacity:1}}
-  /* torna in coda al testo girando di lato, senza attraversare il blocco */
+  /* va a posarsi in coda alla frase passando a destra del blocco, senza attraversarlo */
   .gFlyChip{position:absolute;z-index:4;pointer-events:none;font-size:16px;padding:5px 12px;font-weight:700;
-    animation:gFly .95s cubic-bezier(.5,.02,.35,1) forwards}
-  @keyframes gFly{0%{transform:translate(0,0) scale(1);opacity:1}
-    45%{transform:translate(var(--sx,150px),0) scale(1);opacity:1}
-    85%{opacity:.9}
-    100%{transform:translate(var(--tx,0),var(--ty,-120px)) scale(.92);opacity:0}}
+    transform-origin:center center;animation:gFly .95s cubic-bezier(.5,.02,.3,1) forwards}
+  @keyframes gFly{
+    0%{transform:translate(0,0) scale(1)}
+    38%{transform:translate(var(--sx,150px),0) scale(1)}
+    74%{transform:translate(var(--sx,150px),var(--ty,-120px)) scale(var(--s,1))}
+    100%{transform:translate(var(--tx,0),var(--ty,-120px)) scale(var(--s,1))}}
 
   @media(prefers-reduced-motion:reduce){
     .gt.new,.gCtx.dive,.gCtx.backin,.gOut .gt.emerge,.gFlyChip{animation:none}
@@ -1340,10 +1341,13 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
  const nRead=()=>base.length+nAppended();
 
  function chip(t,cls){const s=document.createElement('span');s.className='gt'+(cls?' '+cls:'');s.textContent=t;return s;}
- function renderCtx(){ctx.innerHTML='';
+ /* con hideLast l'ultimo chip occupa il suo posto ma resta invisibile: serve a misurare
+    dove atterrera' il box in uscita, che poi lo rimpiazza esattamente */
+ function renderCtx(hideLast){ctx.innerHTML='';
   base.forEach(t=>ctx.appendChild(chip(t)));
   const n=nAppended();
   for(let k=0;k<n;k++)ctx.appendChild(chip(gen[k],'new'+(k===n-1?' last':'')));
+  if(hideLast&&n>0)ctx.lastChild.style.visibility='hidden';
   stp.textContent=i;
   lab.innerHTML='il modello '+(i===0?'legge':'rilegge')+' tutti i <b>'+nRead()+'</b> token del testo';}
  /* lo slot d'uscita e' vuoto a riposo: il token si vede una volta sola, quando esce e
@@ -1377,20 +1381,22 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   setTimeout(()=>{ctx.style.visibility='';ctx.classList.add('backin');
    setTimeout(()=>ctx.classList.remove('backin'),460);},back);}
 
- /* il token appena uscito gira di lato e si accoda in cima al testo:
-    l'originale sparisce subito, cosi' il token si vede una volta sola */
- function flyBack(el,ms){
-  const er=el.getBoundingClientRect(),cr=ctx.getBoundingClientRect(),sr=stage.getBoundingClientRect();
+ /* il box in uscita gira a destra del blocco, risale e si posa esattamente sul posto
+    (gia' misurato) che occupera' in coda alla frase: e' lo stesso box, non una copia */
+ function flyBack(el,slot,ms){
+  const er=el.getBoundingClientRect(),tr=slot.getBoundingClientRect(),sr=stage.getBoundingClientRect();
   const fc=el.cloneNode(true);
   fc.className='gt new gFlyChip';
   el.style.visibility='hidden';
   fc.style.left=(er.left-sr.left)+'px';fc.style.top=(er.top-sr.top)+'px';
-  fc.style.setProperty('--sx',Math.max(70,sr.right-er.right-18)+'px');
-  fc.style.setProperty('--tx',(cr.right-er.left-40)+'px');
-  fc.style.setProperty('--ty',(cr.bottom-er.top-10)+'px');
+  /* delta fra i centri, piu' il rimpicciolimento alla misura del chip in riga */
+  fc.style.setProperty('--tx',(tr.left+tr.width/2-er.left-er.width/2)+'px');
+  fc.style.setProperty('--ty',(tr.top+tr.height/2-er.top-er.height/2)+'px');
+  fc.style.setProperty('--s',(tr.width/er.width).toFixed(3));
+  fc.style.setProperty('--sx',Math.max(60,sr.right-er.right-16)+'px'); /* scavalca il blocco a destra */
   fc.style.animationDuration=ms+'ms';
   stage.appendChild(fc);
-  setTimeout(()=>fc.remove(),ms);}
+  return fc;}
 
  function step(){
   if(busy||i>LAST)return;
@@ -1405,10 +1411,14 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
    stage.classList.remove('reading');
    out.innerHTML='';out.appendChild(chip(gen[k],(isEnd(k)?'end':'new')+' emerge'));
    if(isEnd(k)){i++;stage.classList.add('done');renderCtx();renderCap();busy=false;return;}
-   setTimeout(()=>{                      /* 2. il token vola e si accoda al contesto */
-    flyBack(out.firstChild,fly);         /* l'originale sparisce, vola il clone */
-    /* il token entra nella riga solo quando il volo atterra: mai visibile due volte */
-    setTimeout(()=>{i++;renderCtx();renderCap();renderOut();busy=false;},fly*0.82);
+   setTimeout(()=>{                      /* 2. il box in uscita va a posarsi in coda alla frase */
+    const outChip=out.firstChild;
+    i++;renderCtx(true);renderCap();      /* il posto in coda esiste ma e' ancora vuoto */
+    const slot=ctx.lastChild;
+    const fc=flyBack(outChip,slot,fly);
+    setTimeout(()=>{                      /* atterrato: il chip in riga prende il suo posto */
+     slot.style.visibility='';fc.remove();renderOut();busy=false;
+    },fly);
    },hold);
   },dv+think);}
 
