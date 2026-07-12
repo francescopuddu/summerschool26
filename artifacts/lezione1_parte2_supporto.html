@@ -225,17 +225,17 @@
   .genStage.reading .gFunnel{background:var(--accent-soft2)}
 
   .gModel{position:relative;z-index:3;font-family:var(--mono);font-size:11.5px;color:#fff;background:var(--ink);
-    border-radius:12px;padding:30px 22px;text-align:center;letter-spacing:.03em;max-width:100%;
+    border-radius:12px;padding:20px 22px;text-align:center;letter-spacing:.03em;max-width:100%;
     transition:background .45s ease,box-shadow .45s ease}
   .genStage.reading .gModel{background:var(--accent-2);box-shadow:0 0 0 6px rgba(29,158,117,.16)}
 
-  /* il token esce da sotto il bordo inferiore del blocco */
-  .gOut{position:relative;z-index:2;min-height:40px;display:flex;align-items:center;justify-content:center;
-    overflow:hidden;padding-top:4px}
+  /* il token esce da sotto il bordo inferiore del blocco e scende: il box parte a filo del blocco */
+  .gOut{position:relative;z-index:2;width:100%;height:92px;display:flex;align-items:flex-end;justify-content:center;
+    overflow:hidden;padding-bottom:8px}
   .gOut .gph{font-family:var(--mono);font-size:14px;color:var(--line-strong)}
   .gOut .gt{font-size:16px;padding:5px 12px;font-weight:700;animation:none}
-  .gOut .gt.emerge{animation:gEmerge .55s cubic-bezier(.22,1,.36,1)}
-  @keyframes gEmerge{0%{transform:translateY(-115%);opacity:0}45%{opacity:1}100%{transform:translateY(0);opacity:1}}
+  .gOut .gt.emerge{animation:gEmerge .75s cubic-bezier(.22,1,.36,1)}
+  @keyframes gEmerge{0%{transform:translateY(-86px);opacity:0}30%{opacity:1}100%{transform:translateY(0);opacity:1}}
   .gOut .gt.ghost{opacity:.42;transition:opacity .4s ease}
   /* torna in coda al testo girando di lato, senza attraversare il blocco */
   .gFlyChip{position:absolute;z-index:4;pointer-events:none;font-size:16px;padding:5px 12px;font-weight:700;
@@ -245,14 +245,10 @@
     85%{opacity:.9}
     100%{transform:translate(var(--tx,0),var(--ty,-120px)) scale(.92);opacity:0}}
 
-  .gLoop{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:12px;text-align:center;
-    border-top:1px dashed var(--line);padding-top:10px;width:min(100%,460px);transition:color .25s}
-  .genStage.reading .gLoop{color:var(--accent-2)}
-  .genStage.done .gLoop{color:var(--amber)}
   @media(prefers-reduced-motion:reduce){
     .gt.new,.gCtx.dive,.gCtx.backin,.gOut .gt.emerge,.gFlyChip{animation:none}
     .gFlyChip{display:none}
-    .genStage,.gCtx,.gFunnel,.gModel,.gLoop{transition:none}
+    .genStage,.gCtx,.gFunnel,.gModel{transition:none}
   }
 
   .prefRows{font-family:var(--mono);font-size:12.5px;margin-top:8px;display:flex;flex-direction:column;gap:5px}
@@ -535,7 +531,6 @@
       <div class="gFunnel" id="genFunnel"></div>
       <div class="gModel" id="genModel">tokenizer · embedding · dorsale di blocchi · probabilità</div>
       <div class="gOut" id="genOut"><span class="gph">—</span></div>
-      <div class="gLoop" id="genLoop">↺ il token si accoda al testo, e il ciclo ricomincia</div>
     </div>
     <p class="hint" id="genCap"></p>
     <div class="ctrls">
@@ -1336,7 +1331,7 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
        out=document.getElementById('genOut'),cap=document.getElementById('genCap'),
        stp=document.getElementById('genStep'),
        lab=document.getElementById('genLab'),model=document.getElementById('genModel'),
-       loop=document.getElementById('genLoop'),autoB=document.getElementById('genAuto');
+       autoB=document.getElementById('genAuto');
  let i=0,busy=false,timer=null;
 
  /* il token di fine testo esce dal modello ma non entra nel contesto: non e' testo */
@@ -1360,10 +1355,7 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   if(i===0)cap.innerHTML='Si parte da un testo di <b>un solo</b> token: «Nel». Clicca sulla figura per generare quello successivo.';
   else if(i>LAST)cap.innerHTML='Esce un token che non corrisponde a nessuna parte di parola: codifica la <b>fine del testo</b>. Il ciclo si ferma qui.';
   else cap.innerHTML='Un intero passaggio nel modello, <b>un solo</b> token. Ora rilegge da capo tutti i <b>'+nRead()+'</b> token — incluso quello appena scritto — per produrre il successivo.';}
- function renderLoop(){loop.innerHTML=i>LAST
-   ? '⊘ nessun token si accoda: la generazione è terminata'
-   : '↺ il token si accoda al testo, e il ciclo ricomincia';}
- function render(){stage.classList.toggle('done',i>LAST);renderCtx();renderOut();renderCap();renderLoop();}
+ function render(){stage.classList.toggle('done',i>LAST);renderCtx();renderOut();renderCap();}
 
  /* il testo scende dentro il modello: una copia della riga sparisce sotto il blocco nero */
  function dive(ms,back){
@@ -1405,10 +1397,10 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   setTimeout(()=>{                       /* 1. il token esce da sotto il blocco */
    stage.classList.remove('reading');
    out.innerHTML='';out.appendChild(chip(gen[k],(isEnd(k)?'end':'new')+' emerge'));
-   if(isEnd(k)){i++;stage.classList.add('done');renderCtx();renderCap();renderLoop();busy=false;return;}
+   if(isEnd(k)){i++;stage.classList.add('done');renderCtx();renderCap();busy=false;return;}
    setTimeout(()=>{                      /* 2. il token si accoda al contesto */
     flyBack(out.firstChild,fly);
-    i++;renderCtx();renderCap();renderLoop();renderOut();
+    i++;renderCtx();renderCap();renderOut();
     setTimeout(()=>{busy=false;},fly*0.6);
    },hold);
   },dv+think);}
