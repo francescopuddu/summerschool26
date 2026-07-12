@@ -455,8 +455,7 @@
 <section id="s6"><div class="wrap reveal">
   <div class="kicker"><span class="n">06</span> Training e output</div>
   <h2>Prevedere la parola successiva</h2>
-  <p class="lead">Si costruisce un corpus immenso di testi. Ogni testo viene diviso in parti, tokenizzato, e per ogni parte si separa l'ultima parola: l'LLM riceve l'inizio e produce in output <b>un singolo token</b>. La differenza con il token vero è l'errore, minimizzato via gradient descent.</p>
-  <p>Gli ultimi strati attuano un'operazione inversa all'input: la rappresentazione finale viene confrontata — per similarità, cioè vicinanza — con gli embedding di ogni token del vocabolario. Le similarità diventano probabilità, e il token di output viene <b>estratto randomicamente</b>: i più simili hanno probabilità maggiore, i meno simili minore.</p>
+  <p class="lead">Un LLM è allenato a fare una cosa sola: dato l'inizio di un testo, prevedere <b>il token successivo</b>. In cima alla dorsale il vettore finale viene confrontato per <b>similarità</b> — cioè vicinanza — con gli embedding di tutti i token del vocabolario; le similarità diventano probabilità e il token in uscita viene <b>estratto a sorte</b>, con i più simili più probabili. In allenamento il testo vero dice qual era la risposta giusta: lo scarto è l'errore, minimizzato via gradient descent su un corpus immenso.</p>
 
   <div class="panel star">    <div class="phd"><strong>«Nel mezzo del cammin di nostra…» — chi esce?</strong></div>
     <canvas id="cProb" height="340"></canvas>
