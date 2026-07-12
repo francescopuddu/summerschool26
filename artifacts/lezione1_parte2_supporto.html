@@ -193,17 +193,19 @@
   }
 
   /* ciclo di generazione */
-  .genStage{margin-top:14px;padding:20px 18px 18px;background:var(--card-2);border:1px solid var(--line);border-radius:14px;
+  .genStage{position:relative;overflow:hidden;margin-top:14px;padding:20px 18px 18px;
+    background:var(--card-2);border:1px solid var(--line);border-radius:14px;
     display:flex;flex-direction:column;align-items:center;gap:0;cursor:pointer;user-select:none;
     transition:border-color .2s,box-shadow .2s}
   .genStage:hover{border-color:var(--accent-soft2);box-shadow:0 0 0 3px rgba(29,158,117,.10)}
   .genStage:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   .genStage.done,.genStage.done:hover{cursor:default;border-color:#eeD9bd;box-shadow:0 0 0 3px rgba(180,83,9,.10)}
 
-  .gLab,.gOutLab{font-family:var(--mono);font-size:11.5px;color:var(--muted);letter-spacing:.04em}
-  .gLab b,.gOutLab b{color:var(--accent-2)}
+  .gLab{font-family:var(--mono);font-size:11.5px;color:var(--muted);letter-spacing:.04em}
+  .gLab b{color:var(--accent-2)}
   .gCtx{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin:8px 0 4px;max-width:100%;
-    padding:8px;border-radius:10px;transition:background .25s,box-shadow .25s}
+    padding:8px;border-radius:10px;position:relative;z-index:1;
+    transition:background .25s,box-shadow .25s}
   .genStage.reading .gCtx{background:var(--accent-soft);box-shadow:0 0 0 1px var(--accent-soft2)}
   .gt{font-family:var(--mono);font-size:14px;background:var(--card);border:1px solid var(--line);color:var(--ink-2);
     border-radius:6px;padding:3px 8px;display:inline-block;white-space:nowrap}
@@ -211,32 +213,42 @@
   .gt.last{box-shadow:0 0 0 2px rgba(29,158,117,.35)}
   .gt.end{background:var(--amber-soft);border-color:#eeD9bd;color:var(--amber)}
 
-  .gFunnel{position:relative;width:min(100%,420px);height:34px;background:var(--accent-soft);
-    clip-path:polygon(0 0,100% 0,64% 100%,36% 100%);display:flex;align-items:center;justify-content:center;
-    transition:background .25s}
-  .genStage.reading .gFunnel{background:var(--accent-soft2)}
-  .gFunnel span{font-family:var(--mono);font-size:10.5px;color:var(--accent-2);letter-spacing:.04em;margin-bottom:6px;white-space:nowrap}
-  @media(max-width:520px){.gFunnel span{display:none}}
+  /* il testo entra: una copia della riga scende e sparisce sotto il blocco nero */
+  .gCtx.dive{position:absolute;z-index:1;margin:0;pointer-events:none;
+    animation:gDive .6s cubic-bezier(.5,0,.85,.4) forwards}
+  @keyframes gDive{0%{transform:translateY(0)}100%{transform:translateY(var(--dy,120px))}}
 
-  .gModel{font-family:var(--mono);font-size:11.5px;color:#fff;background:var(--ink);border-radius:10px;
-    padding:11px 18px;text-align:center;letter-spacing:.03em;max-width:100%;
+  .gFunnel{position:relative;z-index:0;width:min(100%,420px);height:34px;background:var(--accent-soft);
+    clip-path:polygon(0 0,100% 0,64% 100%,36% 100%);transition:background .25s}
+  .genStage.reading .gFunnel{background:var(--accent-soft2)}
+
+  .gModel{position:relative;z-index:3;font-family:var(--mono);font-size:11.5px;color:#fff;background:var(--ink);
+    border-radius:10px;padding:11px 18px;text-align:center;letter-spacing:.03em;max-width:100%;
     transition:background .25s,box-shadow .25s}
   .genStage.reading .gModel{background:var(--accent-2);box-shadow:0 0 0 5px rgba(29,158,117,.18)}
 
-  .gOutLab{margin-top:12px}
-  .gOut{min-height:34px;display:flex;align-items:center;margin-top:6px}
+  /* il token esce da sotto il bordo inferiore del blocco */
+  .gOut{position:relative;z-index:2;min-height:40px;display:flex;align-items:center;justify-content:center;
+    overflow:hidden;padding-top:4px}
   .gOut .gph{font-family:var(--mono);font-size:14px;color:var(--line-strong)}
-  .gOut .gt{font-size:16px;padding:5px 12px;font-weight:700}
-  .gOut .gt.ghost{opacity:.42;animation:none}
-  .gOut .gt.fly{animation:gFly .42s ease-in forwards}
-  @keyframes gFly{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-160px) scale(.8);opacity:0}}
+  .gOut .gt{font-size:16px;padding:5px 12px;font-weight:700;animation:none}
+  .gOut .gt.emerge{animation:gEmerge .34s ease-out}
+  @keyframes gEmerge{0%{transform:translateY(-115%);opacity:0}60%{opacity:1}100%{transform:translateY(0);opacity:1}}
+  .gOut .gt.ghost{opacity:.42}
+  /* torna in coda al testo girando di lato, senza attraversare il blocco */
+  .gFlyChip{position:absolute;z-index:4;pointer-events:none;font-size:16px;padding:5px 12px;font-weight:700;
+    animation:gFly .55s cubic-bezier(.4,0,.3,1) forwards}
+  @keyframes gFly{0%{transform:translate(0,0) scale(1);opacity:1}
+    45%{transform:translate(var(--sx,150px),0) scale(1);opacity:1}
+    100%{transform:translate(var(--tx,0),var(--ty,-120px)) scale(.9);opacity:0}}
 
   .gLoop{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:12px;text-align:center;
     border-top:1px dashed var(--line);padding-top:10px;width:min(100%,460px);transition:color .25s}
   .genStage.reading .gLoop{color:var(--accent-2)}
   .genStage.done .gLoop{color:var(--amber)}
   @media(prefers-reduced-motion:reduce){
-    .gt.new,.gOut .gt.fly{animation:none}
+    .gt.new,.gCtx.dive,.gOut .gt.emerge,.gFlyChip{animation:none}
+    .gFlyChip{display:none}
     .genStage,.gCtx,.gFunnel,.gModel,.gLoop{transition:none}
   }
 
@@ -515,11 +527,10 @@
 
   <div class="panel star">    <div class="phd"><strong>Il ciclo di generazione</strong></div>
     <div class="genStage" id="genStage" role="button" tabindex="0" aria-label="Genera il prossimo token">
-      <div class="gLab">il modello rilegge tutti i <b id="genCount">1</b> token del testo</div>
+      <div class="gLab" id="genLab">il modello legge tutti i <b>1</b> token del testo</div>
       <div class="gCtx" id="genCtx"></div>
-      <div class="gFunnel" id="genFunnel"><span>tutto il testo entra nel modello</span></div>
+      <div class="gFunnel" id="genFunnel"></div>
       <div class="gModel" id="genModel">tokenizer · embedding · dorsale di blocchi · probabilità</div>
-      <div class="gOutLab">esce <b>1</b> token</div>
       <div class="gOut" id="genOut"><span class="gph">—</span></div>
       <div class="gLoop" id="genLoop">↺ il token si accoda al testo, e il ciclo ricomincia</div>
     </div>
@@ -1320,7 +1331,8 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
  const RMg=matchMedia('(prefers-reduced-motion: reduce)');
  const stage=document.getElementById('genStage'),ctx=document.getElementById('genCtx'),
        out=document.getElementById('genOut'),cap=document.getElementById('genCap'),
-       cnt=document.getElementById('genCount'),stp=document.getElementById('genStep'),
+       stp=document.getElementById('genStep'),
+       lab=document.getElementById('genLab'),model=document.getElementById('genModel'),
        loop=document.getElementById('genLoop'),autoB=document.getElementById('genAuto');
  let i=0,busy=false,timer=null;
 
@@ -1335,7 +1347,8 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   base.forEach(t=>ctx.appendChild(chip(t)));
   const n=nAppended();
   for(let k=0;k<n;k++)ctx.appendChild(chip(gen[k],'new'+(k===n-1?' last':'')));
-  cnt.textContent=nRead();stp.textContent=i;}
+  stp.textContent=i;
+  lab.innerHTML='il modello '+(i===0?'legge':'rilegge')+' tutti i <b>'+nRead()+'</b> token del testo';}
  function renderOut(){out.innerHTML='';
   if(i===0){const p=document.createElement('span');p.className='gph';p.textContent='—';out.appendChild(p);return;}
   const k=i-1;
@@ -1349,19 +1362,45 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
    : '↺ il token si accoda al testo, e il ciclo ricomincia';}
  function render(){stage.classList.toggle('done',i>LAST);renderCtx();renderOut();renderCap();renderLoop();}
 
+ /* il testo scende dentro il modello: una copia della riga sparisce sotto il blocco nero */
+ function dive(ms){
+  const cr=ctx.getBoundingClientRect(),mr=model.getBoundingClientRect(),sr=stage.getBoundingClientRect();
+  const cl=ctx.cloneNode(true);
+  cl.removeAttribute('id');cl.classList.add('dive');
+  cl.style.left=(cr.left-sr.left)+'px';cl.style.top=(cr.top-sr.top)+'px';cl.style.width=cr.width+'px';
+  cl.style.setProperty('--dy',(mr.top-cr.top+cr.height)+'px');
+  cl.style.animationDuration=ms+'ms';
+  stage.appendChild(cl);
+  ctx.style.visibility='hidden';
+  setTimeout(()=>{cl.remove();ctx.style.visibility='';},ms);}
+
+ /* il token appena uscito gira di lato e si accoda in cima al testo */
+ function flyBack(el,ms){
+  const er=el.getBoundingClientRect(),cr=ctx.getBoundingClientRect(),sr=stage.getBoundingClientRect();
+  const fc=el.cloneNode(true);
+  fc.className='gt new gFlyChip';
+  fc.style.left=(er.left-sr.left)+'px';fc.style.top=(er.top-sr.top)+'px';
+  fc.style.setProperty('--sx',Math.max(70,sr.right-er.right-18)+'px');
+  fc.style.setProperty('--tx',(cr.right-er.left-40)+'px');
+  fc.style.setProperty('--ty',(cr.bottom-er.top-10)+'px');
+  fc.style.animationDuration=ms+'ms';
+  stage.appendChild(fc);
+  setTimeout(()=>fc.remove(),ms);}
+
  function step(){
   if(busy||i>LAST)return;
+  const k=i;
   busy=true;stage.classList.add('reading');
-  const rd=RMg.matches?0:280,hold=RMg.matches?0:520,fly=RMg.matches?0:420;
-  setTimeout(()=>{                       /* 1. il modello ha letto: esce un token */
+  const rd=RMg.matches?0:600,hold=RMg.matches?0:340,fly=RMg.matches?0:550;
+  dive(rd);
+  setTimeout(()=>{                       /* 1. il modello ha letto: il token esce da sotto il blocco */
    stage.classList.remove('reading');
-   const k=i;
-   out.innerHTML='';out.appendChild(chip(gen[k],isEnd(k)?'end':'new'));
+   out.innerHTML='';out.appendChild(chip(gen[k],(isEnd(k)?'end':'new')+' emerge'));
+   if(isEnd(k)){i++;stage.classList.add('done');renderCtx();renderCap();renderLoop();busy=false;return;}
    setTimeout(()=>{                      /* 2. il token si accoda al contesto */
-    if(isEnd(k)){i++;stage.classList.add('done');renderCtx();renderCap();renderLoop();busy=false;return;}
-    out.firstChild.classList.add('fly'); /* vola via: renderOut() lo rimpiazzera' col fantasma */
-    i++;renderCtx();renderCap();renderLoop();
-    setTimeout(()=>{renderOut();busy=false;},fly);
+    flyBack(out.firstChild,fly);
+    i++;renderCtx();renderCap();renderLoop();renderOut();
+    busy=false;
    },hold);
   },rd);}
 
@@ -1376,9 +1415,11 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   autoB.textContent='❚❚ Pausa';
   timer=setInterval(()=>{
    if(i>LAST){if(!busy)stopAuto();return;}
-   step();},1500);});
+   step();},1800);});
  document.getElementById('genReset').addEventListener('click',()=>{
-  stopAuto();busy=false;i=0;stage.classList.remove('reading');render();});
+  stopAuto();busy=false;i=0;
+  stage.querySelectorAll('.dive,.gFlyChip').forEach(n=>n.remove());
+  ctx.style.visibility='';stage.classList.remove('reading');render();});
  render();
 })();
 </script>
