@@ -515,7 +515,7 @@
 
   <div class="panel star">    <div class="phd"><strong>Il ciclo di generazione</strong></div>
     <div class="genStage" id="genStage" role="button" tabindex="0" aria-label="Genera il prossimo token">
-      <div class="gLab">il modello rilegge <b id="genCount">6</b> token</div>
+      <div class="gLab">il modello rilegge tutti i <b id="genCount">1</b> token del testo</div>
       <div class="gCtx" id="genCtx"></div>
       <div class="gFunnel" id="genFunnel"><span>tutto il testo entra nel modello</span></div>
       <div class="gModel" id="genModel">tokenizer · embedding · dorsale di blocchi · probabilità</div>
@@ -1315,8 +1315,8 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
 
 /* ================= 06b CICLO DI GENERAZIONE ================= */
 (function(){
- const base=['Nel','mezzo','del','cammin','di','nostra'];
- const gen=['vita',',','mi','ritrovai','per','una','selva','oscura','⟨fine testo⟩'];
+ const base=['Nel'];
+ const gen=['mezzo','del','cammin','di','nostra','vita',',','mi','ritrovai','per','una','selva','oscura','⟨fine testo⟩'];
  const RMg=matchMedia('(prefers-reduced-motion: reduce)');
  const stage=document.getElementById('genStage'),ctx=document.getElementById('genCtx'),
        out=document.getElementById('genOut'),cap=document.getElementById('genCap'),
@@ -1341,7 +1341,7 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   const k=i-1;
   out.appendChild(chip(gen[k],isEnd(k)?'end':'new ghost'));}
  function renderCap(){
-  if(i===0)cap.innerHTML='Il modello legge i <b>'+base.length+'</b> token del prompt. Clicca sulla figura per generare il primo token.';
+  if(i===0)cap.innerHTML='Si parte da un testo di <b>un solo</b> token: «Nel». Clicca sulla figura per generare quello successivo.';
   else if(i>LAST)cap.innerHTML='Esce un token che non corrisponde a nessuna parte di parola: codifica la <b>fine del testo</b>. Il ciclo si ferma qui.';
   else cap.innerHTML='Un intero passaggio nel modello, <b>un solo</b> token. Ora rilegge da capo tutti i <b>'+nRead()+'</b> token — incluso quello appena scritto — per produrre il successivo.';}
  function renderLoop(){loop.innerHTML=i>LAST
