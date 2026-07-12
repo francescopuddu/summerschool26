@@ -263,11 +263,11 @@
     <div class="grid2" style="margin-top:16px">
       <div>
         <div class="cap" style="margin:0 0 6px">la rete</div>
-        <canvas id="cNexN" height="300"></canvas>
+        <canvas id="cNexN" height="330"></canvas>
       </div>
       <div>
         <div class="cap" style="margin:0 0 6px">la matematica — <b>una riga di W = i pesi di un neurone</b></div>
-        <canvas id="cNexM" height="300"></canvas>
+        <canvas id="cNexM" height="330"></canvas>
       </div>
     </div>
     <div class="ctrls" style="margin-top:16px">
@@ -280,7 +280,6 @@
     <div class="cap">La <b>ReLU</b> (tiene i positivi, azzera i negativi) è ciò che replica il "supera la soglia?".</div>
   </div>
 
-  <p class="pull">Lavorare con le reti non è ragionare sui neuroni. È ragionare su matrici.</p>
   <p class="mut">E non a caso: le GPU sono ottimizzate proprio per il prodotto tra matrici — lo stesso calcolo della grafica 3D.</p>
 </div></section>
 
@@ -709,20 +708,20 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
  }
  function drawMatrix(){const x=nM.fit();const cw=nM.c.clientWidth,ch=nM.h;x.clearRect(0,0,cw,ch);
   const w=wArr(),b=+val('nb'),p=pre(),v=relu(p);
-  const cell=Math.min(38,cw*0.078),gx=cw*0.09,gy=34;
+  const gap=7,cell=Math.min(54,cw*0.115),box=cell-gap,gx=cw*0.05,gy=34;
   const rows=[other0,w,other2];
-  x.fillStyle=CO.mut;x.font='italic 13px '+sans();x.textAlign='center';x.fillText('W',gx+1.5*cell,gy-10);
+  x.fillStyle=CO.mut;x.font='italic 13px '+sans();x.textAlign='center';x.fillText('W',gx+(3*cell-gap)/2,gy-10);
   for(let i=0;i<3;i++)for(let j=0;j<3;j++){const active=(i===1);
    x.fillStyle=active?CO.accentSoft:'#fff';x.strokeStyle=active?CO.accent:CO.line;x.lineWidth=active?1.6:1;
-   x.fillRect(gx+j*cell,gy+i*cell,cell-3,cell-3);x.strokeRect(gx+j*cell,gy+i*cell,cell-3,cell-3);
+   x.fillRect(gx+j*cell,gy+i*cell,box,box);x.strokeRect(gx+j*cell,gy+i*cell,box,box);
    x.fillStyle=active?CO.accent:CO.mut;x.font=(active?'700 ':'')+'13px '+mono();x.textAlign='center';
-   x.fillText(rows[i][j].toFixed(1),gx+j*cell+cell/2-1.5,gy+i*cell+cell/2+4.5);}
+   x.fillText(rows[i][j].toFixed(1),gx+j*cell+box/2,gy+i*cell+box/2+4.5);}
   // · u
-  let cxp=gx+3*cell+14;x.fillStyle=CO.ink;x.font='17px '+mono();x.textAlign='left';x.fillText('·',cxp,gy+1.5*cell+2);cxp+=18;
-  x.fillStyle=CO.mut;x.font='italic 13px '+sans();x.textAlign='center';x.fillText('u',cxp+cell/2,gy-10);
-  for(let i=0;i<3;i++){x.fillStyle='#fff';x.strokeStyle=CO.line;x.lineWidth=1;x.fillRect(cxp,gy+i*cell,cell-3,cell-3);x.strokeRect(cxp,gy+i*cell,cell-3,cell-3);
-   x.fillStyle=CO.ink;x.font='13px '+mono();x.fillText(u[i].toFixed(1),cxp+cell/2-1.5,gy+i*cell+cell/2+4.5);}
-  cxp+=cell+12;x.fillStyle=CO.ink;x.font='17px '+mono();x.textAlign='left';x.fillText('+ b',cxp,gy+1.5*cell+2);
+  let cxp=gx+3*cell-gap+16;x.fillStyle=CO.ink;x.font='17px '+mono();x.textAlign='left';x.fillText('·',cxp,gy+(3*cell-gap)/2+2);cxp+=18;
+  x.fillStyle=CO.mut;x.font='italic 13px '+sans();x.textAlign='center';x.fillText('u',cxp+box/2,gy-10);
+  for(let i=0;i<3;i++){x.fillStyle='#fff';x.strokeStyle=CO.line;x.lineWidth=1;x.fillRect(cxp,gy+i*cell,box,box);x.strokeRect(cxp,gy+i*cell,box,box);
+   x.fillStyle=CO.ink;x.font='13px '+mono();x.textAlign='center';x.fillText(u[i].toFixed(1),cxp+box/2,gy+i*cell+box/2+4.5);}
+  cxp+=box+14;x.fillStyle=CO.ink;x.font='17px '+mono();x.textAlign='left';x.fillText('+ b',cxp,gy+(3*cell-gap)/2+2);
   // arithmetic of active row -> ReLU
   const parts=[];for(let k=0;k<3;k++)parts.push(fmt(w[k])+'·'+u[k].toFixed(1));
   const afs=cw<430?11.5:13.5; // font adattivo su schermi stretti
