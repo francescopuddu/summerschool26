@@ -240,6 +240,38 @@
   .wf .a1 .wk{color:var(--blue)}.wf .a2 .wk{color:var(--accent)}
   .wf .a1{border-top:3px solid var(--blue)}.wf .a2{border-top:3px solid var(--accent)}
 
+  /* illustrazioni delle due card */
+  .ill{background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:10px 8px 6px;margin:2px 0 14px}
+  .ill svg{display:block;width:100%;height:auto}
+  .ill .leg{font-size:11px;color:var(--muted);text-align:center;margin-top:6px;letter-spacing:.01em}
+  .ill .leg b{font-weight:700;color:var(--ink-2)}
+  .ill .box{fill:var(--card);stroke:var(--line-strong);stroke-width:1.4}
+  .ill .box.ai{fill:var(--blue-soft);stroke:var(--blue)}
+  .ill .gl{fill:none;stroke:var(--muted);stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
+  .ill .gl.b{stroke:var(--blue)}
+  .ill .lbl{font-family:var(--mono);font-size:8.5px;fill:var(--muted);text-anchor:middle;letter-spacing:.02em}
+  .ill .lbl.on{fill:var(--accent);font-weight:700}
+  /* workflow: connettori + dati che scorrono */
+  .ill .wire{fill:none;stroke:var(--line-strong);stroke-width:1.4}
+  .ill .dot{fill:var(--blue)}
+  /* agente: cervello centrale, archi, tool */
+  .ill .brain{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.6}
+  .ill .bgl{fill:none;stroke:var(--accent);stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
+  .ill .arc{fill:none;stroke:var(--line-strong);stroke-width:1.3;stroke-dasharray:3 3}
+  .ill .tool circle{fill:var(--card);stroke:var(--line-strong);stroke-width:1.4}
+  .ill .in{fill:var(--paper-2);stroke:var(--line-strong);stroke-width:1.3}
+  /* i tool accesi vivono in tre gruppi sovrapposti che entrano a turno */
+  .ill .on{opacity:0;animation:agOn 9s linear infinite}
+  .ill .on2{animation-delay:-3s}.ill .on3{animation-delay:-6s}
+  @keyframes agOn{0%{opacity:0}5%,28%{opacity:1}33%,100%{opacity:0}}
+  .ill .on .arc{stroke:var(--accent);stroke-width:1.9;stroke-dasharray:none}
+  .ill .on .tool circle{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.6}
+  .ill .on .tool .gl{stroke:var(--accent)}
+  @media(prefers-reduced-motion:reduce){
+    .ill *{animation:none!important}
+    .ill .on{opacity:0}.ill .on1{opacity:1}
+  }
+
   /* desk vs cabinet */
   .desk{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
   @media(max-width:720px){.desk{grid-template-columns:1fr}}
@@ -781,8 +813,121 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
   <h2>Non tutto deve essere un agente</h2>
   <p class="lead">Autonomia non è sempre la scelta giusta. Spesso un <b>percorso fisso</b> è più prevedibile e più sicuro. Vale la pena distinguere due modi di usare un LLM:</p>
   <div class="wf">
-    <div class="wcard a1"><div class="wk">Workflow · percorso fisso</div><h4>Lo progetti tu</h4><p>I passi sono decisi in anticipo, sempre gli stessi: «estrai i dati → compila il report → invia». Prevedibile e ripetibile. Ideale per processi ben definiti.</p></div>
-    <div class="wcard a2"><div class="wk">Agente · sceglie i passi</div><h4>Decide il modello</h4><p>Il percorso non è noto in partenza: l'agente decide a runtime quali tool usare e in che ordine, in base a ciò che trova. Flessibile, per problemi aperti.</p></div>
+    <div class="wcard a1">
+      <div class="wk">Workflow · percorso fisso</div>
+      <div class="ill">
+        <svg viewBox="0 0 340 156" role="img" aria-label="Un grafo di passi collegati: alcuni nodi sono deterministici, altri contengono un modello; i dati scorrono lungo un percorso disegnato in anticipo.">
+          <defs>
+            <marker id="ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0,1 L7,4 L0,7 Z" fill="var(--line-strong)"/>
+            </marker>
+            <g id="brn" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M0,-6 C-3,-9 -8,-8 -9,-4 C-11,-2 -10,2 -8,4 C-7,7 -3,8 0,6"/>
+              <path d="M0,-6 C3,-9 8,-8 9,-4 C11,-2 10,2 8,4 C7,7 3,8 0,6"/>
+              <path d="M0,-6 L0,6"/>
+              <path d="M-9,-4 C-6,-3 -5,-1 -6,1"/>
+              <path d="M9,-4 C6,-3 5,-1 6,1"/>
+            </g>
+            <path id="rt" d="M34,72 H94 C114,72 118,35 136,35 H180 C200,35 204,72 222,72 H336"/>
+            <path id="rb" d="M34,72 H94 C114,72 118,111 136,111 H180 C200,111 204,72 222,72 H336"/>
+          </defs>
+
+          <!-- connettori -->
+          <path class="wire" d="M34,72 H48" marker-end="url(#ar)"/>
+          <path class="wire" d="M94,72 C114,72 118,35 134,35" marker-end="url(#ar)"/>
+          <path class="wire" d="M94,72 C114,72 118,111 134,111" marker-end="url(#ar)"/>
+          <path class="wire" d="M180,35 C200,35 204,72 220,72" marker-end="url(#ar)"/>
+          <path class="wire" d="M180,111 C200,111 204,72 220,72" marker-end="url(#ar)"/>
+          <path class="wire" d="M266,72 H304" marker-end="url(#ar)"/>
+
+          <!-- input / output -->
+          <rect class="box" x="4" y="58" width="30" height="28" rx="8"/>
+          <text class="lbl" x="19" y="100">input</text>
+          <rect class="box" x="306" y="58" width="30" height="28" rx="8"/>
+          <text class="lbl" x="321" y="100">invia</text>
+
+          <!-- step deterministico: estrai -->
+          <rect class="box" x="50" y="55" width="44" height="34" rx="10"/>
+          <path class="gl" d="M66,63 h9 l3,3 v13 h-12 z M69,70 h6 M69,75 h6"/>
+          <text class="lbl" x="72" y="102">estrai</text>
+
+          <!-- step AI: classifica -->
+          <rect class="box ai" x="136" y="18" width="44" height="34" rx="10"/>
+          <use href="#brn" transform="translate(158,35)" style="color:var(--blue)"/>
+          <text class="lbl" x="158" y="64">classifica</text>
+
+          <!-- step deterministico: verifica -->
+          <rect class="box" x="136" y="94" width="44" height="34" rx="10"/>
+          <path class="gl" d="M152,111 l4,4 l8,-9"/>
+          <text class="lbl" x="158" y="140">verifica</text>
+
+          <!-- step AI: scrivi -->
+          <rect class="box ai" x="222" y="55" width="44" height="34" rx="10"/>
+          <use href="#brn" transform="translate(244,72)" style="color:var(--blue)"/>
+          <text class="lbl" x="244" y="102">scrivi</text>
+
+          <!-- dati che scorrono -->
+          <circle class="dot" r="2.8"><animateMotion dur="5s" begin="0s" repeatCount="indefinite"><mpath href="#rt"/></animateMotion></circle>
+          <circle class="dot" r="2.8"><animateMotion dur="5s" begin="1.7s" repeatCount="indefinite"><mpath href="#rb"/></animateMotion></circle>
+          <circle class="dot" r="2.8"><animateMotion dur="5s" begin="3.4s" repeatCount="indefinite"><mpath href="#rt"/></animateMotion></circle>
+        </svg>
+        <div class="leg"><b>■</b> step con modello · <b>□</b> step deterministico — il percorso è disegnato prima</div>
+      </div>
+      <h4>Lo progetti tu</h4><p>I passi sono decisi in anticipo, sempre gli stessi: «estrai i dati → compila il report → invia». Prevedibile e ripetibile. Ideale per processi ben definiti.</p>
+    </div>
+    <div class="wcard a2">
+      <div class="wk">Agente · sceglie i passi</div>
+      <div class="ill">
+        <svg viewBox="0 0 340 160" role="img" aria-label="Un modello al centro, collegato a molti strumenti: a ogni input ne accende solo alcuni, e il sottoinsieme cambia di volta in volta.">
+          <!-- archi verso tutti i tool (spenti) -->
+          <line class="arc" x1="170" y1="80" x2="143" y2="22"/>
+          <line class="arc" x1="170" y1="80" x2="193" y2="20"/>
+          <line class="arc" x1="170" y1="80" x2="229" y2="55"/>
+          <line class="arc" x1="170" y1="80" x2="229" y2="105"/>
+          <line class="arc" x1="170" y1="80" x2="193" y2="140"/>
+          <line class="arc" x1="170" y1="80" x2="143" y2="138"/>
+
+          <!-- input -->
+          <rect class="in" x="4" y="66" width="52" height="28" rx="8"/>
+          <text class="lbl" x="30" y="84">input</text>
+          <path class="wire" d="M56,80 H140" marker-end="url(#ar)"/>
+
+          <!-- cervello -->
+          <circle class="brain" cx="170" cy="80" r="26"/>
+          <use href="#brn" transform="translate(170,80) scale(1.6)" style="color:var(--accent)"/>
+
+          <!-- tool, stato spento -->
+          <g class="tool" transform="translate(143,22)"><circle r="15"/><path class="gl" d="M-5,-1 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 M2,2 L5,5"/></g>
+          <g class="tool" transform="translate(193,20)"><circle r="15"/><path class="gl" d="M-4,-6 h5 l3,3 v9 h-8 z M-2,1 h4"/></g>
+          <g class="tool" transform="translate(229,55)"><circle r="15"/><path class="gl" d="M-5,-4 l3,3 l-3,3 M0,4 h5"/></g>
+          <g class="tool" transform="translate(229,105)"><circle r="15"/><path class="gl" d="M-6,-4 h12 v8 h-12 z M-6,-4 l6,5 l6,-5"/></g>
+          <g class="tool" transform="translate(193,140)"><circle r="15"/><path class="gl" d="M-6,-5 h12 v10 h-12 z M-6,-1 h12 M-2,-8 v3 M2,-8 v3"/></g>
+          <g class="tool" transform="translate(143,138)"><circle r="15"/><path class="gl" d="M-6,-5 a6,2.5 0 1,0 12,0 a6,2.5 0 1,0 -12,0 M-6,-5 v9 a6,2.5 0 0,0 12,0 v-9"/></g>
+
+          <!-- sottoinsiemi accesi, a rotazione -->
+          <g class="on on1">
+            <line class="arc" x1="170" y1="80" x2="193" y2="20"/>
+            <line class="arc" x1="170" y1="80" x2="229" y2="55"/>
+            <g class="tool" transform="translate(193,20)"><circle r="15"/><path class="gl" d="M-4,-6 h5 l3,3 v9 h-8 z M-2,1 h4"/></g>
+            <g class="tool" transform="translate(229,55)"><circle r="15"/><path class="gl" d="M-5,-4 l3,3 l-3,3 M0,4 h5"/></g>
+          </g>
+          <g class="on on2">
+            <line class="arc" x1="170" y1="80" x2="143" y2="22"/>
+            <line class="arc" x1="170" y1="80" x2="143" y2="138"/>
+            <g class="tool" transform="translate(143,22)"><circle r="15"/><path class="gl" d="M-5,-1 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 M2,2 L5,5"/></g>
+            <g class="tool" transform="translate(143,138)"><circle r="15"/><path class="gl" d="M-6,-5 a6,2.5 0 1,0 12,0 a6,2.5 0 1,0 -12,0 M-6,-5 v9 a6,2.5 0 0,0 12,0 v-9"/></g>
+          </g>
+          <g class="on on3">
+            <line class="arc" x1="170" y1="80" x2="229" y2="105"/>
+            <line class="arc" x1="170" y1="80" x2="193" y2="140"/>
+            <g class="tool" transform="translate(229,105)"><circle r="15"/><path class="gl" d="M-6,-4 h12 v8 h-12 z M-6,-4 l6,5 l6,-5"/></g>
+            <g class="tool" transform="translate(193,140)"><circle r="15"/><path class="gl" d="M-6,-5 h12 v10 h-12 z M-6,-1 h12 M-2,-8 v3 M2,-8 v3"/></g>
+          </g>
+        </svg>
+        <div class="leg">gli stessi tool sempre collegati — <b>quali accendere</b> lo decide a runtime, input per input</div>
+      </div>
+      <h4>Decide il modello</h4><p>Il percorso non è noto in partenza: l'agente decide a runtime quali tool usare e in che ordine, in base a ciò che trova. Flessibile, per problemi aperti.</p>
+    </div>
   </div>
   <div class="callout"><b>Regola pratica:</b> usa la soluzione più semplice che funziona. L'agente conviene <b>quando devi osservare il risultato di un'azione per decidere il passo successivo</b> — come nell'indagine sul treno 9042. Altrimenti, un workflow basta e avanza.</div>
 </section>
