@@ -65,7 +65,6 @@
   .callout{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;
     padding:16px 20px;margin:22px 0;font-size:16.5px;color:#2c256e;max-width:66ch}
   .callout b{color:var(--accent)}
-  .pull{font-family:var(--sans);font-size:clamp(20px,2.4vw,27px);line-height:1.32;font-weight:700;color:var(--ink);max-width:none;margin:34px 0;padding-top:18px;border-top:2px solid var(--accent)}
   .eq{font-family:var(--mono);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:3px 9px;display:inline-block;font-size:.92em;color:var(--ink)}
   .eq b{color:var(--accent)}
 
@@ -85,8 +84,9 @@
     animation:bob 1.8s ease-in-out infinite;transition:opacity .35s}
   .clickcue b{font-weight:700}
   .clickcue.off{opacity:0}
-  @media(max-width:640px){.clickcue{position:static;animation:none;display:inline-block;margin:10px 0 2px}}
-  #matHint{right:auto;left:22px}
+  #matHint{right:auto;left:46px;top:78px;max-width:16ch;line-height:1.45}
+  @media(max-width:640px){.clickcue{position:static;animation:none;display:inline-block;margin:10px 0 2px}
+    #matHint{left:auto;top:auto;max-width:none}}
   #cMat{cursor:default}
   #cMat:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:10px}
 
@@ -341,7 +341,6 @@
     </div>
     <div class="readout">errore sul ciclo annuale <b id="archErr">—</b></div>
   </div>
-  <p class="pull">Non è "più neuroni". È che l'architettura decide cosa la rete può imparare.</p>
 </div></section>
 
 <footer><div class="wrap">
@@ -650,6 +649,7 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
    if(labelPos==='left'){x.fillText(label,gx-16,gy+rows*cell/2+4);}
    else if(labelPos==='right'){x.fillText(label,gx+cols*cell+14,gy+rows*cell/2+4);}
    else if(labelPos==='top'){x.fillText(label,gx+cols*cell/2,gy-9);}
+   else if(labelPos==='bottom'){x.fillText(label,gx+cols*cell/2-1,gy+rows*cell+20);}
    for(let i=0;i<rows;i++)for(let j=0;j<cols;j++){
     const rH=(hiRow===i),cH=(hiCol===j),cellHi=(hiRow===i&&hiCol===j);
     const sel=clickable&&cellHi, hov=clickable&&!cellHi&&hover===i*2+j;
@@ -663,10 +663,7 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   }
   grid(bx,by,B,3,2,null,aj,'B','top',false);
   grid(ax,ay,A,2,3,ai,null,'A','left',false);
-  grid(bx,ay,Cm,2,2,ai,aj,'','none',true);
-  // etichetta del risultato, sotto il suo riquadro
-  x.fillStyle=CO.accent;x.font='700 14px '+sans();x.textAlign='center';
-  x.fillText('C = A · B',bx+cbW/2,ay+cbH+cbP+19);
+  grid(bx,ay,Cm,2,2,ai,aj,'C','bottom',true);
   // formula della cella selezionata
   x.fillStyle=CO.accent;x.font='13px '+mono();x.textAlign='center';
   const parts=[];for(let k=0;k<3;k++)parts.push(A[ai][k]+'·'+B[k][aj]);

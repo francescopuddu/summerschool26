@@ -71,7 +71,6 @@
     max-width:40ch;margin:26px 0;padding-left:24px;border-left:4px solid var(--accent)}
   .quote code{font-family:var(--mono);font-size:.82em;background:var(--paper-2);padding:1px 5px;border-radius:4px}
   .quote cite{display:block;font-family:var(--sans);font-size:13px;font-weight:600;font-style:normal;color:var(--muted);margin-top:10px;letter-spacing:.02em}
-  .pull{font-family:var(--sans);font-size:clamp(20px,2.4vw,27px);line-height:1.32;font-weight:700;color:var(--ink);max-width:none;margin:30px 0;padding-top:18px;border-top:2px solid var(--accent)}
 
   .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:26px;
     box-shadow:0 1px 0 var(--line),0 18px 40px -32px rgba(0,0,0,.35)}
@@ -386,7 +385,6 @@
       <p style="margin:8px 0 0;font-size:15px;color:var(--ink-2)">Tutto passa dalla <b>context window</b>, che è finita. Decidere cosa ci mettiamo, in che ordine e cosa ne teniamo fuori è la disciplina ingegneristica centrale.</p>
     </div>
   </div>
-  <div class="pull">Riempirlo di capacità, e insieme tenerlo in ordine: lo stesso contesto, due lavori diversi.</div>
 </section>
 
 <!-- ============ ATTO 1 ============ -->
@@ -461,7 +459,6 @@
       <p style="margin:0;font-size:15px;color:var(--ink-2)">Le «memorie» di ChatGPT/Claude.ai sono <b>note salvate esternamente</b> e <b>re-iniettate nel system prompt</b> a ogni nuova conversazione. Sempre architettura sopra il modello, non capacità nativa.</p>
     </div>
   </div>
-  <div class="pull">Quel grande TXT con etichette System / User / Assistant è, letteralmente, tutto ciò che il modello sa.</div>
 </section>
 
 <!-- 7 · finestra finita + libri -->
@@ -798,7 +795,6 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
   <h2>Un buon contesto si riusa</h2>
   <p class="lead">Costruire un buon contesto costa tempo e attenzione. Proprio per questo <b>non si butta via</b>: si impacchetta e si riusa. È il passaggio dal «prompt furbo» usa-e-getta al <b>contesto come asset</b>.</p>
   <div class="callout">Un <b>Project</b> (su claude.ai) o una <b>skill</b> sono esattamente questo: un contesto impacchettato — istruzioni + file + tool — pronto all'uso. Più lo curi, più compone valore nel tempo.</div>
-  <div class="pull">È qui che «scrivere un buon prompt» diventa «progettare l'ambiente in cui l'agente lavora».</div>
   <p class="lead"><b>Ed è esattamente il ponte all'hands-on:</b> tra poco costruiamo un contesto riutilizzabile con un <em>Project</em> e colleghiamo il modello al mondo con i <em>Connettori</em> (MCP).</p>
 </section>
 
