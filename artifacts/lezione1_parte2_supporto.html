@@ -154,6 +154,30 @@
   .qkv .c p{font-size:15px;line-height:1.5;margin:0 0 12px;color:var(--ink-2)}
   .qkv .c .eq{font-size:13px}
 
+  /* stack di blocchi identici */
+  .stack{display:grid;grid-template-columns:auto 1fr;gap:0 18px;margin-top:20px;align-items:stretch}
+  .stack .spine{position:relative;width:8px;border-radius:4px;background:var(--line-strong);justify-self:center}
+  .stack .spine::after{content:'';position:absolute;left:50%;bottom:-13px;transform:translateX(-50%);
+    border:7px solid transparent;border-top:11px solid var(--line-strong)}
+  .stack .spineLab{grid-column:1;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--muted);text-align:center;margin-top:20px}
+  .stack .blocks{display:flex;flex-direction:column;gap:10px}
+  .blk{border:1px solid var(--line-strong);border-radius:12px;background:var(--card-2);padding:12px 14px;
+    display:grid;grid-template-columns:auto 1fr 1fr;align-items:center;gap:12px}
+  .blk .bn{font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-2);white-space:nowrap}
+  .blk .sub{font-size:13px;font-weight:600;border-radius:8px;padding:7px 10px;text-align:center}
+  .blk .sub.att{background:var(--accent-soft);border:1px solid var(--accent-soft2);color:var(--accent-2)}
+  .blk .sub.ff{background:var(--violet-soft);border:1px solid #d6d2f4;color:var(--violet)}
+  .stack .dots3{font-size:22px;color:var(--muted);text-align:center;letter-spacing:.3em;padding:6px 0}
+  .stack .times{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);text-align:center}
+  .stack .times b{color:var(--accent-2)}
+  @media(max-width:640px){
+    .stack{gap:0 12px}
+    .blk{grid-template-columns:1fr;gap:8px;text-align:center}
+    .blk .bn{text-align:center}
+  }
+
   /* generazione / step log */
   .ctxbox{font-family:var(--mono);font-size:14px;background:var(--card-2);border:1px solid var(--line);border-radius:12px;
     padding:14px 16px;line-height:2;transition:box-shadow .3s}
@@ -174,10 +198,11 @@
   /* da portare a casa */
   .takes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:26px}
   @media(max-width:760px){.takes{grid-template-columns:1fr}}
-  .take{border-radius:16px;padding:20px;border:1px solid var(--line)}
-  .take.g{background:linear-gradient(160deg,var(--accent-soft),#fff)}
-  .take.v{background:linear-gradient(160deg,var(--violet-soft),#fff)}
-  .take.a{background:linear-gradient(160deg,var(--amber-soft),#fff)}
+  .take{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--line);border-radius:18px;padding:22px;
+    box-shadow:0 1px 0 var(--line),0 18px 40px -32px rgba(0,0,0,.35)}
+  .take.g{border-left-color:var(--accent)}
+  .take.v{border-left-color:var(--violet)}
+  .take.a{border-left-color:var(--amber)}
   .take .kn{font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
   .take.g .kn{color:var(--accent-2)} .take.v .kn{color:var(--violet)} .take.a .kn{color:var(--amber)}
   .take h4{margin:0 0 8px;font-size:17px;line-height:1.25}
@@ -380,6 +405,24 @@
 
   <h3>E il feedforward?</h3>
   <p>Il sotto-blocco successivo è una piccola rete neurale — qualche strato <span class="eq">y = <b>W</b>x + b</span> e qualche non-linearità come la ReLU — che processa ulteriormente l'embedding dopo che è stato arricchito con nuovo contesto dagli altri. Un LLM è costituito quasi interamente di blocchi di questo tipo, che rielaborano numerose volte l'embedding di ciascun token.</p>
+
+  <div class="panel">
+    <div class="phd"><strong>Lo stesso blocco, decine di volte</strong></div>
+    <div class="stack">
+      <div class="spine"></div>
+      <div class="blocks">
+        <div class="blk"><span class="bn">blocco 1</span><span class="sub att">attention</span><span class="sub ff">feedforward</span></div>
+        <div class="blk"><span class="bn">blocco 2</span><span class="sub att">attention</span><span class="sub ff">feedforward</span></div>
+        <div class="blk"><span class="bn">blocco 3</span><span class="sub att">attention</span><span class="sub ff">feedforward</span></div>
+        <div class="dots3">⋮</div>
+        <div class="times">altre <b>decine</b> di blocchi identici</div>
+        <div class="dots3">⋮</div>
+        <div class="blk"><span class="bn">blocco N</span><span class="sub att">attention</span><span class="sub ff">feedforward</span></div>
+      </div>
+      <div class="spineLab">dorsale</div>
+    </div>
+    <p class="hint">Ogni blocco ha la <b>stessa architettura</b> — attention, poi feedforward — ma <b>pesi diversi</b>: <span class="eq"><b>W</b></span> e <span class="eq">b</span> cambiano da blocco a blocco. È tutto qui: l'embedding di ciascun token attraversa questa pila e viene riscritto a ogni passaggio. Nei modelli reali i blocchi sono qualche decina (una trentina in un modello da pochi miliardi di parametri, un centinaio nei più grandi).</p>
+  </div>
 
   <div class="callout"><b>Uno spazio di lavoro.</b> Negli strati successivi al primo, l'embedding di un token smette di rappresentare davvero quel token: diventa qualcosa che possiamo meglio concepire come uno "spazio di lavoro per il modello" — codifica ciò che è utile codificare, che sia il token in quella posizione o meno.</div>
 </div></section>
