@@ -62,9 +62,6 @@
   .scrollcue .a{animation:bob 1.6s ease-in-out infinite}
   @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
 
-  .callout{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;
-    padding:16px 20px;margin:22px 0;font-size:16.5px;color:#2c256e;max-width:66ch}
-  .callout b{color:var(--accent)}
   .eq{font-family:var(--mono);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:3px 9px;display:inline-block;font-size:.92em;color:var(--ink)}
   .eq b{color:var(--accent)}
 
@@ -76,17 +73,6 @@
   .phd{display:flex;align-items:center;gap:10px;margin-bottom:2px}
   .phd strong{font-size:16px}
 
-  .canvas-hint{position:relative}
-  .clickcue{position:absolute;top:50px;right:22px;z-index:2;pointer-events:none;
-    font-family:var(--mono);font-size:12.5px;color:var(--accent);
-    background:rgba(255,255,255,.93);border:1px solid var(--accent-soft2);border-radius:10px;
-    padding:7px 11px;box-shadow:0 8px 20px -12px rgba(67,56,202,.55);
-    animation:bob 1.8s ease-in-out infinite;transition:opacity .35s}
-  .clickcue b{font-weight:700}
-  .clickcue.off{opacity:0}
-  #matHint{right:auto;left:46px;top:78px;max-width:16ch;line-height:1.45}
-  @media(max-width:640px){.clickcue{position:static;animation:none;display:inline-block;margin:10px 0 2px}
-    #matHint{left:auto;top:auto;max-width:none}}
   #cMat{cursor:default}
   #cMat:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:10px}
 
@@ -248,15 +234,12 @@
 
   <h3>Matrici e prodotto matriciale</h3>
   <p>Una <b>matrice</b> è una tabella di numeri: la si può vedere come tanti vettori impilati. L'operazione che ci serve, il <b>prodotto matriciale</b>, non è nulla di nuovo — ogni casella del risultato è il <em>dot product</em> di una riga con una colonna.</p>
-  <div class="panel canvas-hint">
+  <div class="panel">
     <div class="phd"><strong>Ogni casella di C = una riga di A × una colonna di B</strong></div>
-    <div class="clickcue" id="matHint">Clicca una casella di <b>C</b> ↘ vedi da dove esce</div>
     <canvas id="cMat" height="310" tabindex="0" aria-label="Prodotto matriciale: clicca una casella del risultato C per vedere il dot product che la genera"></canvas>
   </div>
 
   <!-- NESSO -->
-  <div class="callout"><b>Il momento in cui si chiude il cerchio.</b> Dove sono finiti neuroni, assoni e dendriti? Sono <em>dentro</em> queste matrici.</div>
-
   <div class="panel star">
     <div class="badge">il nesso rete ↔ matematica</div>
     <div class="phd"><strong>Uno strato di neuroni <em>è</em> una moltiplicazione tra matrici</strong></div>
@@ -330,16 +313,49 @@
   <div class="kicker"><span class="n">06</span> Limiti &amp; architettura</div>
   <h2>Una retta non basta</h2>
   <p class="lead">Prendi le temperature di <b>tutto l'anno</b>: salgono e scendono in modo ciclico, una retta non può seguirle. E c'è un tranello — <b>impilare neuroni "lineari" non aiuta</b>: due strati lineari collassano di nuovo in una sola retta.</p>
-  <p>La svolta è una funzione semplicissima, la <b>ReLU</b> (tiene i positivi, azzera i negativi): rompe la linearità e libera la rete. Attivala e aggiungi neuroni — la retta diventa una curva capace di seguire il ciclo. Cresci in <b>profondità</b> (più strati) e in <b>larghezza</b> (più neuroni).</p>
-  <div class="panel">    <canvas id="cArch" height="300"></canvas>
-    <div class="ctrls">
-      <div class="toggle" id="reluTog">
-        <button data-r="0">Senza ReLU</button>
-        <button data-r="1" class="on">Con ReLU</button>
+  <p>La svolta è una funzione semplicissima, la <b>ReLU</b>: tiene i positivi, azzera i negativi. Rompe la linearità e libera la rete.</p>
+
+  <div class="panel"><div class="badge">la ReLU</div>
+    <div class="grid2">
+      <div>
+        <div class="cap" style="margin:0 0 6px">la funzione: ReLU(z) = max(0, z)</div>
+        <canvas id="cRelu" height="260"></canvas>
+        <div class="ctrls">
+          <div class="ctrl"><label>ingresso z <b id="reluZv">1.20</b></label><input id="reluZ" type="range" min="-3" max="3" step="0.05" value="1.2"></div>
+        </div>
+        <div class="readout">ReLU(z) = <b id="reluOut">—</b> · <b id="reluState">—</b></div>
       </div>
+      <div>
+        <div class="cap" style="margin:0 0 6px">un neurone con ReLU è un gomito: ReLU(w·x + b)</div>
+        <canvas id="cKink" height="260"></canvas>
+        <div class="ctrls">
+          <div class="ctrl"><label>peso w <b id="kinkWv">1.60</b></label><input id="kinkW" type="range" min="-2.5" max="2.5" step="0.05" value="1.6"></div>
+          <div class="ctrl"><label>bias b <b id="kinkBv">-0.60</b></label><input id="kinkB" type="range" min="-2" max="2" step="0.05" value="-0.6"></div>
+        </div>
+        <div class="readout">gomito in x = <b id="kinkPos">—</b></div>
+      </div>
+    </div>
+    <div class="cap" style="margin-top:12px">Ogni neurone piazza un gomito dove vuole: il peso decide la pendenza, il bias dove il gomito cade. Sommandone tanti si costruisce una curva qualsiasi — è quello che succede qui sotto.</div>
+  </div>
+
+  <p>Muovi lo slider dei neuroni e confronta i due grafici: a sinistra, senza ReLU, aggiungerne non serve a niente; a destra la curva impara a seguire il ciclo. Si cresce in <b>profondità</b> (più strati) e in <b>larghezza</b> (più neuroni), ma serve la non-linearità.</p>
+  <div class="panel">
+    <div class="grid2">
+      <div>
+        <div class="cap" style="margin:0 0 6px">senza ReLU</div>
+        <canvas id="cArchNo" height="260"></canvas>
+        <div class="cap" style="margin-top:6px">gli strati lineari ricollassano in una retta: il grafico non cambia mai.</div>
+      </div>
+      <div>
+        <div class="cap" style="margin:0 0 6px">con ReLU</div>
+        <canvas id="cArchYes" height="260"></canvas>
+        <div class="cap" style="margin-top:6px">ogni neurone aggiunge un gomito: la curva insegue il ciclo annuale.</div>
+      </div>
+    </div>
+    <div class="ctrls" style="margin-top:16px">
       <div class="ctrl"><label>neuroni <b id="archNv">6</b></label><input id="archN" type="range" min="1" max="20" step="1" value="6"></div>
     </div>
-    <div class="readout">errore sul ciclo annuale <b id="archErr">—</b></div>
+    <div class="readout">errore sul ciclo annuale · senza ReLU <b id="archErrNo">—</b> · con ReLU <b id="archErrYes">—</b></div>
   </div>
 </div></section>
 
@@ -625,7 +641,6 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
 (function(){const {c,fit,h}=C('cMat');
  const A=[[1,2,1],[3,1,2]],B=[[2,1],[1,3],[4,2]];const Cm=[[0,0],[0,0]];
  for(let i=0;i<2;i++)for(let j=0;j<2;j++){let s=0;for(let k=0;k<3;k++)s+=A[i][k]*B[k][j];Cm[i][j]=s;}
- const hint=document.getElementById('matHint');
  let hi=0,hover=-1,geo=null;   // geo: geometria di C, per mappare il click sulla cella
  function draw(){const x=fit();const cw=c.clientWidth,ch=h;x.clearRect(0,0,cw,ch);
   const ai=Math.floor(hi/2),aj=hi%2;
@@ -674,7 +689,7 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   const px=ev.clientX-r.left,py=ev.clientY-r.top;
   const j=Math.floor((px-geo.x)/geo.cell), i=Math.floor((py-geo.y)/geo.cell);
   return (i>=0&&i<2&&j>=0&&j<2)?i*2+j:-1;}
- function select(k){if(k<0||k===hi)return;hi=k;hint.classList.add('off');draw();}
+ function select(k){if(k<0||k===hi)return;hi=k;draw();}
  c.addEventListener('mousemove',ev=>{const k=cellAt(ev);
   c.style.cursor=(k>=0)?'pointer':'default';
   if(k!==hover){hover=k;draw();}});
@@ -856,26 +871,106 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
  onResize(()=>{invalidateLoss();redraw();});requestAnimationFrame(redraw);
 })();
 
-/* ================= 06 ARCHITECTURE (ReLU) ================= */
-(function(){const {c,fit,h}=C('cArch');let useReLU=1;
+/* ================= 06a LA RELU ================= */
+(function(){const R=C('cRelu'),K=C('cKink');
+ const zEl=document.getElementById('reluZ'),wEl=document.getElementById('kinkW'),bEl=document.getElementById('kinkB');
+
+ /* la funzione ReLU(z) */
+ function drawRelu(){const x=R.fit();const cw=R.c.clientWidth,ch=R.h;const padL=34,padR=16,padT=16,padB=26;
+  const z=+zEl.value,out=relu(z);
+  document.getElementById('reluZv').textContent=fmt(z);
+  document.getElementById('reluOut').textContent=fmt(out);
+  document.getElementById('reluState').textContent=z>0?'passa intatto':'azzerato';
+  const ZMIN=-3,ZMAX=3,YMIN=-0.6,YMAX=3;
+  function X(v){return padL+(v-ZMIN)/(ZMAX-ZMIN)*(cw-padL-padR);}
+  function Y(v){return ch-padB-(v-YMIN)/(YMAX-YMIN)*(ch-padT-padB);}
+  x.clearRect(0,0,cw,ch);
+  /* fondo delle due metà */
+  x.fillStyle=CO.accentSoft;x.fillRect(X(ZMIN),padT,X(0)-X(ZMIN),ch-padT-padB);
+  x.fillStyle=CO.tealSoft;x.fillRect(X(0),padT,X(ZMAX)-X(0),ch-padT-padB);
+  /* assi */
+  x.strokeStyle=CO.lineS;x.lineWidth=1;
+  x.beginPath();x.moveTo(X(ZMIN),Y(0));x.lineTo(X(ZMAX),Y(0));x.stroke();
+  x.beginPath();x.moveTo(X(0),padT);x.lineTo(X(0),ch-padB);x.stroke();
+  /* la funzione: ramo piatto + ramo a 45° */
+  x.lineWidth=3;x.lineCap='round';
+  x.strokeStyle=CO.accent;x.beginPath();x.moveTo(X(ZMIN),Y(0));x.lineTo(X(0),Y(0));x.stroke();
+  x.strokeStyle=CO.teal;x.beginPath();x.moveTo(X(0),Y(0));x.lineTo(X(ZMAX),Y(ZMAX));x.stroke();
+  /* proiezioni + punto mobile */
+  x.setLineDash([4,4]);x.lineWidth=1.5;x.strokeStyle=CO.mut;
+  x.beginPath();x.moveTo(X(z),Y(0));x.lineTo(X(z),Y(out));x.lineTo(X(0),Y(out));x.stroke();
+  x.setLineDash([]);
+  x.fillStyle=z>0?CO.teal:CO.accent;x.beginPath();x.arc(X(z),Y(out),6,0,7);x.fill();
+  x.fillStyle='#fff';x.beginPath();x.arc(X(z),Y(out),2.4,0,7);x.fill();
+  /* etichette */
+  x.font='11px '+mono();x.fillStyle=CO.mut;
+  x.textAlign='center';x.fillText('z',X(ZMAX)-8,Y(0)+16);x.fillText('0',X(0),ch-8);
+  x.textAlign='left';x.fillText('ReLU(z)',X(0)+6,padT+11);
+  x.textAlign='center';x.fillStyle=CO.accent2;x.fillText('azzera i negativi',X(-1.5),ch-8);
+  x.fillStyle=CO.teal;x.fillText('tiene i positivi',X(1.5),ch-8);
+ }
+
+ /* un neurone ReLU = un gomito */
+ function drawKink(){const x=K.fit();const cw=K.c.clientWidth,ch=K.h;const padL=34,padR=16,padT=16,padB=26;
+  const w=+wEl.value,b=+bEl.value;
+  document.getElementById('kinkWv').textContent=fmt(w);
+  document.getElementById('kinkBv').textContent=fmt(b);
+  const kink=Math.abs(w)<1e-6?null:-b/w;
+  document.getElementById('kinkPos').textContent=(kink===null||kink<0||kink>1)?'fuori dall\'intervallo':fmt(kink);
+  const YMIN=-0.3,YMAX=2.2;
+  function X(v){return padL+v*(cw-padL-padR);}
+  function Y(v){return ch-padB-(v-YMIN)/(YMAX-YMIN)*(ch-padT-padB);}
+  x.clearRect(0,0,cw,ch);
+  x.strokeStyle=CO.line;x.lineWidth=1;
+  for(let i=0;i<=8;i++){x.beginPath();x.moveTo(X(i/8),padT);x.lineTo(X(i/8),ch-padB);x.stroke();}
+  x.strokeStyle=CO.lineS;x.beginPath();x.moveTo(X(0),Y(0));x.lineTo(X(1),Y(0));x.stroke();
+  /* retta w·x + b, tratteggiata: quel che entra nella ReLU */
+  x.setLineDash([5,5]);x.lineWidth=1.5;x.strokeStyle=CO.mut;x.beginPath();
+  for(let i=0;i<=120;i++){const xx=i/120,yy=w*xx+b;i?x.lineTo(X(xx),Y(yy)):x.moveTo(X(xx),Y(yy));}
+  x.stroke();x.setLineDash([]);
+  /* ReLU(w·x + b) */
+  x.lineWidth=3;x.lineCap='round';x.strokeStyle=CO.teal;x.beginPath();
+  for(let i=0;i<=120;i++){const xx=i/120,yy=relu(w*xx+b);i?x.lineTo(X(xx),Y(yy)):x.moveTo(X(xx),Y(yy));}
+  x.stroke();
+  /* il gomito */
+  if(kink!==null&&kink>=0&&kink<=1){
+    x.setLineDash([4,4]);x.lineWidth=1.5;x.strokeStyle=CO.amber;
+    x.beginPath();x.moveTo(X(kink),padT);x.lineTo(X(kink),ch-padB);x.stroke();x.setLineDash([]);
+    x.fillStyle=CO.amber;x.beginPath();x.arc(X(kink),Y(0),5.5,0,7);x.fill();
+    x.font='11px '+mono();x.fillStyle=CO.amber;x.textAlign='center';x.fillText('gomito',X(kink),padT+11);
+  }
+  x.font='11px '+mono();x.fillStyle=CO.mut;x.textAlign='left';
+  x.fillText('w·x + b',X(0)+6,padT+11);x.textAlign='right';x.fillText('x',X(1)-2,ch-8);
+ }
+
+ [zEl].forEach(el=>el.addEventListener('input',drawRelu));
+ [wEl,bEl].forEach(el=>el.addEventListener('input',drawKink));
+ onResize(()=>{drawRelu();drawKink();});
+ requestAnimationFrame(()=>{drawRelu();drawKink();});
+})();
+
+/* ================= 06b ARCHITECTURE (senza vs con ReLU) ================= */
+(function(){const NO=C('cArchNo'),YES=C('cArchYes');
  function target(x){return 0.5+0.4*Math.sin(2*Math.PI*x-Math.PI/2)*0.9;}
  const S=[];let seed=3;function rnd(){seed=(seed*9301+49297)%233280;return seed/233280;}
  for(let i=0;i<=90;i++){const xx=i/90;S.push([xx,target(xx)+(rnd()-0.5)*0.06]);}
- function draw(){const x=fit();const cw=c.clientWidth,ch=h;const pad=16;
-  const N=+document.getElementById('archN').value;document.getElementById('archNv').textContent=N;
+ function draw(H,useReLU,N){const x=H.fit();const cw=H.c.clientWidth,ch=H.h;const pad=16;
   function X(v){return pad+v*(cw-2*pad);}function Y(v){return ch-pad-v*(ch-2*pad);}
   x.clearRect(0,0,cw,ch);
-  x.strokeStyle=CO.line;for(let i=0;i<=8;i++){x.beginPath();x.moveTo(X(i/8),pad);x.lineTo(X(i/8),ch-pad);x.stroke();}
+  x.strokeStyle=CO.line;x.lineWidth=1;for(let i=0;i<=8;i++){x.beginPath();x.moveTo(X(i/8),pad);x.lineTo(X(i/8),ch-pad);x.stroke();}
   S.forEach(p=>{x.fillStyle='rgba(180,83,9,.5)';x.beginPath();x.arc(X(p[0]),Y(p[1]),2.6,0,7);x.fill();});
-  const feats=S.map(p=>design(p[0],N,!!useReLU));const w=lsq(feats,S.map(p=>p[1]));
+  const feats=S.map(p=>design(p[0],N,useReLU));const w=lsq(feats,S.map(p=>p[1]));
   let err=0;x.strokeStyle=useReLU?CO.teal:CO.accent;x.lineWidth=3;x.beginPath();
-  S.forEach((p,i)=>{const f=design(p[0],N,!!useReLU);let yh=0;for(let k=0;k<w.length;k++)yh+=w[k]*f[k];err+=(yh-p[1])**2;i?x.lineTo(X(p[0]),Y(yh)):x.moveTo(X(p[0]),Y(yh));});x.stroke();
-  document.getElementById('archErr').textContent=Math.sqrt(err/S.length).toFixed(3);
+  S.forEach((p,i)=>{const f=design(p[0],N,useReLU);let yh=0;for(let k=0;k<w.length;k++)yh+=w[k]*f[k];err+=(yh-p[1])**2;i?x.lineTo(X(p[0]),Y(yh)):x.moveTo(X(p[0]),Y(yh));});x.stroke();
+  return Math.sqrt(err/S.length);
  }
- document.getElementById('archN').addEventListener('input',draw);
- document.querySelectorAll('#reluTog button').forEach(btn=>btn.addEventListener('click',()=>{
-   useReLU=+btn.dataset.r;document.querySelectorAll('#reluTog button').forEach(b=>b.classList.toggle('on',b===btn));draw();}));
- onResize(draw);requestAnimationFrame(draw);
+ function drawAll(){const N=+document.getElementById('archN').value;
+  document.getElementById('archNv').textContent=N;
+  document.getElementById('archErrNo').textContent=draw(NO,false,N).toFixed(3);
+  document.getElementById('archErrYes').textContent=draw(YES,true,N).toFixed(3);
+ }
+ document.getElementById('archN').addEventListener('input',drawAll);
+ onResize(drawAll);requestAnimationFrame(drawAll);
 })();
 </script>
 </body>
