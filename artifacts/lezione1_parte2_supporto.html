@@ -139,13 +139,18 @@
     border:1px solid var(--line-strong);border-radius:8px;padding:7px 12px;cursor:pointer;transition:all .15s}
   .attToks button.sel{background:var(--accent);border-color:var(--accent);color:#fff}
   .attToks button.src{border-color:var(--accent);color:var(--accent-2);background:var(--accent-soft)}
-  .qkv{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:18px}
+  .attSent{font-family:var(--serif);font-style:italic;font-size:clamp(20px,2.6vw,28px);line-height:1.4;text-align:center;
+    color:var(--ink);background:var(--card-2);border:1px dashed var(--line-strong);border-radius:14px;
+    padding:20px 24px;margin-top:16px}
+  .attSent b{font-style:normal;color:var(--accent);font-weight:700}
+  .attAsk{font-size:14px;color:var(--muted);text-align:center;margin:10px 0 0}
+  .qkv{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:20px}
   @media(max-width:760px){.qkv{grid-template-columns:1fr}}
-  .qkv .c{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--card-2)}
-  .qkv .c h4{margin:0 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.1em}
+  .qkv .c{border:1px solid var(--line);border-radius:12px;padding:18px 20px;background:var(--card-2)}
+  .qkv .c h4{margin:0 0 8px;font-size:14px;text-transform:uppercase;letter-spacing:.1em}
   .qkv .c.q h4{color:var(--accent-2)} .qkv .c.k h4{color:var(--blue)} .qkv .c.v h4{color:var(--amber)}
-  .qkv .c p{font-size:13.5px;margin:0 0 8px;color:var(--ink-2)}
-  .qkv .c .eq{font-size:11.5px}
+  .qkv .c p{font-size:15px;line-height:1.5;margin:0 0 12px;color:var(--ink-2)}
+  .qkv .c .eq{font-size:13px}
 
   /* generazione / step log */
   .ctxbox{font-family:var(--mono);font-size:14px;background:var(--card-2);border:1px solid var(--line);border-radius:12px;
@@ -349,20 +354,26 @@
   <div class="kicker"><span class="n">05</span> Attention</div>
   <h2>I token si parlano</h2>
   <p class="lead">Ogni blocco ha due componenti: <b>attention</b> e <b>feedforward</b>. L'attention è un'operazione su vettori che permette all'embedding di un token di raccogliere e processare informazioni provenienti da altri token — per considerare le connessioni che una parola ha con le altre nella frase.</p>
-  <p>Consideriamo: <em>"Andrea prese la pesca dal cesto e la mangiò"</em>. La parola "pesca", da sola, è ambigua: il frutto, o l'attività di pescare? Il suo token, necessariamente, contiene entrambi i significati — è ambiguo <em>per costruzione</em>. Per ogni token vengono costruiti tre vettori: <b>query</b>, <b>key</b> e <b>value</b>.</p>
+  <p>Una parola, da sola, può essere ambigua. Il suo token contiene per forza tutti i significati possibili — è ambiguo <em>per costruzione</em> — ed è il contesto a scegliere quale. Per fare questo lavoro, per ogni token vengono costruiti tre vettori: <b>query</b>, <b>key</b> e <b>value</b>.</p>
 
-  <div class="panel star">    <div class="phd"><strong>Chi ascolta chi — clicca un token evidenziato</strong></div>
-    <div class="attWrap">
-      <canvas id="cAtt" height="205" style="background:transparent;border:none;border-radius:0"></canvas>
-      <div class="attToks" id="attToks"></div>
+  <div class="panel star">    <div class="phd"><strong>Chi ascolta chi</strong></div>
+    <div class="toggle" id="attTog" style="margin-top:10px">
+      <button data-s="0" class="on">La pesca</button>
+      <button data-s="1">Il trofeo</button>
     </div>
+    <div class="attSent" id="attSent">—</div>
+    <p class="attAsk" id="attAsk">—</p>
     <div class="qkv" id="qkvBox">
       <div class="c q"><h4>Query</h4><p id="qTxt">—</p><span class="eq">Query = <b>W</b><sub>query</sub> x + b</span></div>
       <div class="c k"><h4>Key</h4><p id="kTxt">—</p><span class="eq">Key = <b>W</b><sub>key</sub> x + b</span></div>
       <div class="c v"><h4>Value</h4><p id="vTxt">—</p><span class="eq">Value = <b>W</b><sub>value</sub> x + b</span></div>
     </div>
+    <p class="hint" style="text-align:center;margin-top:22px">clicca un token evidenziato per vedere chi ascolta chi</p>
+    <div class="attWrap">
+      <canvas id="cAtt" height="205" style="background:transparent;border:none;border-radius:0"></canvas>
+      <div class="attToks" id="attToks"></div>
+    </div>
     <div class="readout" style="margin-top:16px"><span id="attRead">—</span></div>
-    <p class="hint">La query seleziona le key più vicine — quella vicinanza <em>è</em> l'attention, e dà il nome all'operazione. I value vengono sommati, ciascuno pesato con l'attenzione ricevuta. Tre vettori, nessuna magia: sono tre operazioni y = Wx + b, con W e b appresi via gradient descent come ogni altro parametro.</p>
   </div>
 
   <h3>E il feedforward?</h3>
@@ -1005,36 +1016,64 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
 
 /* ================= 05 ATTENTION ================= */
 (function(){
- const toks=['Andrea','prese','la','pesca','dal','cesto','e','la','mangiò'];
- const data={
-  3:{att:{3:.30,8:.28,5:.20,1:.12,0:.04,2:.02,4:.02,6:.01,7:.01},
-     q:'«ho bisogno di sapere se sono un frutto o l’attività della pesca»',
-     k:'«riguardo un frutto o forse un’attività»',
-     v:'informazioni sul frutto pesca, e sull’attività',
-     res:'la somma pesata dei value porta l’informazione «<b>sono il frutto commestibile pesca</b>» — e perde il significato di pesca come attività'},
-  8:{att:{8:.26,3:.30,0:.22,1:.14,5:.05,2:.01,4:.01,6:.005,7:.005},
-     q:'«chi mangia, e che cosa viene mangiato?»',
-     k:'«riguardo cibo e cose commestibili»',
-     v:'il significato di mangiare cose commestibili',
-     res:'«mangiò» raccoglie soggetto e oggetto: <b>Andrea</b> mangia <b>la pesca</b>'},
-  7:{att:{7:.15,3:.55,8:.20,2:.05,0:.02,1:.01,4:.01,5:.005,6:.005},
-     q:'«a quale nome mi riferisco?»',
-     k:'«riguardo un articolo/pronome»',
-     v:'la funzione grammaticale di «la»',
-     res:'il secondo «la» punta quasi tutta la sua attenzione su «<b>pesca</b>»: è lei che viene mangiata'}};
- const selectable=[3,8,7];let sel=3;
+ /* due esempi: l'ambiguita' di una parola (la pesca) e il referente di un
+    pronome (il trofeo). Stessa struttura, si commutano coi tab. */
+ const SCENES=[
+ {sent:'Andrea prese la <b>pesca</b> dal cesto e la mangiò',
+  ask:'«pesca»: il frutto, o l’attività di pescare? Il token, da solo, non lo sa.',
+  toks:['Andrea','prese','la','pesca','dal','cesto','e','la','mangiò'],
+  selectable:[3,8,7], def:3,
+  data:{
+   3:{att:{3:.30,8:.28,5:.20,1:.12,0:.04,2:.02,4:.02,6:.01,7:.01},
+      q:'«ho bisogno di sapere se sono un frutto o l’attività della pesca»',
+      k:'«riguardo un frutto o forse un’attività»',
+      v:'informazioni sul frutto pesca, e sull’attività',
+      res:'la somma pesata dei value porta l’informazione «<b>sono il frutto commestibile pesca</b>» — e perde il significato di pesca come attività'},
+   8:{att:{8:.26,3:.30,0:.22,1:.14,5:.05,2:.01,4:.01,6:.005,7:.005},
+      q:'«chi mangia, e che cosa viene mangiato?»',
+      k:'«riguardo cibo e cose commestibili»',
+      v:'il significato di mangiare cose commestibili',
+      res:'«mangiò» raccoglie soggetto e oggetto: <b>Andrea</b> mangia <b>la pesca</b>'},
+   7:{att:{7:.15,3:.55,8:.20,2:.05,0:.02,1:.01,4:.01,5:.005,6:.005},
+      q:'«a quale nome mi riferisco?»',
+      k:'«riguardo un articolo/pronome»',
+      v:'la funzione grammaticale di «la»',
+      res:'il secondo «la» punta quasi tutta la sua attenzione su «<b>pesca</b>»: è lei che viene mangiata'}}},
+ {sent:'Il trofeo non entrava nella valigia perché <b>era</b> troppo grande',
+  ask:'«era»: chi è troppo grande, il trofeo o la valigia? Il token, da solo, non lo sa.',
+  toks:['Il','trofeo','non','entrava','nella','valigia','perché','era','troppo','grande'],
+  selectable:[7,3,5], def:7,
+  data:{
+   7:{att:{7:.10,1:.40,9:.22,5:.12,8:.06,3:.05,6:.03,2:.01,0:.005,4:.005},
+      q:'«a chi mi riferisco: al trofeo o alla valigia?»',
+      k:'«riguardo un soggetto a cui si attribuisce una dimensione»',
+      v:'la proprietà di essere troppo grande',
+      res:'«era» risolve il referente su «<b>trofeo</b>»: è il trofeo a essere troppo grande. Se la frase finisse con «troppo <em>piccola</em>», la stessa attention punterebbe sulla valigia'},
+   3:{att:{3:.12,1:.32,5:.28,2:.12,4:.06,9:.05,7:.03,0:.01,6:.005,8:.005},
+      q:'«che cosa entra, e dove?»',
+      k:'«riguardo un oggetto e un contenitore»',
+      v:'la relazione di contenimento, negata dal «non»',
+      res:'«entrava» raccoglie l’oggetto <b>trofeo</b> e il contenitore <b>valigia</b> — e la negazione «non» ribalta la relazione'},
+   5:{att:{5:.20,1:.30,3:.18,9:.14,7:.08,2:.05,8:.03,0:.005,4:.01,6:.005},
+      q:'«che cosa dovrei contenere?»',
+      k:'«riguardo un oggetto da contenere»',
+      v:'informazioni sul trofeo e sul suo ingombro',
+      res:'«valigia» guarda a ciò che dovrebbe contenere: il <b>trofeo</b>, che non ci sta'}}}];
+
+ let sc=SCENES[0], sel=sc.def, btns=[];
  const box=document.getElementById('attToks');
  const {c,fit,h}=C('cAtt');
- const btns=toks.map((t,i)=>{const b=document.createElement('button');b.textContent=t;
-   if(selectable.includes(i)){b.classList.add('sel0');
-     b.addEventListener('click',()=>{sel=i;refresh();});}
-   else b.style.cursor='default';
-   box.appendChild(b);return b;});
+
+ function build(){box.innerHTML='';
+  btns=sc.toks.map((t,i)=>{const b=document.createElement('button');b.textContent=t;
+    if(sc.selectable.includes(i)){b.addEventListener('click',()=>{sel=i;refresh();});}
+    else b.style.cursor='default';
+    box.appendChild(b);return b;});}
  function centers(){const r=box.getBoundingClientRect();
    return btns.map(b=>{const br=b.getBoundingClientRect();
      return {x:br.left-r.left+br.width/2,top:br.top-r.top};});}
  function draw(){const x=fit();const cw=c.clientWidth;x.clearRect(0,0,cw,h);
-  const cs=centers();const d=data[sel];const sx=cs[sel].x;
+  const cs=centers();const d=sc.data[sel];const sx=cs[sel].x;
   Object.keys(d.att).forEach(k=>{const i=+k;if(i===sel)return;
    const w=d.att[k];if(w<0.02)return;
    const tx=cs[i].x;const midY=h-10-Math.min(h-24,Math.abs(tx-sx)*0.32+26);
@@ -1048,14 +1087,24 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
  }
  function refresh(){
   btns.forEach((b,i)=>{b.classList.toggle('sel',i===sel);
-    b.classList.toggle('src',i!==sel&&selectable.includes(i));});
-  const d=data[sel];
+    b.classList.toggle('src',i!==sel&&sc.selectable.includes(i));});
+  const d=sc.data[sel];
   document.getElementById('qTxt').textContent=d.q;
   document.getElementById('kTxt').textContent=d.k;
   document.getElementById('vTxt').textContent=d.v;
-  document.getElementById('attRead').innerHTML='attention di «'+toks[sel]+'» → '+d.res;
+  document.getElementById('attRead').innerHTML='attention di «'+sc.toks[sel]+'» → '+d.res;
   draw();}
- onResize(draw);requestAnimationFrame(refresh);
+ function load(i){sc=SCENES[i];sel=sc.def;
+  document.getElementById('attSent').innerHTML=sc.sent;
+  document.getElementById('attAsk').textContent=sc.ask;
+  build();
+  // i bottoni vanno rimisurati dopo il re-layout, altrimenti gli archi finiscono fuori posto
+  requestAnimationFrame(refresh);}
+
+ document.querySelectorAll('#attTog button').forEach(btn=>btn.addEventListener('click',()=>{
+   document.querySelectorAll('#attTog button').forEach(b=>b.classList.toggle('on',b===btn));
+   load(+btn.dataset.s);}));
+ onResize(draw);requestAnimationFrame(()=>load(0));
 })();
 
 /* ================= 06a PROBABILITÀ & ESTRAZIONE ================= */
