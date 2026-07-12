@@ -215,39 +215,42 @@
 
   /* il testo entra: una copia della riga scende e sparisce sotto il blocco nero */
   .gCtx.dive{position:absolute;z-index:1;margin:0;pointer-events:none;
-    animation:gDive .6s cubic-bezier(.5,0,.85,.4) forwards}
-  @keyframes gDive{0%{transform:translateY(0)}100%{transform:translateY(var(--dy,120px))}}
+    animation:gDive .9s cubic-bezier(.45,.05,.35,1) forwards}
+  @keyframes gDive{0%{transform:translateY(0)}12%{transform:translateY(-6px)}100%{transform:translateY(var(--dy,120px))}}
+  .gCtx.backin{animation:gBack .45s ease-out}
+  @keyframes gBack{0%{opacity:0;transform:translateY(5px)}100%{opacity:1;transform:none}}
 
   .gFunnel{position:relative;z-index:0;width:min(100%,420px);height:34px;background:var(--accent-soft);
     clip-path:polygon(0 0,100% 0,64% 100%,36% 100%);transition:background .25s}
   .genStage.reading .gFunnel{background:var(--accent-soft2)}
 
   .gModel{position:relative;z-index:3;font-family:var(--mono);font-size:11.5px;color:#fff;background:var(--ink);
-    border-radius:10px;padding:11px 18px;text-align:center;letter-spacing:.03em;max-width:100%;
-    transition:background .25s,box-shadow .25s}
-  .genStage.reading .gModel{background:var(--accent-2);box-shadow:0 0 0 5px rgba(29,158,117,.18)}
+    border-radius:12px;padding:30px 22px;text-align:center;letter-spacing:.03em;max-width:100%;
+    transition:background .45s ease,box-shadow .45s ease}
+  .genStage.reading .gModel{background:var(--accent-2);box-shadow:0 0 0 6px rgba(29,158,117,.16)}
 
   /* il token esce da sotto il bordo inferiore del blocco */
   .gOut{position:relative;z-index:2;min-height:40px;display:flex;align-items:center;justify-content:center;
     overflow:hidden;padding-top:4px}
   .gOut .gph{font-family:var(--mono);font-size:14px;color:var(--line-strong)}
   .gOut .gt{font-size:16px;padding:5px 12px;font-weight:700;animation:none}
-  .gOut .gt.emerge{animation:gEmerge .34s ease-out}
-  @keyframes gEmerge{0%{transform:translateY(-115%);opacity:0}60%{opacity:1}100%{transform:translateY(0);opacity:1}}
-  .gOut .gt.ghost{opacity:.42}
+  .gOut .gt.emerge{animation:gEmerge .55s cubic-bezier(.22,1,.36,1)}
+  @keyframes gEmerge{0%{transform:translateY(-115%);opacity:0}45%{opacity:1}100%{transform:translateY(0);opacity:1}}
+  .gOut .gt.ghost{opacity:.42;transition:opacity .4s ease}
   /* torna in coda al testo girando di lato, senza attraversare il blocco */
   .gFlyChip{position:absolute;z-index:4;pointer-events:none;font-size:16px;padding:5px 12px;font-weight:700;
-    animation:gFly .55s cubic-bezier(.4,0,.3,1) forwards}
+    animation:gFly .95s cubic-bezier(.5,.02,.35,1) forwards}
   @keyframes gFly{0%{transform:translate(0,0) scale(1);opacity:1}
     45%{transform:translate(var(--sx,150px),0) scale(1);opacity:1}
-    100%{transform:translate(var(--tx,0),var(--ty,-120px)) scale(.9);opacity:0}}
+    85%{opacity:.9}
+    100%{transform:translate(var(--tx,0),var(--ty,-120px)) scale(.92);opacity:0}}
 
   .gLoop{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:12px;text-align:center;
     border-top:1px dashed var(--line);padding-top:10px;width:min(100%,460px);transition:color .25s}
   .genStage.reading .gLoop{color:var(--accent-2)}
   .genStage.done .gLoop{color:var(--amber)}
   @media(prefers-reduced-motion:reduce){
-    .gt.new,.gCtx.dive,.gOut .gt.emerge,.gFlyChip{animation:none}
+    .gt.new,.gCtx.dive,.gCtx.backin,.gOut .gt.emerge,.gFlyChip{animation:none}
     .gFlyChip{display:none}
     .genStage,.gCtx,.gFunnel,.gModel,.gLoop{transition:none}
   }
@@ -1363,7 +1366,7 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
  function render(){stage.classList.toggle('done',i>LAST);renderCtx();renderOut();renderCap();renderLoop();}
 
  /* il testo scende dentro il modello: una copia della riga sparisce sotto il blocco nero */
- function dive(ms){
+ function dive(ms,back){
   const cr=ctx.getBoundingClientRect(),mr=model.getBoundingClientRect(),sr=stage.getBoundingClientRect();
   const cl=ctx.cloneNode(true);
   cl.removeAttribute('id');cl.classList.add('dive');
@@ -1372,7 +1375,10 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   cl.style.animationDuration=ms+'ms';
   stage.appendChild(cl);
   ctx.style.visibility='hidden';
-  setTimeout(()=>{cl.remove();ctx.style.visibility='';},ms);}
+  setTimeout(()=>cl.remove(),ms);
+  /* il testo riappare a lettura finita: il modello lo legge, non lo consuma */
+  setTimeout(()=>{ctx.style.visibility='';ctx.classList.add('backin');
+   setTimeout(()=>ctx.classList.remove('backin'),460);},back);}
 
  /* il token appena uscito gira di lato e si accoda in cima al testo */
  function flyBack(el,ms){
@@ -1389,20 +1395,23 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
 
  function step(){
   if(busy||i>LAST)return;
-  const k=i;
+  const k=i,z=RMg.matches;
   busy=true;stage.classList.add('reading');
-  const rd=RMg.matches?0:600,hold=RMg.matches?0:340,fly=RMg.matches?0:550;
-  dive(rd);
-  setTimeout(()=>{                       /* 1. il modello ha letto: il token esce da sotto il blocco */
+  const dv=z?0:900,   /* il testo scende nel modello */
+        think=z?0:500, /* il blocco elabora */
+        hold=z?0:800,  /* il token resta in vista sotto al blocco */
+        fly=z?0:950;   /* torna in coda al testo */
+  dive(dv,dv+think*0.6);
+  setTimeout(()=>{                       /* 1. il token esce da sotto il blocco */
    stage.classList.remove('reading');
    out.innerHTML='';out.appendChild(chip(gen[k],(isEnd(k)?'end':'new')+' emerge'));
    if(isEnd(k)){i++;stage.classList.add('done');renderCtx();renderCap();renderLoop();busy=false;return;}
    setTimeout(()=>{                      /* 2. il token si accoda al contesto */
     flyBack(out.firstChild,fly);
     i++;renderCtx();renderCap();renderLoop();renderOut();
-    busy=false;
+    setTimeout(()=>{busy=false;},fly*0.6);
    },hold);
-  },rd);}
+  },dv+think);}
 
  function stopAuto(){if(timer){clearInterval(timer);timer=null;}autoB.textContent='▶ Auto';}
  stage.addEventListener('click',()=>{stopAuto();step();});
@@ -1415,11 +1424,12 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   autoB.textContent='❚❚ Pausa';
   timer=setInterval(()=>{
    if(i>LAST){if(!busy)stopAuto();return;}
-   step();},1800);});
+   step();},3300);});
  document.getElementById('genReset').addEventListener('click',()=>{
   stopAuto();busy=false;i=0;
   stage.querySelectorAll('.dive,.gFlyChip').forEach(n=>n.remove());
-  ctx.style.visibility='';stage.classList.remove('reading');render();});
+  ctx.style.visibility='';ctx.classList.remove('backin');
+  stage.classList.remove('reading');render();});
  render();
 })();
 </script>
