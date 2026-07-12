@@ -65,7 +65,7 @@
   .callout{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;
     padding:16px 20px;margin:22px 0;font-size:16.5px;color:#2c256e;max-width:66ch}
   .callout b{color:var(--accent)}
-  .pull{font-family:var(--serif);font-size:clamp(23px,3.1vw,34px);line-height:1.2;font-weight:600;color:var(--ink);max-width:22ch;margin:34px 0;padding-left:26px;border-left:4px solid var(--accent)}
+  .pull{font-family:var(--sans);font-size:clamp(20px,2.4vw,27px);line-height:1.32;font-weight:700;color:var(--ink);max-width:none;margin:34px 0;padding-top:18px;border-top:2px solid var(--accent)}
   .eq{font-family:var(--mono);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:3px 9px;display:inline-block;font-size:.92em;color:var(--ink)}
   .eq b{color:var(--accent)}
 
@@ -198,7 +198,6 @@
     <canvas id="cGrowth" height="250"></canvas>
     <div class="cap">Curva illustrativa.</div>
   </div>
-  <p class="pull">Il neurone era una bella storia. La vera sostanza, da qui in poi, è matematica.</p>
 </div></section>
 
 <!-- 03 MATMUL + NESSO -->
@@ -277,7 +276,6 @@
     <div class="cap">La <b>ReLU</b> (tiene i positivi, azzera i negativi) è ciò che replica il "supera la soglia?".</div>
   </div>
 
-  <p class="pull">Lavorare con le reti non è ragionare sui neuroni. È ragionare su matrici.</p>
   <p class="mut">E non a caso: le GPU sono ottimizzate proprio per il prodotto tra matrici — lo stesso calcolo della grafica 3D.</p>
 </div></section>
 
@@ -403,8 +401,16 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
 
 /* ================= 01a NEURON BIOLOGICAL SCHEMA ================= */
 (function(){const {c,fit,h}=C('cNeuroBio');
+ // ciclo del potenziale d'azione: carica del soma → corsa lungo l'assone → arrivo al terminale → pausa
+ const CYCLE=200,T_FIRE=0.18,T_END=0.62,T_FLASH=0.76;
+ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ let p=reduce?0.40:0,visible=false,running=false;
  function draw(){const x=fit();const cw=c.clientWidth,ch=h;x.clearRect(0,0,cw,ch);
   const cy=ch*0.52;const somaX=cw*0.26,somaR=Math.min(34,cw*0.06);
+  // fasi ricavate dalla posizione nel ciclo
+  const charge=p<T_FIRE?p/T_FIRE:Math.max(0,1-(p-T_FIRE)/0.14);
+  const travel=p>=T_FIRE&&p<T_END?(p-T_FIRE)/(T_END-T_FIRE):-1;
+  const flash=p>=T_END&&p<T_FLASH?1-(p-T_END)/(T_FLASH-T_END):0;
   // dendrites
   x.strokeStyle=CO.blue;x.lineWidth=2;
   const dOrigin=[somaX-somaR*0.7,cy];
@@ -414,25 +420,46 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
     x.quadraticCurveTo(dOrigin[0]-cw*0.05,cy+d[1]*ch*0.10,ex,ey);x.stroke();
     x.beginPath();x.moveTo(ex,ey);x.lineTo(ex-cw*0.03,ey-ch*0.06);x.stroke();
     x.beginPath();x.moveTo(ex,ey);x.lineTo(ex-cw*0.035,ey+ch*0.04);x.stroke();});
-  // soma
+  // soma: si carica fino alla soglia, poi scarica
   x.fillStyle='#e7eefb';x.strokeStyle=CO.blue;x.lineWidth=2.5;x.beginPath();x.arc(somaX,cy,somaR,0,7);x.fill();x.stroke();
+  if(charge>0.02){
+    // il potenziale di membrana sale dentro il soma; al culmine scatta e riparte da zero
+    x.save();x.beginPath();x.arc(somaX,cy,somaR-1.5,0,7);x.clip();
+    x.fillStyle=CO.amberSoft;x.fillRect(somaX-somaR,cy+somaR-2*somaR*charge,2*somaR,2*somaR*charge);x.restore();
+    const hot=Math.max(0,(charge-0.75)/0.25);
+    if(hot>0){
+      x.strokeStyle='rgba(180,83,9,'+hot+')';x.lineWidth=2.5;x.beginPath();x.arc(somaX,cy,somaR,0,7);x.stroke();
+      x.fillStyle='rgba(180,83,9,'+(hot*0.12)+')';x.beginPath();x.arc(somaX,cy,somaR+7*hot,0,7);x.fill();
+    }
+  }
   x.fillStyle=CO.blue;x.beginPath();x.arc(somaX,cy,somaR*0.28,0,7);x.fill();
   // axon
   const axStart=somaX+somaR,axEnd=cw*0.72;
-  x.strokeStyle=CO.lineS;x.lineWidth=2;x.beginPath();x.moveTo(axStart,cy);x.lineTo(axStart+cw*0.04,cy);x.stroke();
-  x.fillStyle=CO.amberSoft;x.strokeStyle=CO.amber;x.lineWidth=2;roundRect(x,axStart+cw*0.04,cy-9,cw*0.28,18,9);x.fill();x.stroke();
-  // signal arrow
-  x.fillStyle=CO.amber;const ax=axStart+cw*0.04+cw*0.14;x.beginPath();x.moveTo(ax-6,cy-5);x.lineTo(ax+6,cy);x.lineTo(ax-6,cy+5);x.fill();
+  const tubeX=axStart+cw*0.04,tubeW=cw*0.28,tubeE=tubeX+tubeW;
+  x.strokeStyle=CO.lineS;x.lineWidth=2;x.beginPath();x.moveTo(axStart,cy);x.lineTo(tubeX,cy);x.stroke();
+  x.fillStyle=CO.amberSoft;x.strokeStyle=CO.amber;x.lineWidth=2;roundRect(x,tubeX,cy-9,tubeW,18,9);x.fill();x.stroke();
   // terminal + synapse: bottone presinaptico, fessura, membrana postsinaptica
-  x.strokeStyle=CO.lineS;x.beginPath();x.moveTo(axStart+cw*0.04+cw*0.28,cy);x.lineTo(axEnd,cy);x.stroke();
+  x.strokeStyle=CO.lineS;x.lineWidth=2;x.beginPath();x.moveTo(tubeE,cy);x.lineTo(axEnd,cy);x.stroke();
+  // potenziale d'azione: banda ad ampiezza costante — non si attenua lungo il percorso
+  if(travel>=0){
+    const sig=lerp(tubeX,axEnd,travel),bw=Math.min(52,tubeW*0.24);
+    x.save();roundRect(x,tubeX,cy-9,tubeW,18,9);x.clip();
+    const g=x.createLinearGradient(sig-bw/2,0,sig+bw/2,0);
+    g.addColorStop(0,'rgba(180,83,9,0)');g.addColorStop(0.5,CO.amber);g.addColorStop(1,'rgba(180,83,9,0)');
+    x.fillStyle=g;x.fillRect(sig-bw/2,cy-9,bw,18);x.restore();
+    if(sig>tubeE){x.fillStyle=CO.amber;x.beginPath();x.arc(Math.min(sig,axEnd),cy,4.5,0,7);x.fill();}
+  }
   const bR=7,cleft=12,postX=axEnd+bR+cleft;
-  x.fillStyle=CO.accent;x.beginPath();x.arc(axEnd,cy,bR,0,7);x.fill();
+  if(flash>0){x.fillStyle='rgba(67,56,202,'+(flash*0.30)+')';x.beginPath();x.arc(axEnd,cy,bR+9*flash,0,7);x.fill();}
+  x.fillStyle=CO.accent;x.beginPath();x.arc(axEnd,cy,bR+1.5*flash,0,7);x.fill();
   // neurotrasmettitori nella fessura
-  x.fillStyle=CO.accent;[[0.3,-3],[0.55,3],[0.8,-2]].forEach(p=>{x.beginPath();x.arc(axEnd+bR+cleft*p[0],cy+p[1],1.8,0,7);x.fill();});
-  // downstream neuron
-  x.fillStyle='#efeafb';x.strokeStyle=CO.accent;x.lineWidth=2;x.beginPath();x.arc(cw*0.92,cy,somaR*0.7,0,7);x.fill();x.stroke();
-  x.strokeStyle=CO.accent;x.beginPath();x.moveTo(postX,cy);x.lineTo(cw*0.92-somaR*0.7,cy);x.stroke();
+  x.fillStyle=CO.accent;[[0.3,-3],[0.55,3],[0.8,-2]].forEach(d=>{x.beginPath();x.arc(axEnd+bR+cleft*d[0],cy+d[1],1.8,0,7);x.fill();});
+  // downstream neuron: gemello del primo, senza dendriti
+  const postC=cw*0.90;
+  x.strokeStyle=CO.accent;x.lineWidth=2;x.beginPath();x.moveTo(postX,cy);x.lineTo(postC-somaR,cy);x.stroke();
   x.beginPath();x.moveTo(postX,cy-5);x.lineTo(postX,cy+5);x.stroke();
+  x.fillStyle='#e7eefb';x.strokeStyle=CO.blue;x.lineWidth=2.5;x.beginPath();x.arc(postC,cy,somaR,0,7);x.fill();x.stroke();
+  x.fillStyle=CO.blue;x.beginPath();x.arc(postC,cy,somaR*0.28,0,7);x.fill();
   // alone: la sinapsi è la giunzione, non il vuoto
   const synX=axEnd+(bR+cleft)/2;
   x.setLineDash([4,3]);x.strokeStyle=CO.accent;x.lineWidth=1.5;x.beginPath();x.arc(synX,cy,20,0,7);x.stroke();x.setLineDash([]);
@@ -442,13 +469,24 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   x.fillText('soma',somaX,cy+somaR+18);
   x.fillText('assone',axStart+cw*0.18,cy-32);
   x.fillStyle=CO.accent;x.fillText('sinapsi',synX,cy-30);
-  x.fillStyle=CO.mut;x.font='11px '+sans();
+  const narrow=cw<700;
+  x.fillStyle=CO.mut;x.font=(narrow?'10px ':'11px ')+sans();
   x.fillText('ricevono i segnali',dOrigin[0]-cw*0.08,cy-ch*0.30+15);
   x.fillText('integra e decide',somaX,cy+somaR+32);
   x.fillText('trasmette a valle',axStart+cw*0.18,cy-18);
-  x.fillText('i neuroni non si toccano',synX,cy+34);
+  // sotto la sinapsi sul largo; in fondo al riquadro sullo stretto, dove non collide con le altre etichette
+  const cap=['i due neuroni non si toccano:','i neurotrasmettitori attraversano la fessura'];
+  const capW=Math.max(...cap.map(s=>x.measureText(s).width));
+  const capX=Math.min(Math.max(synX,capW/2+6),cw-capW/2-6);
+  const capY=narrow?ch-17:cy+34;
+  cap.forEach((s,i)=>x.fillText(s,capX,capY+i*13));
+  if(!reduce){p=(p+1/CYCLE)%1;}
+  if(visible&&!document.hidden&&!reduce){running=true;requestAnimationFrame(draw);}else running=false;
  }
- onResize(draw);requestAnimationFrame(draw);
+ function kick(){if(visible&&!document.hidden&&!reduce&&!running){running=true;requestAnimationFrame(draw);}}
+ const ob=new IntersectionObserver(e=>{visible=e[0].isIntersecting;if(visible)kick();},{threshold:.25});ob.observe(c);
+ document.addEventListener('visibilitychange',kick);
+ onResize(()=>{if(!running)draw();});requestAnimationFrame(draw);
 })();
 
 /* ================= 01b PERCEPTRON ================= */
