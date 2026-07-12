@@ -75,12 +75,20 @@
   .phd strong{font-size:16px}
 
   .ctrls{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-top:14px}
-  .ctrl{display:flex;flex-direction:column;gap:4px;min-width:150px;flex:1}
+  .ctrl{display:flex;flex-direction:column;gap:4px;min-width:150px;flex:1;position:relative}
   .ctrl label{font-family:var(--mono);font-size:12px;color:var(--ink-2);display:flex;justify-content:space-between;gap:10px}
   .ctrl label b{color:var(--accent)}
   input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--paper-2);outline:none;border:1px solid var(--line)}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 0 4px rgba(29,158,117,.16)}
   input[type=range]::-moz-range-thumb{width:17px;height:17px;border:none;border-radius:50%;background:var(--accent);cursor:pointer}
+  /* l'ultimo terzo della barra (il tratto 3 -> 4) e' zona proibita: il blocco deve leggersi come un muro, non come un bug */
+  input[type=range].range-wall{background:linear-gradient(90deg,var(--paper-2) 0 66.6%,rgba(180,83,9,.18) 66.6% 100%)}
+  input[type=range].nudge{animation:nudge .22s ease}
+  @keyframes nudge{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+  .tip{position:absolute;left:0;right:0;bottom:calc(100% + 12px);background:var(--card);border:1px solid var(--amber);border-radius:9px;
+    padding:8px 11px;font-family:var(--mono);font-size:11.5px;line-height:1.4;color:var(--amber);
+    box-shadow:0 12px 26px -18px rgba(0,0,0,.55);opacity:0;transform:translateY(4px);transition:opacity .18s,transform .18s;pointer-events:none}
+  .tip.on{opacity:1;transform:translateY(0)}
   button.b{font-family:inherit;font-size:14px;font-weight:600;background:var(--ink);color:#fff;border:0;border-radius:9px;padding:9px 16px;cursor:pointer;transition:transform .05s,background .15s}
   button.b:hover{background:#000}button.b:active{transform:translateY(1px)}
   button.b.ghost{background:transparent;color:var(--ink-2);border:1px solid var(--line-strong)}
@@ -257,7 +265,27 @@
   </div>
 
   <h3>Perché servono migliaia di dimensioni</h3>
-  <p>In due dimensioni possiamo avere al più due direzioni genuinamente indipendenti. Se i concetti da codificare sono di più, le direzioni cominciano necessariamente a interferire tra loro. Per questo, nella pratica, gli embedding hanno migliaia di dimensioni.</p>
+  <p>Una dimensione dello spazio è una direzione indipendente dalle altre: una direzione che non si può ottenere combinando quelle già presenti. In uno spazio a <span class="eq">d</span> dimensioni le direzioni perfettamente perpendicolari — e quindi perfettamente indipendenti — sono esattamente <span class="eq">d</span>. Aggiungiamone una alla volta.</p>
+
+  <div class="panel star">    <div class="phd"><strong>Costruiamo lo spazio: una dimensione alla volta</strong></div>
+    <div class="grid2">
+      <div><canvas id="cDim" height="330"></canvas></div>
+      <div>
+        <div class="ctrls" style="flex-direction:column;align-items:stretch;gap:12px;margin-top:0">
+          <div class="ctrl"><label>dimensioni <b id="dimNv">1</b></label><input id="dimN" class="range-wall" type="range" min="1" max="4" step="1" value="1">
+            <div class="tip" id="dimTip">più di 3 dimensioni non si possono visualizzare: lo spazio continua, la nostra vista no.</div>
+          </div>
+        </div>
+        <div class="readout" style="flex-direction:column;gap:6px;align-items:flex-start">
+          <span>direzioni perpendicolari <b id="dimK">1</b></span>
+          <span>angolo tra due direzioni <b id="dimAng">—</b></span>
+        </div>
+        <p class="hint" style="margin-top:14px">Lo spazio a 4, a 100, a 8192 dimensioni esiste eccome, e le sue direzioni perpendicolari sono 4, 100, 8192. Semplicemente non lo possiamo disegnare: la matematica non si ferma dove si ferma la nostra vista, e gli embedding vivono esattamente lì.</p>
+        </div>
+    </div>
+  </div>
+
+  <p>Torniamo per un attimo a due sole dimensioni, dove possiamo vedere tutto. Le direzioni genuinamente indipendenti sono al più due: se i concetti da codificare sono di più, le direzioni cominciano necessariamente a interferire tra loro. Per questo, nella pratica, gli embedding hanno migliaia di dimensioni.</p>
   <div class="panel">    <div class="phd"><strong>Direzioni in 2D: aggiungi concetti e guarda l'interferenza</strong></div>
     <div class="grid2">
       <div><canvas id="cDirs" height="310"></canvas></div>
@@ -663,7 +691,131 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
  onResize(()=>draw());requestAnimationFrame(()=>reset());
 })();
 
-/* ================= 02c DIREZIONI QUASI INDIPENDENTI ================= */
+/* ================= 02c SPAZIO A d DIMENSIONI =================
+   La camera e' assonometrica e sempre in 3D: e' la scena che si riempie
+   man mano (un asse -> il piano -> il cubo), non la vista che cambia.
+   La barra sembra poter arrivare a 4, ma sbatte contro il muro. */
+(function(){const {c,fit,h}=C('cDim');
+ const sl=document.getElementById('dimN'), tip=document.getElementById('dimTip');
+ let AZ=-0.62, EL=0.58;                 // camera: ruotabile col drag
+ const P=[0,0,0];                       // quanto e' "cresciuto" ciascun asse, in [0,1]
+ let tgt=[1,0,0], anim=null, pend=false;
+ const COL=[CO.accent,CO.violet,CO.amber], LAB=['d1','d2','d3'];
+ const E=[[1,0,0],[0,1,0],[0,0,1]];
+ const ease=t=>t<0?0:t>1?1:t*t*(3-2*t);
+
+ /* proiezione: x,y sul piano orizzontale, z verso l'alto */
+ function uP(p,g){return [p[0]*g.cA-p[1]*g.sA, (p[0]*g.sA+p[1]*g.cA)*g.sE-p[2]*0.92];}
+ /* la scala si ricava dal bounding box proiettato: la scena riempie il riquadro
+    e non ne esce mai, a qualunque angolo di camera */
+ function geo(cw){const g={cA:Math.cos(AZ),sA:Math.sin(AZ),sE:Math.sin(EL),s:1,cx:0,cy:0};
+  const R=1.3,pad=40;let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;
+  [-R,R].forEach(a=>[-R,R].forEach(b=>[-R,R].forEach(z=>{const u=uP([a,b,z],g);
+    if(u[0]<x0)x0=u[0];if(u[0]>x1)x1=u[0];if(u[1]<y0)y0=u[1];if(u[1]>y1)y1=u[1];})));
+  const bw=cw-2*pad, bh=h-2*pad-16;
+  g.s=Math.min(bw/(x1-x0), bh/(y1-y0));
+  g.cx=pad+(bw-(x1-x0)*g.s)/2-x0*g.s;
+  g.cy=pad+(bh-(y1-y0)*g.s)/2-y0*g.s;
+  return g;}
+ function S(p,g){const u=uP(p,g);return [g.cx+u[0]*g.s, g.cy+u[1]*g.s];}
+ function depth(p,g){return p[0]*g.sA+p[1]*g.cA;}   // maggiore = piu' vicino all'osservatore
+ function seg(x,g,a,b,col,w,dash){x.save();x.strokeStyle=col;x.lineWidth=w;if(dash)x.setLineDash(dash);
+  const p=S(a,g),q=S(b,g);x.beginPath();x.moveTo(p[0],p[1]);x.lineTo(q[0],q[1]);x.stroke();x.restore();}
+ function poly(x,g,pts,fill,stroke,w){const q=pts.map(v=>S(v,g));
+  x.beginPath();x.moveTo(q[0][0],q[0][1]);for(let i=1;i<q.length;i++)x.lineTo(q[i][0],q[i][1]);x.closePath();
+  if(fill){x.fillStyle=fill;x.fill();}
+  if(stroke){x.strokeStyle=stroke;x.lineWidth=w||1;x.stroke();}}
+
+ function draw(){const x=fit();const cw=c.clientWidth;x.clearRect(0,0,cw,h);
+  const g=geo(cw), p=[ease(P[0]),ease(P[1]),ease(P[2])];
+
+  // il piano generato dalle prime due dimensioni
+  if(p[1]>0.01){x.save();x.globalAlpha=p[1];
+   poly(x,g,[[-1.15,-1.15,0],[1.15,-1.15,0],[1.15,1.15,0],[-1.15,1.15,0]],'rgba(29,158,117,.05)',CO.line,1);
+   for(let i=1;i<=3;i++){const t=-1.15+i*0.575;
+    seg(x,g,[t,-1.15,0],[t,1.15,0],CO.line,1);seg(x,g,[-1.15,t,0],[1.15,t,0],CO.line,1);}
+   poly(x,g,[[0,0,0],[1,0,0],[1,1,0],[0,1,0]],'rgba(67,56,202,.07)',null);
+   x.restore();}
+
+  // il cubo generato dalle tre: compare con la terza dimensione
+  if(p[2]>0.01){x.save();x.globalAlpha=0.55*p[2];x.strokeStyle=CO.lineS;x.lineWidth=1;x.setLineDash([4,4]);
+   [[0,0],[1,0],[1,1],[0,1]].forEach(b=>{const q0=S([b[0],b[1],0],g),q1=S([b[0],b[1],1],g);
+    x.beginPath();x.moveTo(q0[0],q0[1]);x.lineTo(q1[0],q1[1]);x.stroke();});
+   x.setLineDash([]);
+   poly(x,g,[[0,0,1],[1,0,1],[1,1,1],[0,1,1]],'rgba(180,83,9,.05)',CO.lineS,1);
+   x.restore();}
+
+  // gli assi: le rette complete, tratteggiate, solo per le dimensioni attive
+  for(let i=0;i<3;i++){if(p[i]<0.01)continue;x.save();x.globalAlpha=p[i];
+   const a=E[i].map(v=>-1.2*v), b=E[i].map(v=>1.2*v);
+   seg(x,g,a,b,CO.lineS,1,[3,4]);x.restore();}
+
+  // i vettori base, dal piu' lontano al piu' vicino
+  const order=[0,1,2].filter(i=>p[i]>0.01).sort((a,b)=>depth(E[a],g)-depth(E[b],g));
+  order.forEach(i=>{const L=p[i];
+   const o=S([0,0,0],g), t=S(E[i].map(v=>v*L),g);
+   x.save();x.globalAlpha=Math.min(1,L*1.4);
+   x.strokeStyle=COL[i];x.lineWidth=2.8;
+   x.beginPath();x.moveTo(o[0],o[1]);x.lineTo(t[0],t[1]);x.stroke();
+   arrowHead(x,o[0],o[1],t[0],t[1],COL[i],11);
+   if(L>0.5){x.fillStyle=COL[i];x.font='700 13px '+mono();x.textAlign='center';x.textBaseline='middle';
+    const dx=t[0]-o[0],dy=t[1]-o[1],n=Math.hypot(dx,dy)||1;
+    x.fillText(LAB[i],t[0]+dx/n*16,t[1]+dy/n*16);}
+   x.restore();});
+
+  // squadrette d'angolo retto: rendono esplicito il "perpendicolari tra loro"
+  const q=0.15;
+  [[0,1],[0,2],[1,2]].forEach(pr=>{const [i,j]=pr;const a=Math.min(p[i],p[j]);
+   if(a<0.7)return;x.save();x.globalAlpha=(a-0.7)/0.3;
+   const vi=E[i].map(v=>v*q), vj=E[j].map(v=>v*q), c2=[vi[0]+vj[0],vi[1]+vj[1],vi[2]+vj[2]];
+   seg(x,g,vi,c2,CO.mut,1.2);seg(x,g,c2,vj,CO.mut,1.2);x.restore();});
+
+  // origine
+  const o=S([0,0,0],g);x.fillStyle=CO.ink;x.beginPath();x.arc(o[0],o[1],4,0,7);x.fill();
+
+  x.fillStyle=CO.mut;x.font='11.5px '+mono();x.textAlign='center';x.textBaseline='alphabetic';
+  x.fillText('trascina per ruotare la scena',cw/2,h-10);
+ }
+
+ function tick(){let moving=false;
+  for(let i=0;i<3;i++){const d=tgt[i]-P[i];
+   if(Math.abs(d)>0.003){P[i]+=d*0.14;moving=true;}else P[i]=tgt[i];}
+  draw();anim=moving?requestAnimationFrame(tick):null;}
+ function kick(){if(!anim)anim=requestAnimationFrame(tick);}
+ function queue(){if(pend||anim)return;pend=true;requestAnimationFrame(()=>{pend=false;draw();});}
+
+ function setD(d){tgt=[0,1,2].map(i=>i<d?1:0);
+  document.getElementById('dimNv').textContent=d;
+  document.getElementById('dimK').textContent=d;
+  document.getElementById('dimAng').textContent=d>=2?'90°':'—';
+  kick();}
+
+ /* il muro: la barra arriva fino a 4, ma il 4 non si puo' abitare */
+ let tipT=null;
+ sl.addEventListener('input',()=>{let v=+sl.value;
+  if(v>3){v=3;sl.value='3';
+   tip.classList.add('on');
+   sl.classList.remove('nudge');void sl.offsetWidth;sl.classList.add('nudge');
+   if(tipT)clearTimeout(tipT);tipT=setTimeout(()=>tip.classList.remove('on'),2800);}
+  else{if(tipT)clearTimeout(tipT);tip.classList.remove('on');}
+  setD(v);});
+
+ /* rotazione della camera col drag (in verticale la pagina continua a scrollare) */
+ let drag=false,lx=0,ly=0;
+ c.style.cursor='grab';c.style.touchAction='pan-y';
+ c.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY;
+  c.setPointerCapture(e.pointerId);c.style.cursor='grabbing';});
+ c.addEventListener('pointermove',e=>{if(!drag)return;
+  AZ+=(e.clientX-lx)*0.008;
+  EL=Math.max(0.16,Math.min(1.15,EL-(e.clientY-ly)*0.006));
+  lx=e.clientX;ly=e.clientY;queue();});
+ function endDrag(){if(!drag)return;drag=false;c.style.cursor='grab';}
+ c.addEventListener('pointerup',endDrag);c.addEventListener('pointercancel',endDrag);
+
+ onResize(queue);setD(1);
+})();
+
+/* ================= 02d DIREZIONI QUASI INDIPENDENTI ================= */
 (function(){const {c,fit,h}=C('cDirs');
  const sl=document.getElementById('dirN');
  function draw(){const x=fit();const cw=c.clientWidth;x.clearRect(0,0,cw,h);
