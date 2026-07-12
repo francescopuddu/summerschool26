@@ -250,7 +250,7 @@
   <p>Una <b>matrice</b> è una tabella di numeri: la si può vedere come tanti vettori impilati. L'operazione che ci serve, il <b>prodotto matriciale</b>, non è nulla di nuovo — ogni casella del risultato è il <em>dot product</em> di una riga con una colonna.</p>
   <div class="panel canvas-hint">
     <div class="phd"><strong>Ogni casella di C = una riga di A × una colonna di B</strong></div>
-    <div class="clickcue" id="matHint">Clicca una casella di <b>C</b> → vedi da dove esce</div>
+    <div class="clickcue" id="matHint">Clicca una casella di <b>C</b> ↘ vedi da dove esce</div>
     <canvas id="cMat" height="310" tabindex="0" aria-label="Prodotto matriciale: clicca una casella del risultato C per vedere il dot product che la genera"></canvas>
   </div>
 
@@ -636,6 +636,10 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   const ax=(cw-totW)/2, by=Math.max(20,(ch-40-totH)/2);
   const bx=ax+3*cell+gap, ay=by+3*cell+gap;
   geo={x:bx,y:ay,cell};
+  // riquadro attorno al blocco quadrato in basso a destra: è C, il risultato
+  const cbW=2*cell-2, cbH=2*cell-2, cbP=8;
+  x.fillStyle='rgba(67,56,202,.05)';roundRect(x,bx-cbP,ay-cbP,cbW+2*cbP,cbH+2*cbP,10);x.fill();
+  x.strokeStyle='rgba(67,56,202,.5)';x.lineWidth=2;roundRect(x,bx-cbP,ay-cbP,cbW+2*cbP,cbH+2*cbP,10);x.stroke();
   // guide dell'incrocio (sotto le griglie): riga di A → cella di C ← colonna di B
   const gyC=ay+ai*cell+cell/2, gxC=bx+aj*cell+cell/2;
   x.strokeStyle='rgba(67,56,202,.45)';x.lineWidth=1.5;x.setLineDash([5,4]);
@@ -645,7 +649,7 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
    x.fillStyle=CO.mut;x.font='italic 13px '+sans();x.textAlign='center';
    if(labelPos==='left'){x.fillText(label,gx-16,gy+rows*cell/2+4);}
    else if(labelPos==='right'){x.fillText(label,gx+cols*cell+14,gy+rows*cell/2+4);}
-   else{x.fillText(label,gx+cols*cell/2,gy-9);}
+   else if(labelPos==='top'){x.fillText(label,gx+cols*cell/2,gy-9);}
    for(let i=0;i<rows;i++)for(let j=0;j<cols;j++){
     const rH=(hiRow===i),cH=(hiCol===j),cellHi=(hiRow===i&&hiCol===j);
     const sel=clickable&&cellHi, hov=clickable&&!cellHi&&hover===i*2+j;
@@ -659,7 +663,10 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   }
   grid(bx,by,B,3,2,null,aj,'B','top',false);
   grid(ax,ay,A,2,3,ai,null,'A','left',false);
-  grid(bx,ay,Cm,2,2,ai,aj,'C = A·B','right',true);
+  grid(bx,ay,Cm,2,2,ai,aj,'','none',true);
+  // etichetta del risultato, sotto il suo riquadro
+  x.fillStyle=CO.accent;x.font='700 14px '+sans();x.textAlign='center';
+  x.fillText('C = A · B',bx+cbW/2,ay+cbH+cbP+19);
   // formula della cella selezionata
   x.fillStyle=CO.accent;x.font='13px '+mono();x.textAlign='center';
   const parts=[];for(let k=0;k<3;k++)parts.push(A[ai][k]+'·'+B[k][aj]);
