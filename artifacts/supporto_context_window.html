@@ -778,9 +778,7 @@
   <div class="kicker"><span class="n">12</span> <span class="act">L'harness</span></div>
   <h2>Tutto quello che avete visto è l'harness</h2>
   <p class="lead">Facciamo il punto. Il modello è sempre quello del recap: predice il prossimo token. Tutto il resto — il reasoning guidato, i tool e le loro description, il contesto costruito pezzo per pezzo, la memoria su file — è un <b>layer di ingegneria</b> attorno al modello. Questo strato si chiama <b>harness</b>, ed <b>eredita tutti i limiti</b> del modello: context window finita, generazione token per token, componente stocastica.</p>
-  <div class="callout">L'harness è il <b>distillato di mesi di prompt engineering</b>: dice all'agente come pianificare, quando chiedere conferma, come usare i tool. Spesso vale quanto il modello stesso — è un <b>asset</b>.</div>
-  <p class="lead" style="font-size:17px">Un assaggio dal <b>system prompt di Claude Code</b> (emerso pubblicamente): si vede quanto lavoro c'è dietro il comportamento «intelligente» di un agente.</p>
-  <div class="panel">
+  <div class="panel" style="margin-top:22px">
     <span class="badge">Estratti dall'harness · esempi illustrativi</span>
     <div class="asm-prev">"You should be <span class="xtag">proactive</span>, but only when the user asks
 you to do something. Do not surprise the user with
@@ -791,7 +789,7 @@ plan requires ambiguous choices, <span class="xtag">ask the user</span>."
 
 "When multiple independent operations are needed, invoke
 the relevant tools <span class="xtag">in parallel</span>. Do not call them one by one."</div>
-    <div class="hint">Nota il tema: <b>proattività controllata</b>, <b>pianificare prima di agire</b>, <b>mettere in discussione le richieste ambigue</b>, <b>parallelizzare</b>. Nulla di magico: sono istruzioni scritte, testate e limate.</div>
+    <div class="hint">Un harness è il <b>distillato di mesi di prompt engineering</b>: dice all'agente come pianificare, quando chiedere conferma, come usare i tool. Spesso vale quanto il modello stesso — è un <b>asset</b>.</div>
   </div>
   <p class="lead" style="margin-top:30px"><b>La definizione completa, adesso sì.</b> Un agente è:</p>
   <div class="agdef">
