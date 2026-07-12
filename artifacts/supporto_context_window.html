@@ -392,17 +392,9 @@
   <div class="callout">Il reasoning non serve solo a rispondere meglio: è ciò che permette al modello di <b>decidere azioni</b> — valutare una situazione, scegliere un passo, giudicare il risultato. Ed è la porta d'ingresso di quello che viene adesso.</div>
 </section>
 
-<!-- 8 · dal reasoning agli agenti -->
-<section id="s3" data-title="Dal reasoning agli agenti">
-  <div class="kicker"><span class="n">03</span> <span class="act">Dal reasoning agli agenti</span></div>
-  <h2>Un modello che ragiona può usare strumenti</h2>
-  <p class="lead">Ecco perché il reasoning cambia tutto: un modello capace di pianificare e verificare può fare più che scrivere una risposta. Può <b>proporre un'azione</b>, osservare il risultato, e decidere il passo successivo — cioè <b>interagire in modo complesso con il mondo esterno</b>, attraverso <b>strumenti</b>.</p>
-  <div class="callout">Un modello che ragiona e usa strumenti per agire sul mondo è quello che chiamiamo <b>agente</b>. Vediamo il meccanismo, pezzo per pezzo.</div>
-</section>
-
-<!-- 9 · tool round-trip (NUOVO) -->
-<section id="s4" data-title="Il modello propone, l'app esegue">
-  <div class="kicker"><span class="n">04</span> <span class="act">I tool</span></div>
+<!-- tool round-trip -->
+<section id="s3" data-title="Il modello propone, l'app esegue">
+  <div class="kicker"><span class="n">03</span> <span class="act">I tool</span></div>
   <h2>I tool: il modello propone, l'applicazione esegue</h2>
   <p class="lead">Il punto più frainteso di tutta la giornata: <b>il modello non esegue mai un tool</b>. Emette una <em>richiesta</em> di chiamata (un blocco JSON <code>tool_use</code>), si ferma, e aspetta. È l'<b>applicazione</b> — il software attorno al modello — che esegue davvero e gli restituisce il risultato.</p>
   <div class="panel">
@@ -492,8 +484,8 @@
 </section>
 
 <!-- 10 · agent loop (NUOVO) -->
-<section id="s5" data-title="L'agent loop">
-  <div class="kicker"><span class="n">05</span> <span class="act">L'agent loop</span></div>
+<section id="s4" data-title="L'agent loop">
+  <div class="kicker"><span class="n">04</span> <span class="act">L'agent loop</span></div>
   <h2>L'agent loop: raccogli, agisci, verifica, ripeti</h2>
   <p class="lead">Una chiamata sola non basta quasi mai. Un agente <b>gira in un ciclo</b>: raccoglie contesto, compie un'azione, <b>verifica</b> il risultato e decide se ha finito o se serve un altro giro. La verifica è ciò che lo rende affidabile. Con un agente <b>aspetti un processo</b>, non una singola risposta.</p>
   <div class="panel">
@@ -519,8 +511,8 @@
 </section>
 
 <!-- 12 · famiglie di tool -->
-<section id="s6" data-title="Le famiglie di tool">
-  <div class="kicker"><span class="n">06</span> <span class="act">Le famiglie di tool</span></div>
+<section id="s5" data-title="Le famiglie di tool">
+  <div class="kicker"><span class="n">05</span> <span class="act">Le famiglie di tool</span></div>
   <h2>Che cosa può fare un tool</h2>
   <p class="lead">I tool coprono famiglie ricorrenti. Cambia il servizio dietro, ma il meccanismo è sempre lo stesso: il modello propone, l'applicazione esegue, il risultato rientra nel contesto.</p>
   <div class="fam">
@@ -535,8 +527,8 @@
 </section>
 
 <!-- 14 · workflow vs agente -->
-<section id="s7" data-title="Workflow vs agente">
-  <div class="kicker"><span class="n">07</span> <span class="act">Workflow vs agente</span></div>
+<section id="s6" data-title="Workflow vs agente">
+  <div class="kicker"><span class="n">06</span> <span class="act">Workflow vs agente</span></div>
   <h2>Non tutto deve essere un agente</h2>
   <p class="lead">Autonomia non è sempre la scelta giusta. Spesso un <b>percorso fisso</b> è più prevedibile e più sicuro. Vale la pena distinguere due modi di usare un LLM:</p>
   <div class="wf">
@@ -547,8 +539,8 @@
 </section>
 
 <!-- 4 · dal prompt al contesto -->
-<section id="s8" data-title="Dal prompt al contesto">
-  <div class="kicker"><span class="n">08</span> <span class="act">Dal prompt al contesto</span></div>
+<section id="s7" data-title="Dal prompt al contesto">
+  <div class="kicker"><span class="n">07</span> <span class="act">Dal prompt al contesto</span></div>
   <h2>Dal prompt al contesto</h2>
   <p class="lead">Il «prompt» è solo un pezzo. Il <b>contesto</b> è tutto ciò che il modello riceve in <em>una</em> chiamata: system prompt + storia della conversazione + le definizioni dei tool che abbiamo appena visto, i loro risultati, gli allegati. Una conversazione non è che questa tripletta che si allunga.</p>
   <div class="callout">Tutto questo testo viene <b>unito in un unico blocco</b> — come un grande file di testo con etichette <code>System / User / Assistant</code> — <b>tokenizzato</b>, e mandato al modello in un colpo solo.</div>
@@ -573,8 +565,8 @@
 </section>
 
 <!-- 6 · illusione memoria -->
-<section id="s9" data-title="L'illusione della memoria">
-  <div class="kicker"><span class="n">09</span> <span class="act">L'illusione della memoria</span></div>
+<section id="s8" data-title="L'illusione della memoria">
+  <div class="kicker"><span class="n">08</span> <span class="act">L'illusione della memoria</span></div>
   <h2>Ma allora la «memoria» di ChatGPT?</h2>
   <p class="lead">Due meccanismi, entrambi costruiti <b>sopra</b> il modello, non dentro. Guardali all'opera, turno per turno:</p>
   <div class="panel">
@@ -612,8 +604,8 @@
 </section>
 
 <!-- 7 · contesto più ampio + libri -->
-<section id="s10" data-title="Contesto più ampio">
-  <div class="kicker"><span class="n">10</span> <span class="act">Secondo avanzamento · Contesto più ampio</span></div>
+<section id="s9" data-title="Contesto più ampio">
+  <div class="kicker"><span class="n">09</span> <span class="act">Secondo avanzamento · Contesto più ampio</span></div>
   <h2>Una finestra sempre più grande</h2>
   <p class="lead">Secondo avanzamento tecnologico — e questa volta non è di intelligenza, ma di <b>capienza</b>. La context window è la quantità <b>massima</b> di token che il modello può vedere in una chiamata: input (system + user + storia) <b>e</b> output devono starci tutti dentro. È una quantità fissa, definita dal modello — ed è cresciuta di ordini di grandezza in pochi anni.</p>
   <div class="bignum">200k<small>token — la finestra di Claude Sonnet 4.5</small></div>
@@ -640,8 +632,8 @@
 </section>
 
 <!-- 15 · prompt engineering -->
-<section id="s11" data-title="Prompt engineering">
-  <div class="kicker"><span class="n">11</span> <span class="act">Prompt engineering</span></div>
+<section id="s10" data-title="Prompt engineering">
+  <div class="kicker"><span class="n">10</span> <span class="act">Prompt engineering</span></div>
   <h2>Prima del contesto: il prompt engineering</h2>
   <p class="lead">Fino a poco tempo fa, la disciplina per ottenere il meglio da un LLM era una sola: <b>scrivere bene il prompt</b>. Il prompt engineering ha prodotto un repertorio di tecniche che funzionano ancora oggi: dare al modello un <b>ruolo</b>, organizzare la richiesta in <b>capitoli</b> con tag XML — <code>&lt;ruolo&gt;</code>, <code>&lt;contesto&gt;</code>, <code>&lt;task&gt;</code>, <code>&lt;vincoli&gt;</code>, <code>&lt;esempi&gt;</code>, <code>&lt;formato_output&gt;</code> — e mostrare <b>esempi</b> di ciò che ci si aspetta. La struttura assomiglia ai dati di training (il modello si orienta meglio), ti <b>obbliga a mettere in ordine le idee</b>, e rende esplicito cosa è istruzione, cosa è dato, cosa è vincolo.</p>
   <div class="quote">"Organizza i prompt in sezioni distinte (<code>&lt;background_information&gt;</code>, <code>&lt;instructions&gt;</code>, <code>## Tool guidance</code>…) con tag XML o header Markdown — puntando sempre al minimo set di informazioni che descrive pienamente il comportamento atteso."
@@ -666,8 +658,8 @@
 </section>
 
 <!-- 5 · context engineering -->
-<section id="s12" data-title="Context engineering">
-  <div class="kicker"><span class="n">12</span> <span class="act">Context engineering</span></div>
+<section id="s11" data-title="Context engineering">
+  <div class="kicker"><span class="n">11</span> <span class="act">Context engineering</span></div>
   <h2>Governare l'intera finestra: context engineering</h2>
   <p class="lead">Con gli agenti, il prompt scritto a mano è solo una piccola parte di ciò che entra nella finestra: il grosso ce lo mettono il sistema e i tool — system prompt, tool definition, tool result, file. La disciplina si allarga: non più scrivere bene <em>un messaggio</em>, ma progettare e governare <b>tutto ciò che il modello vede</b>. Questo è il <b>context engineering</b>.</p>
   <p class="lead" style="font-size:17px">Guarda la finestra al lavoro in uno scenario reale: un agente di coding dentro un IDE, alle prese con un bug.</p>
@@ -717,8 +709,8 @@
 </section>
 
 <!-- 17 · artefatti + dove vive la memoria -->
-<section id="s13" data-title="Artefatti di contesto">
-  <div class="kicker"><span class="n">13</span> <span class="act">Artefatti di contesto</span></div>
+<section id="s12" data-title="Artefatti di contesto">
+  <div class="kicker"><span class="n">12</span> <span class="act">Artefatti di contesto</span></div>
   <h2>Dove vive la memoria</h2>
   <p class="lead">Il contesto migliore non si riscrive ogni volta: si <b>impacchetta in artefatti riutilizzabili</b>, quasi sempre file markdown che vivono nel progetto. Un'immagine utile per orientarsi:</p>
   <div class="desk">
@@ -764,8 +756,8 @@
 </section>
 
 <!-- 16 · markdown -->
-<section id="s14" data-title="Markdown">
-  <div class="kicker"><span class="n">14</span> <span class="act">Markdown</span></div>
+<section id="s13" data-title="Markdown">
+  <div class="kicker"><span class="n">13</span> <span class="act">Markdown</span></div>
   <h2>Markdown: la lingua dell'AI agentica</h2>
   <p class="lead">Un'ultima cosa su questi artefatti: il formato. Quasi tutti sono file markdown, e non è un caso. Il markdown dà <b>struttura al testo con pochi simboli</b>: <code>#</code> per i titoli, <code>-</code> per gli elenchi, <code>**grassetto**</code>, i backtick per il codice. Nato per essere leggibile da un umano <em>e</em> da una macchina.</p>
   <div class="grid2">
@@ -793,8 +785,8 @@
 </section>
 
 <!-- 11 · harness -->
-<section id="s15" data-title="L'harness">
-  <div class="kicker"><span class="n">15</span> <span class="act">L'harness</span></div>
+<section id="s14" data-title="L'harness">
+  <div class="kicker"><span class="n">14</span> <span class="act">L'harness</span></div>
   <h2>Tutto quello che avete visto è l'harness</h2>
   <p class="lead">Facciamo il punto. Il modello è sempre quello del recap: predice il prossimo token. Tutto il resto — il reasoning guidato, i tool e le loro description, il contesto costruito pezzo per pezzo, la memoria su file — è un <b>layer di ingegneria</b> attorno al modello. Questo strato si chiama <b>harness</b>, ed <b>eredita tutti i limiti</b> del modello: context window finita, generazione token per token, componente stocastica.</p>
   <div class="callout">L'harness è il <b>distillato di mesi di prompt engineering</b>: dice all'agente come pianificare, quando chiedere conferma, come usare i tool. Spesso vale quanto il modello stesso — è un <b>asset</b>.</div>
@@ -816,8 +808,8 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
 </section>
 
 <!-- 18 · gestione attiva + subagenti -->
-<section id="s16" data-title="Gestione attiva e subagenti">
-  <div class="kicker"><span class="n">16</span> <span class="act">Gestione attiva del contesto</span></div>
+<section id="s15" data-title="Gestione attiva e subagenti">
+  <div class="kicker"><span class="n">15</span> <span class="act">Gestione attiva del contesto</span></div>
   <h2>Tenere la scrivania in ordine</h2>
   <p class="lead">Ricordi il gancio dell'agent loop? Ogni azione e ogni risultato <b>si accumulano nel contesto</b>: su task lunghi la scrivania si riempie da sola, soprattutto per via dei <b>tool result</b> voluminosi. Servono leve per gestirla attivamente:</p>
   <div class="levers">
@@ -847,8 +839,8 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
 </section>
 
 <!-- 19 · contesto riutilizzabile -->
-<section id="s17" data-title="Il contesto riutilizzabile">
-  <div class="kicker"><span class="n">17</span> <span class="act">Il contesto riutilizzabile</span></div>
+<section id="s16" data-title="Il contesto riutilizzabile">
+  <div class="kicker"><span class="n">16</span> <span class="act">Il contesto riutilizzabile</span></div>
   <h2>Un buon contesto si riusa</h2>
   <p class="lead">Costruire un buon contesto costa tempo e attenzione. Proprio per questo <b>non si butta via</b>: si impacchetta e si riusa. È il passaggio dal «prompt furbo» usa-e-getta al <b>contesto come asset</b>.</p>
   <div class="callout">Un <b>Project</b> (su claude.ai) o una <b>skill</b> sono esattamente questo: un contesto impacchettato — istruzioni + file + tool — pronto all'uso. Più lo curi, più compone valore nel tempo.</div>
@@ -856,8 +848,8 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
 </section>
 
 <!-- CLOSING -->
-<section id="s18" data-title="Da portare a casa">
-  <div class="kicker"><span class="n">18</span> Da portare a casa</div>
+<section id="s17" data-title="Da portare a casa">
+  <div class="kicker"><span class="n">17</span> Da portare a casa</div>
   <h2>Tre idee da portare a casa</h2>
   <p class="lead">Un LLM da solo completa testo. Tutto ciò che lo rende utile — estenderlo e governarlo — ruota attorno a un'unica risorsa: il contesto.</p>
   <div class="takes">
