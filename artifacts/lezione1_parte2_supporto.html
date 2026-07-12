@@ -68,6 +68,20 @@
   .eq{font-family:var(--mono);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:3px 9px;display:inline-block;font-size:.92em;color:var(--ink)}
   .eq b{color:var(--accent)}
 
+  .linkbox{display:flex;align-items:center;gap:22px;margin:26px 0;padding:24px 28px;text-decoration:none;
+    background:var(--card);border:2px solid var(--accent);border-radius:18px;color:var(--ink);
+    box-shadow:0 1px 0 var(--accent-soft2),0 18px 40px -30px rgba(29,158,117,.5);
+    transition:transform .12s ease,box-shadow .2s ease,background .2s ease}
+  .linkbox:hover{background:var(--accent-soft);transform:translateY(-2px);
+    box-shadow:0 1px 0 var(--accent-soft2),0 24px 46px -26px rgba(29,158,117,.6)}
+  .linkbox .ico{font-size:34px;line-height:1}
+  .linkbox .tx{flex:1}
+  .linkbox .t{display:block;font-size:22px;font-weight:800;color:var(--accent-2);letter-spacing:-.01em}
+  .linkbox .u{display:block;font-family:var(--mono);font-size:13px;color:var(--muted);margin-top:2px}
+  .linkbox .d{display:block;font-size:15px;color:var(--ink-2);margin-top:7px}
+  .linkbox .go{font-size:26px;color:var(--accent);font-weight:700}
+  @media(max-width:640px){.linkbox{gap:14px;padding:18px}.linkbox .t{font-size:18px}.linkbox .ico,.linkbox .go{font-size:22px}}
+
   .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:26px;
     box-shadow:0 1px 0 var(--line),0 18px 40px -32px rgba(0,0,0,.35)}
   .panel.star{border-color:var(--accent-soft2);box-shadow:0 1px 0 var(--accent-soft2),0 22px 50px -30px rgba(29,158,117,.4);background:linear-gradient(180deg,#fff,#fafdfb)}
@@ -423,6 +437,16 @@
     </div>
     <p class="hint">Ogni blocco ha la <b>stessa architettura</b> — attention, poi feedforward — ma <b>pesi diversi</b>: <span class="eq"><b>W</b></span> e <span class="eq">b</span> cambiano da blocco a blocco. È tutto qui: l'embedding di ciascun token attraversa questa pila e viene riscritto a ogni passaggio. Nei modelli reali i blocchi sono qualche decina (una trentina in un modello da pochi miliardi di parametri, un centinaio nei più grandi).</p>
   </div>
+
+  <a class="linkbox" href="https://bbycroft.net/llm" target="_blank" rel="noopener">
+    <span class="ico">🔍</span>
+    <span class="tx">
+      <span class="t">Vedi un LLM per intero, in 3D</span>
+      <span class="u">bbycroft.net/llm</span>
+      <span class="d">Una visualizzazione navigabile di un modello reale: la dorsale, i blocchi impilati, ogni matrice al suo posto. Il modo migliore per farsi un'idea di quanto sia grande la pila che abbiamo appena descritto.</span>
+    </span>
+    <span class="go">→</span>
+  </a>
 
   <div class="callout"><b>Uno spazio di lavoro.</b> Negli strati successivi al primo, l'embedding di un token smette di rappresentare davvero quel token: diventa qualcosa che possiamo meglio concepire come uno "spazio di lavoro per il modello" — codifica ciò che è utile codificare, che sia il token in quella posizione o meno.</div>
 </div></section>
