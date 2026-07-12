@@ -192,12 +192,54 @@
     .blk .bn{text-align:center}
   }
 
-  /* generazione / step log */
-  .ctxbox{font-family:var(--mono);font-size:14px;background:var(--card-2);border:1px solid var(--line);border-radius:12px;
-    padding:14px 16px;line-height:2;transition:box-shadow .3s}
-  .ctxbox.reading{box-shadow:0 0 0 3px rgba(29,158,117,.25)}
-  .ctxbox .gt{background:var(--accent-soft);border:1px solid var(--accent-soft2);color:#12664b;border-radius:6px;padding:2px 7px;margin:0 2px;animation:pop .3s ease;display:inline-block}
-  .ctxbox .gt.end{background:var(--amber-soft);border-color:#eeD9bd;color:var(--amber)}
+  /* ciclo di generazione */
+  .genStage{margin-top:14px;padding:20px 18px 18px;background:var(--card-2);border:1px solid var(--line);border-radius:14px;
+    display:flex;flex-direction:column;align-items:center;gap:0;cursor:pointer;user-select:none;
+    transition:border-color .2s,box-shadow .2s}
+  .genStage:hover{border-color:var(--accent-soft2);box-shadow:0 0 0 3px rgba(29,158,117,.10)}
+  .genStage:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  .genStage.done,.genStage.done:hover{cursor:default;border-color:#eeD9bd;box-shadow:0 0 0 3px rgba(180,83,9,.10)}
+
+  .gLab,.gOutLab{font-family:var(--mono);font-size:11.5px;color:var(--muted);letter-spacing:.04em}
+  .gLab b,.gOutLab b{color:var(--accent-2)}
+  .gCtx{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin:8px 0 4px;max-width:100%;
+    padding:8px;border-radius:10px;transition:background .25s,box-shadow .25s}
+  .genStage.reading .gCtx{background:var(--accent-soft);box-shadow:0 0 0 1px var(--accent-soft2)}
+  .gt{font-family:var(--mono);font-size:14px;background:var(--card);border:1px solid var(--line);color:var(--ink-2);
+    border-radius:6px;padding:3px 8px;display:inline-block;white-space:nowrap}
+  .gt.new{background:var(--accent-soft);border-color:var(--accent-soft2);color:#12664b;animation:pop .3s ease}
+  .gt.last{box-shadow:0 0 0 2px rgba(29,158,117,.35)}
+  .gt.end{background:var(--amber-soft);border-color:#eeD9bd;color:var(--amber)}
+
+  .gFunnel{position:relative;width:min(100%,420px);height:34px;background:var(--accent-soft);
+    clip-path:polygon(0 0,100% 0,64% 100%,36% 100%);display:flex;align-items:center;justify-content:center;
+    transition:background .25s}
+  .genStage.reading .gFunnel{background:var(--accent-soft2)}
+  .gFunnel span{font-family:var(--mono);font-size:10.5px;color:var(--accent-2);letter-spacing:.04em;margin-bottom:6px;white-space:nowrap}
+  @media(max-width:520px){.gFunnel span{display:none}}
+
+  .gModel{font-family:var(--mono);font-size:11.5px;color:#fff;background:var(--ink);border-radius:10px;
+    padding:11px 18px;text-align:center;letter-spacing:.03em;max-width:100%;
+    transition:background .25s,box-shadow .25s}
+  .genStage.reading .gModel{background:var(--accent-2);box-shadow:0 0 0 5px rgba(29,158,117,.18)}
+
+  .gOutLab{margin-top:12px}
+  .gOut{min-height:34px;display:flex;align-items:center;margin-top:6px}
+  .gOut .gph{font-family:var(--mono);font-size:14px;color:var(--line-strong)}
+  .gOut .gt{font-size:16px;padding:5px 12px;font-weight:700}
+  .gOut .gt.ghost{opacity:.42;animation:none}
+  .gOut .gt.fly{animation:gFly .42s ease-in forwards}
+  @keyframes gFly{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-160px) scale(.8);opacity:0}}
+
+  .gLoop{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:12px;text-align:center;
+    border-top:1px dashed var(--line);padding-top:10px;width:min(100%,460px);transition:color .25s}
+  .genStage.reading .gLoop{color:var(--accent-2)}
+  .genStage.done .gLoop{color:var(--amber)}
+  @media(prefers-reduced-motion:reduce){
+    .gt.new,.gOut .gt.fly{animation:none}
+    .genStage,.gCtx,.gFunnel,.gModel,.gLoop{transition:none}
+  }
+
   .prefRows{font-family:var(--mono);font-size:12.5px;margin-top:8px;display:flex;flex-direction:column;gap:5px}
   .prefRows .r{display:flex;gap:10px;align-items:baseline}
   .prefRows .r .in{color:var(--ink-2)}
@@ -469,15 +511,24 @@
   </div>
 
   <h3>Un token alla volta</h3>
-  <p>Il processo produce un singolo token. Per produrre una frase viene ripetuto numerose volte: il modello legge tutto, completa con il primo token, poi <b>rilegge da capo l'intero testo</b> — incluso il nuovo token — e produce il secondo, e così via. La fine arriva quando esce uno specifico token che non corrisponde a nessuna parte di parola, ma codifica la fine del testo.</p>
+  <p>Tutto questo processo produce <b>un solo token</b>. Per scrivere una frase viene ripetuto da capo, tante volte quanti sono i token da produrre: clicca sulla figura per far avanzare la generazione di un passo.</p>
 
-  <div class="panel">    <div class="phd"><strong>Il ciclo di generazione</strong></div>
-    <div class="ctxbox" id="genBox"></div>
+  <div class="panel star">    <div class="phd"><strong>Il ciclo di generazione</strong></div>
+    <div class="genStage" id="genStage" role="button" tabindex="0" aria-label="Genera il prossimo token">
+      <div class="gLab">il modello rilegge <b id="genCount">6</b> token</div>
+      <div class="gCtx" id="genCtx"></div>
+      <div class="gFunnel" id="genFunnel"><span>tutto il testo entra nel modello</span></div>
+      <div class="gModel" id="genModel">tokenizer · embedding · dorsale di blocchi · probabilità</div>
+      <div class="gOutLab">esce <b>1</b> token</div>
+      <div class="gOut" id="genOut"><span class="gph">—</span></div>
+      <div class="gLoop" id="genLoop">↺ il token si accoda al testo, e il ciclo ricomincia</div>
+    </div>
+    <p class="hint" id="genCap"></p>
     <div class="ctrls">
       <button class="b acc" id="genNext">Genera un token →</button>
       <button class="b ghost" id="genAuto">▶ Auto</button>
       <button class="b ghost" id="genReset">↺ Reset</button>
-      <span class="readout" style="margin:0">token riletti a questo passo <b id="genCount">7</b></span>
+      <span class="readout" style="margin:0">passo <b id="genStep">0</b></span>
     </div>
   </div>
 
@@ -1266,27 +1317,68 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
 (function(){
  const base=['Nel','mezzo','del','cammin','di','nostra'];
  const gen=['vita',',','mi','ritrovai','per','una','selva','oscura','⟨fine testo⟩'];
- let i=0,timer=null;
- const box=document.getElementById('genBox');
- function render(){box.innerHTML='';
-  base.forEach(t=>{const s=document.createElement('span');s.textContent=t+' ';box.appendChild(s);});
-  for(let k=0;k<i;k++){const s=document.createElement('span');
-    s.className='gt'+(gen[k]==='⟨fine testo⟩'?' end':'');s.textContent=gen[k];box.appendChild(s);
-    box.appendChild(document.createTextNode(' '));}
-  document.getElementById('genCount').textContent=base.length+i;}
- let busy=false;
- function go(){if(i>=gen.length||busy)return false;
-  busy=true;box.classList.add('reading');
-  setTimeout(()=>{box.classList.remove('reading');if(i<gen.length){i++;render();}busy=false;},260);
-  return i<gen.length-1;}
- document.getElementById('genNext').addEventListener('click',()=>{go();});
- const autoB=document.getElementById('genAuto');
+ const RMg=matchMedia('(prefers-reduced-motion: reduce)');
+ const stage=document.getElementById('genStage'),ctx=document.getElementById('genCtx'),
+       out=document.getElementById('genOut'),cap=document.getElementById('genCap'),
+       cnt=document.getElementById('genCount'),stp=document.getElementById('genStep'),
+       loop=document.getElementById('genLoop'),autoB=document.getElementById('genAuto');
+ let i=0,busy=false,timer=null;
+
+ /* il token di fine testo esce dal modello ma non entra nel contesto: non e' testo */
+ const LAST=gen.length-1;
+ const isEnd=k=>k===LAST;
+ const nAppended=()=>Math.min(i,LAST);
+ const nRead=()=>base.length+nAppended();
+
+ function chip(t,cls){const s=document.createElement('span');s.className='gt'+(cls?' '+cls:'');s.textContent=t;return s;}
+ function renderCtx(){ctx.innerHTML='';
+  base.forEach(t=>ctx.appendChild(chip(t)));
+  const n=nAppended();
+  for(let k=0;k<n;k++)ctx.appendChild(chip(gen[k],'new'+(k===n-1?' last':'')));
+  cnt.textContent=nRead();stp.textContent=i;}
+ function renderOut(){out.innerHTML='';
+  if(i===0){const p=document.createElement('span');p.className='gph';p.textContent='—';out.appendChild(p);return;}
+  const k=i-1;
+  out.appendChild(chip(gen[k],isEnd(k)?'end':'new ghost'));}
+ function renderCap(){
+  if(i===0)cap.innerHTML='Il modello legge i <b>'+base.length+'</b> token del prompt. Clicca sulla figura per generare il primo token.';
+  else if(i>LAST)cap.innerHTML='Esce un token che non corrisponde a nessuna parte di parola: codifica la <b>fine del testo</b>. Il ciclo si ferma qui.';
+  else cap.innerHTML='Un intero passaggio nel modello, <b>un solo</b> token. Ora rilegge da capo tutti i <b>'+nRead()+'</b> token — incluso quello appena scritto — per produrre il successivo.';}
+ function renderLoop(){loop.innerHTML=i>LAST
+   ? '⊘ nessun token si accoda: la generazione è terminata'
+   : '↺ il token si accoda al testo, e il ciclo ricomincia';}
+ function render(){stage.classList.toggle('done',i>LAST);renderCtx();renderOut();renderCap();renderLoop();}
+
+ function step(){
+  if(busy||i>LAST)return;
+  busy=true;stage.classList.add('reading');
+  const rd=RMg.matches?0:280,hold=RMg.matches?0:520,fly=RMg.matches?0:420;
+  setTimeout(()=>{                       /* 1. il modello ha letto: esce un token */
+   stage.classList.remove('reading');
+   const k=i;
+   out.innerHTML='';out.appendChild(chip(gen[k],isEnd(k)?'end':'new'));
+   setTimeout(()=>{                      /* 2. il token si accoda al contesto */
+    if(isEnd(k)){i++;stage.classList.add('done');renderCtx();renderCap();renderLoop();busy=false;return;}
+    out.firstChild.classList.add('fly'); /* vola via: renderOut() lo rimpiazzera' col fantasma */
+    i++;renderCtx();renderCap();renderLoop();
+    setTimeout(()=>{renderOut();busy=false;},fly);
+   },hold);
+  },rd);}
+
+ function stopAuto(){if(timer){clearInterval(timer);timer=null;}autoB.textContent='▶ Auto';}
+ stage.addEventListener('click',()=>{stopAuto();step();});
+ stage.addEventListener('keydown',e=>{
+  if(e.key==='Enter'||e.key===' '){e.preventDefault();stopAuto();step();}});
+ document.getElementById('genNext').addEventListener('click',()=>{stopAuto();step();});
  autoB.addEventListener('click',()=>{
-  if(timer){clearInterval(timer);timer=null;autoB.textContent='▶ Auto';return;}
+  if(timer){stopAuto();return;}
+  if(i>LAST)return;
   autoB.textContent='❚❚ Pausa';
-  timer=setInterval(()=>{if(!go()){clearInterval(timer);timer=null;autoB.textContent='▶ Auto';}},900);});
+  timer=setInterval(()=>{
+   if(i>LAST){if(!busy)stopAuto();return;}
+   step();},1500);});
  document.getElementById('genReset').addEventListener('click',()=>{
-  if(timer){clearInterval(timer);timer=null;autoB.textContent='▶ Auto';}i=0;render();});
+  stopAuto();busy=false;i=0;stage.classList.remove('reading');render();});
  render();
 })();
 </script>
