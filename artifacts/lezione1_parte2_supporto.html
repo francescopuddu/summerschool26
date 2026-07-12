@@ -233,7 +233,6 @@
   /* il token esce da sotto il bordo inferiore del blocco e scende: il box parte a filo del blocco */
   .gOut{position:relative;z-index:2;width:100%;height:92px;display:flex;align-items:flex-end;justify-content:center;
     overflow:hidden;padding-bottom:8px}
-  .gOut .gph{font-family:var(--mono);font-size:14px;color:var(--line-strong)}
   .gOut .gt{font-size:16px;padding:5px 12px;font-weight:700;animation:none}
   .gOut .gt.emerge{animation:gEmerge .75s cubic-bezier(.22,1,.36,1)}
   @keyframes gEmerge{0%{transform:translateY(-86px);opacity:0}30%{opacity:1}100%{transform:translateY(0);opacity:1}}
@@ -530,7 +529,7 @@
       <div class="gCtx" id="genCtx"></div>
       <div class="gFunnel" id="genFunnel"></div>
       <div class="gModel" id="genModel">tokenizer · embedding · dorsale di blocchi · probabilità</div>
-      <div class="gOut" id="genOut"><span class="gph">—</span></div>
+      <div class="gOut" id="genOut"></div>
     </div>
     <p class="hint" id="genCap"></p>
     <div class="ctrls">
@@ -1350,8 +1349,7 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
  /* lo slot d'uscita e' vuoto a riposo: il token si vede una volta sola, quando esce e
     quando vola via. Fa eccezione il token di fine testo, che non si accoda e resta li'. */
  function renderOut(){out.innerHTML='';
-  if(i>LAST){out.appendChild(chip(gen[LAST],'end'));return;}
-  const p=document.createElement('span');p.className='gph';p.textContent='—';out.appendChild(p);}
+  if(i>LAST)out.appendChild(chip(gen[LAST],'end'));}
  function renderCap(){
   if(i===0)cap.innerHTML='Si parte da un testo di <b>un solo</b> token: «Nel». Clicca sulla figura per generare quello successivo.';
   else if(i>LAST)cap.innerHTML='Esce un token che non corrisponde a nessuna parte di parola: codifica la <b>fine del testo</b>. Il ciclo si ferma qui.';
