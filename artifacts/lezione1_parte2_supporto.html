@@ -114,6 +114,21 @@
   .readout{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);margin-top:12px;display:flex;gap:16px;flex-wrap:wrap}
   .readout b{color:var(--ink)}
   .hint{font-size:13px;color:var(--muted);margin-top:12px}
+  /* boids: stato + card delle tre regole */
+  .boidsStatus{margin:16px auto 0;max-width:640px;text-align:center;font-family:var(--mono);font-size:12.5px;
+    color:var(--ink-2);background:var(--card-2);border:1px solid var(--line);border-radius:10px;padding:9px 16px;
+    transition:border-color .25s ease}
+  .boidsRules{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+  .bcard{flex:1 1 190px;max-width:250px;font-family:inherit;text-align:left;cursor:pointer;
+    background:var(--bcs);border:1.5px solid var(--bc);border-radius:14px;padding:12px 14px;
+    transition:background .25s ease,border-color .25s ease,transform .12s ease,box-shadow .25s ease;
+    box-shadow:0 10px 22px -18px var(--bc)}
+  .bcard:active{transform:scale(.97)}
+  .bcard b{display:block;font-size:14px;color:var(--bc);margin-bottom:3px}
+  .bcard span{display:block;font-size:12.5px;line-height:1.45;color:var(--ink-2)}
+  .bcard:not(.on){background:var(--card-2);border-color:var(--line);box-shadow:none}
+  .bcard:not(.on) b{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
+  .bcard:not(.on) span{color:var(--muted)}
   .readout.eqbig{justify-content:center;margin-top:18px;font-size:clamp(22px,3.4vw,34px);font-weight:700;color:var(--ink);line-height:1.25;text-align:center}
   .readout.eqbig b{color:var(--accent)}
   .anaNote{text-align:center}
@@ -550,8 +565,8 @@
 <section id="s7"><div class="wrap reveal">
   <div class="kicker"><span class="n">07</span> Comportamento</div>
   <h2>Quasi troppo semplice</h2>
-  <p class="lead">Il sistema può apparire complicato — ma paradossalmente anche troppo semplice per le capacità che esibisce. Operazioni matriciali su vettori, allenate su testi neanche troppo scelti: eppure il risultato scrive email cogliendo il registro, soppesa pro e contro, insegna virtualmente qualsiasi argomento.</p>
-  <p>Sono <b>comportamenti emergenti</b>: fenomeni di sistemi complessi le cui capacità emergono dall'interazione di parti singolarmente più semplici. Conoscere lo scibile umano, ragionare in maniera sostanzialmente analoga a una persona, riconoscere l'emozione e il sottinteso di una frase — tutte conseguenze del task per cui questi modelli sono allenati. Prevedere la prossima parola di infiniti testi <em>richiede</em> queste capacità:</p>
+  <p class="lead">Un LLM fa poche cose semplici — operazioni su matrici e vettori, allenate a prevedere la prossima parola. Eppure scrive email cogliendo il registro, soppesa pro e contro, insegna virtualmente qualsiasi argomento.</p>
+  <p>Sono <b>comportamenti emergenti</b>: capacità che nascono dall'interazione di parti singolarmente semplici. Prevedere la prossima parola di infiniti testi le <em>richiede</em> tutte:</p>
 
   <div class="qlist">
     <div class="q">Come si può completare una frase di un libro di chimica, se non conoscendo la chimica?</div>
@@ -559,11 +574,37 @@
     <div class="q">Come si può completare una poesia, se non intuendo ciò che intende ma non dice?</div>
   </div>
 
-  <p>Per farlo un LLM fa "solo calcoli" — un'affermazione vera tanto quanto dire che il nostro cervello fa solo "interazioni elettrochimiche", e altrettanto incapace di cogliere il comportamento effettivo di questi oggetti.</p>
+  <p>La natura è piena di emergenza. L'esempio più spettacolare è la <b>murmuration</b> degli storni: migliaia di uccelli che disegnano nel cielo un'unica forma fluida, senza capo-stormo né coreografia. Craig Reynolds (1986) mostrò che bastano tre regole locali seguite da ogni singolo uccello. Nessuna delle tre descrive la forma: la forma emerge.</p>
 
-  <p>Questo non li rende perfetti, infallibili o umani. Sono ottimi approssimatori della funzione che associa a ogni pezzo di testo il suo completamento — ma l'approssimazione non è perfetta. Non è raro che sbaglino a completare, e quindi a rispondere: a questi errori diamo il nome di <b>allucinazioni</b>.</p>
+  <div class="panel star">
+    <div class="phd"><strong>Lo stormo: l'emergenza che si vede</strong></div>
+    <p style="margin:4px 0 12px;color:var(--ink-2);font-size:14.5px">Ogni uccello vede solo i vicini e segue tre regole. Nessuno di loro conosce la forma dello stormo — eppure eccola. Spegni una regola e guarda cosa resta.</p>
+    <canvas id="cBoids" height="440"></canvas>
+    <div class="boidsStatus" id="boidsRead">3 regole locali attive · nessun leader · la forma emerge da sé</div>
+    <div class="boidsRules" id="boidsTog">
+      <button class="bcard on" data-r="sep" style="--bc:var(--accent);--bcs:var(--accent-soft)">
+        <b>Separazione</b><span>Tieni le distanze: vira per non urtare i vicini più prossimi.</span>
+      </button>
+      <button class="bcard on" data-r="ali" style="--bc:var(--violet);--bcs:var(--violet-soft)">
+        <b>Allineamento</b><span>Segui il gruppo: adegua direzione e velocità a quelle dei vicini.</span>
+      </button>
+      <button class="bcard on" data-r="coh" style="--bc:var(--amber);--bcs:var(--amber-soft)">
+        <b>Coesione</b><span>Resta unito: muoviti verso il centro dei tuoi vicini.</span>
+      </button>
+    </div>
+  </div>
 
-  <div class="callout"><b>Da dove vengono le allucinazioni.</b> La causa è sostanzialmente l'imperfezione dell'approssimazione: l'errore della rete neurale nel prevedere il token successivo non è nullo. Ciononostante, gli LLM sono la massima espressione di intelligenza artificiale che abbiamo prodotto finora.</div>
+  <p>Un LLM è nella stessa situazione dello storno: la sua unica regola locale è prevedere il token successivo. Conoscere la chimica, cogliere l'ironia, condurre un ragionamento sono la forma dello stormo — e come la murmuration non abita in nessuno storno, queste capacità non abitano in nessun parametro: vivono nell'interazione.</p>
+
+  <p>Dire che per farlo "fa solo calcoli" è vero quanto dire che il cervello fa solo "interazioni elettrochimiche" — e altrettanto poco ci dice del comportamento effettivo.</p>
+
+  <p>Questo non li rende perfetti né umani: l'approssimazione del completamento non è mai esatta, e agli errori diamo il nome di <b>allucinazioni</b>.</p>
+
+  <div class="panel">
+    <div class="phd"><strong>La stessa estrazione di prima — ma stavolta esce la parola sbagliata</strong></div>
+    <p style="margin:4px 0 12px;color:var(--ink-2);font-size:14.5px">Le probabilità non sono mai perfette, e il token in uscita è comunque estratto a sorte: ogni tanto esce quello sbagliato.</p>
+    <canvas id="cHallu" height="320"></canvas>
+  </div>
 </div></section>
 
 <!-- 08 SINTESI -->
@@ -1437,6 +1478,254 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   stage.querySelectorAll('.gDiveMask,.gTok').forEach(n=>n.remove());
   ctx.style.visibility='';stage.classList.remove('reading');render();});
  render();
+})();
+
+/* ================= 07 BOIDS — comportamento emergente ================= */
+(function(){
+ const {c,fit,h}=C('cBoids');
+ const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+ /* --- mondo: interno di una box azzurra --- */
+ const N=190;                       // uccelli
+ const HX=400, HY=170, HZ=400;      // semi-dimensioni della box
+ const K=7;                         // vicinato topologico: i 7 piu' vicini (come gli storni)
+ const R_SEP=34;
+ const VMAX=3.5, VMIN=2.0;
+ const W={sep:1,ali:1,coh:1};       // pesi correnti (interpolati)
+ const T={sep:1,ali:1,coh:1};       // pesi target (toggle)
+ const rnd=(a,b)=>a+Math.random()*(b-a);
+ const birds=[];
+ for(let i=0;i<N;i++){
+  const th=rnd(0,Math.PI*2), bh=rnd(0,Math.PI*2), bv=rnd(-.5,.5);
+  birds.push({x:rnd(-1,1)*HX*.4,y:rnd(-1,1)*HY*.4,z:rnd(-1,1)*HZ*.4,
+   vx:Math.cos(th)*2.4,vy:rnd(-.6,.6),vz:Math.sin(th)*2.4,ph:rnd(0,Math.PI*2),
+   bh,bv});  /* direzione personale di vagabondaggio (usata solo a coesione spenta) */
+ }
+
+ /* attrattore vagante: curva 3D liscia (Lissajous multi-armonica), ampia in profondita' */
+ let t=0;
+ const att={x:0,y:0,z:0};
+ function moveAtt(){
+  const u=t*.016;
+  const M=.85+.15*Math.sin(t*.0021);         /* respiro lieve, ma la rotta resta sempre ampia */
+  att.x=HX*.80*M*(.7*Math.sin(u*.41+1.7)+.3*Math.sin(u*.97+.5));
+  att.y=HY*.60*  (.7*Math.sin(u*.63+.4) +.3*Math.sin(u*1.31+2.1));
+  att.z=HZ*.84*M*(.7*Math.sin(u*.29)    +.3*Math.sin(u*.83+3.9));
+ }
+
+ const nd=new Float64Array(K), ni=new Int16Array(K);
+ function stepSim(){
+  moveAtt();
+  const rs2=R_SEP*R_SEP;
+  for(let i=0;i<N;i++){
+   const b=birds[i];
+   /* k vicini piu' prossimi (insertion sort su array fisso) */
+   nd.fill(Infinity);
+   for(let j=0;j<N;j++){ if(j===i)continue;
+    const o=birds[j];
+    const dx=o.x-b.x, dy=o.y-b.y, dz=o.z-b.z, d2=dx*dx+dy*dy+dz*dz;
+    if(d2>=nd[K-1])continue;
+    let p=K-1; while(p>0&&nd[p-1]>d2){nd[p]=nd[p-1];ni[p]=ni[p-1];p--;}
+    nd[p]=d2; ni[p]=j;
+   }
+   let sx=0,sy=0,sz=0, ax=0,ay=0,az=0, cx=0,cy=0,cz=0, n=0;
+   for(let q=0;q<K;q++){ if(nd[q]===Infinity)break;
+    const o=birds[ni[q]], d2=nd[q];
+    n++; ax+=o.vx;ay+=o.vy;az+=o.vz; cx+=o.x;cy+=o.y;cz+=o.z;
+    if(d2<rs2&&d2>1e-4){const d=Math.sqrt(d2),f=(1-d/R_SEP)/d;
+     sx-=(o.x-b.x)*f; sy-=(o.y-b.y)*f; sz-=(o.z-b.z)*f;}
+   }
+   let fx=0,fy=0,fz=0;
+   if(n){
+    const ws=.08+1.62*W.sep;     /* residuo minimo: i grumi restano densi ma leggibili */
+    fx+=sx*ws;                   fy+=sy*ws;                   fz+=sz*ws;
+    fx+=((ax/n)-b.vx)*.06*W.ali; fy+=((ay/n)-b.vy)*.06*W.ali; fz+=((az/n)-b.vz)*.06*W.ali;
+    fx+=((cx/n)-b.x)*.005*W.coh; fy+=((cy/n)-b.y)*.005*W.coh; fz+=((cz/n)-b.z)*.005*W.coh;
+   }
+   /* debole attrazione verso il punto-guida (parte della coesione: e' un punto di raccolta) */
+   fx+=(att.x-b.x)*.0016*W.coh; fy+=(att.y-b.y)*.0022*W.coh; fz+=(att.z-b.z)*.0016*W.coh;
+   /* a coesione spenta ognuno segue una propria rotta: dispersione visibile in pochi secondi */
+   const lone=1-W.coh;
+   if(lone>.01){
+    b.bh+=rnd(-1,1)*.04; b.bv+=rnd(-1,1)*.02; b.bv*=.98;
+    const cb=Math.cos(b.bv);
+    fx+=Math.cos(b.bh)*cb*.035*lone; fy+=Math.sin(b.bv)*.02*lone; fz+=Math.sin(b.bh)*cb*.035*lone;
+   }
+   /* respinta morbida dalle pareti della box (per asse) */
+   const M=110,MY=80,KW=.3;
+   if(b.x> HX-M) fx-=(b.x-(HX-M))/M*KW;  if(b.x<-(HX-M)) fx+=(-(HX-M)-b.x)/M*KW;
+   if(b.z> HZ-M) fz-=(b.z-(HZ-M))/M*KW;  if(b.z<-(HZ-M)) fz+=(-(HZ-M)-b.z)/M*KW;
+   /* verticale: box bassa, serve piu' fermezza (quadratica + damping a ridosso della parete) */
+   if(b.y> HY-MY){const o=(b.y-(HY-MY))/MY; fy-=o*o*.9+o*.06; if(b.y> HY-16&&b.vy>0)b.vy*=.82;}
+   if(b.y<-(HY-MY)){const o=(-(HY-MY)-b.y)/MY; fy+=o*o*.9+o*.06; if(b.y<-(HY-16)&&b.vy<0)b.vy*=.82;}
+   /* turbolenza: minima quando allineati (volo pulito), forte senza allineamento (la nuvola ribolle) */
+   const jit=.02+.12*(1-W.ali);
+   fx+=rnd(-1,1)*jit; fy+=rnd(-1,1)*jit*.6; fz+=rnd(-1,1)*jit;
+   b.vx+=fx; b.vy+=fy; b.vz+=fz;
+   const v=Math.sqrt(b.vx*b.vx+b.vy*b.vy+b.vz*b.vz)||1e-6;
+   const k=v>VMAX?VMAX/v:(v<VMIN?VMIN/v:1);
+   b.vx*=k; b.vy*=k; b.vz*=k;
+  }
+  for(const b of birds){b.x+=b.vx;b.y+=b.vy;b.z+=b.vz;b.ph+=.3;}
+  t++;
+ }
+
+ /* --- camera fissa frontale: la nostra visuale e' la parete aperta della stanza --- */
+ const CAM=1040;
+ let _w=600,_fov=680;
+ function setCamera(w){
+  _w=w;
+  /* l'apertura frontale (z=-HZ) riempie il canvas: prospettiva a un punto */
+  const sFront=Math.max(w/(2*HX), h/(2*HY))*1.03;
+  _fov=sFront*(CAM-HZ);
+ }
+ function rot(px,py,pz){return [px,py,pz];}
+ function proj(px,py,pz){
+  const s=_fov/(CAM+pz);
+  return {X:_w/2+px*s, Y:h*.5+py*s, s, z:pz};
+ }
+
+ /* box: 8 vertici, 6 facce (con normale uscente), 12 spigoli */
+ const VS=[[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]]
+   .map(v=>[v[0]*HX,v[1]*HY,v[2]*HZ]);
+ const FACES=[
+  {q:[3,2,6,7],n:[0, 1,0],col:'#b9d3ea'},   /* pavimento (y+) */
+  {q:[0,1,5,4],n:[0,-1,0],col:'#e0f0fb'},   /* soffitto (y-) */
+  {q:[1,2,6,5],n:[ 1,0,0],col:'#cbe2f4'},
+  {q:[0,3,7,4],n:[-1,0,0],col:'#cbe2f4'},
+  {q:[4,5,6,7],n:[0,0, 1],col:'#d4e8f7'},
+  {q:[0,1,2,3],n:[0,0,-1],col:'#d4e8f7'}
+ ];
+ const EDGES=[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+
+ function drawBox(x){
+  /* facce lontane (interno visibile): riempite; le vicine restano aperte */
+  for(const f of FACES){
+   const nr=rot(f.n[0],f.n[1],f.n[2]);
+   const ctr=rot((VS[f.q[0]][0]+VS[f.q[2]][0])/2,(VS[f.q[0]][1]+VS[f.q[2]][1])/2,(VS[f.q[0]][2]+VS[f.q[2]][2])/2);
+   if(nr[0]*ctr[0]+nr[1]*ctr[1]+nr[2]*(ctr[2]+CAM)<=0)continue;  /* back-facing = parete interna visibile */
+   x.beginPath();
+   f.q.forEach((vi,k)=>{const p=proj(VS[vi][0],VS[vi][1],VS[vi][2]);k?x.lineTo(p.X,p.Y):x.moveTo(p.X,p.Y);});
+   x.closePath(); x.fillStyle=f.col; x.globalAlpha=.94; x.fill(); x.globalAlpha=1;
+   if(f.n[1]===1){ /* griglia leggera sul pavimento: il segnale di profondita' piu' forte */
+    x.strokeStyle='rgba(110,155,200,.30)'; x.lineWidth=1; x.beginPath();
+    for(let i=-3;i<=3;i++){
+     let p=proj(i*HX/4,HY,-HZ), q=proj(i*HX/4,HY,HZ); x.moveTo(p.X,p.Y); x.lineTo(q.X,q.Y);
+     p=proj(-HX,HY,i*HZ/4); q=proj(HX,HY,i*HZ/4); x.moveTo(p.X,p.Y); x.lineTo(q.X,q.Y);
+    }
+    x.stroke();
+   }
+  }
+  x.strokeStyle='rgba(95,145,195,.55)'; x.lineWidth=1.2; x.beginPath();
+  for(const e of EDGES){
+   const p=proj(VS[e[0]][0],VS[e[0]][1],VS[e[0]][2]), q=proj(VS[e[1]][0],VS[e[1]][1],VS[e[1]][2]);
+   x.moveTo(p.X,p.Y); x.lineTo(q.X,q.Y);
+  }
+  x.stroke();
+ }
+
+ function draw(){
+  const x=fit(); const w=c.clientWidth||600;
+  setCamera(w);
+  /* cielo fuori dalla box */
+  const sky=x.createLinearGradient(0,0,0,h);
+  sky.addColorStop(0,'#a3cff0'); sky.addColorStop(.62,'#d3e8f8'); sky.addColorStop(1,'#eef6fd');
+  x.fillStyle=sky; x.fillRect(0,0,w,h);
+  drawBox(x);
+  const P=[];
+  for(const b of birds){
+   const p=proj(b.x,b.y,b.z);
+   const vr=rot(b.vx,b.vy,b.vz);
+   P.push({X:p.X,Y:p.Y,s:p.s,z:p.z,a:Math.atan2(vr[1],vr[0]),ph:b.ph});
+  }
+  P.sort((a,b)=>b.z-a.z);   /* prima i lontani */
+  for(const p of P){
+   const sz=7*p.s; if(sz<.6)continue;
+   const al=Math.max(.16,Math.min(.92,(p.s-.36)*1.5));
+   const wing=.55+.45*Math.sin(p.ph);       /* battito d'ali */
+   x.save(); x.translate(p.X,p.Y); x.rotate(p.a); x.globalAlpha=al;
+   x.fillStyle=CO.ink;
+   x.beginPath();
+   x.moveTo(sz*1.35,0);
+   x.lineTo(-sz, sz*.95*wing);
+   x.lineTo(-sz*.32,0);
+   x.lineTo(-sz,-sz*.95*wing);
+   x.closePath(); x.fill(); x.restore();
+  }
+ }
+
+ /* --- loop: attivo solo quando il canvas e' visibile --- */
+ let visible=false, raf=null;
+ function frame(){
+  raf=null;
+  for(const k in W)W[k]+=(T[k]-W[k])*.12;
+  stepSim();
+  draw();
+  if(visible&&!REDUCED)raf=requestAnimationFrame(frame);
+ }
+ function start(){if(!raf&&!REDUCED){raf=requestAnimationFrame(frame);}}
+ /* pre-riscaldamento: lo stormo appare gia' formato */
+ for(let i=0;i<420;i++)stepSim();
+ if(REDUCED){draw();}
+ const vio=new IntersectionObserver(es=>es.forEach(e=>{visible=e.isIntersecting;if(visible)start();}),{threshold:.05});
+ vio.observe(c);
+ onResize(draw);
+
+ /* --- toggle regole --- */
+ const read=document.getElementById('boidsRead');
+ const MSG={
+  all:'3 regole locali attive · nessun leader · la forma emerge da sé',
+  coh:'senza coesione lo stormo si disperde: le regole locali non bastano più a tenerlo insieme',
+  ali:'senza allineamento niente direzione comune: una nuvola che ribolle sul posto',
+  sep:'senza separazione gli uccelli collassano in grumi: la distanza reciproca era parte della forma',
+  none:'regole spente: solo traiettorie individuali — lo stormo non esiste più'
+ };
+ document.querySelectorAll('#boidsTog button').forEach(bt=>{
+  bt.addEventListener('click',()=>{
+   bt.classList.toggle('on');
+   const r=bt.dataset.r; T[r]=bt.classList.contains('on')?1:0;
+   const off=['sep','ali','coh'].filter(k=>!T[k]);
+   read.textContent=off.length===0?MSG.all:(off.length>=2?MSG.none:MSG[off[0]]);
+   if(REDUCED){for(const k in W)W[k]=T[k];for(let i=0;i<300;i++)stepSim();draw();}
+  });
+ });
+})();
+
+/* ================= 07b ALLUCINAZIONE — estratto il token sbagliato ================= */
+(function(){const {c,fit,h}=C('cHallu');
+ const RED='#c62828', RED2='#8e1c1c', REDSOFT='#fdecea';
+ const vocab=[['vita',0.78],['via',0.07],['morte',0.05],['gente',0.04],['notte',0.03],['⟨altro⟩',0.03]];
+ const WRONG=4;   /* «notte»: improbabile ma non impossibile */
+ function draw(){const x=fit();const cw=c.clientWidth;x.clearRect(0,0,cw,h);
+  const pad=30,bw=Math.min(90,(cw-2*pad)/vocab.length-18);
+  const base=h-78;
+  vocab.forEach((v,i)=>{
+   const bx=pad+(cw-2*pad)*(i+0.5)/vocab.length-bw/2;
+   const bh=v[1]*(base-70);
+   const hot=i===WRONG;
+   if(hot){x.fillStyle=REDSOFT;roundRect(x,bx-9,base-bh-34,bw+18,bh+58,9);x.fill();}
+   x.fillStyle=hot?RED:'rgba(29,158,117,'+(0.2+v[1]*0.7)+')';
+   roundRect(x,bx,base-bh,bw,bh,5);x.fill();
+   if(hot){x.strokeStyle=RED2;x.lineWidth=2;x.stroke();}
+   x.fillStyle=hot?RED2:CO.ink2;x.font='700 13px '+mono();x.textAlign='center';
+   x.fillText(Math.round(v[1]*100)+'%',bx+bw/2,base-bh-9);
+   x.fillStyle=hot?RED2:CO.ink;x.font=(hot?'700 ':'')+'14px '+mono();
+   x.fillText(v[0],bx+bw/2,base+20);
+   if(hot){x.fillStyle=RED;x.font='700 12px '+mono();x.fillText('✗ estratto',bx+bw/2,base+38);}
+   if(i===0){x.fillStyle=CO.mut;x.font='12px '+mono();x.fillText('la più probabile',bx+bw/2,base+38);}
+  });
+  x.fillStyle=CO.mut;x.font='12.5px '+mono();x.textAlign='left';
+  x.fillText('stesse probabilità di prima · l\'estrazione a sorte stavolta pesca male',pad,24);
+  /* frase completata con l'errore */
+  x.textAlign='center';x.font='15px '+sans();
+  const s1='«Nel mezzo del cammin di nostra ',s2='notte',s3='»';
+  const w1=x.measureText(s1).width;x.font='700 15px '+sans();const w2=x.measureText(s2).width;
+  const tot=w1+w2+x.measureText(s3).width, x0=cw/2-tot/2;
+  x.textAlign='left';x.fillStyle=CO.ink;x.font='15px '+sans();x.fillText(s1,x0,h-16);
+  x.fillStyle=RED;x.font='700 15px '+sans();x.fillText(s2,x0+w1,h-16);
+  x.fillStyle=CO.ink;x.font='15px '+sans();x.fillText(s3,x0+w1+w2,h-16);
+ }
+ onResize(draw);requestAnimationFrame(draw);
 })();
 </script>
 </body>
