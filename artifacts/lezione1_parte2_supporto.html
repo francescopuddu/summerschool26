@@ -135,10 +135,12 @@
   /* attention */
   .attWrap{position:relative;margin-top:8px}
   .attToks{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-  .attToks button{font-family:var(--mono);font-size:14px;font-weight:600;background:var(--card-2);color:var(--ink-2);
-    border:1px solid var(--line-strong);border-radius:8px;padding:7px 12px;cursor:pointer;transition:all .15s}
-  .attToks button.sel{background:var(--accent);border-color:var(--accent);color:#fff}
-  .attToks button.src{border-color:var(--accent);color:var(--accent-2);background:var(--accent-soft)}
+  /* il fondo dei token lo scrive il JS: e' la tinta dell'attenzione ricevuta */
+  .attToks button{font-family:var(--mono);font-size:14px;font-weight:600;background:transparent;color:var(--ink);
+    border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:default;transition:all .15s}
+  .attToks button.can{border-style:dashed;border-color:var(--ink-2);cursor:pointer}
+  .attToks button.sel{border:2px solid var(--ink);padding:6px 11px;font-weight:800}
+  .attToks button.hot{box-shadow:0 0 0 3px rgba(29,158,117,.28)}
   .attSent{font-family:var(--serif);font-style:italic;font-size:clamp(20px,2.6vw,28px);line-height:1.4;text-align:center;
     color:var(--ink);background:var(--card-2);border:1px dashed var(--line-strong);border-radius:14px;
     padding:20px 24px;margin-top:16px}
@@ -336,14 +338,14 @@
   <p>Gli embedding entrano in una <b>dorsale</b>, che è la base di ogni altra operazione. Numerosi blocchi, simili tra loro per architettura, <b>leggono</b> gli embedding nella dorsale, li <b>trasformano</b> con qualche operazione su vettori, e <b>sommano</b> il risultato al precedente contenuto della dorsale. Ogni blocco, sostanzialmente, modifica i vettori che rappresentano i token.</p>
 
   <div class="panel star">    <div class="phd"><strong>Segui un embedding lungo la dorsale</strong></div>
-    <canvas id="cDors" height="470"></canvas>
+    <canvas id="cDors" height="720"></canvas>
     <div class="ctrls">
       <button class="b acc" id="dorsNext">Avanti →</button>
       <button class="b ghost" id="dorsAuto">▶ Auto</button>
       <button class="b ghost" id="dorsReset">↺ Reset</button>
       <span class="readout" style="margin:0" id="dorsRead">l'embedding di «pesca» entra nella dorsale</span>
     </div>
-    <p class="hint">Le barrette sono <b>12 delle migliaia di componenti</b> del vettore: verso destra i valori positivi, verso sinistra i negativi. Il contorno tratteggiato mostra <b>dov'era</b> ogni componente prima del blocco. Numeri illustrativi.</p>
+    <p class="hint">Le barrette sono <b>12 delle migliaia di componenti</b> del vettore: verso destra i valori positivi, verso sinistra i negativi. Dentro ogni blocco si vede <b>formarsi il contributo</b> che verrà sommato — disegnato alla stessa scala del vettore, quindi molto più corto. Sulla dorsale, il contorno tratteggiato mostra <b>dov'era</b> ogni componente prima del blocco. Numeri illustrativi.</p>
   </div>
 
   <div class="callout"><b>Non un unico spazio.</b> La rete neurale non contiene un unico spazio vettoriale che codifica informazione, ma numerosi spazi simili — uno per ogni trasformazione. La rappresentazione e il significato di un token saranno in generale diversi all'inizio della rete, a metà, e alla fine.</div>
@@ -368,7 +370,7 @@
       <div class="c k"><h4>Key</h4><p id="kTxt">—</p><span class="eq">Key = <b>W</b><sub>key</sub> x + b</span></div>
       <div class="c v"><h4>Value</h4><p id="vTxt">—</p><span class="eq">Value = <b>W</b><sub>value</sub> x + b</span></div>
     </div>
-    <p class="hint" style="text-align:center;margin-top:22px">clicca un token evidenziato per vedere chi ascolta chi</p>
+    <p class="hint" style="text-align:center;margin-top:22px">clicca un token tratteggiato per cambiare chi ascolta · il colore dice quanta attenzione riceve ogni parola · passa il mouse su un arco per la percentuale</p>
     <div class="attWrap">
       <canvas id="cAtt" height="205" style="background:transparent;border:none;border-radius:0"></canvas>
       <div class="attToks" id="attToks"></div>
@@ -898,19 +900,18 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
 
 /* ================= 04 DORSALE ================= */
 (function(){const {c,fit,h}=C('cDors');
- const NB=4,D=12;let step=0,timer=null;
+ const NB=3,D=12;let step=0,timer=null;
  const meanings=[
   '«pesca» — il significato della parola stessa, ambiguo',
-  'arricchito: qualcosa che si prende da un cesto',
-  'più contesto: un frutto, non l’attività',
-  'significati più complessi, lontani dal token originale',
-  'uno "spazio di lavoro per il modello"'];
+  'arricchito dal contesto: qualcosa che si prende da un cesto',
+  'un frutto, non l’attività di pescare',
+  'significati complessi, lontani dal token: uno "spazio di lavoro" del modello'];
 
  /* vettori precalcolati una volta sola (PRNG con seed: draw() deve essere deterministica) */
  const rnd=(function(s){return function(){s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);
    t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};})(20260712);
  const V=[Array.from({length:D},()=>rnd()*1.8-0.9)],DL=[null];
- for(let i=1;i<=NB;i++){const d=Array.from({length:D},()=>rnd()*0.44-0.22);
+ for(let i=1;i<=NB;i++){const d=Array.from({length:D},()=>rnd()*0.60-0.30);
    DL.push(d);V.push(V[i-1].map((v,j)=>v+d[j]));}
  const MAX=Math.max(...V.flat().map(Math.abs));
  const drift=V.map(v=>{const n=Math.hypot(...v.map((q,j)=>q-V[0][j]))/Math.hypot(...V[0]);
@@ -922,75 +923,83 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
 
  function col(v,a){const base=v>=0?'29,158,117':'47,126,201';
    return 'rgba('+base+','+(0.3+0.7*Math.min(1,Math.abs(v)/MAX))*a+')';}
- /* una componente = barretta bipolare; il tratteggio mostra dov'era prima */
- function vec(x,cx,yT,hw,vals,ghost,a){
-  x.strokeStyle='rgba(180,178,169,'+(0.7*a)+')';x.lineWidth=1;
-  x.beginPath();x.moveTo(cx+.5,yT-3);x.lineTo(cx+.5,yT+D*8+1);x.stroke();
-  for(let j=0;j<D;j++){const y=yT+j*8;
-   if(ghost){x.setLineDash([2,2]);x.strokeStyle='rgba(95,94,90,'+(0.55*a)+')';x.lineWidth=1;
-    x.strokeRect(cx+.5,y+.5,hw*ghost[j]/MAX,6);x.setLineDash([]);}
-   x.fillStyle=col(vals[j],a);x.fillRect(cx,y,hw*vals[j]/MAX,6);}
+ /* una componente = barretta bipolare. rh = passo verticale; il tratteggio mostra dov'era prima.
+    hw e' sempre riferito allo stesso MAX: cosi' il contributo si vede corto quanto e' davvero. */
+ function vec(x,cx,yT,hw,rh,vals,ghost,a){
+  const bh=rh-3;
+  x.strokeStyle='rgba(180,178,169,'+(0.75*a)+')';x.lineWidth=1;
+  x.beginPath();x.moveTo(cx+.5,yT-4);x.lineTo(cx+.5,yT+D*rh+2);x.stroke();
+  for(let j=0;j<D;j++){const y=yT+j*rh;
+   if(ghost){x.setLineDash([3,2]);x.strokeStyle='rgba(95,94,90,'+(0.6*a)+')';x.lineWidth=1.2;
+    x.strokeRect(cx+.5,y+.5,hw*ghost[j]/MAX,bh);x.setLineDash([]);}
+   x.fillStyle=col(vals[j],a);x.fillRect(cx,y,hw*vals[j]/MAX,bh);}
  }
 
  function draw(){const x=fit();const cw=c.clientWidth;x.clearRect(0,0,cw,h);
-  const y0=260;const x0=60,x1=cw-40;
+  const x0=90,x1=cw-90,y0=430;
+  const k=Math.min(1,Math.max(.45,(cw-180)/730));  // scala le larghezze sugli schermi stretti
+  const HW=56*k;                                    // semi-larghezza delle barrette
   const u=ease(t),pos=lerp(from,step,u);
   const cur=V[0].map((_,j)=>lerp(V[from][j],V[step][j],u));
   // dorsale
-  x.strokeStyle=CO.lineS;x.lineWidth=8;x.lineCap='round';
+  x.strokeStyle=CO.lineS;x.lineWidth=9;x.lineCap='round';
   x.beginPath();x.moveTo(x0,y0);x.lineTo(x1,y0);x.stroke();
   x.strokeStyle=CO.accent;x.beginPath();x.moveTo(x0,y0);x.lineTo(x0+(x1-x0)*pos/NB,y0);x.stroke();
   x.lineCap='butt';
-  arrowHead(x,x0,y0,x1+10,y0,step>=NB?CO.accent:CO.lineS,13);
-  x.fillStyle=CO.ink2;x.font='italic 14px '+sans();x.textAlign='center';
+  arrowHead(x,x0,y0,x1+12,y0,step>=NB?CO.accent:CO.lineS,15);
+  x.fillStyle=CO.ink2;x.font='italic 16px '+sans();x.textAlign='center';
   x.fillText('dorsale',(x0+x1)/2,y0+34);
-  // l'embedding che scorre: 12 componenti, con il fantasma dello stato precedente
+  // l'embedding che scorre: 12 componenti, col fantasma di dov'era prima del blocco
   const ex=x0+(x1-x0)*pos/NB;
-  vec(x,ex,y0-104,22,cur,from!==step?V[from]:null,1);
-  // blocchi
-  const bw=Math.min(136,(x1-x0)/NB-24);const by=56;const bh=84;
+  vec(x,ex,y0-156,HW,12,cur,from!==step?V[from]:null,1);
+  // blocchi: dentro, il contributo che si forma
+  const by=52,bh=196,bw=Math.min(240,(x1-x0)/NB-26);
   for(let i=0;i<NB;i++){
    const bx=x0+(x1-x0)*(i+0.5)/NB-bw/2;
-   const donePast=step>i;
-   x.fillStyle=donePast?CO.accentSoft:'#fff';
-   x.strokeStyle=donePast?CO.accent:CO.lineS;x.lineWidth=donePast?2:1.4;
-   roundRect(x,bx,by,bw,bh,10);x.fill();x.stroke();
-   x.fillStyle=donePast?CO.accent2:CO.ink2;x.font='700 14px '+sans();x.textAlign='center';
+   const done=step>i;                               // contributo gia' costruito
+   const now=(from===i&&step===i+1);                // si sta costruendo proprio ora
+   x.fillStyle=done?CO.accentSoft:'#fff';
+   x.strokeStyle=done?CO.accent:CO.lineS;x.lineWidth=done?2:1.4;
+   roundRect(x,bx,by,bw,bh,12);x.fill();x.stroke();
+   x.fillStyle=done?CO.accent2:CO.ink2;x.font='700 17px '+sans();x.textAlign='center';
    x.fillText('blocco '+(i+1),bx+bw/2,by+30);
-   x.fillStyle=CO.mut;x.font='12px '+sans();
-   x.fillText('legge · trasforma',bx+bw/2,by+51);
-   x.fillText('somma',bx+bw/2,by+68);
-   const cx1=bx+bw*0.30,cx2=bx+bw*0.70;
-   x.strokeStyle=donePast?CO.accent:CO.line;x.lineWidth=1.8;
+   x.fillStyle=CO.mut;x.font='12.5px '+sans();
+   x.fillText('il suo contributo',bx+bw/2,by+52);
+   const grow=now?u:(done?1:0);
+   vec(x,bx+bw/2,by+66,HW,10,DL[i+1].map(v=>v*grow),null,done||now?1:.35);
+   // frecce: legge dalla dorsale, somma il risultato. Tenute vicine al centro del blocco,
+   // cosi' il vettore fermo sulla dorsale (largo ±HW) non ci finisce sopra.
+   const dA=Math.min(bw*0.3,44),cx1=bx+bw/2-dA,cx2=bx+bw/2+dA;
+   x.strokeStyle=done?CO.accent:CO.line;x.lineWidth=1.8;
    x.beginPath();x.moveTo(cx1,y0-10);x.lineTo(cx1,by+bh+8);x.stroke();
-   arrowHead(x,cx1,y0-10,cx1,by+bh+6,donePast?CO.accent:CO.line,8);
+   arrowHead(x,cx1,y0-10,cx1,by+bh+6,done?CO.accent:CO.line,9);
    x.beginPath();x.moveTo(cx2,by+bh+6);x.lineTo(cx2,y0-12);x.stroke();
-   arrowHead(x,cx2,by+bh+8,cx2,y0-10,donePast?CO.accent:CO.line,8);
-   if(donePast){x.fillStyle=CO.accent2;x.font='700 15px '+mono();x.fillText('+',cx2+11,y0-20);}
+   arrowHead(x,cx2,by+bh+8,cx2,y0-10,done?CO.accent:CO.line,9);
+   if(done){x.fillStyle=CO.accent2;x.font='700 17px '+mono();x.textAlign='center';
+    x.fillText('+',cx2+13,y0-18);}
   }
-  x.fillStyle=CO.mut;x.font='12.5px '+mono();x.textAlign='left';
-  x.fillText('ogni blocco: legge dalla dorsale → trasforma → somma il risultato',x0-4,26);
+  x.fillStyle=CO.mut;x.font='13px '+mono();x.textAlign='left';
+  x.fillText('ogni blocco: legge dalla dorsale → costruisce il suo contributo → lo somma',x0-4,28);
   // il conto del blocco appena attraversato: v prima + contributo = v dopo
-  const boxY=306,boxH=150;
+  const boxY=486,boxH=222;
   x.fillStyle=CO.card2;x.strokeStyle=CO.line;x.lineWidth=1;
   roundRect(x,x0,boxY,x1-x0,boxH,12);x.fill();x.stroke();
   if(step===0){
-   x.fillStyle=CO.mut;x.font='13.5px '+sans();x.textAlign='center';
+   x.fillStyle=CO.mut;x.font='14px '+sans();x.textAlign='center';
    x.fillText('nessun blocco attraversato: il vettore è ancora quello di partenza',(x0+x1)/2,boxY+boxH/2+5);
   }else{
    const a=Math.max(.15,u),prev=V[step-1],dl=DL[step],aft=V[step];
    x.globalAlpha=a;
-   x.fillStyle=CO.ink;x.font='700 13px '+sans();x.textAlign='left';
+   x.fillStyle=CO.ink;x.font='700 14px '+sans();x.textAlign='left';
    x.fillText('cosa ha fatto il blocco '+step,x0+20,boxY+26);
-   x.fillStyle=CO.mut;x.font='12.5px '+sans();
-   x.fillText('somma un contributo:',x0+20,boxY+46);
-   x.fillText('il vettore cambia, ma resta sé stesso',x0+20,boxY+64);
-   const cx=(x0+x1)/2+40,gap=112,yT=boxY+30;
+   x.fillStyle=CO.mut;x.font='13px '+sans();
+   x.fillText('ha sommato il suo contributo: il vettore cambia, ma resta sé stesso',x0+184,boxY+26);
+   const cx=(x0+x1)/2,gap=(HW+34)*1.6,yT=boxY+44;
    const cols=[[cx-gap,prev,'prima',null],[cx,dl,'contributo del blocco',null],[cx+gap,aft,'dopo',prev]];
-   cols.forEach(([px,vals,lab,gh])=>{vec(x,px,yT,44,vals,gh,1);
-    x.fillStyle=CO.ink2;x.font='12px '+sans();x.textAlign='center';x.fillText(lab,px,yT+D*8+18);});
-   x.fillStyle=CO.accent2;x.font='700 18px '+mono();x.textAlign='center';
-   x.fillText('+',cx-gap/2,yT+D*4+6);x.fillText('=',cx+gap/2,yT+D*4+6);
+   cols.forEach(([px,vals,lab,gh])=>{vec(x,px,yT,HW,12,vals,gh,1);
+    x.fillStyle=CO.ink2;x.font='13px '+sans();x.textAlign='center';x.fillText(lab,px,yT+D*12+20);});
+   x.fillStyle=CO.accent2;x.font='700 22px '+mono();x.textAlign='center';
+   x.fillText('+',cx-gap/2,yT+D*6+8);x.fillText('=',cx+gap/2,yT+D*6+8);
    x.globalAlpha=1;
   }
  }
@@ -1060,41 +1069,79 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
       v:'informazioni sul trofeo e sul suo ingombro',
       res:'«valigia» guarda a ciò che dovrebbe contenere: il <b>trofeo</b>, che non ci sta'}}}];
 
- let sc=SCENES[0], sel=sc.def, btns=[];
+ let sc=SCENES[0], sel=sc.def, hov=null, btns=[];
  const box=document.getElementById('attToks');
  const {c,fit,h}=C('cAtt');
 
  function build(){box.innerHTML='';
   btns=sc.toks.map((t,i)=>{const b=document.createElement('button');b.textContent=t;
-    if(sc.selectable.includes(i)){b.addEventListener('click',()=>{sel=i;refresh();});}
-    else b.style.cursor='default';
+    if(sc.selectable.includes(i)){b.classList.add('can');
+      b.addEventListener('click',()=>{sel=i;refresh();});}
+    b.addEventListener('mouseenter',()=>{hov=i;paint();draw();});
+    b.addEventListener('mouseleave',()=>{hov=null;paint();draw();});
     box.appendChild(b);return b;});}
  function centers(){const r=box.getBoundingClientRect();
    return btns.map(b=>{const br=b.getBoundingClientRect();
      return {x:br.left-r.left+br.width/2,top:br.top-r.top};});}
+
+ /* la tinta di un token: normalizzata sul massimo della riga di attention e
+    passata per una gamma < 1, cosi' anche in basso il 3% e il 12% si distinguono */
+ function wmax(){const a=sc.data[sel].att;return Math.max(...Object.values(a));}
+ function tint(w,mx){return w<0.02?0:0.08+0.80*Math.pow(w/mx,0.62);}
+
+ function paint(){const d=sc.data[sel],mx=wmax();
+  btns.forEach((b,i)=>{const a=tint(d.att[i]||0,mx);
+   b.style.background=a?'rgba(29,158,117,'+a.toFixed(3)+')':'transparent';
+   b.style.color=a>0.55?'#fff':'var(--ink)';
+   b.classList.toggle('sel',i===sel);
+   b.classList.toggle('hot',i===hov&&i!==sel);});}
+
+ /* punto della quadratica al parametro t: serve sia a disegnare che al hit-test */
+ function bez(t,sx,sy,cxp,cyp,tx,ty){const u=1-t;
+  return [u*u*sx+2*u*t*cxp+t*t*tx, u*u*sy+2*u*t*cyp+t*t*ty];}
+ function arcs(){const cs=centers(),d=sc.data[sel],sx=cs[sel].x;
+  return Object.keys(d.att).map(k=>+k).filter(i=>i!==sel&&d.att[i]>=0.02).map(i=>{
+   const tx=cs[i].x, midY=h-10-Math.min(h-24,Math.abs(tx-sx)*0.32+26);
+   return {i,w:d.att[i],sx,sy:h-6,cx:(sx+tx)/2,cy:midY,tx,ty:h-6};});}
+
  function draw(){const x=fit();const cw=c.clientWidth;x.clearRect(0,0,cw,h);
-  const cs=centers();const d=sc.data[sel];const sx=cs[sel].x;
-  Object.keys(d.att).forEach(k=>{const i=+k;if(i===sel)return;
-   const w=d.att[k];if(w<0.02)return;
-   const tx=cs[i].x;const midY=h-10-Math.min(h-24,Math.abs(tx-sx)*0.32+26);
-   x.strokeStyle='rgba(29,158,117,'+Math.min(0.9,0.15+w*2.2)+')';
-   x.lineWidth=1+w*9;x.lineCap='round';
-   x.beginPath();x.moveTo(sx,h-6);x.quadraticCurveTo((sx+tx)/2,midY,tx,h-6);x.stroke();
-   // peso
-   x.fillStyle=CO.accent2;x.font='700 11.5px '+mono();x.textAlign='center';
-   x.fillText(Math.round(w*100)+'%',(sx+tx)/2,midY+((sx+tx)/2===sx?0:14));});
-  x.lineCap='butt';
+  x.lineCap='round';
+  const list=arcs();
+  // prima i grigi, poi l'arco sotto il mouse: deve stare sopra tutti
+  list.forEach(a=>{const on=a.i===hov;
+   x.strokeStyle=on?CO.accent:'rgba(138,136,127,'+Math.min(0.55,0.16+a.w*0.8).toFixed(3)+')';
+   x.lineWidth=1+a.w*9;
+   x.beginPath();x.moveTo(a.sx,a.sy);x.quadraticCurveTo(a.cx,a.cy,a.tx,a.ty);x.stroke();});
+  const hit=list.find(a=>a.i===hov);
+  if(hit){const p=bez(0.5,hit.sx,hit.sy,hit.cx,hit.cy,hit.tx,hit.ty);
+   const label=Math.round(hit.w*100)+'%';
+   x.font='700 12.5px '+mono();x.textAlign='center';x.textBaseline='middle';
+   const tw=x.measureText(label).width;
+   x.fillStyle='#fff';roundRect(x,p[0]-tw/2-7,p[1]-11,tw+14,22,7);x.fill();
+   x.strokeStyle=CO.accent;x.lineWidth=1.4;x.stroke();
+   x.fillStyle=CO.accent2;x.fillText(label,p[0],p[1]);}
+  x.lineCap='butt';x.textBaseline='alphabetic';
  }
+
+ /* hover sull'arco: si aggancia l'arco piu' vicino al cursore, campionandone la curva */
+ c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();
+  const mx=e.clientX-r.left, my=e.clientY-r.top;
+  let best=null,bd=11;
+  arcs().forEach(a=>{for(let t=0;t<=1.0001;t+=1/24){
+    const p=bez(t,a.sx,a.sy,a.cx,a.cy,a.tx,a.ty);
+    const dd=Math.hypot(p[0]-mx,p[1]-my);if(dd<bd){bd=dd;best=a.i;}}});
+  if(best!==hov){hov=best;c.style.cursor=best!==null?'pointer':'default';paint();draw();}});
+ c.addEventListener('mouseleave',()=>{if(hov!==null){hov=null;paint();draw();}});
+
  function refresh(){
-  btns.forEach((b,i)=>{b.classList.toggle('sel',i===sel);
-    b.classList.toggle('src',i!==sel&&sc.selectable.includes(i));});
   const d=sc.data[sel];
+  paint();
   document.getElementById('qTxt').textContent=d.q;
   document.getElementById('kTxt').textContent=d.k;
   document.getElementById('vTxt').textContent=d.v;
   document.getElementById('attRead').innerHTML='attention di «'+sc.toks[sel]+'» → '+d.res;
   draw();}
- function load(i){sc=SCENES[i];sel=sc.def;
+ function load(i){sc=SCENES[i];sel=sc.def;hov=null;
   document.getElementById('attSent').innerHTML=sc.sent;
   document.getElementById('attAsk').textContent=sc.ask;
   build();
