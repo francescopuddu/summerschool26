@@ -291,7 +291,7 @@
   <p>Aggiungi neuroni e guarda l'approssimante (in <b style="color:var(--teal)">verde</b>) inseguire la funzione obiettivo (in <b class="mut">grigio</b>): ogni neurone aggiunge un "pezzo" alla curva.</p>
   <div class="panel">    <canvas id="cUat" height="300"></canvas>
     <div class="ctrls">
-      <div class="ctrl"><label>neuroni nascosti <b id="uatNv">4</b></label><input id="uatN" type="range" min="1" max="24" step="1" value="4"></div>
+      <div class="ctrl"><label>neuroni nascosti <b id="uatNv">1</b></label><input id="uatN" type="range" min="1" max="24" step="1" value="1"></div>
     </div>
     <div class="readout">errore di approssimazione <b id="uatErr">—</b></div>
   </div>
@@ -749,7 +749,7 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
 
 /* ================= 04 UAT ================= */
 (function(){const {c,fit,h}=C('cUat');
- function target(x){return 0.5+0.28*Math.sin(6.3*x)-0.16*Math.cos(3.1*x+0.6)-0.12*x;}
+ function target(x){return 0.5+0.24*Math.sin(11.5*x)-0.13*Math.cos(5.2*x+0.6)-0.08*x;}
  const S=[];for(let i=0;i<=120;i++){const xx=i/120;S.push([xx,target(xx)]);}
  function draw(){const x=fit();const cw=c.clientWidth,ch=h;const pad=16;
   const N=+document.getElementById('uatN').value;document.getElementById('uatNv').textContent=N;
