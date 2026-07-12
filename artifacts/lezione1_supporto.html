@@ -344,7 +344,7 @@
     <div class="cap" style="margin-top:12px">Ogni neurone piazza un gomito dove vuole: il peso decide la pendenza, il bias dove il gomito cade. Sommandone tanti si costruisce una curva qualsiasi — è quello che succede qui sotto.</div>
   </div>
 
-  <p>Muovi lo slider dei neuroni e confronta i due grafici: a sinistra, senza ReLU, aggiungerne non serve a niente; a destra la curva impara a seguire il ciclo. Si cresce in <b>profondità</b> (più strati) e in <b>larghezza</b> (più neuroni), ma serve la non-linearità.</p>
+  <p>Si parte da <b>zero neuroni</b>: resta solo la retta, e i due grafici sono identici. Ora aggiungi neuroni e confrontali: a sinistra, senza ReLU, non cambia nulla — la retta resta una retta; a destra ogni neurone piazza un gomito e la curva impara a seguire il ciclo. Si cresce in <b>profondità</b> (più strati) e in <b>larghezza</b> (più neuroni), ma serve la non-linearità.</p>
   <div class="panel">
     <div class="grid2">
       <div>
@@ -359,7 +359,7 @@
       </div>
     </div>
     <div class="ctrls" style="margin-top:16px">
-      <div class="ctrl"><label>neuroni <b id="archNv">6</b></label><input id="archN" type="range" min="1" max="20" step="1" value="6"></div>
+      <div class="ctrl"><label>neuroni <b id="archNv">0</b></label><input id="archN" type="range" min="0" max="20" step="1" value="0"></div>
     </div>
     <div class="readout">errore sul ciclo annuale · senza ReLU <b id="archErrNo">—</b> · con ReLU <b id="archErrYes">—</b></div>
   </div>
