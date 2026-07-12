@@ -214,6 +214,7 @@
   .gt.end{background:var(--amber-soft);border-color:#eeD9bd;color:var(--amber)}
 
   /* il testo entra: una copia della riga scende e sparisce sotto il blocco nero */
+  .gDiveMask{position:absolute;left:0;right:0;z-index:1;overflow:hidden;pointer-events:none}
   .gCtx.dive{position:absolute;z-index:1;margin:0;pointer-events:none;
     animation:gDive .9s cubic-bezier(.45,.05,.35,1) forwards}
   @keyframes gDive{0%{transform:translateY(0)}12%{transform:translateY(-6px)}100%{transform:translateY(var(--dy,120px))}}
@@ -236,7 +237,8 @@
   .gOut .gt{font-size:16px;padding:5px 12px;font-weight:700;animation:none}
   .gOut .gt.emerge{animation:gEmerge .75s cubic-bezier(.22,1,.36,1)}
   @keyframes gEmerge{0%{transform:translateY(-86px);opacity:0}30%{opacity:1}100%{transform:translateY(0);opacity:1}}
-  .gOut .gt.ghost{opacity:.42;transition:opacity .4s ease}
+  .gOut .gt.ghost{opacity:.42;animation:gGhost .4s ease}
+  @keyframes gGhost{0%{opacity:0}100%{opacity:.42}}
   /* torna in coda al testo girando di lato, senza attraversare il blocco */
   .gFlyChip{position:absolute;z-index:4;pointer-events:none;font-size:16px;padding:5px 12px;font-weight:700;
     animation:gFly .95s cubic-bezier(.5,.02,.35,1) forwards}
@@ -1360,23 +1362,31 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
  /* il testo scende dentro il modello: una copia della riga sparisce sotto il blocco nero */
  function dive(ms,back){
   const cr=ctx.getBoundingClientRect(),mr=model.getBoundingClientRect(),sr=stage.getBoundingClientRect();
+  /* maschera che finisce sul bordo del blocco: quel che scende oltre viene tagliato, non sborda */
+  const mask=document.createElement('div');
+  mask.className='gDiveMask';
+  mask.style.top=(cr.top-sr.top)+'px';
+  const h=Math.max(20,mr.top-cr.top+6);
+  mask.style.height=h+'px';
   const cl=ctx.cloneNode(true);
   cl.removeAttribute('id');cl.classList.add('dive');
-  cl.style.left=(cr.left-sr.left)+'px';cl.style.top=(cr.top-sr.top)+'px';cl.style.width=cr.width+'px';
-  cl.style.setProperty('--dy',(mr.top-cr.top+cr.height)+'px');
+  cl.style.left=(cr.left-sr.left)+'px';cl.style.top='0px';cl.style.width=cr.width+'px';
+  cl.style.setProperty('--dy',(h+4)+'px');
   cl.style.animationDuration=ms+'ms';
-  stage.appendChild(cl);
+  mask.appendChild(cl);stage.appendChild(mask);
   ctx.style.visibility='hidden';
-  setTimeout(()=>cl.remove(),ms);
+  setTimeout(()=>mask.remove(),ms);
   /* il testo riappare a lettura finita: il modello lo legge, non lo consuma */
   setTimeout(()=>{ctx.style.visibility='';ctx.classList.add('backin');
    setTimeout(()=>ctx.classList.remove('backin'),460);},back);}
 
- /* il token appena uscito gira di lato e si accoda in cima al testo */
+ /* il token appena uscito gira di lato e si accoda in cima al testo:
+    l'originale sparisce subito, cosi' il token si vede una volta sola */
  function flyBack(el,ms){
   const er=el.getBoundingClientRect(),cr=ctx.getBoundingClientRect(),sr=stage.getBoundingClientRect();
   const fc=el.cloneNode(true);
   fc.className='gt new gFlyChip';
+  el.style.visibility='hidden';
   fc.style.left=(er.left-sr.left)+'px';fc.style.top=(er.top-sr.top)+'px';
   fc.style.setProperty('--sx',Math.max(70,sr.right-er.right-18)+'px');
   fc.style.setProperty('--tx',(cr.right-er.left-40)+'px');
@@ -1400,8 +1410,9 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
    if(isEnd(k)){i++;stage.classList.add('done');renderCtx();renderCap();busy=false;return;}
    setTimeout(()=>{                      /* 2. il token si accoda al contesto */
     flyBack(out.firstChild,fly);
-    i++;renderCtx();renderCap();renderOut();
-    setTimeout(()=>{busy=false;},fly*0.6);
+    i++;renderCtx();renderCap();
+    /* il fantasma nello slot compare solo a volo finito: niente doppia comparsa */
+    setTimeout(()=>{renderOut();busy=false;},fly);
    },hold);
   },dv+think);}
 
@@ -1416,10 +1427,10 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   autoB.textContent='❚❚ Pausa';
   timer=setInterval(()=>{
    if(i>LAST){if(!busy)stopAuto();return;}
-   step();},3300);});
+   step();},3600);});
  document.getElementById('genReset').addEventListener('click',()=>{
   stopAuto();busy=false;i=0;
-  stage.querySelectorAll('.dive,.gFlyChip').forEach(n=>n.remove());
+  stage.querySelectorAll('.gDiveMask,.gFlyChip').forEach(n=>n.remove());
   ctx.style.visibility='';ctx.classList.remove('backin');
   stage.classList.remove('reading');render();});
  render();
