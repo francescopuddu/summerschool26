@@ -92,6 +92,9 @@
   .readout{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);margin-top:12px;display:flex;gap:16px;flex-wrap:wrap}
   .readout b{color:var(--ink)}
   .hint{font-size:13px;color:var(--muted);margin-top:12px}
+  .readout.eqbig{justify-content:center;margin-top:18px;font-size:clamp(22px,3.4vw,34px);font-weight:700;color:var(--ink);line-height:1.25;text-align:center}
+  .readout.eqbig b{color:var(--accent)}
+  .anaNote{text-align:center}
   .cap{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:10px}
   canvas{display:block;width:100%;border-radius:12px;background:var(--card-2);border:1px solid var(--line)}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -249,8 +252,8 @@
       <button class="b acc" id="anaBtn">▶ Applica la direzione</button>
       <button class="b ghost" id="anaReset">↺ Reset</button>
     </div>
-    <div class="readout"><span id="anaRead">re + (donna − uomo) = ?</span></div>
-    <p class="hint">Le due proiezioni in 2D sono distinte: i piani dei due esempi non sono lo stesso — per questo direzioni diverse possono <em>sembrare</em> simili tra un grafico e l'altro.</p>
+    <div class="readout eqbig"><span id="anaRead">re + (donna − uomo) = ?</span></div>
+    <p class="hint anaNote" id="anaNote"></p>
   </div>
 
   <h3>Perché servono migliaia di dimensioni</h3>
@@ -606,12 +609,14 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
     from:'re',diff:['uomo','donna'],target:'regina',
     axes:[{a:'uomo',b:'donna',label:'direzione del genere',col:CO.accent},
           {a:'uomo',b:'re',label:'direzione della regalità',col:CO.violet}],
-    read:'re + (donna − uomo) = <b>regina</b> — la stessa direzione sposta qualsiasi concetto lungo lo spettro del genere'},
+    read:'re + (donna − uomo) = <b>regina</b>',
+    note:'La stessa direzione sposta qualsiasi concetto lungo lo spettro del genere.'},
   cap:{pts:[['Italia',0.20,0.66],['Roma',0.38,0.30],['Francia',0.50,0.72],['Parigi',0.68,0.36],['Germania',0.74,0.62]],
     from:'Germania',diff:['Italia','Roma'],target:'Berlino',targetPos:[0.92,0.26],
     axes:[{a:'Italia',b:'Roma',label:'direzione stato → capitale',col:CO.accent},
           {a:'Francia',b:'Parigi',label:'',col:CO.accent}],
-    read:'Germania + (Roma − Italia) = <b>Berlino</b> — la direzione stato→capitale è la stessa per tutti gli stati'}};
+    read:'Germania + (Roma − Italia) = <b>Berlino</b>',
+    note:'La direzione stato→capitale è la stessa per tutti gli stati.'}};
  function P(s,name){const p=s.pts.find(q=>q[0]===name);return p?[p[1],p[2]]:s.targetPos;}
  function draw(){const x=fit();const cw=c.clientWidth;x.clearRect(0,0,cw,h);
   const s=scenes[mode];
@@ -644,11 +649,13 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
  }
  function play(){if(anim)cancelAnimationFrame(anim);t=0;done=false;
    function stepA(){t+=0.03;if(t>=1){t=1;done=true;draw();
-     document.getElementById('anaRead').innerHTML=scenes[mode].read;return;}
+     document.getElementById('anaRead').innerHTML=scenes[mode].read;
+     document.getElementById('anaNote').textContent=scenes[mode].note;return;}
      draw();anim=requestAnimationFrame(stepA);}
    stepA();}
  function reset(){if(anim)cancelAnimationFrame(anim);t=0;done=false;draw();
-   document.getElementById('anaRead').innerHTML=(mode==='gen'?'re + (donna − uomo) = ?':'Germania + (Roma − Italia) = ?');}
+   document.getElementById('anaRead').innerHTML=(mode==='gen'?'re + (donna − uomo) = ?':'Germania + (Roma − Italia) = ?');
+   document.getElementById('anaNote').textContent='';}
  document.querySelectorAll('#anaTog button').forEach(btn=>btn.addEventListener('click',()=>{
    mode=btn.dataset.m;document.querySelectorAll('#anaTog button').forEach(b=>b.classList.toggle('on',b===btn));reset();}));
  document.getElementById('anaBtn').addEventListener('click',play);
