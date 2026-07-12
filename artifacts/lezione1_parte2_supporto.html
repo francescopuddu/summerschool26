@@ -331,13 +331,14 @@
   <p>Gli embedding entrano in una <b>dorsale</b>, che è la base di ogni altra operazione. Numerosi blocchi, simili tra loro per architettura, <b>leggono</b> gli embedding nella dorsale, li <b>trasformano</b> con qualche operazione su vettori, e <b>sommano</b> il risultato al precedente contenuto della dorsale. Ogni blocco, sostanzialmente, modifica i vettori che rappresentano i token.</p>
 
   <div class="panel star">    <div class="phd"><strong>Segui un embedding lungo la dorsale</strong></div>
-    <canvas id="cDors" height="390"></canvas>
+    <canvas id="cDors" height="470"></canvas>
     <div class="ctrls">
       <button class="b acc" id="dorsNext">Avanti →</button>
       <button class="b ghost" id="dorsAuto">▶ Auto</button>
       <button class="b ghost" id="dorsReset">↺ Reset</button>
       <span class="readout" style="margin:0" id="dorsRead">l'embedding di «pesca» entra nella dorsale</span>
     </div>
+    <p class="hint">Le barrette sono <b>12 delle migliaia di componenti</b> del vettore: verso destra i valori positivi, verso sinistra i negativi. Il contorno tratteggiato mostra <b>dov'era</b> ogni componente prima del blocco. Numeri illustrativi.</p>
   </div>
 
   <div class="callout"><b>Non un unico spazio.</b> La rete neurale non contiene un unico spazio vettoriale che codifica informazione, ma numerosi spazi simili — uno per ogni trasformazione. La rappresentazione e il significato di un token saranno in generale diversi all'inizio della rete, a metà, e alla fine.</div>
@@ -886,34 +887,59 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
 
 /* ================= 04 DORSALE ================= */
 (function(){const {c,fit,h}=C('cDors');
- const NB=4;let step=0,timer=null;
+ const NB=4,D=12;let step=0,timer=null;
  const meanings=[
   '«pesca» — il significato della parola stessa, ambiguo',
   'arricchito: qualcosa che si prende da un cesto',
   'più contesto: un frutto, non l’attività',
   'significati più complessi, lontani dal token originale',
   'uno "spazio di lavoro per il modello"'];
+
+ /* vettori precalcolati una volta sola (PRNG con seed: draw() deve essere deterministica) */
+ const rnd=(function(s){return function(){s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);
+   t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};})(20260712);
+ const V=[Array.from({length:D},()=>rnd()*1.8-0.9)],DL=[null];
+ for(let i=1;i<=NB;i++){const d=Array.from({length:D},()=>rnd()*0.44-0.22);
+   DL.push(d);V.push(V[i-1].map((v,j)=>v+d[j]));}
+ const MAX=Math.max(...V.flat().map(Math.abs));
+ const drift=V.map(v=>{const n=Math.hypot(...v.map((q,j)=>q-V[0][j]))/Math.hypot(...V[0]);
+   return Math.round(n*100);});
+
+ const RM=matchMedia('(prefers-reduced-motion: reduce)');
+ let from=0,t=1,raf=null;
+ const ease=u=>u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+
+ function col(v,a){const base=v>=0?'29,158,117':'47,126,201';
+   return 'rgba('+base+','+(0.3+0.7*Math.min(1,Math.abs(v)/MAX))*a+')';}
+ /* una componente = barretta bipolare; il tratteggio mostra dov'era prima */
+ function vec(x,cx,yT,hw,vals,ghost,a){
+  x.strokeStyle='rgba(180,178,169,'+(0.7*a)+')';x.lineWidth=1;
+  x.beginPath();x.moveTo(cx+.5,yT-3);x.lineTo(cx+.5,yT+D*8+1);x.stroke();
+  for(let j=0;j<D;j++){const y=yT+j*8;
+   if(ghost){x.setLineDash([2,2]);x.strokeStyle='rgba(95,94,90,'+(0.55*a)+')';x.lineWidth=1;
+    x.strokeRect(cx+.5,y+.5,hw*ghost[j]/MAX,6);x.setLineDash([]);}
+   x.fillStyle=col(vals[j],a);x.fillRect(cx,y,hw*vals[j]/MAX,6);}
+ }
+
  function draw(){const x=fit();const cw=c.clientWidth;x.clearRect(0,0,cw,h);
-  const y0=h-80;const x0=60,x1=cw-40;
+  const y0=260;const x0=60,x1=cw-40;
+  const u=ease(t),pos=lerp(from,step,u);
+  const cur=V[0].map((_,j)=>lerp(V[from][j],V[step][j],u));
   // dorsale
   x.strokeStyle=CO.lineS;x.lineWidth=8;x.lineCap='round';
   x.beginPath();x.moveTo(x0,y0);x.lineTo(x1,y0);x.stroke();
-  // porzione percorsa
-  const prog=step/NB;
-  x.strokeStyle=CO.accent;x.beginPath();x.moveTo(x0,y0);x.lineTo(x0+(x1-x0)*prog,y0);x.stroke();
+  x.strokeStyle=CO.accent;x.beginPath();x.moveTo(x0,y0);x.lineTo(x0+(x1-x0)*pos/NB,y0);x.stroke();
   x.lineCap='butt';
   arrowHead(x,x0,y0,x1+10,y0,step>=NB?CO.accent:CO.lineS,13);
-  x.fillStyle=CO.ink2;x.font='italic 14px '+sans();x.textAlign='left';x.fillText('dorsale',x0-4,y0+30);
-  // embedding in ingresso
-  x.fillStyle=CO.accentSoft;x.strokeStyle=CO.accent;x.lineWidth=2;
-  const ex=x0+(x1-x0)*prog;
-  roundRect(x,ex-18,y0-18,36,36,8);x.fill();x.stroke();
-  x.fillStyle=CO.accent2;x.font='700 12.5px '+mono();x.textAlign='center';x.fillText('emb',ex,y0+4.5);
+  x.fillStyle=CO.ink2;x.font='italic 14px '+sans();x.textAlign='center';
+  x.fillText('dorsale',(x0+x1)/2,y0+34);
+  // l'embedding che scorre: 12 componenti, con il fantasma dello stato precedente
+  const ex=x0+(x1-x0)*pos/NB;
+  vec(x,ex,y0-104,22,cur,from!==step?V[from]:null,1);
   // blocchi
   const bw=Math.min(136,(x1-x0)/NB-24);const by=56;const bh=84;
   for(let i=0;i<NB;i++){
    const bx=x0+(x1-x0)*(i+0.5)/NB-bw/2;
-   const active=(step===i+1)||(timer&&step===i);
    const donePast=step>i;
    x.fillStyle=donePast?CO.accentSoft:'#fff';
    x.strokeStyle=donePast?CO.accent:CO.lineS;x.lineWidth=donePast?2:1.4;
@@ -923,7 +949,6 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
    x.fillStyle=CO.mut;x.font='12px '+sans();
    x.fillText('legge · trasforma',bx+bw/2,by+51);
    x.fillText('somma',bx+bw/2,by+68);
-   // frecce leggi/somma
    const cx1=bx+bw*0.30,cx2=bx+bw*0.70;
    x.strokeStyle=donePast?CO.accent:CO.line;x.lineWidth=1.8;
    x.beginPath();x.moveTo(cx1,y0-10);x.lineTo(cx1,by+bh+8);x.stroke();
@@ -934,19 +959,48 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   }
   x.fillStyle=CO.mut;x.font='12.5px '+mono();x.textAlign='left';
   x.fillText('ogni blocco: legge dalla dorsale → trasforma → somma il risultato',x0-4,26);
+  // il conto del blocco appena attraversato: v prima + contributo = v dopo
+  const boxY=306,boxH=150;
+  x.fillStyle=CO.card2;x.strokeStyle=CO.line;x.lineWidth=1;
+  roundRect(x,x0,boxY,x1-x0,boxH,12);x.fill();x.stroke();
+  if(step===0){
+   x.fillStyle=CO.mut;x.font='13.5px '+sans();x.textAlign='center';
+   x.fillText('nessun blocco attraversato: il vettore è ancora quello di partenza',(x0+x1)/2,boxY+boxH/2+5);
+  }else{
+   const a=Math.max(.15,u),prev=V[step-1],dl=DL[step],aft=V[step];
+   x.globalAlpha=a;
+   x.fillStyle=CO.ink;x.font='700 13px '+sans();x.textAlign='left';
+   x.fillText('cosa ha fatto il blocco '+step,x0+20,boxY+26);
+   x.fillStyle=CO.mut;x.font='12.5px '+sans();
+   x.fillText('somma un contributo:',x0+20,boxY+46);
+   x.fillText('il vettore cambia, ma resta sé stesso',x0+20,boxY+64);
+   const cx=(x0+x1)/2+40,gap=112,yT=boxY+30;
+   const cols=[[cx-gap,prev,'prima',null],[cx,dl,'contributo del blocco',null],[cx+gap,aft,'dopo',prev]];
+   cols.forEach(([px,vals,lab,gh])=>{vec(x,px,yT,44,vals,gh,1);
+    x.fillStyle=CO.ink2;x.font='12px '+sans();x.textAlign='center';x.fillText(lab,px,yT+D*8+18);});
+   x.fillStyle=CO.accent2;x.font='700 18px '+mono();x.textAlign='center';
+   x.fillText('+',cx-gap/2,yT+D*4+6);x.fillText('=',cx+gap/2,yT+D*4+6);
+   x.globalAlpha=1;
+  }
  }
  function upd(){document.getElementById('dorsRead').innerHTML=
-   (step===0?'l’embedding di «pesca» entra nella dorsale':'dopo il blocco '+step+': <b>'+meanings[step]+'</b>');draw();}
- function go(){if(step>=NB)return false;step++;upd();return step<NB;}
+   (step===0?'l’embedding di «pesca» entra nella dorsale'
+    :'dopo il blocco '+step+': <b>'+meanings[step]+'</b> · distanza dall’embedding iniziale <b>'+drift[step]+'%</b>');
+   if(RM.matches){t=1;draw();return;}
+   t=0;if(raf)cancelAnimationFrame(raf);
+   const t0=performance.now();
+   (function loop(now){t=Math.min(1,(now-t0)/500);draw();
+     if(t<1)raf=requestAnimationFrame(loop);else raf=null;})(t0);}
+ function go(){if(step>=NB)return false;from=step;step++;upd();return step<NB;}
  document.getElementById('dorsNext').addEventListener('click',()=>{go();});
  const autoB=document.getElementById('dorsAuto');
  autoB.addEventListener('click',()=>{
    if(timer){clearInterval(timer);timer=null;autoB.textContent='▶ Auto';return;}
    autoB.textContent='❚❚ Pausa';
-   timer=setInterval(()=>{if(!go()){clearInterval(timer);timer=null;autoB.textContent='▶ Auto';}},1100);});
+   timer=setInterval(()=>{if(!go()){clearInterval(timer);timer=null;autoB.textContent='▶ Auto';}},1400);});
  document.getElementById('dorsReset').addEventListener('click',()=>{
-   if(timer){clearInterval(timer);timer=null;autoB.textContent='▶ Auto';}step=0;upd();});
- onResize(draw);requestAnimationFrame(upd);
+   if(timer){clearInterval(timer);timer=null;autoB.textContent='▶ Auto';}from=0;step=0;upd();});
+ onResize(draw);requestAnimationFrame(()=>{from=0;step=0;t=1;upd();});
 })();
 
 /* ================= 05 ATTENTION ================= */
