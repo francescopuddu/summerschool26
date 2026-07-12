@@ -1021,8 +1021,8 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
    if(done){x.fillStyle=CO.accent2;x.font='700 17px '+mono();x.textAlign='center';
     x.fillText('+',cx2+13,y0-18);}
   }
-  x.fillStyle=CO.mut;x.font='13px '+mono();x.textAlign='left';
-  x.fillText('ogni blocco: legge dalla dorsale → costruisce il suo contributo → lo somma',x0-4,28);
+  x.fillStyle=CO.mut;x.font='13px '+mono();x.textAlign='center';
+  x.fillText('ogni blocco: legge dalla dorsale → costruisce il suo contributo → lo somma',cw/2,28);
   // il conto del blocco appena attraversato: v prima + contributo = v dopo
   const boxY=486,boxH=222;
   x.fillStyle=CO.card2;x.strokeStyle=CO.line;x.lineWidth=1;
