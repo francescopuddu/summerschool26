@@ -71,8 +71,6 @@
   .panel.star{border-color:var(--accent-soft2);box-shadow:0 1px 0 var(--accent-soft2),0 22px 50px -30px rgba(220,38,38,.4);background:linear-gradient(180deg,#fff,#fffafa)}
   .panel .badge{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);
     display:inline-flex;align-items:center;gap:7px;margin-bottom:14px}
-  .panel .badge .dotp{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 1.8s infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
 
   .hint{font-size:13px;color:var(--muted);margin-top:12px;max-width:68ch}
   .cap{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:10px}
@@ -222,7 +220,7 @@
   <h3>Creare una repository</h3>
   <p>Una <b>repo</b> (repository) è semplicemente la cartella di un progetto messa sotto controllo di Git. Si parte così:</p>
   <div class="panel">
-    <div class="badge"><span class="dotp"></span>Avvio di un progetto</div>
+    <div class="badge">Avvio di un progetto</div>
     <p style="margin:0 0 10px"><span class="cmd">git init</span> &nbsp;→ dice a Git di iniziare a tracciare questa cartella.</p>
     <p style="margin:0">Poi si crea la repo gemella su GitHub (dal sito, pulsante <b>New repository</b>) e si collega. Da quel momento le tue istantanee possono salire online.</p>
     <p class="hint">In pratica Claude Code può eseguire questi comandi per te: spesso basta chiedere "inizializza una repo e collegala a GitHub".</p>
@@ -454,7 +452,7 @@
   <p class="lead">Hai avviato Claude Code sul computer e devi allontanarti? Con <b>Remote Control</b> prosegui e monitori la stessa sessione dal telefono, dal tablet o da un browser qualsiasi.</p>
 
   <div class="panel star">
-    <div class="badge"><span class="dotp"></span>Come funziona</div>
+    <div class="badge">Come funziona</div>
     <div style="display:grid;grid-template-columns:auto 1fr;gap:14px 16px;align-items:start">
       <div class="mono" style="color:var(--accent);font-weight:800">1</div>
       <p style="margin:0">Nel terminale digiti <span class="cmd">/remote-control</span> (in breve <span class="cmd">/rc</span>). Claude mostra un <b>link</b> e un <b>QR code</b>.</p>
@@ -477,7 +475,7 @@
   <p class="lead"><b>Claude Code on the web</b> esegue i task su macchine in cloud gestite da Anthropic, non sul tuo PC. Puoi chiudere il browser, spegnere il computer, andare offline: la sessione <b>continua</b> e la ritrovi dov'era.</p>
 
   <div class="panel">
-    <div class="badge"><span class="dotp"></span>Come dialoga con GitHub</div>
+    <div class="badge">Come dialoga con GitHub</div>
     <div class="gitflow" style="margin-top:6px">
       <div class="stage done">
         <div class="icn">☁️</div>

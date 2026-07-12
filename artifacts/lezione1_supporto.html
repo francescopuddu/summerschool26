@@ -74,11 +74,20 @@
   .panel.star{border-color:var(--accent-soft2);box-shadow:0 1px 0 var(--accent-soft2),0 22px 50px -30px rgba(67,56,202,.4);background:linear-gradient(180deg,#fff, #fbfaff)}
   .panel .badge{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);
     display:inline-flex;align-items:center;gap:7px;margin-bottom:14px}
-  .panel .badge .dotp{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 1.8s infinite}
-  .panel .badge.tealb{color:var(--teal)} .panel .badge.tealb .dotp{background:var(--teal)}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
   .phd{display:flex;align-items:center;gap:10px;margin-bottom:2px}
   .phd strong{font-size:16px}
+
+  .canvas-hint{position:relative}
+  .hint{position:absolute;top:50px;right:22px;z-index:2;pointer-events:none;
+    font-family:var(--mono);font-size:12.5px;color:var(--accent);
+    background:rgba(255,255,255,.93);border:1px solid var(--accent-soft2);border-radius:10px;
+    padding:7px 11px;box-shadow:0 8px 20px -12px rgba(67,56,202,.55);
+    animation:bob 1.8s ease-in-out infinite;transition:opacity .35s}
+  .hint b{font-weight:700}
+  .hint.off{opacity:0}
+  @media(max-width:640px){.hint{position:static;animation:none;display:inline-block;margin:10px 0 2px}}
+  #cMat{cursor:default}
+  #cMat:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:10px}
 
   .ctrls{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-top:14px}
   .ctrl{display:flex;flex-direction:column;gap:4px;min-width:150px;flex:1}
@@ -158,9 +167,7 @@
   <h3>Il neurone artificiale</h3>
   <p>La rete neurale copia questo gesto in modo spudoratamente semplice. Ogni neurone artificiale <b>moltiplica ogni input per un peso</b>, <b>somma</b> tutto, e si accende solo se la somma <b>supera una soglia</b>. I pesi dicono quanto conta ciascun ingresso; la soglia, quanto stimolo serve per "accendersi". Muovi gli input e guarda quando scatta.</p>
 
-  <div class="panel">
-    <div class="badge"><span class="dotp"></span> interattivo</div>
-    <div class="grid2">
+  <div class="panel">    <div class="grid2">
       <div><canvas id="cPerc" height="250"></canvas></div>
       <div>
         <div class="ctrls" style="flex-direction:column;align-items:stretch;gap:12px">
@@ -192,9 +199,7 @@
     </div>
   </div>
   <p>Nel <b>2012 AlexNet</b> (Krizhevsky, Sutskever, Hinton) mette insieme i due ingredienti e cambia la storia.</p>
-  <div class="panel">
-    <div class="badge"><span class="dotp"></span> animato</div>
-    <div class="phd"><strong>La svolta del 2012 → l'esplosione della ricerca</strong></div>
+  <div class="panel">    <div class="phd"><strong>La svolta del 2012 → l'esplosione della ricerca</strong></div>
     <canvas id="cGrowth" height="250"></canvas>
     <div class="cap">Curva illustrativa.</div>
   </div>
@@ -208,9 +213,7 @@
 
   <h3>Il vettore</h3>
   <p>Un <b>vettore</b> è solo una lista ordinata di numeri. In due dimensioni lo si legge come una freccia dall'origine: cambia i numeri, cambia la freccia. L'ordine conta — <span class="eq">(1, −4)</span> non è <span class="eq">(−4, 1)</span>.</p>
-  <div class="panel">
-    <div class="badge"><span class="dotp"></span> interattivo</div>
-    <div class="grid2">
+  <div class="panel">    <div class="grid2">
       <div><canvas id="cVec" height="240"></canvas></div>
       <div>
         <div class="ctrls" style="flex-direction:column;align-items:stretch;gap:12px">
@@ -224,9 +227,7 @@
 
   <h3>Le tre operazioni</h3>
   <p>Sui vettori servono solo tre gesti: <b>sommarli</b> (testa-coda), <b>moltiplicarli per un numero</b> (allunga/accorcia), e il <b>dot product</b> (moltiplica elemento per elemento e somma → <em>un solo numero</em>, che dipende da tutti gli elementi). Quest'ultimo è il cuore di tutto.</p>
-  <div class="panel">
-    <div class="badge"><span class="dotp"></span> interattivo</div>
-    <div class="toggle" id="opTog">
+  <div class="panel">    <div class="toggle" id="opTog">
       <button data-op="sum" class="on">Somma</button>
       <button data-op="scal">× scalare</button>
       <button data-op="dot">Dot product</button>
@@ -238,22 +239,25 @@
     <div class="ctrls" id="angCtrl">
       <div class="ctrl"><label>angolo di b <b id="angv">116.6°</b></label><input id="angSl" type="range" min="0" max="360" step="0.1" value="116.6"></div>
     </div>
-    <div class="readout big" id="opRead">a + b = (1.0, 2.5)</div>
+    <div class="readout big">
+      <span id="opRead">a + b = (1.0, 2.5)</span>
+      <span id="angabWrap">angolo tra a e b <b id="angabv">90.0°</b></span>
+    </div>
   </div>
 
   <h3>Matrici e prodotto matriciale</h3>
   <p>Una <b>matrice</b> è una tabella di numeri: la si può vedere come tanti vettori impilati. L'operazione che ci serve, il <b>prodotto matriciale</b>, non è nulla di nuovo — ogni casella del risultato è il <em>dot product</em> di una riga con una colonna.</p>
-  <div class="panel">
-    <div class="badge tealb"><span class="dotp"></span> animato</div>
-    <div class="phd"><strong>Ogni casella = una riga × una colonna</strong></div>
-    <canvas id="cMat" height="310"></canvas>
+  <div class="panel canvas-hint">
+    <div class="phd"><strong>Ogni casella di C = una riga di A × una colonna di B</strong></div>
+    <div class="hint" id="matHint">Clicca una casella di <b>C</b> → vedi da dove esce</div>
+    <canvas id="cMat" height="310" tabindex="0" aria-label="Prodotto matriciale: clicca una casella del risultato C per vedere il dot product che la genera"></canvas>
   </div>
 
   <!-- NESSO -->
   <div class="callout"><b>Il momento in cui si chiude il cerchio.</b> Dove sono finiti neuroni, assoni e dendriti? Sono <em>dentro</em> queste matrici.</div>
 
   <div class="panel star">
-    <div class="badge"><span class="dotp"></span> il nesso rete ↔ matematica</div>
+    <div class="badge">il nesso rete ↔ matematica</div>
     <div class="phd"><strong>Uno strato di neuroni <em>è</em> una moltiplicazione tra matrici</strong></div>
     <p style="margin-top:6px">Il calcolo di un neurone — prendi gli input, moltiplica per i pesi, somma — <b>è</b> un dot product. Impila i pesi di tutti i neuroni e ottieni una matrice <span class="eq"><b>W</b></span>: allora un intero strato si scrive <span class="eq">v = ReLU(<b>W</b>·u + <b>b</b>)</span>. <b>Muovi i pesi</b> del neurone evidenziato: a sinistra cambia la rete, a destra la <em>stessa cosa</em> in forma di matrice.</p>
     <div class="grid2" style="margin-top:16px">
@@ -276,6 +280,7 @@
     <div class="cap">La <b>ReLU</b> (tiene i positivi, azzera i negativi) è ciò che replica il "supera la soglia?".</div>
   </div>
 
+  <p class="pull">Lavorare con le reti non è ragionare sui neuroni. È ragionare su matrici.</p>
   <p class="mut">E non a caso: le GPU sono ottimizzate proprio per il prodotto tra matrici — lo stesso calcolo della grafica 3D.</p>
 </div></section>
 
@@ -285,9 +290,7 @@
   <h2>Quante funzioni può calcolare?</h2>
   <p class="lead">La risposta è vertiginosa: <b>qualsiasi</b>. Con abbastanza neuroni una rete può avvicinarsi quanto vuoi a <em>qualunque</em> funzione — una retta, una curva ondulata, una forma senza nome.</p>
   <p>Aggiungi neuroni e guarda l'approssimante (in <b style="color:var(--teal)">verde</b>) inseguire la funzione obiettivo (in <b class="mut">grigio</b>): ogni neurone aggiunge un "pezzo" alla curva.</p>
-  <div class="panel">
-    <div class="badge tealb"><span class="dotp"></span> interattivo</div>
-    <canvas id="cUat" height="300"></canvas>
+  <div class="panel">    <canvas id="cUat" height="300"></canvas>
     <div class="ctrls">
       <div class="ctrl"><label>neuroni nascosti <b id="uatNv">4</b></label><input id="uatN" type="range" min="1" max="24" step="1" value="4"></div>
     </div>
@@ -302,9 +305,7 @@
   <h2>Come si trovano i pesi</h2>
   <p class="lead">Nessuna formula magica. Solo un'idea: parti a caso, misura <b>quanto sbagli</b>, e <b>scivola verso l'errore minimo</b>. Passo dopo passo. È il <em>gradient descent</em>.</p>
   <p>Un esempio concreto: le temperature di primavera. Ogni giorno una misura, con un po' di rumore. Cerchiamo la retta che le descrive meglio. Premi <b>Allena</b>: a sinistra la retta si sistema, a destra una pallina scende sulla "superficie dell'errore" verso il fondo.</p>
-  <div class="panel">
-    <div class="badge"><span class="dotp"></span> interattivo</div>
-    <div class="grid2">
+  <div class="panel">    <div class="grid2">
       <div>
         <div class="cap" style="margin:0 0 6px">il dataset e la retta</div>
         <canvas id="cFit" height="240"></canvas>
@@ -331,9 +332,7 @@
   <h2>Una retta non basta</h2>
   <p class="lead">Prendi le temperature di <b>tutto l'anno</b>: salgono e scendono in modo ciclico, una retta non può seguirle. E c'è un tranello — <b>impilare neuroni "lineari" non aiuta</b>: due strati lineari collassano di nuovo in una sola retta.</p>
   <p>La svolta è una funzione semplicissima, la <b>ReLU</b> (tiene i positivi, azzera i negativi): rompe la linearità e libera la rete. Attivala e aggiungi neuroni — la retta diventa una curva capace di seguire il ciclo. Cresci in <b>profondità</b> (più strati) e in <b>larghezza</b> (più neuroni).</p>
-  <div class="panel">
-    <div class="badge"><span class="dotp"></span> interattivo</div>
-    <canvas id="cArch" height="300"></canvas>
+  <div class="panel">    <canvas id="cArch" height="300"></canvas>
     <div class="ctrls">
       <div class="toggle" id="reluTog">
         <button data-r="0">Senza ReLU</button>
@@ -581,44 +580,55 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
    x.moveTo(X(to[0]),Y(to[1]));x.lineTo(X(to[0])-13*Math.cos(ang-0.4),Y(to[1])+13*Math.sin(ang-0.4));x.lineTo(X(to[0])-13*Math.cos(ang+0.4),Y(to[1])+13*Math.sin(ang+0.4));x.fill();}
   const rd=document.getElementById('opRead');
   const b=bVec();
+  const angA=Math.atan2(a[1],a[0]),angB=Math.atan2(b[1],b[0]);
+  let dAng=angB-angA;while(dAng>Math.PI)dAng-=2*Math.PI;while(dAng<=-Math.PI)dAng+=2*Math.PI; // verso più corto
+  const degAB=Math.abs(dAng)*180/Math.PI;
+  // arco dell'angolo tra a e b, centrato sull'origine (canvas: y invertito → angoli negati)
+  function arcAB(){const r=s*1.05;x.strokeStyle=CO.teal;x.lineWidth=2;x.beginPath();
+   x.arc(X(0),Y(0),r,-angA,-(angA+dAng),dAng>0);x.stroke();
+   const mid=-(angA+dAng/2);
+   x.fillStyle=CO.teal;x.font='700 15px '+mono();x.textAlign='center';x.textBaseline='middle';
+   x.fillText(degAB.toFixed(0)+'°',X(0)+(r+22)*Math.cos(mid),Y(0)+(r+22)*Math.sin(mid));
+   x.textAlign='left';x.textBaseline='alphabetic';}
   document.getElementById('angv').textContent=(+document.getElementById('angSl').value).toFixed(1)+'°';
+  document.getElementById('angabv').textContent=degAB.toFixed(1)+'°';
   if(mode==='sum'){
    arrow([0,0],a,CO.accent);arrow(a,[a[0]+b[0],a[1]+b[1]],CO.amber);arrow([0,0],[a[0]+b[0],a[1]+b[1]],CO.teal);
    x.fillStyle=CO.accent;x.font='700 16px '+mono();x.fillText('a',X(a[0])+8,Y(a[1])+5);
    x.fillStyle=CO.amber;x.fillText('b',X(a[0]+b[0]/2)+8,Y(a[1]+b[1]/2));
    x.fillStyle=CO.teal;x.fillText('a+b',X(a[0]+b[0])-8,Y(a[1]+b[1])-10);
-   rd.innerHTML='b = ('+b[0].toFixed(1)+', '+b[1].toFixed(1)+') · a + b = <b>('+(a[0]+b[0]).toFixed(1)+', '+(a[1]+b[1]).toFixed(1)+')</b> — coda di b attaccata alla testa di a';
+   rd.innerHTML='b = ('+b[0].toFixed(1)+', '+b[1].toFixed(1)+') · a + b = <b>('+(a[0]+b[0]).toFixed(1)+', '+(a[1]+b[1]).toFixed(1)+')</b>';
   } else if(mode==='scal'){
    const k=+document.getElementById('kSl').value;
    arrow([0,0],[a[0]*k,a[1]*k],CO.teal,4);arrow([0,0],a,CO.accent);
    x.fillStyle=CO.accent;x.font='700 16px '+mono();x.fillText('a',X(a[0])+8,Y(a[1])+5);
    x.fillStyle=CO.teal;x.fillText(k.toFixed(1)+'·a',X(a[0]*k)+8,Y(a[1]*k));
    document.getElementById('kv').textContent=k.toFixed(1);
-   rd.innerHTML=k.toFixed(1)+'·a = ('+(a[0]*k).toFixed(1)+', '+(a[1]*k).toFixed(1)+') — stessa direzione, lunghezza scalata';
+   rd.innerHTML=k.toFixed(1)+'·a = <b>('+(a[0]*k).toFixed(1)+', '+(a[1]*k).toFixed(1)+')</b>';
   } else {
-   arrow([0,0],a,CO.accent);arrow([0,0],b,CO.amber);
+   arrow([0,0],a,CO.accent);arrow([0,0],b,CO.amber);arcAB();
    const dp=a[0]*b[0]+a[1]*b[1];
    x.fillStyle=CO.accent;x.font='700 16px '+mono();x.fillText('a',X(a[0])+8,Y(a[1])+5);
    x.fillStyle=CO.amber;x.fillText('b',X(b[0])-18,Y(b[1]));
-   const seg=Math.abs(dp)<0.15?'i due vettori sono perpendicolari → zero'
-     :(dp>0?'stessa direzione di fondo → positivo':'direzioni opposte → negativo');
-   rd.innerHTML='a · b = ('+a[0].toFixed(1)+'·'+b[0].toFixed(1)+') + ('+a[1].toFixed(1)+'·'+b[1].toFixed(1)+') = <b>'+dp.toFixed(2)+'</b> — un solo numero: '+seg;
+   rd.innerHTML='a · b = ('+a[0].toFixed(1)+'·'+b[0].toFixed(1)+') + ('+a[1].toFixed(1)+'·'+b[1].toFixed(1)+') = <b>'+dp.toFixed(2)+'</b>';
   }
  }
  document.querySelectorAll('#opTog button').forEach(btn=>btn.addEventListener('click',()=>{
    mode=btn.dataset.op;document.querySelectorAll('#opTog button').forEach(b=>b.classList.toggle('on',b===btn));
    document.getElementById('scalCtrl').style.display=(mode==='scal')?'flex':'none';
-   document.getElementById('angCtrl').style.display=(mode==='scal')?'none':'flex';draw();}));
+   document.getElementById('angCtrl').style.display=(mode==='scal')?'none':'flex';
+   document.getElementById('angabWrap').style.display=(mode==='scal')?'none':'inline';draw();}));
  document.getElementById('kSl').addEventListener('input',draw);
  document.getElementById('angSl').addEventListener('input',draw);
  onResize(draw);requestAnimationFrame(draw);
 })();
 
-/* ================= 03c MATRIX PRODUCT ================= */
+/* ================= 03c MATRIX PRODUCT (click sulle celle di C) ================= */
 (function(){const {c,fit,h}=C('cMat');
  const A=[[1,2,1],[3,1,2]],B=[[2,1],[1,3],[4,2]];const Cm=[[0,0],[0,0]];
  for(let i=0;i<2;i++)for(let j=0;j<2;j++){let s=0;for(let k=0;k<3;k++)s+=A[i][k]*B[k][j];Cm[i][j]=s;}
- let hi=0,t=0,visible=false,running=false;
+ const hint=document.getElementById('matHint');
+ let hi=0,hover=-1,geo=null;   // geo: geometria di C, per mappare il click sulla cella
  function draw(){const x=fit();const cw=c.clientWidth,ch=h;x.clearRect(0,0,cw,ch);
   const ai=Math.floor(hi/2),aj=hi%2;
   const cell=Math.min(34,cw*0.062);const gap=Math.round(cell*0.55);
@@ -626,37 +636,53 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   const totW=3*cell+gap+2*cell, totH=3*cell+gap+2*cell;
   const ax=(cw-totW)/2, by=Math.max(20,(ch-40-totH)/2);
   const bx=ax+3*cell+gap, ay=by+3*cell+gap;
+  geo={x:bx,y:ay,cell};
   // guide dell'incrocio (sotto le griglie): riga di A → cella di C ← colonna di B
   const gyC=ay+ai*cell+cell/2, gxC=bx+aj*cell+cell/2;
   x.strokeStyle='rgba(67,56,202,.45)';x.lineWidth=1.5;x.setLineDash([5,4]);
   x.beginPath();x.moveTo(ax,gyC);x.lineTo(gxC,gyC);x.stroke();
   x.beginPath();x.moveTo(gxC,by);x.lineTo(gxC,gyC);x.stroke();x.setLineDash([]);
-  function grid(gx,gy,M,rows,cols,hiRow,hiCol,label,labelPos){
+  function grid(gx,gy,M,rows,cols,hiRow,hiCol,label,labelPos,clickable){
    x.fillStyle=CO.mut;x.font='italic 13px '+sans();x.textAlign='center';
    if(labelPos==='left'){x.fillText(label,gx-16,gy+rows*cell/2+4);}
    else if(labelPos==='right'){x.fillText(label,gx+cols*cell+14,gy+rows*cell/2+4);}
    else{x.fillText(label,gx+cols*cell/2,gy-9);}
    for(let i=0;i<rows;i++)for(let j=0;j<cols;j++){
     const rH=(hiRow===i),cH=(hiCol===j),cellHi=(hiRow===i&&hiCol===j);
-    x.fillStyle=cellHi?CO.accentSoft:( (rH&&hiCol==null)||(cH&&hiRow==null)?CO.accentSoft:'#fff');
-    x.strokeStyle=(rH||cH)?CO.accent:CO.line;x.lineWidth=(rH||cH)?1.6:1;
-    x.fillRect(gx+j*cell,gy+i*cell,cell-2,cell-2);x.strokeRect(gx+j*cell,gy+i*cell,cell-2,cell-2);
+    const sel=clickable&&cellHi, hov=clickable&&!cellHi&&hover===i*2+j;
+    x.fillStyle=cellHi?CO.accentSoft:( (rH&&hiCol==null)||(cH&&hiRow==null)?CO.accentSoft:(hov?'#f6f5fe':'#fff'));
+    x.fillRect(gx+j*cell,gy+i*cell,cell-2,cell-2);
+    // le celle di C non ancora scelte hanno bordo tratteggiato: si leggono come cliccabili
+    if(clickable&&!sel){x.setLineDash([3,3]);x.strokeStyle=hov?CO.accent:'rgba(67,56,202,.45)';x.lineWidth=hov?1.6:1.2;}
+    else{x.setLineDash([]);x.strokeStyle=(rH||cH)?CO.accent:CO.line;x.lineWidth=(rH||cH)?1.6:1;}
+    x.strokeRect(gx+j*cell,gy+i*cell,cell-2,cell-2);x.setLineDash([]);
     x.fillStyle=CO.ink;x.font='13px '+mono();x.textAlign='center';x.fillText(M[i][j],gx+j*cell+cell/2-1,gy+i*cell+cell/2+4);}
   }
-  grid(bx,by,B,3,2,null,aj,'B','top');
-  grid(ax,ay,A,2,3,ai,null,'A','left');
-  grid(bx,ay,Cm,2,2,ai,aj,'C = A·B','right');
-  // formula for highlighted cell
+  grid(bx,by,B,3,2,null,aj,'B','top',false);
+  grid(ax,ay,A,2,3,ai,null,'A','left',false);
+  grid(bx,ay,Cm,2,2,ai,aj,'C = A·B','right',true);
+  // formula della cella selezionata
   x.fillStyle=CO.accent;x.font='13px '+mono();x.textAlign='center';
   const parts=[];for(let k=0;k<3;k++)parts.push(A[ai][k]+'·'+B[k][aj]);
   x.fillText('c'+(ai+1)+(aj+1)+' = '+parts.join(' + ')+' = '+Cm[ai][aj],cw/2,ch-14);
-  t++;if(t%450===0)hi=(hi+1)%4;
-  if(visible&&!document.hidden){running=true;requestAnimationFrame(draw);}else running=false;
  }
- function kick(){if(visible&&!document.hidden&&!running){running=true;requestAnimationFrame(draw);}}
- const ob=new IntersectionObserver(e=>{visible=e[0].isIntersecting;if(visible)kick();},{threshold:.25});ob.observe(c);
- document.addEventListener('visibilitychange',kick);
- onResize(()=>{if(!running)draw();});
+ // mappa un punto (px CSS) su una delle 4 celle di C, oppure -1
+ function cellAt(ev){if(!geo)return -1;const r=c.getBoundingClientRect();
+  const px=ev.clientX-r.left,py=ev.clientY-r.top;
+  const j=Math.floor((px-geo.x)/geo.cell), i=Math.floor((py-geo.y)/geo.cell);
+  return (i>=0&&i<2&&j>=0&&j<2)?i*2+j:-1;}
+ function select(k){if(k<0||k===hi)return;hi=k;hint.classList.add('off');draw();}
+ c.addEventListener('mousemove',ev=>{const k=cellAt(ev);
+  c.style.cursor=(k>=0)?'pointer':'default';
+  if(k!==hover){hover=k;draw();}});
+ c.addEventListener('mouseleave',()=>{if(hover!==-1){hover=-1;draw();}});
+ c.addEventListener('click',ev=>select(cellAt(ev)));
+ c.addEventListener('keydown',ev=>{const i=Math.floor(hi/2),j=hi%2;
+  if(ev.key==='ArrowRight'||ev.key==='ArrowLeft')select(i*2+(1-j));
+  else if(ev.key==='ArrowDown'||ev.key==='ArrowUp')select((1-i)*2+j);
+  else return;
+  ev.preventDefault();});
+ onResize(draw);requestAnimationFrame(draw);
 })();
 
 /* ================= 03d NEXUS (synchronized) ================= */

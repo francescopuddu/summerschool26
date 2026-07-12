@@ -77,8 +77,6 @@
     box-shadow:0 1px 0 var(--line),0 18px 40px -32px rgba(0,0,0,.35)}
   .panel .badge{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);
     display:inline-flex;align-items:center;gap:7px;margin-bottom:16px}
-  .panel .badge .dotp{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 1.8s infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
   .ctrls{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-top:4px}
   button.b{font-family:inherit;font-size:14px;font-weight:600;background:var(--ink);color:#fff;border:0;border-radius:9px;padding:9px 16px;cursor:pointer;transition:transform .05s,background .15s}
   button.b:hover{background:#000}button.b:active{transform:translateY(1px)}
@@ -346,7 +344,7 @@
   <h2>Ripartiamo da ieri: predice il prossimo token</h2>
   <p class="lead">Rios ci ha mostrato il motore. In una frase: il modello <b>assorbe tutto il contesto in un colpo solo</b> e poi genera la risposta <b>un token alla volta</b>, scegliendo ogni volta il più probabile. C'è anche una componente <b>stocastica</b>: non è sempre identico.</p>
   <div class="panel">
-    <span class="badge"><span class="dotp"></span> Grafica interattiva · genera la risposta un token alla volta</span>
+    <span class="badge">genera la risposta un token alla volta</span>
     <div style="font-family:var(--mono);font-size:13px;color:var(--ink-2);margin-bottom:6px">Input: <span style="color:var(--accent)">«Ciao, come va?»</span></div>
     <div class="tg-out" id="tg-out"><span class="tg-cursor"></span></div>
     <div style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:16px 0 4px">Classifica dei candidati per il <b style="color:var(--accent)">prossimo</b> token</div>
@@ -400,7 +398,7 @@
   <p class="lead">Il «prompt» è solo un pezzo. Il <b>contesto</b> è tutto ciò che il modello riceve in <em>una</em> chiamata: system prompt + storia della conversazione + (più avanti) le definizioni dei tool, i loro risultati, gli allegati. Una conversazione non è che questa tripletta che si allunga.</p>
   <div class="callout">Tutto questo testo viene <b>unito in un unico blocco</b> — come un grande file di testo con etichette <code>System / User / Assistant</code> — <b>tokenizzato</b>, e mandato al modello in un colpo solo.</div>
   <div class="panel">
-    <span class="badge"><span class="dotp"></span> Grafica interattiva · aggiungi turni e guarda il contesto crescere</span>
+    <span class="badge">aggiungi turni e guarda il contesto crescere</span>
     <div class="grid2">
       <div>
         <div class="chat" id="c1-chat"></div>
@@ -424,7 +422,7 @@
   <h2>Cosa il modello vede — e cosa no</h2>
   <p class="lead">Ogni chiamata è <b>stateless</b>: il modello vede <b>solo ed esclusivamente</b> ciò che gli passiamo in quella chiamata. Fuori da lì, per lui, non esiste nulla.</p>
   <div class="panel">
-    <span class="badge"><span class="dotp"></span> Le due facce del contesto</span>
+    <span class="badge">Le due facce del contesto</span>
     <div class="cols">
       <div class="col yes">
         <h4>✓ Dentro la context window</h4>
@@ -474,7 +472,7 @@
   <div class="bignum">200k<small>token — la finestra di Claude Sonnet 4.5</small></div>
 
   <div class="panel">
-    <span class="badge"><span class="dotp"></span> Grafica interattiva · riempi la finestra e guarda quanto resta</span>
+    <span class="badge">riempi la finestra e guarda quanto resta</span>
     <div class="window" id="fm-win"></div>
     <div class="counter" style="margin-top:12px"><span>Occupati: <b id="fm-used">2.000</b> / 200.000 token</span><span><b id="fm-pct">1%</b> della finestra</span></div>
     <div class="fmlegend" id="fm-legend"></div>
@@ -489,7 +487,7 @@
   </div>
 
   <div class="panel">
-    <span class="badge"><span class="dotp"></span> Grafica interattiva · quanto è grande? pensala in libri</span>
+    <span class="badge">quanto è grande? pensala in libri</span>
     <div class="bk-pick" id="bk-pick"></div>
     <div class="bk-meta" id="bk-meta"></div>
     <div id="bk-rows"></div>
@@ -521,7 +519,7 @@
   <h2>I tool: il modello propone, l'applicazione esegue</h2>
   <p class="lead">Il punto più frainteso di tutta la giornata: <b>il modello non esegue mai un tool</b>. Emette una <em>richiesta</em> di chiamata (un blocco JSON <code>tool_use</code>), si ferma, e aspetta. È l'<b>applicazione</b> — il software attorno al modello — che esegue davvero e gli restituisce il risultato.</p>
   <div class="panel">
-    <span class="badge"><span class="dotp"></span> Grafica interattiva · segui il giro di andata e ritorno di una chiamata</span>
+    <span class="badge">segui il giro di andata e ritorno di una chiamata</span>
     <div class="tu-flow" id="tu-flow">
       <div class="tu-step on" data-i="0">
         <div class="tu-lbl">1 · L'utente chiede</div>
@@ -571,7 +569,7 @@
   <h2>L'agent loop: raccogli, agisci, verifica, ripeti</h2>
   <p class="lead">Una chiamata sola non basta quasi mai. Un agente <b>gira in un ciclo</b>: raccoglie contesto, compie un'azione, <b>verifica</b> il risultato e decide se ha finito o se serve un altro giro. La verifica è ciò che lo rende affidabile. Con un agente <b>aspetti un processo</b>, non una singola risposta.</p>
   <div class="panel">
-    <span class="badge"><span class="dotp"></span> Grafica interattiva · «perché il treno 9042 accumula ritardo?»</span>
+    <span class="badge">«perché il treno 9042 accumula ritardo?»</span>
     <div class="al-ring" id="al-ring">
       <div class="al-ph" data-ph="0"><span class="d"></span> Raccogli contesto</div>
       <div class="al-sep">→</div>
@@ -600,7 +598,7 @@
   <div class="callout">L'harness è il <b>distillato di mesi di prompt engineering</b>: dice all'agente come pianificare, quando chiedere conferma, come usare i tool. Spesso vale quanto il modello stesso — è un <b>asset</b>.</div>
   <p class="lead" style="font-size:17px">Un assaggio dal <b>system prompt di Claude Code</b> (emerso pubblicamente): si vede quanto lavoro c'è dietro il comportamento «intelligente» di un agente.</p>
   <div class="panel">
-    <span class="badge">■ Estratti dall'harness · esempi illustrativi</span>
+    <span class="badge">Estratti dall'harness · esempi illustrativi</span>
     <div class="asm-prev">"You should be <span class="xtag">proactive</span>, but only when the user asks
 you to do something. Do not surprise the user with
 actions you take without asking."
@@ -637,7 +635,7 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
   <h2>MCP: un connettore universale</h2>
   <p class="lead">Gli agenti diventano utili quando si <b>collegano al mondo</b>: gli orari, il database guasti, il gestionale. Senza uno standard, ogni applicazione deve costruire un'integrazione su misura per ogni servizio → esplosione <b>N×M</b>. Con <b>MCP</b> (Model Context Protocol, standard aperto di Anthropic) chi gestisce il servizio scrive <em>un</em> server, e qualunque client lo usa con la stessa interfaccia → <b>N+M</b>.</p>
   <div class="panel">
-    <span class="badge"><span class="dotp"></span> Grafica interattiva · attiva/disattiva MCP e conta le connessioni</span>
+    <span class="badge">attiva/disattiva MCP e conta le connessioni</span>
     <div class="mcp-count">Integrazioni da costruire e mantenere: <b id="mcp-num">12</b> <span id="mcp-lbl" style="font-size:13px;color:var(--muted)">— senza MCP (N×M)</span></div>
     <svg id="mcp-svg" viewBox="0 0 640 300" style="width:100%;display:block"></svg>
     <div class="ctrls" style="margin-top:8px">
@@ -677,7 +675,7 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
     </div>
   </div>
   <div class="panel">
-    <span class="badge"><span class="dotp"></span> Grafica interattiva · scrivi markdown a sinistra, guarda il risultato a destra</span>
+    <span class="badge">scrivi markdown a sinistra, guarda il risultato a destra</span>
     <div class="md-split">
       <textarea class="md-src" id="md-src" spellcheck="false"></textarea>
       <div class="md-render" id="md-render"></div>
@@ -698,7 +696,7 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
   <div class="quote">"Organizza i prompt in sezioni distinte (<code>&lt;background_information&gt;</code>, <code>&lt;instructions&gt;</code>, <code>## Tool guidance</code>…) con tag XML o header Markdown — puntando sempre al minimo set di informazioni che descrive pienamente il comportamento atteso."
     <cite>— Anthropic, <i>Effective context engineering for AI agents</i></cite></div>
   <div class="panel">
-    <span class="badge"><span class="dotp"></span> Grafica interattiva · l'assemblatore di prompt — accendi i capitoli</span>
+    <span class="badge">l'assemblatore di prompt — accendi i capitoli</span>
     <div class="asm">
       <div id="asm-toggles"></div>
       <div>
@@ -742,7 +740,7 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
   </div>
   <div class="callout"><b>Progressive discovery.</b> L'agente non ingoia tutto in una volta: parte da <code>CLAUDE.md</code>, esplora i file (vede i <em>nomi</em>, non i contenuti) e tira dentro una skill o un doc <b>solo al momento del bisogno</b>. Scopre il contesto per gradi — così la scrivania resta ordinata.</div>
   <div class="panel">
-    <span class="badge"><span class="dotp"></span> Grafica interattiva · guarda l'agente scoprire il contesto un pezzo alla volta</span>
+    <span class="badge">guarda l'agente scoprire il contesto un pezzo alla volta</span>
     <div class="pd">
       <div class="pd-col">
         <h4>Repository (sul disco)</h4>
@@ -776,7 +774,7 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
   </div>
   <p class="lead" style="margin-top:26px">E la leva più potente per i task grossi: <b>i subagenti</b>. Un supervisore scompone il lavoro e lo delega a worker specializzati, <b>ognuno con la propria scrivania pulita</b>. Ogni worker può bruciare decine di migliaia di token esplorando, ma restituisce solo un riassunto distillato.</p>
   <div class="panel">
-    <span class="badge"><span class="dotp"></span> Grafica interattiva · avvia il flusso supervisor → worker → sintesi</span>
+    <span class="badge">avvia il flusso supervisor → worker → sintesi</span>
     <div class="sw-stage">
       <div class="sw-node sw-sup" id="sw-sup"><div class="sw-title">Supervisore</div><div class="sw-sub" id="sw-sup-sub">in attesa del task</div></div>
       <div style="font-size:20px;color:var(--line-strong)">▼</div>

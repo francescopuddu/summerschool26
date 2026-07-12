@@ -72,11 +72,6 @@
   .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:26px;
     box-shadow:0 1px 0 var(--line),0 18px 40px -32px rgba(0,0,0,.35)}
   .panel.star{border-color:var(--accent-soft2);box-shadow:0 1px 0 var(--accent-soft2),0 22px 50px -30px rgba(29,158,117,.4);background:linear-gradient(180deg,#fff,#fafdfb)}
-  .panel .badge{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);
-    display:inline-flex;align-items:center;gap:7px;margin-bottom:14px}
-  .panel .badge .dotp{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 1.8s infinite}
-  .panel .badge.violb{color:var(--violet)} .panel .badge.violb .dotp{background:var(--violet)}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
   .phd{display:flex;align-items:center;gap:10px;margin-bottom:2px}
   .phd strong{font-size:16px}
 
@@ -205,9 +200,7 @@
   <h2>Trasformare le parole in matematica</h2>
   <p class="lead">Un primo modo: costruire una lista di termini e assegnare a ciascuno un numero. In ordine alfabetico, "abaco" prende il numero 1, "abate" il numero 2, e così via — fino alle ~270.000 parole di un dizionario.</p>
 
-  <div class="panel">
-    <div class="badge"><span class="dotp"></span> interattivo</div>
-    <div class="phd"><strong>La codifica ingenua — e il suo difetto</strong></div>
+  <div class="panel">    <div class="phd"><strong>La codifica ingenua — e il suo difetto</strong></div>
     <div class="naive" id="naivePhrase"></div>
     <p style="margin-top:14px;font-size:15px">Già così una frase diventa un vettore. Ma dentro la rete i calcoli assomigliano a <span class="eq">y = <b>w</b>x + q</span>: se x è il numero della parola, allora "abate" è trattato come <b>il doppio</b> di "abaco", matematicamente. Muovi il peso w e osserva: i risultati restano incatenati l'uno all'altro.</p>
     <div class="ctrls">
@@ -222,9 +215,7 @@
   <h3>La soluzione: one-hot encoding</h3>
   <p>Associamo ad ogni parola un vettore con 270.000 dimensioni — una per ogni possibile parola — dove ogni dimensione vale 0, eccetto quella corrispondente alla posizione della parola nel dizionario. Un'unica posizione "calda", portatrice di informazione; tutte le altre "fredde". La costruzione può sembrare arbitraria: osserviamo cosa succede applicando la stessa operazione <span class="eq">y = <b>W</b>x + b</span>, dove ora x è un vettore e W una matrice.</p>
 
-  <div class="panel star">
-    <div class="badge"><span class="dotp"></span> interattivo</div>
-    <div class="phd"><strong>W per un one-hot = selezionare una colonna di W</strong></div>
+  <div class="panel star">    <div class="phd"><strong>W per un one-hot = selezionare una colonna di W</strong></div>
     <p style="margin-top:6px;font-size:15px">Scegli una parola: il suo one-hot ha un 1 in una sola posizione. Tutti i prodotti colonna-per-elemento sono nulli tranne uno — e il risultato di Wx è esattamente <b>quella colonna</b> di W.</p>
     <div class="wbtns" id="ohBtns"></div>
     <canvas id="cOneHot" height="440"></canvas>
@@ -242,9 +233,7 @@
   <p class="lead">Gli embedding hanno migliaia di dimensioni; qui li proiettiamo in 2 per poterli disegnare, ma le peculiarità geometriche valgono anche negli spazi di partenza.</p>
   <p><b>Prima proprietà:</b> parole che si riferiscono a concetti simili vengono trasformate in vettori geometricamente vicini. Gli strati successivi al primo non "sanno" che in input c'era "abaco" piuttosto che "abate": ricevono solo un vettore di dimensione d. Quei vettori devono quindi contenere da soli tutto il significato della parola — e parole simili "condividono" una parte del loro significato abitando una regione simile dello spazio.</p>
 
-  <div class="panel">
-    <div class="badge"><span class="dotp"></span> interattivo</div>
-    <div class="phd"><strong>Zone di significato</strong></div>
+  <div class="panel">    <div class="phd"><strong>Zone di significato</strong></div>
     <canvas id="cClust" height="410"></canvas>
     <div class="readout"><span id="clustRead">passa il mouse sulle parole</span></div>
   </div>
@@ -252,9 +241,7 @@
   <h3>Seconda proprietà: le direzioni codificano concetti</h3>
   <p>Esiste la stessa relazione geometrica tra vettori che corrispondono a parole che hanno la stessa relazione semantica. Il vettore differenza tra "donna" e "uomo" codifica la differenza tra femminile e maschile <em>in generale</em>: applicato a "re", produce "regina". Quella direzione codifica quel concetto — e altre direzioni ne codificano altri.</p>
 
-  <div class="panel star">
-    <div class="badge"><span class="dotp"></span> interattivo</div>
-    <div class="toggle" id="anaTog">
+  <div class="panel star">    <div class="toggle" id="anaTog">
       <button data-m="gen" class="on">Genere &amp; regalità</button>
       <button data-m="cap">Stato → capitale</button>
     </div>
@@ -269,9 +256,7 @@
 
   <h3>Perché servono migliaia di dimensioni</h3>
   <p>In due dimensioni possiamo avere al più due direzioni genuinamente indipendenti. Se i concetti da codificare sono di più, le direzioni cominciano necessariamente a interferire tra loro. Per questo, nella pratica, gli embedding hanno migliaia di dimensioni.</p>
-  <div class="panel">
-    <div class="badge"><span class="dotp"></span> interattivo</div>
-    <div class="phd"><strong>Direzioni in 2D: aggiungi concetti e guarda l'interferenza</strong></div>
+  <div class="panel">    <div class="phd"><strong>Direzioni in 2D: aggiungi concetti e guarda l'interferenza</strong></div>
     <div class="grid2">
       <div><canvas id="cDirs" height="310"></canvas></div>
       <div>
@@ -297,9 +282,7 @@
   <p class="lead">C'è un'assunzione implicita da smontare in ciò che abbiamo detto finora: gli LLM non prendono in realtà parole in input, ma <b>sottounità dette token</b>.</p>
   <p>Per costruirli si prende un grande numero di testi scritti — un <em>corpus</em> — e se ne estraggono le sequenze di lettere più frequenti. Ne esce un vocabolario non di parole ma di token, che possono essere composti tra loro per ottenere le parole. I token vengono a loro volta codificati one-hot, e il primo prodotto matriciale li trasforma in embedding.</p>
 
-  <div class="panel">
-    <div class="badge"><span class="dotp"></span> interattivo</div>
-    <div class="phd"><strong>Un embedding per "respir", non per "respirare"</strong></div>
+  <div class="panel">    <div class="phd"><strong>Un embedding per "respir", non per "respirare"</strong></div>
     <p style="margin-top:6px;font-size:15px">Clicca le parole: ogni token ha un colore. Lo stesso token — e quindi <b>lo stesso embedding</b> — viene riutilizzato da parole diverse.</p>
     <div class="wbtns" id="tkBtns"></div>
     <div class="tokout" id="tkOut"><span class="mut" style="font-size:13.5px">scegli una o più parole…</span></div>
@@ -317,9 +300,7 @@
   <p class="lead">Il testo diventa token, i token diventano embedding. Ma gli LLM non sono composti solo di questo primo strato.</p>
   <p>Gli embedding entrano in una <b>dorsale</b>, che è la base di ogni altra operazione. Numerosi blocchi, simili tra loro per architettura, <b>leggono</b> gli embedding nella dorsale, li <b>trasformano</b> con qualche operazione su vettori, e <b>sommano</b> il risultato al precedente contenuto della dorsale. Ogni blocco, sostanzialmente, modifica i vettori che rappresentano i token.</p>
 
-  <div class="panel star">
-    <div class="badge"><span class="dotp"></span> animato</div>
-    <div class="phd"><strong>Segui un embedding lungo la dorsale</strong></div>
+  <div class="panel star">    <div class="phd"><strong>Segui un embedding lungo la dorsale</strong></div>
     <canvas id="cDors" height="390"></canvas>
     <div class="ctrls">
       <button class="b acc" id="dorsNext">Avanti →</button>
@@ -339,9 +320,7 @@
   <p class="lead">Ogni blocco ha due componenti: <b>attention</b> e <b>feedforward</b>. L'attention è un'operazione su vettori che permette all'embedding di un token di raccogliere e processare informazioni provenienti da altri token — per considerare le connessioni che una parola ha con le altre nella frase.</p>
   <p>Consideriamo: <em>"Andrea prese la pesca dal cesto e la mangiò"</em>. La parola "pesca", da sola, è ambigua: il frutto, o l'attività di pescare? Il suo token, necessariamente, contiene entrambi i significati — è ambiguo <em>per costruzione</em>. Per ogni token vengono costruiti tre vettori: <b>query</b>, <b>key</b> e <b>value</b>.</p>
 
-  <div class="panel star">
-    <div class="badge"><span class="dotp"></span> interattivo</div>
-    <div class="phd"><strong>Chi ascolta chi — clicca un token evidenziato</strong></div>
+  <div class="panel star">    <div class="phd"><strong>Chi ascolta chi — clicca un token evidenziato</strong></div>
     <div class="attWrap">
       <canvas id="cAtt" height="205" style="background:transparent;border:none;border-radius:0"></canvas>
       <div class="attToks" id="attToks"></div>
@@ -368,9 +347,7 @@
   <p class="lead">Si costruisce un corpus immenso di testi. Ogni testo viene diviso in parti, tokenizzato, e per ogni parte si separa l'ultima parola: l'LLM riceve l'inizio e produce in output <b>un singolo token</b>. La differenza con il token vero è l'errore, minimizzato via gradient descent.</p>
   <p>Gli ultimi strati attuano un'operazione inversa all'input: la rappresentazione finale viene confrontata — per similarità, cioè vicinanza — con gli embedding di ogni token del vocabolario. Le similarità diventano probabilità, e il token di output viene <b>estratto randomicamente</b>: i più simili hanno probabilità maggiore, i meno simili minore.</p>
 
-  <div class="panel star">
-    <div class="badge"><span class="dotp"></span> interattivo</div>
-    <div class="phd"><strong>«Nel mezzo del cammin di nostra…» — chi esce?</strong></div>
+  <div class="panel star">    <div class="phd"><strong>«Nel mezzo del cammin di nostra…» — chi esce?</strong></div>
     <canvas id="cProb" height="340"></canvas>
     <div class="ctrls">
       <button class="b acc" id="probBtn">🎲 Estrai un token</button>
@@ -384,9 +361,7 @@
   <h3>Un token alla volta</h3>
   <p>Il processo produce un singolo token. Per produrre una frase viene ripetuto numerose volte: il modello legge tutto, completa con il primo token, poi <b>rilegge da capo l'intero testo</b> — incluso il nuovo token — e produce il secondo, e così via. La fine arriva quando esce uno specifico token che non corrisponde a nessuna parte di parola, ma codifica la fine del testo.</p>
 
-  <div class="panel">
-    <div class="badge"><span class="dotp"></span> animato</div>
-    <div class="phd"><strong>Il ciclo di generazione</strong></div>
+  <div class="panel">    <div class="phd"><strong>Il ciclo di generazione</strong></div>
     <div class="ctxbox" id="genBox"></div>
     <div class="ctrls">
       <button class="b acc" id="genNext">Genera un token →</button>
