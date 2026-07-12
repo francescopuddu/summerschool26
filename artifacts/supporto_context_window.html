@@ -84,6 +84,9 @@
   button.b.acc{background:var(--accent)}button.b.acc:hover{background:var(--accent-2)}
   button.b:disabled{opacity:.4;cursor:default}
   .hint{font-size:13px;color:var(--muted);margin-top:12px;max-width:68ch}
+  /* dentro un pannello il testo usa tutta la larghezza del box: la misura
+     stretta della colonna di lettura lascerebbe meta' pannello vuoto */
+  .panel p,.panel .lead,.panel .hint{max-width:none}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   @media(max-width:720px){.grid2{grid-template-columns:1fr}}
 

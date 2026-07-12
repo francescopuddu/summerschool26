@@ -99,6 +99,9 @@
   .readout.big{font-size:14.5px}
   .readout b{color:var(--ink)}
   .hint{font-size:13px;color:var(--muted);margin-top:12px;max-width:68ch}
+  /* dentro un pannello il testo usa tutta la larghezza del box: la misura
+     stretta della colonna di lettura lascerebbe meta' pannello vuoto */
+  .panel p,.panel .lead,.panel .hint{max-width:none}
   .cap{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:10px}
   canvas{display:block;width:100%;border-radius:12px;background:var(--card-2);border:1px solid var(--line)}
   .stack{display:grid;gap:22px}
