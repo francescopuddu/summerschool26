@@ -213,13 +213,9 @@
   .gt.last{box-shadow:0 0 0 2px rgba(29,158,117,.35)}
   .gt.end{background:var(--amber-soft);border-color:#eeD9bd;color:var(--amber)}
 
-  /* il testo entra: una copia della riga scende e sparisce sotto il blocco nero */
+  /* il testo entra: una copia della riga scende sotto il blocco nero e poi risale (animata in JS) */
   .gDiveMask{position:absolute;left:0;right:0;z-index:1;overflow:hidden;pointer-events:none}
-  .gCtx.dive{position:absolute;z-index:1;margin:0;pointer-events:none;
-    animation:gDive .9s cubic-bezier(.45,.05,.35,1) forwards}
-  @keyframes gDive{0%{transform:translateY(0)}12%{transform:translateY(-6px)}100%{transform:translateY(var(--dy,120px))}}
-  .gCtx.backin{animation:gBack .45s ease-out}
-  @keyframes gBack{0%{opacity:0;transform:translateY(5px)}100%{opacity:1;transform:none}}
+  .gCtx.dive{position:absolute;z-index:1;margin:0;pointer-events:none;animation:none}
 
   .gFunnel{position:relative;z-index:0;width:min(100%,420px);height:34px;background:var(--accent-soft);
     clip-path:polygon(0 0,100% 0,64% 100%,36% 100%);transition:background .25s}
@@ -234,11 +230,12 @@
   .gOut{position:relative;z-index:2;width:100%;height:92px}
   /* il token: un solo elemento per tutto il tragitto. z-index sotto al blocco, che quindi lo
      nasconde finche' non ne esce da sotto — nessun ritaglio, nessun cambio di oggetto */
-  .gTok{position:absolute;z-index:2;pointer-events:none;font-size:16px;padding:5px 12px;font-weight:700;
-    transform-origin:center center;animation:none}
+  /* stessa misura dei chip in riga: esce gia' alla dimensione finale, non si rimpicciolisce */
+  .gTok{position:absolute;z-index:2;pointer-events:none;transform-origin:center center;animation:none;
+    box-shadow:0 6px 16px -8px rgba(0,0,0,.4)}
 
   @media(prefers-reduced-motion:reduce){
-    .gt.new,.gCtx.dive,.gCtx.backin{animation:none}
+    .gt.new{animation:none}
     .genStage,.gCtx,.gFunnel,.gModel{transition:none}
   }
 
@@ -1349,10 +1346,11 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   stage.querySelectorAll('.gTok').forEach(n=>n.remove());
   renderCtx();renderCap();}
 
- /* il testo scende dentro il modello: una copia della riga sparisce sotto il blocco nero */
- function dive(ms,back){
+ /* Il testo scende dentro il modello, resta dentro mentre elabora, e risale al suo posto:
+    il modello lo legge, non lo consuma. Un solo movimento, andata e ritorno, senza dissolvenze.
+    La copia vive in una maschera che finisce sul bordo del blocco: quel che va oltre e' tagliato. */
+ function dive(down,stay,up,done){
   const cr=ctx.getBoundingClientRect(),mr=model.getBoundingClientRect(),sr=stage.getBoundingClientRect();
-  /* maschera che finisce sul bordo del blocco: quel che scende oltre viene tagliato, non sborda */
   const mask=document.createElement('div');
   mask.className='gDiveMask';
   mask.style.top=(cr.top-sr.top)+'px';
@@ -1361,14 +1359,16 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   const cl=ctx.cloneNode(true);
   cl.removeAttribute('id');cl.classList.add('dive');
   cl.style.left=(cr.left-sr.left)+'px';cl.style.top='0px';cl.style.width=cr.width+'px';
-  cl.style.setProperty('--dy',(h+4)+'px');
-  cl.style.animationDuration=ms+'ms';
   mask.appendChild(cl);stage.appendChild(mask);
   ctx.style.visibility='hidden';
-  setTimeout(()=>mask.remove(),ms);
-  /* il testo riappare a lettura finita: il modello lo legge, non lo consuma */
-  setTimeout(()=>{ctx.style.visibility='';ctx.classList.add('backin');
-   setTimeout(()=>ctx.classList.remove('backin'),460);},back);}
+  const dy=h+4,T=Math.max(1,down+stay+up);
+  cl.animate([
+   {transform:'translateY(0px)',offset:0,easing:'cubic-bezier(.45,.05,.35,1)'},
+   {transform:'translateY('+dy+'px)',offset:down/T,easing:'linear'},          /* dentro: il modello elabora */
+   {transform:'translateY('+dy+'px)',offset:(down+stay)/T,easing:'cubic-bezier(.3,0,.25,1)'},
+   {transform:'translateY(0px)',offset:1}
+  ],{duration:T,fill:'forwards'}).onfinish=()=>{
+   ctx.style.visibility='';mask.remove();if(done)done();};}
 
  /* Un'unica animazione per il token: parte da dentro il blocco (dove e' coperto perche' ha
     z-index inferiore), ne esce da sotto, si ferma, poi scavalca il blocco a destra, risale e
@@ -1383,20 +1383,19 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   el.style.left=restX+'px';el.style.top=restY+'px';el.style.visibility='';
   const dy0=(mr.top+mr.height/2-sr.top)-(restY+h/2); /* punto di partenza: dentro il blocco */
   const T=Math.max(1,em+hold+mv);
-  const kf=[{transform:'translate(0px,'+dy0+'px) scale(1)',offset:0,easing:'cubic-bezier(.2,.85,.3,1)'}];
+  const kf=[{transform:'translate(0px,'+dy0+'px)',offset:0,easing:'cubic-bezier(.2,.85,.3,1)'}];
   if(slot){
    const tr=slot.getBoundingClientRect();
    const tx=tr.left+tr.width/2-sr.left-(restX+w/2),
          ty=tr.top+tr.height/2-sr.top-(restY+h/2),
-         s=(tr.width/w).toFixed(3),
          sx=Math.max(60,sr.width-16-(restX+w));  /* quanto scarta a destra per non attraversarlo */
    kf.push(
-    {transform:'translate(0px,0px) scale(1)',offset:em/T,easing:'linear'},                       /* fermo */
-    {transform:'translate(0px,0px) scale(1)',offset:(em+hold)/T,easing:'cubic-bezier(.5,0,.5,1)'},
-    {transform:'translate('+sx+'px,0px) scale(1)',offset:(em+hold+mv*0.34)/T,easing:'cubic-bezier(.4,0,.3,1)'},
-    {transform:'translate('+sx+'px,'+ty+'px) scale('+s+')',offset:(em+hold+mv*0.72)/T,easing:'cubic-bezier(.35,0,.15,1)'},
-    {transform:'translate('+tx+'px,'+ty+'px) scale('+s+')',offset:1});
-  } else kf.push({transform:'translate(0px,0px) scale(1)',offset:1});
+    {transform:'translate(0px,0px)',offset:em/T,easing:'linear'},                       /* fermo */
+    {transform:'translate(0px,0px)',offset:(em+hold)/T,easing:'cubic-bezier(.5,0,.5,1)'},
+    {transform:'translate('+sx+'px,0px)',offset:(em+hold+mv*0.34)/T,easing:'cubic-bezier(.4,0,.3,1)'},
+    {transform:'translate('+sx+'px,'+ty+'px)',offset:(em+hold+mv*0.72)/T,easing:'cubic-bezier(.35,0,.15,1)'},
+    {transform:'translate('+tx+'px,'+ty+'px)',offset:1});
+  } else kf.push({transform:'translate(0px,0px)',offset:1});
   el.animate(kf,{duration:T,fill:'forwards'}).onfinish=()=>done(el);
   return el;}
 
@@ -1404,14 +1403,14 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   if(busy||i>LAST)return;
   const k=i,z=RMg.matches;
   busy=true;stage.classList.add('reading');
-  const dv=z?0:900,   /* il testo scende nel modello */
-        think=z?0:500, /* il blocco elabora */
-        em=z?0:700,    /* il token esce da sotto il blocco */
-        hold=z?0:800,  /* resta fermo, in vista */
-        mv=z?0:1000;   /* si sposta in coda alla frase */
-  dive(dv,dv+think*0.6);
-  setTimeout(()=>{
-   stage.classList.remove('reading');
+  const dv=z?0:800,   /* il testo scende nel modello */
+        think=z?0:450, /* resta dentro: il blocco elabora */
+        rise=z?0:600,  /* e risale al suo posto */
+        em=z?0:650,    /* il token esce da sotto il blocco */
+        hold=z?0:750,  /* resta fermo, in vista */
+        mv=z?0:950;    /* si sposta in coda alla frase */
+  setTimeout(()=>stage.classList.remove('reading'),dv+think);
+  dive(dv,think,rise,()=>{              /* la frase e' tornata al suo posto: ora esce il token */
    if(isEnd(k)){                        /* il fine testo esce e resta li': non si accoda */
     i++;stage.classList.add('done');renderCtx();renderCap();
     flight(k,em,0,0,null,()=>{busy=false;});return;}
@@ -1419,7 +1418,7 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
    const slot=ctx.lastChild;
    flight(k,em,hold,mv,slot,el=>{        /* atterrato: il chip in riga prende il suo posto */
     slot.style.visibility='';el.remove();busy=false;});
-  },dv+think);}
+  });}
 
  function stopAuto(){if(timer){clearInterval(timer);timer=null;}autoB.textContent='▶ Auto';}
  stage.addEventListener('click',()=>{stopAuto();step();});
@@ -1432,12 +1431,11 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   autoB.textContent='❚❚ Pausa';
   timer=setInterval(()=>{
    if(i>LAST){if(!busy)stopAuto();return;}
-   step();},4200);});
+   step();},4600);});
  document.getElementById('genReset').addEventListener('click',()=>{
   stopAuto();busy=false;i=0;
   stage.querySelectorAll('.gDiveMask,.gTok').forEach(n=>n.remove());
-  ctx.style.visibility='';ctx.classList.remove('backin');
-  stage.classList.remove('reading');render();});
+  ctx.style.visibility='';stage.classList.remove('reading');render();});
  render();
 })();
 </script>
