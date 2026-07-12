@@ -231,7 +231,7 @@
   .fcard p{font-size:13px;color:var(--ink-2);margin:6px 0 0}
 
   /* workflow vs agent */
-  .wf{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+  .wf{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:32px}
   @media(max-width:720px){.wf{grid-template-columns:1fr}}
   .wcard{border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--card)}
   .wcard .wk{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
@@ -969,7 +969,6 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
       <h4>Decide il modello</h4><p>Il percorso non è noto in partenza: l'agente decide a runtime quali tool usare e in che ordine, in base a ciò che trova. Flessibile, per problemi aperti.</p>
     </div>
   </div>
-  <div class="callout"><b>Regola pratica:</b> usa la soluzione più semplice che funziona. L'agente conviene <b>quando devi osservare il risultato di un'azione per decidere il passo successivo</b> — come nell'indagine sul treno 9042. Altrimenti, un workflow basta e avanza.</div>
 </section>
 
 <!-- CLOSING -->
