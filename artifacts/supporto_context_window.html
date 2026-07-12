@@ -123,13 +123,19 @@
   .ide-m.a code{font-family:var(--mono);font-size:11px;background:var(--paper-2);padding:1px 4px;border-radius:4px}
   .ide-m.t{background:var(--accent-soft);border-color:#eccdbf;color:#5a3520;font-family:var(--mono);font-size:11px;align-self:stretch;max-width:100%}
 
-  /* trio */
-  .trio{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
-  @media(max-width:720px){.trio{grid-template-columns:1fr}}
-  .tcard{border:1px solid var(--line);border-radius:14px;padding:16px 18px;background:var(--card)}
-  .tcard .tx{font-size:20px;font-weight:800;color:var(--accent);line-height:1}
-  .tcard h4{margin:10px 0 5px;font-size:16px}
-  .tcard p{font-size:13.5px;color:var(--ink-2);margin:0}
+  /* reasoning toggle */
+  .rsn-tog{display:flex;gap:8px;margin-bottom:14px}
+  .rsn-tog button{font-family:inherit;font-size:13px;border:1px solid var(--line-strong);background:var(--card-2);border-radius:8px;padding:7px 12px;cursor:pointer;color:var(--ink-2)}
+  .rsn-tog button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .rsn-think{border:1px dashed var(--line-strong);background:var(--paper-2);border-radius:12px;padding:12px 15px;margin:0 0 10px;font-size:13.5px;color:var(--ink-2);font-style:italic;line-height:1.6}
+  .rsn-think .rsn-lbl{display:block;font-style:normal;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+
+  /* anatomia tool */
+  .anat{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  @media(max-width:860px){.anat{grid-template-columns:1fr}}
+  .anat-hd{font-size:12.5px;font-weight:800;color:var(--accent);margin-bottom:8px}
+  .anat-hd small{display:block;font-weight:400;color:var(--muted);font-size:11px;margin-top:2px}
+  .anat .txtbox{max-height:none;font-size:11.5px}
 
   /* memoria chatgpt (s6) */
   .mem-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:16px}
@@ -315,10 +321,6 @@
   .lever code{font-family:var(--mono);font-size:12.5px;background:var(--paper-2);color:var(--accent);padding:1px 7px;border-radius:5px;white-space:nowrap}
   .lever span{color:var(--ink-2)}
 
-  /* mcp */
-  .mcp-count{font-family:var(--mono);font-size:14px;margin:2px 0 10px;color:var(--ink-2)}
-  .mcp-count b{font-size:24px;color:var(--accent)}
-
   /* takeaways */
   .takes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px}
   @media(max-width:720px){.takes{grid-template-columns:1fr}}
@@ -371,193 +373,36 @@
   </div>
 </section>
 
-<!-- 2 · cosa NON sa fare -->
-<section id="s2" data-title="I tre limiti">
-  <div class="kicker"><span class="n">02</span> <span class="act">I tre limiti</span></div>
-  <h2>Cosa un LLM <em>non</em> sa fare da solo</h2>
-  <p class="lead">Preso da solo, il modello produce testo e nient'altro. Le capacità cognitive ci sono, ma sono <b>isolate dal mondo e dalla memoria</b>. Tre limiti concreti:</p>
-  <div class="trio">
-    <div class="tcard"><div class="tx">✕ Ricordare</div><h4>È stateless</h4><p>Ogni chiamata «nasce e muore»: non ricorda le richieste precedenti, se non gliele ripassiamo noi.</p></div>
-    <div class="tcard"><div class="tx">✕ Accedere</div><h4>Non vede il mondo</h4><p>Niente web in tempo reale, niente file su disco, niente database: solo ciò che è nella chiamata.</p></div>
-    <div class="tcard"><div class="tx">✕ Agire</div><h4>Non tocca niente</h4><p>Non manda una mail, non aggiorna un record, non lancia un comando. Può solo <em>scrivere</em>.</p></div>
-  </div>
-  <div class="callout">Questi tre limiti non sono difetti da nascondere: sono <b>il punto di partenza</b>. Tutta la mattinata è la storia di come li superiamo.</div>
-</section>
-
-<!-- 3 · estendere e governare -->
-<section id="s3" data-title="Estendere e governare">
-  <div class="kicker"><span class="n">03</span> <span class="act">Estendere e governare</span></div>
-  <h2>Estendere il modello, governare il contesto</h2>
-  <p class="lead">Se il modello da solo è così vincolato, ci sono due modi — complementari — per renderlo davvero utile.</p>
-  <div class="grid2">
-    <div class="panel" style="margin-top:8px;border-color:var(--blue)">
-      <div style="font-size:13px;font-weight:800;color:var(--blue);letter-spacing:.06em;text-transform:uppercase">Estendere → gli agenti</div>
-      <p style="margin:8px 0 0;font-size:15px;color:var(--ink-2)">Gli diamo <b>strumenti</b> per raccogliere informazioni e compiere azioni, e un <b>ciclo</b> per usarli in autonomia. Ogni informazione che raccoglie <b>rientra nel contesto</b>.</p>
-    </div>
-    <div class="panel" style="margin-top:8px;border-color:var(--accent)">
-      <div style="font-size:13px;font-weight:800;color:var(--accent);letter-spacing:.06em;text-transform:uppercase">Governare → context engineering</div>
-      <p style="margin:8px 0 0;font-size:15px;color:var(--ink-2)">Tutto passa dalla <b>context window</b>, che è finita. Decidere cosa ci mettiamo, in che ordine e cosa ne teniamo fuori è la disciplina ingegneristica centrale.</p>
-    </div>
-  </div>
-</section>
-
-<!-- 4 · dal prompt al contesto -->
-<section id="s4" data-title="Dal prompt al contesto">
-  <div class="kicker"><span class="n">04</span> <span class="act">Dal prompt al contesto</span></div>
-  <h2>Dal prompt al contesto</h2>
-  <p class="lead">Il «prompt» è solo un pezzo. Il <b>contesto</b> è tutto ciò che il modello riceve in <em>una</em> chiamata: system prompt + storia della conversazione + (più avanti) le definizioni dei tool, i loro risultati, gli allegati. Una conversazione non è che questa tripletta che si allunga.</p>
-  <div class="callout">Tutto questo testo viene <b>unito in un unico blocco</b> — come un grande file di testo con etichette <code>System / User / Assistant</code> — <b>tokenizzato</b>, e mandato al modello in un colpo solo.</div>
-</section>
-
-<!-- 5 · vede / non vede -->
-<section id="s5" data-title="Vede / non vede">
-  <div class="kicker"><span class="n">05</span> <span class="act">Cosa vede il modello</span></div>
-  <h2>Cosa il modello vede — e cosa no</h2>
-  <p class="lead">Ogni chiamata è <b>stateless</b>: il modello vede <b>solo ed esclusivamente</b> ciò che gli passiamo in quella chiamata. Fuori da lì, per lui, non esiste nulla. Nel caso più semplice — una chat — il contesto è solo questo: system prompt più i turni della conversazione.</p>
+<!-- R · reasoning -->
+<section id="s2" data-title="Il reasoning">
+  <div class="kicker"><span class="n">02</span> <span class="act">Primo avanzamento · Il reasoning</span></div>
+  <h2>Oltre la predizione: il reasoning</h2>
+  <p class="lead">Primo avanzamento tecnologico. I modelli più recenti non si limitano a completare il testo: prima di rispondere producono una <b>catena di ragionamento</b> — pianificano, verificano, si correggono — e solo dopo scrivono la risposta. Il motore è sempre lo stesso, predire il prossimo token; ma è stato allenato a usare una parte della generazione per <b>pensare</b>.</p>
   <div class="panel">
-    <span class="badge">il caso semplice · aggiungi turni e guarda il contesto crescere</span>
-    <div class="grid2">
-      <div>
-        <div class="chat" id="c1-chat"></div>
-        <div class="ctrls" style="margin-top:14px">
-          <button class="b acc" id="c1-add">+ Aggiungi turno</button>
-          <button class="b ghost" id="c1-reset">Reset</button>
-        </div>
-      </div>
-      <div>
-        <div style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Cosa arriva davvero al modello</div>
-        <div class="txtbox" id="c1-txt"></div>
-        <div class="counter"><span>≈ <b id="c1-tok">0</b> token</span><span><b id="c1-turns">1</b> messaggi</span><span>1 solo blocco di testo</span></div>
-      </div>
+    <span class="badge">stessa domanda, due regimi</span>
+    <div class="rsn-tog" id="rsn-tog">
+      <button data-m="0" class="on">Predizione diretta</button>
+      <button data-m="1">Con reasoning</button>
     </div>
+    <div class="msg usr" style="max-width:100%;margin-bottom:10px"><div class="who">User</div>Devo fermare il convoglio 12 per due interventi: revisione del carrello (4 ore, serve l'officina A) e taratura dei sensori (1 ora, richiede il carrello montato). Ho l'officina A solo domattina. In che ordine li faccio?</div>
+    <div class="rsn-think" id="rsn-think" style="display:none"><span class="rsn-lbl">ragionamento · interno, prima della risposta</span>La taratura richiede il carrello <b>montato</b> → non posso farla mentre il carrello è smontato per la revisione. E se la facessi prima? La revisione successiva smonterebbe il carrello e <b>invaliderebbe la taratura</b> appena fatta. Vincoli: l'officina A serve solo alla revisione, ed è libera domattina → la revisione va domattina. Ordine: revisione (4h, officina A) → rimontaggio → taratura (1h, ovunque). Verifico: nessun vincolo violato.</div>
+    <div class="msg ast" style="max-width:100%" id="rsn-ans"></div>
+    <div class="hint" id="rsn-hint"></div>
   </div>
-  <p class="lead" style="margin-top:30px">Ma il contesto non si riempie solo di messaggi. Guarda la stessa finestra al lavoro in uno scenario reale: un agente di coding dentro un IDE, alle prese con un bug.</p>
-  <div class="panel">
-    <span class="badge">il caso reale · un agente di coding riempie la stessa finestra</span>
-    <div class="ide" id="ide">
-      <div class="ide-bar">
-        <span class="ide-dot r"></span><span class="ide-dot y"></span><span class="ide-dot g"></span>
-        <span class="ide-title">sensori.py — progetto-diagnostica</span>
-      </div>
-      <div class="ide-body">
-        <div class="ide-ed">
-          <div class="ide-tab">sensori.py</div>
-          <pre class="ide-code" id="ide-code"><span class="k">def</span> <span class="f">media_letture</span>(letture):
-    <span class="c"># media delle ultime 24 letture del sensore</span>
-    totale = <span class="n">0</span>
-    <span class="k">for</span> i <span class="k">in</span> <span class="f">range</span>(<span class="n">1</span>, <span class="n">24</span>):   <span class="c hl" id="ide-bugline"># ← il bug è qui</span>
-        totale += letture[i]
-    <span class="k">return</span> totale / <span class="n">24</span>
-
-<span class="k">def</span> <span class="f">allarme</span>(letture, soglia):
-    <span class="k">return</span> <span class="f">media_letture</span>(letture) &gt; soglia</pre>
-        </div>
-        <div class="ide-chat">
-          <div class="ide-chat-hd"><span class="cc-ic">✳</span> Claude Code</div>
-          <div class="ide-msgs" id="ide-msgs"></div>
-        </div>
-      </div>
-    </div>
-    <div style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px">La stessa context window, riempita dall'agente</div>
-    <div class="window" id="ide-win"></div>
-    <div class="counter" style="margin-top:10px"><span>≈ <b id="ide-tok">0</b> token nel contesto</span><span id="ide-step-lbl">premi Avanti per iniziare</span></div>
-    <div class="ctrls" style="margin-top:12px">
-      <button class="b acc" id="ide-next">Avanti →</button>
-      <button class="b ghost" id="ide-reset">Reset</button>
-    </div>
-    <div class="hint">È la <b>stessa identica finestra</b> della chat qui sopra — ma a riempirla non sono i messaggi: sono gli <b>snippet di codice</b> letti dal tool di lettura e gli <b>snippet dal web</b>, che rientrano nel contesto come tool result. È così che lavora un agente di coding.</div>
-  </div>
+  <div class="callout">Il reasoning non serve solo a rispondere meglio: è ciò che permette al modello di <b>decidere azioni</b> — valutare una situazione, scegliere un passo, giudicare il risultato. Ed è la porta d'ingresso di quello che viene adesso.</div>
 </section>
 
-<!-- 6 · illusione memoria -->
-<section id="s6" data-title="L'illusione della memoria">
-  <div class="kicker"><span class="n">06</span> <span class="act">L'illusione della memoria</span></div>
-  <h2>Ma allora la «memoria» di ChatGPT?</h2>
-  <p class="lead">Due meccanismi, entrambi costruiti <b>sopra</b> il modello, non dentro. Guardali all'opera, turno per turno:</p>
-  <div class="panel">
-    <span class="badge">fai avanzare la conversazione e guarda cosa riceve davvero il modello</span>
-    <div class="mem-grid">
-      <div>
-        <div class="mem-colhd">Quello che vedi tu</div>
-        <div class="mem-chatbar" id="mem-chatbar"></div>
-        <div class="mem-chatwrap"><div class="chat" id="mem-chat"></div></div>
-      </div>
-      <div>
-        <div class="mem-colhd">Quello che riceve il modello a questo turno</div>
-        <div class="mem-ctx" id="mem-ctx"></div>
-        <div class="counter" style="margin-top:10px"><span>≈ <b id="mem-tok">0</b> token inviati in questa chiamata</span></div>
-      </div>
-    </div>
-    <div class="mem-note" id="mem-note"></div>
-    <div class="ctrls" style="margin-top:14px">
-      <button class="b acc" id="mem-next">Turno successivo →</button>
-      <button class="b ghost" id="mem-auto">▶ Auto</button>
-      <button class="b ghost" id="mem-reset">Reset</button>
-    </div>
-    <div class="hint">Nessuno dei due meccanismi vive <b>dentro</b> il modello: la conversazione continuativa è il client che <b>ri-manda la cronologia</b> a ogni messaggio; la memory feature è l'app che <b>salva note esternamente e le re-inietta</b> nel system prompt. In entrambi i casi tutto passa comunque dalla context window.</div>
-  </div>
-  <div class="grid2">
-    <div class="panel" style="margin-top:16px">
-      <div style="font-size:13px;font-weight:800;color:var(--blue);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">Conversazione continuativa</div>
-      <p style="margin:0;font-size:15px;color:var(--ink-2)">Quando rispondi a un messaggio di due ore fa nella stessa chat, il tool sta in realtà <b>ri-mandando tutta la cronologia</b> al modello a ogni messaggio. Sembra memoria, è <b>ricontestualizzazione</b>.</p>
-    </div>
-    <div class="panel" style="margin-top:16px">
-      <div style="font-size:13px;font-weight:800;color:var(--purple);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">Memory feature</div>
-      <p style="margin:0;font-size:15px;color:var(--ink-2)">Le «memorie» di ChatGPT/Claude.ai sono <b>note salvate esternamente</b> e <b>re-iniettate nel system prompt</b> a ogni nuova conversazione. Sempre architettura sopra il modello, non capacità nativa.</p>
-    </div>
-  </div>
-</section>
-
-<!-- 7 · finestra finita + libri -->
-<section id="s7" data-title="Una finestra finita">
-  <div class="kicker"><span class="n">07</span> <span class="act">Una finestra finita</span></div>
-  <h2>Una finestra, non un oceano</h2>
-  <p class="lead">La context window è la quantità <b>massima</b> di token che il modello può vedere in una chiamata. Input (system + user + storia) <b>e</b> output devono starci tutti dentro. È una quantità fissa, definita dal modello.</p>
-  <div class="bignum">200k<small>token — la finestra di Claude Sonnet 4.5</small></div>
-
-  <div class="panel">
-    <span class="badge">riempi la finestra e guarda quanto resta</span>
-    <div class="window" id="fm-win"></div>
-    <div class="counter" style="margin-top:12px"><span>Occupati: <b id="fm-used">2.000</b> / 200.000 token</span><span><b id="fm-pct">1%</b> della finestra</span></div>
-    <div class="fmlegend" id="fm-legend"></div>
-    <div class="ctrls" style="margin-top:12px"><button class="b ghost" id="fm-reset">Svuota</button></div>
-    <div class="hint">Nota chi occupa più spazio: non i messaggi della conversazione, ma l'<b>allegato</b> — un documento di 40 pagine pesa quasi il doppio di un'intera conversazione. Ci torniamo più avanti.</div>
-    <div class="models">
-      <div style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">La stessa finestra, a confronto</div>
-      <div class="mrow"><div class="mname">Claude Sonnet 4.5<span>Anthropic</span></div><div class="mbar"><div class="mf" style="width:20%">200k</div></div></div>
-      <div class="mrow"><div class="mname">GPT-5.1<span>OpenAI</span></div><div class="mbar"><div class="mf" style="width:40%">400k</div></div></div>
-      <div class="mrow"><div class="mname">Gemini 3<span>Google</span></div><div class="mbar"><div class="mf" style="width:100%">1M</div></div></div>
-    </div>
-  </div>
-
-  <div class="panel">
-    <span class="badge">quanto è grande? pensala in libri</span>
-    <div class="bk-pick" id="bk-pick"></div>
-    <div class="bk-meta" id="bk-meta"></div>
-    <div id="bk-rows"></div>
-    <div class="bk-note" id="bk-note"></div>
-    <div class="hint">Stime: ~1,3 token per parola. Un token è più o meno una manciata di caratteri; una finestra da 200k token è un intero romanzo, non un capitolo.</div>
-  </div>
-
-  <div class="callout"><b>Pieno ≠ meglio.</b> Man mano che il contesto si riempie, più informazione non significa risposta migliore: ogni token in più costa <b>latenza e denaro</b> e diluisce l'attenzione del modello su ciò che conta. Riempire ha rendimenti decrescenti.</div>
-</section>
-
-<!-- 8 · LLM potenziato -->
-<section id="s8" data-title="L'LLM potenziato">
-  <div class="kicker"><span class="n">08</span> <span class="act">L'LLM potenziato</span></div>
-  <h2>Cercare, agire, ricordare</h2>
-  <p class="lead">Prendiamo lo <b>stesso</b> modello di ieri e gli aggiungiamo tre capacità. È il primo momento in cui va oltre il «solo testo» — il mattone su cui si costruisce tutto il resto.</p>
-  <div class="tri">
-    <div class="rc b1"><div class="rh"><span class="ic">🔎</span> Cercare</div><p><b>Retrieval.</b> Recuperare informazioni che non sono nel contesto: un manuale, uno storico guasti, una normativa.</p></div>
-    <div class="rc b2"><div class="rh"><span class="ic">🔧</span> Agire</div><p><b>Tools.</b> Compiere azioni nel mondo: interrogare un database, aprire un ticket, aggiornare un piano di manutenzione.</p></div>
-    <div class="rc b3"><div class="rh"><span class="ic">🗄️</span> Ricordare</div><p><b>Memory.</b> Conservare qualcosa oltre la singola sessione, fuori dalla context window, e rileggerlo quando serve.</p></div>
-  </div>
-  <div class="callout">Un modello «potenziato» così — che raccoglie, agisce e ricorda in autonomia — è quello che chiamiamo <b>agente</b>. Vediamo il meccanismo, pezzo per pezzo.</div>
+<!-- 8 · dal reasoning agli agenti -->
+<section id="s3" data-title="Dal reasoning agli agenti">
+  <div class="kicker"><span class="n">03</span> <span class="act">Dal reasoning agli agenti</span></div>
+  <h2>Un modello che ragiona può usare strumenti</h2>
+  <p class="lead">Ecco perché il reasoning cambia tutto: un modello capace di pianificare e verificare può fare più che scrivere una risposta. Può <b>proporre un'azione</b>, osservare il risultato, e decidere il passo successivo — cioè <b>interagire in modo complesso con il mondo esterno</b>, attraverso <b>strumenti</b>.</p>
+  <div class="callout">Un modello che ragiona e usa strumenti per agire sul mondo è quello che chiamiamo <b>agente</b>. Vediamo il meccanismo, pezzo per pezzo.</div>
 </section>
 
 <!-- 9 · tool round-trip (NUOVO) -->
-<section id="s9" data-title="Il modello propone, l'app esegue">
-  <div class="kicker"><span class="n">09</span> <span class="act">I tool</span></div>
+<section id="s4" data-title="Il modello propone, l'app esegue">
+  <div class="kicker"><span class="n">04</span> <span class="act">I tool</span></div>
   <h2>I tool: il modello propone, l'applicazione esegue</h2>
   <p class="lead">Il punto più frainteso di tutta la giornata: <b>il modello non esegue mai un tool</b>. Emette una <em>richiesta</em> di chiamata (un blocco JSON <code>tool_use</code>), si ferma, e aspetta. È l'<b>applicazione</b> — il software attorno al modello — che esegue davvero e gli restituisce il risultato.</p>
   <div class="panel">
@@ -603,11 +448,52 @@
     </div>
     <div class="hint">Una tool definition dice al modello: <b>nome</b>, <b>a cosa serve</b>, <b>quando usarlo</b>, lo <b>schema</b> di input/output e i suoi <b>effetti collaterali</b>. Il modello sceglie <em>se</em> e <em>come</em> chiamarlo; l'esecuzione — e la responsabilità — restano all'applicazione.</div>
   </div>
+  <div class="panel">
+    <span class="badge">l'anatomia di un tool, in tre JSON</span>
+    <div class="anat">
+      <div>
+        <div class="anat-hd">1 · Tool description<small>scritta dallo sviluppatore · sempre nel contesto</small></div>
+        <div class="txtbox">{
+  "name": "query_guasti",
+  "description": "Interroga lo storico
+   guasti della flotta. Usalo per
+   domande su frequenza, gravità o
+   tipologia dei guasti. Non modifica
+   nessun dato.",
+  "input_schema": {
+    "flotta": "string",
+    "periodo": "ultimo_mese |
+               ultimo_anno"
+  }
+}</div>
+      </div>
+      <div>
+        <div class="anat-hd">2 · Tool input<small>scritto dal modello, a runtime</small></div>
+        <div class="txtbox"><span class="xtag">tool_use</span> {
+  "tool": "query_guasti",
+  "input": {
+    "flotta": "ETR 400",
+    "periodo": "ultimo_mese"
+  }
+}</div>
+      </div>
+      <div>
+        <div class="anat-hd">3 · Tool output<small>prodotto dall'applicazione · rientra nel contesto</small></div>
+        <div class="txtbox"><span class="xtag">tool_result</span> {
+  "totale": 23,
+  "critici": 3,
+  "piu_frequente":
+    "climatizzazione carrozza 4"
+}</div>
+      </div>
+    </div>
+    <div class="hint">La <b>description</b> è l'unica cosa che il modello «vede» del tool: da lì decide <em>se</em> e <em>quando</em> usarlo. Scriverla bene conta quanto implementarlo bene.</div>
+  </div>
 </section>
 
 <!-- 10 · agent loop (NUOVO) -->
-<section id="s10" data-title="L'agent loop">
-  <div class="kicker"><span class="n">10</span> <span class="act">L'agent loop</span></div>
+<section id="s5" data-title="L'agent loop">
+  <div class="kicker"><span class="n">05</span> <span class="act">L'agent loop</span></div>
   <h2>L'agent loop: raccogli, agisci, verifica, ripeti</h2>
   <p class="lead">Una chiamata sola non basta quasi mai. Un agente <b>gira in un ciclo</b>: raccoglie contesto, compie un'azione, <b>verifica</b> il risultato e decide se ha finito o se serve un altro giro. La verifica è ciò che lo rende affidabile. Con un agente <b>aspetti un processo</b>, non una singola risposta.</p>
   <div class="panel">
@@ -632,31 +518,9 @@
   </div>
 </section>
 
-<!-- 11 · harness -->
-<section id="s11" data-title="L'harness">
-  <div class="kicker"><span class="n">11</span> <span class="act">L'harness</span></div>
-  <h2>Nessuna magia: l'harness</h2>
-  <p class="lead">Un agente non è un modello nuovo. È lo <b>stesso LLM di ieri</b> avvolto in un <b>layer di ingegneria</b>: un system prompt curato, le definizioni dei tool, le regole di comportamento. Questo strato si chiama <b>harness</b>, ed <b>eredita tutti i limiti</b> del modello — context window finita, generazione token per token, componente stocastica.</p>
-  <div class="callout">L'harness è il <b>distillato di mesi di prompt engineering</b>: dice all'agente come pianificare, quando chiedere conferma, come usare i tool. Spesso vale quanto il modello stesso — è un <b>asset</b>.</div>
-  <p class="lead" style="font-size:17px">Un assaggio dal <b>system prompt di Claude Code</b> (emerso pubblicamente): si vede quanto lavoro c'è dietro il comportamento «intelligente» di un agente.</p>
-  <div class="panel">
-    <span class="badge">Estratti dall'harness · esempi illustrativi</span>
-    <div class="asm-prev">"You should be <span class="xtag">proactive</span>, but only when the user asks
-you to do something. Do not surprise the user with
-actions you take without asking."
-
-"Before making tool calls, <span class="xtag">plan</span> extensively... If the
-plan requires ambiguous choices, <span class="xtag">ask the user</span>."
-
-"When multiple independent operations are needed, invoke
-the relevant tools <span class="xtag">in parallel</span>. Do not call them one by one."</div>
-    <div class="hint">Nota il tema: <b>proattività controllata</b>, <b>pianificare prima di agire</b>, <b>mettere in discussione le richieste ambigue</b>, <b>parallelizzare</b>. Nulla di magico: sono istruzioni scritte, testate e limate.</div>
-  </div>
-</section>
-
 <!-- 12 · famiglie di tool -->
-<section id="s12" data-title="Le famiglie di tool">
-  <div class="kicker"><span class="n">12</span> <span class="act">Le famiglie di tool</span></div>
+<section id="s6" data-title="Le famiglie di tool">
+  <div class="kicker"><span class="n">06</span> <span class="act">Le famiglie di tool</span></div>
   <h2>Che cosa può fare un tool</h2>
   <p class="lead">I tool coprono famiglie ricorrenti. Cambia il servizio dietro, ma il meccanismo è sempre lo stesso: il modello propone, l'applicazione esegue, il risultato rientra nel contesto.</p>
   <div class="fam">
@@ -667,29 +531,12 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
     <div class="fcard"><div class="fh">📁 Filesystem <span class="fi">super-tool</span></div><p>Leggere e scrivere file: è la porta d'ingresso a documenti, report e artefatti di contesto.</p></div>
     <div class="fcard"><div class="fh">🔌 API esterne <span class="fi">action</span></div><p>Chiamare altri sistemi: aprire un intervento su SAP, notificare la sala operativa.</p></div>
     <div class="fcard"><div class="fh">🖥️ Computer use <span class="fi">sperimentale</span></div><p>Usare un'interfaccia come farebbe una persona: cliccare, scrivere, navigare uno schermo.</p></div>
-    <div class="fcard"><div class="fh">🧩 MCP <span class="fi">connettori</span></div><p>Lo standard che collega tutto quanto sopra in modo uniforme → la prossima sezione.</p></div>
-  </div>
-</section>
-
-<!-- 13 · MCP -->
-<section id="s13" data-title="Connettori e MCP">
-  <div class="kicker"><span class="n">13</span> <span class="act">Connettori e MCP</span></div>
-  <h2>MCP: un connettore universale</h2>
-  <p class="lead">Gli agenti diventano utili quando si <b>collegano al mondo</b>: gli orari, il database guasti, il gestionale. Senza uno standard, ogni applicazione deve costruire un'integrazione su misura per ogni servizio → esplosione <b>N×M</b>. Con <b>MCP</b> (Model Context Protocol, standard aperto di Anthropic) chi gestisce il servizio scrive <em>un</em> server, e qualunque client lo usa con la stessa interfaccia → <b>N+M</b>.</p>
-  <div class="panel">
-    <span class="badge">attiva/disattiva MCP e conta le connessioni</span>
-    <div class="mcp-count">Integrazioni da costruire e mantenere: <b id="mcp-num">12</b> <span id="mcp-lbl" style="font-size:13px;color:var(--muted)">— senza MCP (N×M)</span></div>
-    <svg id="mcp-svg" viewBox="0 0 640 300" style="width:100%;display:block"></svg>
-    <div class="ctrls" style="margin-top:8px">
-      <button class="b acc" id="mcp-toggle">Attiva MCP →</button>
-    </div>
-    <div class="hint">Analogia: <b>uno standard di connessione universale</b>, come l'USB-C per i dispositivi. È esattamente ciò che vedremo nell'hands-on <em>Project &amp; Connettori</em>.</div>
   </div>
 </section>
 
 <!-- 14 · workflow vs agente -->
-<section id="s14" data-title="Workflow vs agente">
-  <div class="kicker"><span class="n">14</span> <span class="act">Workflow vs agente</span></div>
+<section id="s7" data-title="Workflow vs agente">
+  <div class="kicker"><span class="n">07</span> <span class="act">Workflow vs agente</span></div>
   <h2>Non tutto deve essere un agente</h2>
   <p class="lead">Autonomia non è sempre la scelta giusta. Spesso un <b>percorso fisso</b> è più prevedibile e più sicuro. Vale la pena distinguere due modi di usare un LLM:</p>
   <div class="wf">
@@ -699,9 +546,102 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
   <div class="callout"><b>Regola pratica:</b> usa la soluzione più semplice che funziona. L'agente conviene <b>quando devi osservare il risultato di un'azione per decidere il passo successivo</b> — come nell'indagine sul treno 9042. Altrimenti, un workflow basta e avanza.</div>
 </section>
 
+<!-- 4 · dal prompt al contesto -->
+<section id="s8" data-title="Dal prompt al contesto">
+  <div class="kicker"><span class="n">08</span> <span class="act">Dal prompt al contesto</span></div>
+  <h2>Dal prompt al contesto</h2>
+  <p class="lead">Il «prompt» è solo un pezzo. Il <b>contesto</b> è tutto ciò che il modello riceve in <em>una</em> chiamata: system prompt + storia della conversazione + le definizioni dei tool che abbiamo appena visto, i loro risultati, gli allegati. Una conversazione non è che questa tripletta che si allunga.</p>
+  <div class="callout">Tutto questo testo viene <b>unito in un unico blocco</b> — come un grande file di testo con etichette <code>System / User / Assistant</code> — <b>tokenizzato</b>, e mandato al modello in un colpo solo.</div>
+  <p class="lead" style="margin-top:26px">Ogni chiamata è <b>stateless</b>: il modello vede <b>solo ed esclusivamente</b> ciò che gli passiamo in quella chiamata. Fuori da lì, per lui, non esiste nulla. Nel caso più semplice — una chat — il contesto è solo questo: system prompt più i turni della conversazione.</p>
+  <div class="panel">
+    <span class="badge">il caso semplice · aggiungi turni e guarda il contesto crescere</span>
+    <div class="grid2">
+      <div>
+        <div class="chat" id="c1-chat"></div>
+        <div class="ctrls" style="margin-top:14px">
+          <button class="b acc" id="c1-add">+ Aggiungi turno</button>
+          <button class="b ghost" id="c1-reset">Reset</button>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Cosa arriva davvero al modello</div>
+        <div class="txtbox" id="c1-txt"></div>
+        <div class="counter"><span>≈ <b id="c1-tok">0</b> token</span><span><b id="c1-turns">1</b> messaggi</span><span>1 solo blocco di testo</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 · illusione memoria -->
+<section id="s9" data-title="L'illusione della memoria">
+  <div class="kicker"><span class="n">09</span> <span class="act">L'illusione della memoria</span></div>
+  <h2>Ma allora la «memoria» di ChatGPT?</h2>
+  <p class="lead">Due meccanismi, entrambi costruiti <b>sopra</b> il modello, non dentro. Guardali all'opera, turno per turno:</p>
+  <div class="panel">
+    <span class="badge">fai avanzare la conversazione e guarda cosa riceve davvero il modello</span>
+    <div class="mem-grid">
+      <div>
+        <div class="mem-colhd">Quello che vedi tu</div>
+        <div class="mem-chatbar" id="mem-chatbar"></div>
+        <div class="mem-chatwrap"><div class="chat" id="mem-chat"></div></div>
+      </div>
+      <div>
+        <div class="mem-colhd">Quello che riceve il modello a questo turno</div>
+        <div class="mem-ctx" id="mem-ctx"></div>
+        <div class="counter" style="margin-top:10px"><span>≈ <b id="mem-tok">0</b> token inviati in questa chiamata</span></div>
+      </div>
+    </div>
+    <div class="mem-note" id="mem-note"></div>
+    <div class="ctrls" style="margin-top:14px">
+      <button class="b acc" id="mem-next">Turno successivo →</button>
+      <button class="b ghost" id="mem-auto">▶ Auto</button>
+      <button class="b ghost" id="mem-reset">Reset</button>
+    </div>
+    <div class="hint">Nessuno dei due meccanismi vive <b>dentro</b> il modello: la conversazione continuativa è il client che <b>ri-manda la cronologia</b> a ogni messaggio; la memory feature è l'app che <b>salva note esternamente e le re-inietta</b> nel system prompt. In entrambi i casi tutto passa comunque dalla context window.</div>
+  </div>
+  <div class="grid2">
+    <div class="panel" style="margin-top:16px">
+      <div style="font-size:13px;font-weight:800;color:var(--blue);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">Conversazione continuativa</div>
+      <p style="margin:0;font-size:15px;color:var(--ink-2)">Quando rispondi a un messaggio di due ore fa nella stessa chat, il tool sta in realtà <b>ri-mandando tutta la cronologia</b> al modello a ogni messaggio. Sembra memoria, è <b>ricontestualizzazione</b>.</p>
+    </div>
+    <div class="panel" style="margin-top:16px">
+      <div style="font-size:13px;font-weight:800;color:var(--purple);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">Memory feature</div>
+      <p style="margin:0;font-size:15px;color:var(--ink-2)">Le «memorie» di ChatGPT/Claude.ai sono <b>note salvate esternamente</b> e <b>re-iniettate nel system prompt</b> a ogni nuova conversazione. Sempre architettura sopra il modello, non capacità nativa.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7 · contesto più ampio + libri -->
+<section id="s10" data-title="Contesto più ampio">
+  <div class="kicker"><span class="n">10</span> <span class="act">Secondo avanzamento · Contesto più ampio</span></div>
+  <h2>Una finestra sempre più grande</h2>
+  <p class="lead">Secondo avanzamento tecnologico — e questa volta non è di intelligenza, ma di <b>capienza</b>. La context window è la quantità <b>massima</b> di token che il modello può vedere in una chiamata: input (system + user + storia) <b>e</b> output devono starci tutti dentro. È una quantità fissa, definita dal modello — ed è cresciuta di ordini di grandezza in pochi anni.</p>
+  <div class="bignum">200k<small>token — la finestra di Claude Sonnet 4.5</small></div>
+
+  <div class="panel">
+    <span class="badge">la stessa finestra, a confronto</span>
+    <div class="models" style="margin-top:6px">
+      <div class="mrow"><div class="mname">Claude Sonnet 4.5<span>Anthropic</span></div><div class="mbar"><div class="mf" style="width:20%">200k</div></div></div>
+      <div class="mrow"><div class="mname">GPT-5.1<span>OpenAI</span></div><div class="mbar"><div class="mf" style="width:40%">400k</div></div></div>
+      <div class="mrow"><div class="mname">Gemini 3<span>Google</span></div><div class="mbar"><div class="mf" style="width:100%">1M</div></div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <span class="badge">quanto è grande? pensala in libri</span>
+    <div class="bk-pick" id="bk-pick"></div>
+    <div class="bk-meta" id="bk-meta"></div>
+    <div id="bk-rows"></div>
+    <div class="bk-note" id="bk-note"></div>
+    <div class="hint">Stime: ~1,3 token per parola. Un token è più o meno una manciata di caratteri; una finestra da 200k token è un intero romanzo, non un capitolo.</div>
+  </div>
+
+  <div class="callout"><b>Pieno ≠ meglio.</b> Man mano che il contesto si riempie, più informazione non significa risposta migliore: ogni token in più costa <b>latenza e denaro</b> e diluisce l'attenzione del modello su ciò che conta. Riempire ha rendimenti decrescenti.</div>
+</section>
+
 <!-- 15 · prompt engineering -->
-<section id="s15" data-title="Prompt engineering">
-  <div class="kicker"><span class="n">15</span> <span class="act">Prompt engineering</span></div>
+<section id="s11" data-title="Prompt engineering">
+  <div class="kicker"><span class="n">11</span> <span class="act">Prompt engineering</span></div>
   <h2>Prima del contesto: il prompt engineering</h2>
   <p class="lead">Fino a poco tempo fa, la disciplina per ottenere il meglio da un LLM era una sola: <b>scrivere bene il prompt</b>. Il prompt engineering ha prodotto un repertorio di tecniche che funzionano ancora oggi: dare al modello un <b>ruolo</b>, organizzare la richiesta in <b>capitoli</b> con tag XML — <code>&lt;ruolo&gt;</code>, <code>&lt;contesto&gt;</code>, <code>&lt;task&gt;</code>, <code>&lt;vincoli&gt;</code>, <code>&lt;esempi&gt;</code>, <code>&lt;formato_output&gt;</code> — e mostrare <b>esempi</b> di ciò che ci si aspetta. La struttura assomiglia ai dati di training (il modello si orienta meglio), ti <b>obbliga a mettere in ordine le idee</b>, e rende esplicito cosa è istruzione, cosa è dato, cosa è vincolo.</p>
   <div class="quote">"Organizza i prompt in sezioni distinte (<code>&lt;background_information&gt;</code>, <code>&lt;instructions&gt;</code>, <code>## Tool guidance</code>…) con tag XML o header Markdown — puntando sempre al minimo set di informazioni che descrive pienamente il comportamento atteso."
@@ -725,38 +665,60 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
   </div>
 </section>
 
-<!-- 16 · markdown -->
-<section id="s16" data-title="Markdown">
-  <div class="kicker"><span class="n">16</span> <span class="act">Markdown</span></div>
-  <h2>Markdown: la lingua dell'AI agentica</h2>
-  <p class="lead">Ora che sappiamo <em>cosa</em> entra nel contesto, la domanda è <em>come</em> darvi forma. Si parte dal formato. Il markdown dà <b>struttura al testo con pochi simboli</b>: <code>#</code> per i titoli, <code>-</code> per gli elenchi, <code>**grassetto**</code>, i backtick per il codice. Nato per essere leggibile da un umano <em>e</em> da una macchina.</p>
-  <div class="grid2">
-    <div class="panel" style="margin-top:8px">
-      <div style="font-size:13px;font-weight:800;color:var(--accent);letter-spacing:.06em;text-transform:uppercase">Perché conta per gli agenti</div>
-      <p style="margin:8px 0 0;font-size:15px;color:var(--ink-2)">I modelli sono addestrati su <b>montagne di markdown</b> (README, documentazione, forum): lo «parlano» nativamente. La gerarchia — titoli, liste, tabelle — li aiuta a <b>orientarsi</b> nel contesto e riduce l'ambiguità.</p>
+<!-- 5 · context engineering -->
+<section id="s12" data-title="Context engineering">
+  <div class="kicker"><span class="n">12</span> <span class="act">Context engineering</span></div>
+  <h2>Governare l'intera finestra: context engineering</h2>
+  <p class="lead">Con gli agenti, il prompt scritto a mano è solo una piccola parte di ciò che entra nella finestra: il grosso ce lo mettono il sistema e i tool — system prompt, tool definition, tool result, file. La disciplina si allarga: non più scrivere bene <em>un messaggio</em>, ma progettare e governare <b>tutto ciò che il modello vede</b>. Questo è il <b>context engineering</b>.</p>
+  <p class="lead" style="font-size:17px">Guarda la finestra al lavoro in uno scenario reale: un agente di coding dentro un IDE, alle prese con un bug.</p>
+  <div class="panel">
+    <span class="badge">il caso reale · un agente di coding riempie la stessa finestra</span>
+    <div class="ide" id="ide">
+      <div class="ide-bar">
+        <span class="ide-dot r"></span><span class="ide-dot y"></span><span class="ide-dot g"></span>
+        <span class="ide-title">sensori.py — progetto-diagnostica</span>
+      </div>
+      <div class="ide-body">
+        <div class="ide-ed">
+          <div class="ide-tab">sensori.py</div>
+          <pre class="ide-code" id="ide-code"><span class="k">def</span> <span class="f">media_letture</span>(letture):
+    <span class="c"># media delle ultime 24 letture del sensore</span>
+    totale = <span class="n">0</span>
+    <span class="k">for</span> i <span class="k">in</span> <span class="f">range</span>(<span class="n">1</span>, <span class="n">24</span>):   <span class="c hl" id="ide-bugline"># ← il bug è qui</span>
+        totale += letture[i]
+    <span class="k">return</span> totale / <span class="n">24</span>
+
+<span class="k">def</span> <span class="f">allarme</span>(letture, soglia):
+    <span class="k">return</span> <span class="f">media_letture</span>(letture) &gt; soglia</pre>
+        </div>
+        <div class="ide-chat">
+          <div class="ide-chat-hd"><span class="cc-ic">✳</span> Claude Code</div>
+          <div class="ide-msgs" id="ide-msgs"></div>
+        </div>
+      </div>
     </div>
-    <div class="panel" style="margin-top:8px">
-      <div style="font-size:13px;font-weight:800;color:var(--accent);letter-spacing:.06em;text-transform:uppercase">Leggero in token</div>
-      <p style="margin:8px 0 0;font-size:15px;color:var(--ink-2)">La stessa struttura in HTML o JSON costa il doppio o il triplo dei token. Non a caso <b>quasi tutti gli artefatti di contesto</b> di un agente sono file markdown: <code>CLAUDE.md</code>, le skill, la documentazione, i piani di lavoro.</p>
+    <div style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px">La stessa context window, riempita dall'agente</div>
+    <div class="window" id="ide-win"></div>
+    <div class="counter" style="margin-top:10px"><span>≈ <b id="ide-tok">0</b> token nel contesto</span><span id="ide-step-lbl">premi Avanti per iniziare</span></div>
+    <div class="ctrls" style="margin-top:12px">
+      <button class="b acc" id="ide-next">Avanti →</button>
+      <button class="b ghost" id="ide-reset">Reset</button>
     </div>
+    <div class="hint">È la <b>stessa identica finestra</b> della chat semplice vista prima — ma a riempirla non sono i messaggi: sono gli <b>snippet di codice</b> letti dal tool di lettura e gli <b>snippet dal web</b>, che rientrano nel contesto come tool result. È così che lavora un agente di coding.</div>
   </div>
   <div class="panel">
-    <span class="badge">scrivi markdown a sinistra, guarda il risultato a destra</span>
-    <div class="md-split">
-      <textarea class="md-src" id="md-src" spellcheck="false"></textarea>
-      <div class="md-render" id="md-render"></div>
-    </div>
-    <div class="md-tokrow">
-      <span>Markdown: <b id="md-tok-md">0</b> token</span>
-      <span>Stesso contenuto in HTML: <b id="md-tok-html">0</b> token</span>
-      <span id="md-save" style="color:var(--green);font-weight:700"></span>
-    </div>
+    <span class="badge">riempi la finestra e guarda quanto resta</span>
+    <div class="window" id="fm-win"></div>
+    <div class="counter" style="margin-top:12px"><span>Occupati: <b id="fm-used">2.000</b> / 200.000 token</span><span><b id="fm-pct">1%</b> della finestra</span></div>
+    <div class="fmlegend" id="fm-legend"></div>
+    <div class="ctrls" style="margin-top:12px"><button class="b ghost" id="fm-reset">Svuota</button></div>
+    <div class="hint">Nota chi occupa più spazio: non i messaggi della conversazione, ma i <b>tool result</b> e gli <b>allegati</b> — un documento di 40 pagine pesa quasi il doppio di un'intera conversazione. È di questo che il context engineering si occupa: decidere cosa merita quello spazio.</div>
   </div>
 </section>
 
 <!-- 17 · artefatti + dove vive la memoria -->
-<section id="s17" data-title="Artefatti di contesto">
-  <div class="kicker"><span class="n">17</span> <span class="act">Artefatti di contesto</span></div>
+<section id="s13" data-title="Artefatti di contesto">
+  <div class="kicker"><span class="n">13</span> <span class="act">Artefatti di contesto</span></div>
   <h2>Dove vive la memoria</h2>
   <p class="lead">Il contesto migliore non si riscrive ogni volta: si <b>impacchetta in artefatti riutilizzabili</b>, quasi sempre file markdown che vivono nel progetto. Un'immagine utile per orientarsi:</p>
   <div class="desk">
@@ -801,11 +763,63 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
   </div>
 </section>
 
+<!-- 16 · markdown -->
+<section id="s14" data-title="Markdown">
+  <div class="kicker"><span class="n">14</span> <span class="act">Markdown</span></div>
+  <h2>Markdown: la lingua dell'AI agentica</h2>
+  <p class="lead">Un'ultima cosa su questi artefatti: il formato. Quasi tutti sono file markdown, e non è un caso. Il markdown dà <b>struttura al testo con pochi simboli</b>: <code>#</code> per i titoli, <code>-</code> per gli elenchi, <code>**grassetto**</code>, i backtick per il codice. Nato per essere leggibile da un umano <em>e</em> da una macchina.</p>
+  <div class="grid2">
+    <div class="panel" style="margin-top:8px">
+      <div style="font-size:13px;font-weight:800;color:var(--accent);letter-spacing:.06em;text-transform:uppercase">Perché conta per gli agenti</div>
+      <p style="margin:8px 0 0;font-size:15px;color:var(--ink-2)">I modelli sono addestrati su <b>montagne di markdown</b> (README, documentazione, forum): lo «parlano» nativamente. La gerarchia — titoli, liste, tabelle — li aiuta a <b>orientarsi</b> nel contesto e riduce l'ambiguità.</p>
+    </div>
+    <div class="panel" style="margin-top:8px">
+      <div style="font-size:13px;font-weight:800;color:var(--accent);letter-spacing:.06em;text-transform:uppercase">Leggero in token</div>
+      <p style="margin:8px 0 0;font-size:15px;color:var(--ink-2)">La stessa struttura in HTML o JSON costa il doppio o il triplo dei token. Non a caso <b>quasi tutti gli artefatti di contesto</b> di un agente sono file markdown: <code>CLAUDE.md</code>, le skill, la documentazione, i piani di lavoro.</p>
+    </div>
+  </div>
+  <div class="panel">
+    <span class="badge">scrivi markdown a sinistra, guarda il risultato a destra</span>
+    <div class="md-split">
+      <textarea class="md-src" id="md-src" spellcheck="false"></textarea>
+      <div class="md-render" id="md-render"></div>
+    </div>
+    <div class="md-tokrow">
+      <span>Markdown: <b id="md-tok-md">0</b> token</span>
+      <span>Stesso contenuto in HTML: <b id="md-tok-html">0</b> token</span>
+      <span id="md-save" style="color:var(--green);font-weight:700"></span>
+    </div>
+  </div>
+</section>
+
+<!-- 11 · harness -->
+<section id="s15" data-title="L'harness">
+  <div class="kicker"><span class="n">15</span> <span class="act">L'harness</span></div>
+  <h2>Tutto quello che avete visto è l'harness</h2>
+  <p class="lead">Facciamo il punto. Il modello è sempre quello del recap: predice il prossimo token. Tutto il resto — il reasoning guidato, i tool e le loro description, il contesto costruito pezzo per pezzo, la memoria su file — è un <b>layer di ingegneria</b> attorno al modello. Questo strato si chiama <b>harness</b>, ed <b>eredita tutti i limiti</b> del modello: context window finita, generazione token per token, componente stocastica.</p>
+  <div class="callout">L'harness è il <b>distillato di mesi di prompt engineering</b>: dice all'agente come pianificare, quando chiedere conferma, come usare i tool. Spesso vale quanto il modello stesso — è un <b>asset</b>.</div>
+  <p class="lead" style="font-size:17px">Un assaggio dal <b>system prompt di Claude Code</b> (emerso pubblicamente): si vede quanto lavoro c'è dietro il comportamento «intelligente» di un agente.</p>
+  <div class="panel">
+    <span class="badge">Estratti dall'harness · esempi illustrativi</span>
+    <div class="asm-prev">"You should be <span class="xtag">proactive</span>, but only when the user asks
+you to do something. Do not surprise the user with
+actions you take without asking."
+
+"Before making tool calls, <span class="xtag">plan</span> extensively... If the
+plan requires ambiguous choices, <span class="xtag">ask the user</span>."
+
+"When multiple independent operations are needed, invoke
+the relevant tools <span class="xtag">in parallel</span>. Do not call them one by one."</div>
+    <div class="hint">Nota il tema: <b>proattività controllata</b>, <b>pianificare prima di agire</b>, <b>mettere in discussione le richieste ambigue</b>, <b>parallelizzare</b>. Nulla di magico: sono istruzioni scritte, testate e limate.</div>
+  </div>
+  <div class="callout"><b>La definizione completa, adesso sì.</b> Un <b>agente</b> è un modello — predizione più reasoning — con i <b>tool</b> per agire sul mondo, un <b>contesto</b> governato e una <b>memoria</b> esterna su file, tenuti insieme dall'harness. Abbiamo visto come funziona il sistema; ora vediamo come si usa bene.</div>
+</section>
+
 <!-- 18 · gestione attiva + subagenti -->
-<section id="s18" data-title="Gestione attiva e subagenti">
-  <div class="kicker"><span class="n">18</span> <span class="act">Gestione attiva del contesto</span></div>
+<section id="s16" data-title="Gestione attiva e subagenti">
+  <div class="kicker"><span class="n">16</span> <span class="act">Gestione attiva del contesto</span></div>
   <h2>Tenere la scrivania in ordine</h2>
-  <p class="lead">Ricordi il gancio dell'agent loop? Ogni azione e ogni risultato <b>si accumulano nel contesto</b>. Su task lunghi la scrivania si riempie da sola — soprattutto per via dei <b>tool result</b> voluminosi. Servono leve per gestirla attivamente:</p>
+  <p class="lead">Ricordi il gancio dell'agent loop? Ogni azione e ogni risultato <b>si accumulano nel contesto</b>: su task lunghi la scrivania si riempie da sola, soprattutto per via dei <b>tool result</b> voluminosi. Servono leve per gestirla attivamente:</p>
   <div class="levers">
     <div class="lever"><code>/compact</code><span><b>Compaction.</b> Riassumo la conversazione e riparto con un contesto ripulito, conservando le decisioni importanti.</span></div>
     <div class="lever"><code>note-taking</code><span><b>Appunti strutturati.</b> L'agente scrive note in un file fuori dal contesto (un TODO, uno scratchpad) e le rilegge quando serve.</span></div>
@@ -833,22 +847,22 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
 </section>
 
 <!-- 19 · contesto riutilizzabile -->
-<section id="s19" data-title="Il contesto riutilizzabile">
-  <div class="kicker"><span class="n">19</span> <span class="act">Il contesto riutilizzabile</span></div>
+<section id="s17" data-title="Il contesto riutilizzabile">
+  <div class="kicker"><span class="n">17</span> <span class="act">Il contesto riutilizzabile</span></div>
   <h2>Un buon contesto si riusa</h2>
   <p class="lead">Costruire un buon contesto costa tempo e attenzione. Proprio per questo <b>non si butta via</b>: si impacchetta e si riusa. È il passaggio dal «prompt furbo» usa-e-getta al <b>contesto come asset</b>.</p>
   <div class="callout">Un <b>Project</b> (su claude.ai) o una <b>skill</b> sono esattamente questo: un contesto impacchettato — istruzioni + file + tool — pronto all'uso. Più lo curi, più compone valore nel tempo.</div>
-  <p class="lead"><b>Ed è esattamente il ponte all'hands-on:</b> tra poco costruiamo un contesto riutilizzabile con un <em>Project</em> e colleghiamo il modello al mondo con i <em>Connettori</em> (MCP).</p>
+  <p class="lead"><b>Ed è esattamente il ponte all'hands-on:</b> tra poco costruiamo un contesto riutilizzabile con un <em>Project</em> e colleghiamo il modello al mondo con i <em>Connettori</em>.</p>
 </section>
 
 <!-- CLOSING -->
-<section id="s20" data-title="Da portare a casa">
-  <div class="kicker"><span class="n">20</span> Da portare a casa</div>
+<section id="s18" data-title="Da portare a casa">
+  <div class="kicker"><span class="n">18</span> Da portare a casa</div>
   <h2>Tre idee da portare a casa</h2>
   <p class="lead">Un LLM da solo completa testo. Tutto ciò che lo rende utile — estenderlo e governarlo — ruota attorno a un'unica risorsa: il contesto.</p>
   <div class="takes">
     <div class="take"><div class="tn">01</div><h4>Il contesto è tutto ciò che il modello sa</h4><p>Uno spazio finito e non gratuito. Fuori dalla context window, per lui non esiste niente: ogni token conta.</p></div>
-    <div class="take"><div class="tn">02</div><h4>Un agente estende il modello</h4><p>Stesso modello di ieri + strumenti + un ciclo che decide e verifica. Nessuna magia, gli stessi limiti di prima.</p></div>
+    <div class="take"><div class="tn">02</div><h4>Un agente estende il modello</h4><p>Predizione + reasoning + strumenti, tenuti insieme dall'harness. Nessuna magia, gli stessi limiti di prima.</p></div>
     <div class="take"><div class="tn">03</div><h4>Context engineering è la nuova competenza</h4><p>Non «scrivere un buon prompt», ma progettare e governare l'intero contesto: cosa entra, cosa resta, cosa esce.</p></div>
   </div>
 </section>
@@ -865,8 +879,6 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
   "use strict";
   var $=function(s,r){return (r||document).querySelector(s)};
   var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
-  var NS="http://www.w3.org/2000/svg";
-  function SE(t,a){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);return e;}
   function fmt(n){return Math.round(n).toLocaleString("it-IT");}
 
   /* ---------- progress + dot nav ---------- */
@@ -1341,48 +1353,17 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
     build();
   })();
 
-  /* ---------- MCP ---------- */
+  /* ---------- reasoning toggle ---------- */
   (function(){
-    var svg=$("#mcp-svg"),numEl=$("#mcp-num"),lblEl=$("#mcp-lbl"),btn=$("#mcp-toggle");
-    var W=640,H=300, apps=["Claude","Assistente","Cursor"], svcs=["Orari treni","DB guasti","SAP MM","Manutenzione"];
-    var on=false;
-    var appY=apps.map(function(_,i){return 60+i*90;}), svcY=svcs.map(function(_,i){return 45+i*70;});
-    var AX=90, SX=550, HX=320, HY=150;
-    function node(x,y,label,fill,stroke){
-      var g=SE("g",{});
-      g.appendChild(SE("rect",{x:x-58,y:y-17,width:116,height:34,rx:9,fill:fill,stroke:stroke,"stroke-width":1.4}));
-      var t=SE("text",{x:x,y:y+5,"text-anchor":"middle","font-size":13,"font-weight":600,fill:"#1a1a1a","font-family":"var(--sans)"});t.textContent=label;g.appendChild(t);
-      return g;
-    }
-    function render(){
-      svg.innerHTML="";
-      var lines=SE("g",{});svg.appendChild(lines);
-      var count;
-      if(!on){
-        count=apps.length*svcs.length;
-        apps.forEach(function(_,i){svcs.forEach(function(_,j){
-          lines.appendChild(SE("line",{x1:AX+58,y1:appY[i],x2:SX-58,y2:svcY[j],stroke:"#c2410c","stroke-width":1,"stroke-opacity":.32}));
-        });});
-      }else{
-        count=apps.length+svcs.length;
-        apps.forEach(function(_,i){lines.appendChild(SE("line",{x1:AX+58,y1:appY[i],x2:HX-46,y2:HY,stroke:"#1D9E75","stroke-width":2,"stroke-opacity":.7}));});
-        svcs.forEach(function(_,j){lines.appendChild(SE("line",{x1:HX+46,y1:HY,x2:SX-58,y2:svcY[j],stroke:"#1D9E75","stroke-width":2,"stroke-opacity":.7}));});
-      }
-      apps.forEach(function(a,i){svg.appendChild(node(AX,appY[i],a,"#e7f0fa","#9cc3e8"));});
-      svcs.forEach(function(s,j){svg.appendChild(node(SX,svcY[j],s,"#faf8f6","#cdc6bf"));});
-      if(on){
-        svg.appendChild(SE("circle",{cx:HX,cy:HY,r:46,fill:"#fdeee4",stroke:"#c2410c","stroke-width":2}));
-        var t=SE("text",{x:HX,y:HY-2,"text-anchor":"middle","font-size":15,"font-weight":800,fill:"#c2410c","font-family":"var(--sans)"});t.textContent="MCP";svg.appendChild(t);
-        var t2=SE("text",{x:HX,y:HY+14,"text-anchor":"middle","font-size":9,fill:"#9a6b4c","font-family":"var(--sans)"});t2.textContent="un solo standard";svg.appendChild(t2);
-      }
-      var ca=SE("text",{x:AX,y:20,"text-anchor":"middle","font-size":10,"font-weight":700,fill:"#8a887f","letter-spacing":"1"});ca.textContent="APP / CLIENT";svg.appendChild(ca);
-      var cs=SE("text",{x:SX,y:20,"text-anchor":"middle","font-size":10,"font-weight":700,fill:"#8a887f","letter-spacing":"1"});cs.textContent="SERVIZI";svg.appendChild(cs);
-      numEl.textContent=count;
-      lblEl.textContent=on?("— con MCP (N+M = "+apps.length+"+"+svcs.length+")"):("— senza MCP (N×M = "+apps.length+"×"+svcs.length+")");
-      numEl.style.color=on?"#1D9E75":"#c2410c";
-    }
-    btn.onclick=function(){on=!on;render();btn.textContent=on?"↩ Torna a «senza MCP»":"Attiva MCP →";btn.className="b "+(on?"ghost":"acc");};
-    render();
+    var btns=$$("#rsn-tog button"),think=$("#rsn-think"),ans=$("#rsn-ans"),hint=$("#rsn-hint");
+    var A=['<div class="who">Assistant</div>Fai prima la taratura dei sensori: \u00e8 veloce, un\u2019ora, e te la togli subito. Poi porti il convoglio in officina A per la revisione del carrello.',
+           '<div class="who">Assistant</div>Prima la revisione del carrello, domattina in officina A; poi la taratura. La taratura richiede il carrello montato: farla prima verrebbe invalidata dallo smontaggio.'];
+    var H=['Risposta immediata, plausibile\u2026 e <b>sbagliata</b>: la revisione smonta il carrello e butta via la taratura appena fatta.',
+           'Il modello ha <b>speso token per pensare</b> prima di rispondere: ha esplicitato i vincoli, provato le alternative, verificato. Stesso motore, uso diverso.'];
+    function set(m){btns.forEach(function(b){b.classList.toggle("on",+b.getAttribute("data-m")===m);});
+      think.style.display=m?"block":"none";ans.innerHTML=A[m];hint.innerHTML=H[m];}
+    btns.forEach(function(b){b.onclick=function(){set(+b.getAttribute("data-m"));};});
+    set(0);
   })();
 
   onScroll();
