@@ -73,6 +73,9 @@
   .panel.star{border-color:var(--accent-soft2);box-shadow:0 1px 0 var(--accent-soft2),0 22px 50px -30px rgba(29,158,117,.4);background:linear-gradient(180deg,#fff,#fafdfb)}
   .phd{display:flex;align-items:center;gap:10px;margin-bottom:2px}
   .phd strong{font-size:16px}
+  /* dentro un pannello il testo usa tutta la larghezza del box: la misura
+     stretta della colonna di lettura lascerebbe meta' pannello vuoto */
+  .panel p,.panel .lead,.panel .hint{max-width:none}
 
   .ctrls{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-top:14px}
   .ctrl{display:flex;flex-direction:column;gap:4px;min-width:150px;flex:1}
