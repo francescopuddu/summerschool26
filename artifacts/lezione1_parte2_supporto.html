@@ -237,8 +237,6 @@
   .gOut .gt{font-size:16px;padding:5px 12px;font-weight:700;animation:none}
   .gOut .gt.emerge{animation:gEmerge .75s cubic-bezier(.22,1,.36,1)}
   @keyframes gEmerge{0%{transform:translateY(-86px);opacity:0}30%{opacity:1}100%{transform:translateY(0);opacity:1}}
-  .gOut .gt.ghost{opacity:.42;animation:gGhost .4s ease}
-  @keyframes gGhost{0%{opacity:0}100%{opacity:.42}}
   /* torna in coda al testo girando di lato, senza attraversare il blocco */
   .gFlyChip{position:absolute;z-index:4;pointer-events:none;font-size:16px;padding:5px 12px;font-weight:700;
     animation:gFly .95s cubic-bezier(.5,.02,.35,1) forwards}
@@ -1349,10 +1347,11 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   for(let k=0;k<n;k++)ctx.appendChild(chip(gen[k],'new'+(k===n-1?' last':'')));
   stp.textContent=i;
   lab.innerHTML='il modello '+(i===0?'legge':'rilegge')+' tutti i <b>'+nRead()+'</b> token del testo';}
+ /* lo slot d'uscita e' vuoto a riposo: il token si vede una volta sola, quando esce e
+    quando vola via. Fa eccezione il token di fine testo, che non si accoda e resta li'. */
  function renderOut(){out.innerHTML='';
-  if(i===0){const p=document.createElement('span');p.className='gph';p.textContent='—';out.appendChild(p);return;}
-  const k=i-1;
-  out.appendChild(chip(gen[k],isEnd(k)?'end':'new ghost'));}
+  if(i>LAST){out.appendChild(chip(gen[LAST],'end'));return;}
+  const p=document.createElement('span');p.className='gph';p.textContent='—';out.appendChild(p);}
  function renderCap(){
   if(i===0)cap.innerHTML='Si parte da un testo di <b>un solo</b> token: «Nel». Clicca sulla figura per generare quello successivo.';
   else if(i>LAST)cap.innerHTML='Esce un token che non corrisponde a nessuna parte di parola: codifica la <b>fine del testo</b>. Il ciclo si ferma qui.';
@@ -1408,11 +1407,10 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
    stage.classList.remove('reading');
    out.innerHTML='';out.appendChild(chip(gen[k],(isEnd(k)?'end':'new')+' emerge'));
    if(isEnd(k)){i++;stage.classList.add('done');renderCtx();renderCap();busy=false;return;}
-   setTimeout(()=>{                      /* 2. il token si accoda al contesto */
-    flyBack(out.firstChild,fly);
-    i++;renderCtx();renderCap();
-    /* il fantasma nello slot compare solo a volo finito: niente doppia comparsa */
-    setTimeout(()=>{renderOut();busy=false;},fly);
+   setTimeout(()=>{                      /* 2. il token vola e si accoda al contesto */
+    flyBack(out.firstChild,fly);         /* l'originale sparisce, vola il clone */
+    /* il token entra nella riga solo quando il volo atterra: mai visibile due volte */
+    setTimeout(()=>{i++;renderCtx();renderCap();renderOut();busy=false;},fly*0.82);
    },hold);
   },dv+think);}
 
