@@ -521,7 +521,7 @@
     <div class="counter" style="margin-top:12px"><span>Occupati: <b id="fm-used">2.000</b> / 200.000 token</span><span><b id="fm-pct">1%</b> della finestra</span></div>
     <div class="fmlegend" id="fm-legend"></div>
     <div class="ctrls" style="margin-top:12px"><button class="b ghost" id="fm-reset">Svuota</button></div>
-    <div class="hint">Nota chi occupa più spazio: non i messaggi dell'utente, ma i <b>risultati dei tool</b> — un report diagnostico o un allegato pesano decine di migliaia di token. Ci torniamo più avanti.</div>
+    <div class="hint">Nota chi occupa più spazio: non i messaggi della conversazione, ma l'<b>allegato</b> — un documento di 40 pagine pesa quasi il doppio di un'intera conversazione. Ci torniamo più avanti.</div>
     <div class="models">
       <div style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">La stessa finestra, a confronto</div>
       <div class="mrow"><div class="mname">Claude Sonnet 4.5<span>Anthropic</span></div><div class="mbar"><div class="mf" style="width:20%">200k</div></div></div>
@@ -1065,9 +1065,7 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
     var CAP=200000;
     var comps=[
       {name:"System prompt",tok:2000,c:"#7F77DD",fixed:true,on:true},
-      {name:"Storia conversazione",tok:14000,c:"#2f7ec9"},
-      {name:"Tool definitions",tok:6000,c:"#1D9E75"},
-      {name:"Tool result · report diagnostico flotta (5.000 righe)",tok:42000,c:"#D85A30"},
+      {name:"Storia conversazione · 36 messaggi",tok:14000,c:"#2f7ec9"},
       {name:"Allegato · capitolato di segnalamento (40 pagine)",tok:26000,c:"#c2410c"}
     ];
     function render(){
