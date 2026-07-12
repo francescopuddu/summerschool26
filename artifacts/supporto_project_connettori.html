@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Project &amp; Connettori — supporto alla lezione</title>
+<style>
+  :root{
+    --paper:#f1efe8; --paper-2:#e9e6dd;
+    --card:#ffffff; --card-2:#faf8f6;
+    --ink:#1a1a1a; --ink-2:#5f5e5a; --muted:#8a887f;
+    --line:#d9d6cc; --line-strong:#b4b2a9;
+    --accent:#c2410c; --accent-2:#D85A30; --accent-soft:#fdeee4; --accent-soft2:#fbe3d2;
+    --blue:#2f7ec9; --blue-soft:#e7f0fa;
+    --green:#1D9E75; --green-soft:#e4f4ee;
+    --purple:#7F77DD; --purple-soft:#eceafb;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(var(--paper-2) 0.5px, transparent 0.5px);background-size:22px 22px;}
+
+  #prog{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:60;transition:width .1s linear}
+  #dots{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:55;display:flex;flex-direction:column;gap:9px}
+  #dots a{width:9px;height:9px;border-radius:50%;background:var(--line-strong);opacity:.55;transition:all .2s;position:relative}
+  #dots a.on{background:var(--accent);opacity:1;transform:scale(1.35)}
+  #dots a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:11px;
+    color:var(--ink-2);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:2px 7px;opacity:0;pointer-events:none;transition:opacity .15s}
+  #dots a:hover span{opacity:1}
+  @media(max-width:900px){#dots{display:none}}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:0 28px}
+  section{padding:58px 0;border-top:1px solid var(--line)}
+  section:first-of-type{border-top:0}
+
+  .kicker{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+    display:flex;align-items:center;gap:10px;margin:0 0 14px}
+  .kicker .n{font-family:var(--mono);background:var(--accent);color:#fff;border-radius:5px;padding:1px 7px;font-size:11px;letter-spacing:.05em}
+  .kicker .act{color:var(--muted);font-weight:700}
+  h1{font-size:clamp(40px,8vw,86px);line-height:.98;letter-spacing:-.02em;font-weight:850;margin:0 0 18px}
+  h2{font-size:clamp(27px,4.4vw,46px);line-height:1.03;letter-spacing:-.015em;font-weight:850;margin:0 0 16px}
+  h3{font-size:19px;margin:26px 0 8px;letter-spacing:-.01em}
+  .lead{font-size:clamp(17px,2vw,21px);color:var(--ink-2);margin:0 0 8px}
+  .em{color:var(--accent);font-weight:600}
+
+  .hero{padding-top:80px}
+  .hero .tag{font-family:var(--mono);font-size:12px;color:var(--ink-2);border:1px solid var(--line-strong);
+    border-radius:999px;padding:5px 13px;display:inline-flex;gap:8px;align-items:center;margin-bottom:24px;background:var(--card-2)}
+  .hero .tag b{color:var(--accent)}
+  .hero h1 span{color:var(--accent)}
+  .hero .sub{font-size:clamp(18px,2.4vw,26px);font-weight:600;color:var(--ink);margin:0 0 20px}
+  .scrollcue{margin-top:36px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+  .scrollcue .a{animation:bob 1.6s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+
+  .pillars{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:30px;max-width:760px}
+  @media(max-width:720px){.pillars{grid-template-columns:1fr}}
+  .pill{border:1px solid var(--line);border-radius:14px;padding:16px 18px;background:var(--card)}
+  .pill .pk{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+  .pill h4{margin:0 0 4px;font-size:17px}
+  .pill p{font-size:13.5px;color:var(--ink-2);margin:0}
+
+  .callout{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;
+    padding:16px 20px;margin:22px 0;font-size:17px;color:#5a3520}
+  .callout b{color:var(--accent)}
+  .quote{font-family:var(--serif);font-size:clamp(18px,2.2vw,24px);line-height:1.32;font-weight:600;color:var(--ink);margin:26px 0;padding-left:24px;border-left:4px solid var(--accent)}
+  .quote code{font-family:var(--mono);font-size:.82em;background:var(--paper-2);padding:1px 5px;border-radius:4px}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:26px;
+    box-shadow:0 1px 0 var(--line),0 18px 40px -32px rgba(0,0,0,.35)}
+  .panel .badge{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);
+    display:inline-flex;align-items:center;gap:7px;margin-bottom:16px}
+  .ctrls{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-top:4px}
+  button.b{font-family:inherit;font-size:14px;font-weight:600;background:var(--ink);color:#fff;border:0;border-radius:9px;padding:9px 16px;cursor:pointer;transition:transform .05s,background .15s}
+  button.b:hover{background:#000}button.b:active{transform:translateY(1px)}
+  button.b.ghost{background:transparent;color:var(--ink-2);border:1px solid var(--line-strong)}
+  button.b.ghost:hover{background:var(--card-2);color:var(--ink)}
+  button.b.acc{background:var(--accent)}button.b.acc:hover{background:var(--accent-2)}
+  button.b:disabled{opacity:.4;cursor:default}
+  .hint{font-size:13px;color:var(--muted);margin-top:12px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+  .txtbox{background:#20201e;color:#e9e6dd;border-radius:12px;padding:14px;font-family:var(--mono);font-size:12.5px;line-height:1.5;white-space:pre-wrap;overflow:auto}
+  .txtbox .k{color:#e6864f;font-weight:700}
+  .txtbox .s{color:#9fd0a8}
+  .txtbox .c{color:#8a887f}
+  .txtbox .b{color:#8fb8e6}
+
+  /* blocchi di contesto — stessa codifica colore della lezione di stamattina */
+  .ctxwin{border:1.5px solid var(--line-strong);border-radius:12px;padding:12px;background:var(--card-2);display:flex;flex-direction:column;gap:8px}
+  .ctxhd{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .blk{border-radius:9px;padding:8px 11px;font-size:12.5px;line-height:1.45;border:1px solid var(--line);animation:memfade .35s ease}
+  .blk .bh{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.75;margin-bottom:2px}
+  .blk code{font-family:var(--mono);font-size:11.5px}
+  .blk.sys{background:var(--paper-2);color:var(--ink-2)}
+  .blk.instr{background:var(--accent-soft);border-color:var(--accent);color:#5a3520}
+  .blk.memo{background:var(--purple-soft);border-color:var(--purple);color:#3d379a}
+  .blk.ctx{background:var(--green-soft);border-color:#8fd3b9;color:#12664b}
+  .blk.tool{background:var(--accent-soft2);border-color:#eccdbf;color:#5a3520;font-family:var(--mono);font-size:11.5px}
+  .blk.u{background:var(--blue-soft);border-color:#d3e4f5;color:#1c5a94}
+  .blk.a{background:var(--green-soft);border-color:#cfece0;color:#12664b}
+  .blk.off{opacity:.28;filter:saturate(.3)}
+  @keyframes memfade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+  /* s1 · stack prodotti */
+  .prodsel{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  @media(max-width:720px){.prodsel{grid-template-columns:1fr}}
+  .prodsel button{font-family:inherit;text-align:left;cursor:pointer;background:var(--card-2);border:1px solid var(--line-strong);
+    border-radius:12px;padding:12px 14px;transition:all .18s}
+  .prodsel button .pn{font-weight:800;font-size:15.5px;color:var(--ink)}
+  .prodsel button .pd{font-size:12px;color:var(--muted);margin-top:2px}
+  .prodsel button.on{background:var(--accent);border-color:var(--accent)}
+  .prodsel button.on .pn,.prodsel button.on .pd{color:#fff}
+  .prodsel button.on .pd{opacity:.85}
+  .stack{margin-top:18px;display:flex;flex-direction:column;gap:10px}
+  .layer{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:var(--card-2);display:grid;
+    grid-template-columns:150px 1fr;gap:16px;align-items:start;transition:background .25s,border-color .25s}
+  @media(max-width:720px){.layer{grid-template-columns:1fr;gap:6px}}
+  .layer .ln{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .layer .ln small{display:block;font-weight:600;letter-spacing:0;text-transform:none;font-size:11.5px;color:var(--line-strong);margin-top:3px}
+  .layer .lv{font-size:14.5px;color:var(--ink-2)}
+  .layer .lv b{color:var(--ink)}
+  .layer.same{border-color:var(--line-strong);background:var(--paper-2)}
+  .layer.same .lv b{color:var(--ink)}
+  .layer.chg{border-color:var(--accent);background:var(--accent-soft)}
+  .layer.chg .ln{color:var(--accent)}
+  .layer .flag{display:inline-block;font-family:var(--mono);font-size:10.5px;font-weight:700;border-radius:999px;padding:1px 8px;margin-left:8px;vertical-align:middle}
+  .layer.same .flag{background:var(--paper);color:var(--muted);border:1px solid var(--line-strong)}
+  .layer.chg .flag{background:var(--accent);color:#fff}
+  .lvchg{animation:memfade .3s ease}
+
+  /* s2 · mockup Progetto (chrome scuro dentro pagina chiara) */
+  .pj{border-radius:16px;overflow:hidden;background:#262624;border:1px solid #3a3a37;box-shadow:0 18px 44px -26px rgba(0,0,0,.5)}
+  .pj-bar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid #333330}
+  .pj-dot{width:11px;height:11px;border-radius:50%}
+  .pj-crumb{font-size:12.5px;color:#8f8d86;margin-left:14px}
+  .pj-crumb b{color:#d8d5cc;font-weight:600}
+  .pj-body{padding:18px 20px 22px;display:grid;grid-template-columns:1.45fr 1fr;gap:18px}
+  @media(max-width:820px){.pj-body{grid-template-columns:1fr}}
+  .pj-title{font-family:var(--serif);font-size:26px;color:#e9e6dd;margin:0 0 16px;grid-column:1/-1;display:flex;align-items:center;gap:10px}
+  .pj-title .ic{margin-left:auto;color:#6f6d67;font-size:15px}
+  .pj-composer{background:#2f2f2c;border:1px solid #3d3d39;border-radius:14px;padding:14px 15px 11px}
+  .pj-ph{color:#7c7a74;font-size:15px;margin-bottom:22px}
+  .pj-crow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .pj-plus{color:#8f8d86;font-size:17px;line-height:1}
+  .pj-toggle{display:inline-flex;background:#242422;border-radius:8px;padding:3px}
+  .pj-toggle span{font-size:12.5px;padding:3px 11px;border-radius:6px;color:#87857f}
+  .pj-toggle span.on{background:#403f3b;color:#e9e6dd;font-weight:600}
+  .pj-model{margin-left:auto;font-size:12.5px;color:#c8c5bd}
+  .pj-model em{font-style:normal;color:#87857f}
+  .pj-empty{grid-column:1;text-align:center;color:#7c7a74;font-size:13px;padding:26px 10px 0;line-height:1.5}
+  .pj-empty .bub{font-size:24px;display:block;margin-bottom:8px;opacity:.7}
+  .pj-side{background:#2b2b28;border:1px solid #3a3a37;border-radius:14px;grid-row:span 2;align-self:start}
+  @media(max-width:820px){.pj-side{grid-row:auto}}
+  .pj-card{padding:14px 16px;border-bottom:1px solid #343431;cursor:pointer;transition:background .18s}
+  .pj-card:last-child{border-bottom:0}
+  .pj-card:hover{background:#323230}
+  .pj-card.on{background:#3a2a1f;box-shadow:inset 3px 0 0 var(--accent-2)}
+  .pj-ch{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .pj-ch h4{margin:0;font-size:14.5px;color:#e9e6dd;font-weight:600}
+  .pj-card.on .pj-ch h4{color:#f2b48c}
+  .pj-ch .act{font-size:15px;color:#7c7a74}
+  .pj-ch .lock{font-size:11px;color:#a8a59d;border:1px solid #46453f;border-radius:999px;padding:2px 9px;white-space:nowrap}
+  .pj-card p{margin:5px 0 0;font-size:12.5px;color:#87857f;line-height:1.45}
+  .pj-drop{margin-top:11px;border-radius:10px;background:#232320;border:1px dashed #3f3f3b;padding:16px 12px;text-align:center;font-size:11.5px;color:#7c7a74;line-height:1.45}
+  .pj-legend{font-size:12.5px;color:var(--muted);margin-top:10px;text-align:center}
+
+  .map{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+  @media(max-width:820px){.map{grid-template-columns:1fr}}
+  .mapex h4{margin:0 0 6px;font-size:17px;color:var(--accent)}
+  .mapex p{margin:0 0 10px;font-size:14.5px;color:var(--ink-2)}
+  .mapex .lnk{font-size:13px;color:var(--ink-2);border-left:3px solid var(--line-strong);padding-left:11px;margin-top:12px}
+  .mapex .lnk b{color:var(--ink)}
+
+  /* s3 · MCP */
+  .mcp{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+  @media(max-width:820px){.mcp{grid-template-columns:1fr}}
+  .node{border:1px solid var(--line);border-radius:14px;background:var(--card-2);padding:14px}
+  .node.host{border-color:var(--blue)}
+  .node.srv{border-color:var(--green)}
+  .node-hd{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
+  .node.host .node-hd{color:var(--blue)}
+  .node.srv .node-hd{color:var(--green)}
+  .node-sub{font-size:12px;color:var(--muted);margin-bottom:11px}
+  .wire{display:flex;align-items:center;gap:10px;margin:14px 0;justify-content:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .wire .arrow{flex:1;height:2px;background:var(--line-strong);position:relative;max-width:220px;border-radius:2px}
+  .wire .arrow.live{background:var(--accent)}
+  .wire .arrow.live::after{content:"";position:absolute;right:-1px;top:-3px;border-left:8px solid var(--accent);border-top:4px solid transparent;border-bottom:4px solid transparent}
+  .wire .arrow.back.live::after{content:"";left:-1px;right:auto;border-left:0;border-right:8px solid var(--accent)}
+  .wire .lbl{font-family:var(--mono);font-size:11.5px;color:var(--accent);font-weight:700;white-space:nowrap}
+  .step{opacity:0;max-height:0;overflow:hidden;transition:opacity .3s;margin-top:0}
+  .step.on{opacity:1;max-height:none;overflow:visible;margin-top:12px}
+  .tools{display:flex;flex-direction:column;gap:8px}
+  .tool{border:1px solid var(--line);border-radius:10px;background:var(--card);padding:9px 11px}
+  .tool .tn{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--green)}
+  .tool .td{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+  .tool .ta{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:4px}
+  .srvlist{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+  .srvchip{font-size:12px;border:1px solid var(--line-strong);border-radius:999px;padding:3px 11px;background:var(--card);color:var(--ink-2)}
+  .keypt{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+  @media(max-width:720px){.keypt{grid-template-columns:1fr}}
+  .keypt div{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card)}
+  .keypt h4{margin:0 0 5px;font-size:15.5px}
+  .keypt p{margin:0;font-size:13.5px;color:var(--ink-2)}
+
+  /* s4 · strati connettore */
+  .lay{display:flex;flex-direction:column;gap:0;margin-top:6px}
+  .lrow{border:1px solid var(--line);padding:14px 18px;background:var(--card);position:relative}
+  .lrow:first-child{border-radius:14px 14px 0 0}
+  .lrow:last-child{border-radius:0 0 14px 14px}
+  .lrow+.lrow{border-top:0}
+  .lrow .lt{font-weight:800;font-size:15.5px;display:flex;align-items:center;gap:10px}
+  .lrow .lt .idx{font-family:var(--mono);font-size:11px;background:var(--paper-2);color:var(--ink-2);border-radius:5px;padding:1px 7px}
+  .lrow p{margin:4px 0 0;font-size:13.5px;color:var(--ink-2)}
+  .lrow.l1{background:var(--card)}
+  .lrow.l2{background:var(--green-soft);border-color:#bfe3d4}
+  .lrow.l3{background:var(--accent-soft);border-color:var(--accent-soft2)}
+  .lrow.l3 .lt{color:var(--accent)}
+  table.cmp{width:100%;border-collapse:collapse;margin-top:20px;font-size:14px}
+  table.cmp th,table.cmp td{border:1px solid var(--line);padding:10px 13px;text-align:left;vertical-align:top}
+  table.cmp th{background:var(--paper-2);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+  table.cmp td:first-child{font-weight:700;width:180px;background:var(--card-2)}
+  table.cmp td{background:var(--card);color:var(--ink-2)}
+  table.cmp td b{color:var(--ink)}
+
+  /* s5 · hands on */
+  .steps{counter-reset:st;display:flex;flex-direction:column;gap:10px;margin-top:20px}
+  .stp{counter-increment:st;display:grid;grid-template-columns:36px 1fr;gap:14px;align-items:start;
+    border:1px solid var(--line);border-radius:12px;padding:13px 15px;background:var(--card)}
+  .stp::before{content:counter(st,decimal-leading-zero);font-family:var(--mono);font-size:12px;font-weight:700;
+    color:#fff;background:var(--accent);border-radius:7px;padding:5px 0;text-align:center}
+  .stp h4{margin:0 0 3px;font-size:15.5px}
+  .stp p{margin:0;font-size:13.5px;color:var(--ink-2)}
+  .stp code{font-family:var(--mono);font-size:12.5px;background:var(--paper-2);color:var(--accent);padding:1px 6px;border-radius:5px}
+  .warn{border-left:3px solid var(--blue);background:var(--blue-soft);border-radius:0 12px 12px 0;padding:14px 18px;margin-top:18px;font-size:14.5px;color:#1c5a94}
+  .warn b{color:#12457a}
+
+  /* takeaways */
+  .takes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px}
+  @media(max-width:720px){.takes{grid-template-columns:1fr}}
+  .take{border-radius:16px;padding:20px;color:#fff;position:relative;overflow:hidden;min-height:150px}
+  .take:nth-child(1){background:linear-gradient(150deg,#2f7ec9,#245c93)}
+  .take:nth-child(2){background:linear-gradient(150deg,var(--accent-2),var(--accent))}
+  .take:nth-child(3){background:linear-gradient(150deg,#1D9E75,#157a5a)}
+  .take .tn{font-family:var(--mono);font-size:12px;opacity:.8}
+  .take h4{margin:6px 0 8px;font-size:19px;line-height:1.15}
+  .take p{font-size:13.5px;opacity:.92;margin:0}
+
+  footer{padding:40px 0 70px;color:var(--muted);font-size:12.5px;text-align:center;border-top:1px solid var(--line)}
+  footer code{font-family:var(--mono);color:var(--ink-2)}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<nav id="dots"></nav>
+
+<div class="wrap">
+
+<!-- HERO -->
+<section id="s0" class="hero" data-title="Apertura">
+  <div class="tag"><b>●</b> Supporto alla lezione · <b>Hands on: Project &amp; Connettori</b></div>
+  <h1><span>Project</span> &amp; <span>Connettori</span></h1>
+  <div class="sub">Stamattina abbiamo visto come funziona il contesto. Ora lo mettiamo dentro il prodotto.</div>
+  <p class="lead">Il Progetto è il posto dove il contesto smette di essere una teoria e diventa qualcosa che riusi ogni giorno. I connettori sono il modo in cui quel contesto arriva dal mondo esterno. In mezzo c'è un protocollo, MCP, che vale la pena capire una volta per tutte.</p>
+  <div class="pillars">
+    <div class="pill"><div class="pk">Project</div><h4>Contesto confezionato</h4><p>Istruzioni, Contesto e Memoria: le tre cose che hai visto stamattina, esposte come pannelli di un'interfaccia.</p></div>
+    <div class="pill"><div class="pk">Connettori</div><h4>Il mondo esterno</h4><p>Gmail, Drive, Calendar, Linear, GitHub. Sotto ognuno c'è un server che si descrive a parole e accetta testo.</p></div>
+  </div>
+  <div class="scrollcue"><span class="a">↓</span> Scorri, oppure usa le frecce ← →</div>
+</section>
+
+<!-- 1 · tre prodotti -->
+<section id="s1" data-title="Un modello, tre prodotti">
+  <div class="kicker"><span class="n">01</span> <span class="act">Chat, Cowork, Code</span></div>
+  <h2>Un solo modello, <span class="em">tre prodotti</span></h2>
+  <p class="lead">Claude, Claude Cowork e Claude Code sono tre prodotti agentici diversi. Ma il modello sotto è <b>lo stesso</b>: le stesse capacità, gli stessi pesi, la stessa finestra di contesto. Quello che cambia sono l'<b>harness</b> — l'impalcatura di tool, permessi e ciclo di lavoro che abbiamo visto stamattina — e l'<b>interfaccia</b> da cui ci arrivi.</p>
+
+  <div class="panel">
+    <span class="badge">Scegli il prodotto e guarda cosa cambia davvero</span>
+    <div class="prodsel" id="ps">
+      <button data-p="0" class="on"><div class="pn">Claude</div><div class="pd">l'app di chat</div></button>
+      <button data-p="1"><div class="pn">Claude Cowork</div><div class="pd">l'agente per il lavoro</div></button>
+      <button data-p="2"><div class="pn">Claude Code</div><div class="pd">l'agente per il codice</div></button>
+    </div>
+    <div class="stack">
+      <div class="layer same" id="lyModel">
+        <div class="ln">Modello <small>l'LLM</small></div>
+        <div class="lv" id="lvModel"></div>
+      </div>
+      <div class="layer chg" id="lyHarness">
+        <div class="ln">Harness <small>tool, permessi, loop</small></div>
+        <div class="lv" id="lvHarness"></div>
+      </div>
+      <div class="layer chg" id="lyUi">
+        <div class="ln">Interfaccia <small>da dove ci parli</small></div>
+        <div class="lv" id="lvUi"></div>
+      </div>
+    </div>
+    <p class="hint">Il primo strato non cambia mai. Cambiano gli altri due — ed è lì che nasce il prodotto.</p>
+  </div>
+
+  <div class="callout">Stamattina abbiamo chiuso dicendo che <b>tutto quello che sta intorno al modello è l'harness</b>. Questa è la conseguenza pratica: <b>harness + interfaccia = prodotto</b>. Non stai scegliendo un'intelligenza diversa, stai scegliendo un ambiente diverso in cui farla lavorare.</div>
+
+  <h3>Come scegliere, in pratica</h3>
+  <div class="grid2">
+    <div class="pill"><div class="pk">Chat</div><h4>Tu esegui</h4><p>Ragioni, scrivi, analizzi. Claude produce testo, poi sei tu a portarlo dove serve. Nessun accesso ai tuoi file, se non quelli che carichi.</p></div>
+    <div class="pill"><div class="pk">Cowork &amp; Code</div><h4>Esegue lui</h4><p>Stesso motore agentico: pianifica, usa strumenti, verifica il proprio lavoro. Cowork lo fa su documenti e app, Code su una repository.</p></div>
+  </div>
+</section>
+
+<!-- 2 · il progetto -->
+<section id="s2" data-title="Il Progetto">
+  <div class="kicker"><span class="n">02</span> <span class="act">Il Progetto</span></div>
+  <h2>Il Progetto: il contesto <span class="em">che si riusa</span></h2>
+  <p class="lead">Un Progetto è un contenitore di contesto persistente. Ogni chat che apri al suo interno parte già con dentro le stesse cose. Nell'interfaccia sono tre pannelli — <b>Istruzioni</b>, <b>Memoria</b>, <b>Contesto</b> — e ognuno dei tre corrisponde a un pezzo della context window che abbiamo smontato stamattina.</p>
+
+  <div class="panel">
+    <span class="badge">Clicca un pannello a destra</span>
+    <div class="pj">
+      <div class="pj-bar">
+        <span class="pj-dot" style="background:#ec6a5e"></span>
+        <span class="pj-dot" style="background:#f4bf4f"></span>
+        <span class="pj-dot" style="background:#61c554"></span>
+        <span class="pj-crumb">Progetti / <b>titolo</b></span>
+      </div>
+      <div class="pj-body">
+        <div class="pj-title">titolo <span class="ic">⌁ ⋮</span></div>
+
+        <div>
+          <div class="pj-composer">
+            <div class="pj-ph">Scrivi un messaggio…</div>
+            <div class="pj-crow">
+              <span class="pj-plus">+</span>
+              <span class="pj-toggle"><span class="on">Chat</span><span>Cowork</span></span>
+              <span class="pj-model">Opus 4.8 <em>Alto ⌄</em></span>
+            </div>
+          </div>
+          <div class="pj-empty">
+            <span class="bub">💬</span>
+            Assegna un'attività a Claude e raccoglierà automaticamente il contesto del tuo progetto.
+          </div>
+        </div>
+
+        <div class="pj-side" id="pjSide">
+          <div class="pj-card" data-c="instr">
+            <div class="pj-ch"><h4>Istruzioni</h4><span class="act">+</span></div>
+            <p>Aggiungi istruzioni per personalizzare le risposte di Claude</p>
+          </div>
+          <div class="pj-card" data-c="memo">
+            <div class="pj-ch"><h4>Memoria</h4><span class="lock">🔒 Solo tu</span></div>
+            <p>La memoria del progetto apparirà qui dopo alcune chat.</p>
+          </div>
+          <div class="pj-card" data-c="ctx">
+            <div class="pj-ch"><h4>Contesto</h4><span class="act">+</span></div>
+            <p style="margin-bottom:0">
+              <span class="pj-drop">Aggiungi PDF, documenti o altro testo come riferimento per questo progetto.</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="pj-legend">La schermata di un Progetto su Claude. Tre pannelli, tre pezzi di contesto.</p>
+
+    <div class="map">
+      <div class="mapex" id="mapEx"></div>
+      <div>
+        <div class="ctxhd">La context window della prossima chat</div>
+        <div class="ctxwin" id="ctxWin"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">Le <b>Istruzioni</b> di un Progetto sono l'equivalente, in interfaccia, del <b>CLAUDE.md</b> che avete visto stamattina: un file di testo che descrive come si lavora qui, riletto a ogni sessione. Stesso ruolo, stesso posto in finestra. Cambia solo che uno lo scrivi in un campo e l'altro lo committi in una repo.</div>
+
+  <div class="quote">La «memoria» non è ricordo: è testo che qualcuno rimette in finestra al posto tuo.<br>Il Progetto è il posto dove decidi <em>quale</em> testo.</div>
+
+  <p>Ed è per questo che il Progetto è la risposta più diretta alla domanda di stamattina — <em>«come faccio a non ripetere ogni volta le stesse premesse?»</em>. Il contesto buono costa fatica a costruirlo: il Progetto è il posto dove lo costruisci una volta e lo riusi.</p>
+</section>
+
+<!-- 3 · MCP -->
+<section id="s3" data-title="MCP: il protocollo">
+  <div class="kicker"><span class="n">03</span> <span class="act">MCP</span></div>
+  <h2>MCP: il server <span class="em">si presenta</span> e <span class="em">accetta testo</span></h2>
+  <p class="lead">MCP (Model Context Protocol) è il protocollo con cui l'harness parla con il mondo esterno. L'idea è più semplice di quanto suggerisca il nome: chi vuole offrire capacità a un modello espone un <b>server</b>; il server, alla prima domanda, <b>dice a parole cosa sa fare</b>; e da quel momento riceve richieste in <b>testo</b> e restituisce <b>testo</b>.</p>
+
+  <div class="panel">
+    <span class="badge">La conversazione tra harness e server</span>
+    <div class="ctrls" style="margin-bottom:16px">
+      <button class="b acc" id="mcpS1">1 · «Chi sei? Cosa sai fare?»</button>
+      <button class="b" id="mcpS2" disabled>2 · Usa uno strumento</button>
+      <button class="b ghost" id="mcpR">Ricomincia</button>
+    </div>
+
+    <div class="mcp">
+      <div class="node host">
+        <div class="node-hd">Client — l'harness</div>
+        <div class="node-sub">Claude, Cowork, Code: chi ospita il modello</div>
+        <div class="ctxwin" id="mcpCtx">
+          <div class="blk sys"><div class="bh">System</div>Sei Claude. Rispondi in italiano.</div>
+          <div class="blk u"><div class="bh">Utente</div>Trova la mail di Rossi sul preventivo e salvala nella cartella Clienti.</div>
+        </div>
+      </div>
+
+      <div class="node srv">
+        <div class="node-hd">Server MCP</div>
+        <div class="node-sub">Chi espone le capacità: Gmail, Drive, Calendar, Linear, GitHub…</div>
+        <div id="mcpSrvIdle" style="font-size:13.5px;color:var(--muted);padding:24px 6px;text-align:center">In attesa. Il server non sa nulla di te finché non gli parli.</div>
+        <div class="step" id="mcpSrvTools">
+          <div class="tools">
+            <div class="tool">
+              <div class="tn">gmail__search_threads</div>
+              <div class="td">Cerca conversazioni nella casella dell'utente. Usalo quando serve trovare una mail per mittente, oggetto o contenuto.</div>
+              <div class="ta">query: string · limit: number</div>
+            </div>
+            <div class="tool">
+              <div class="tn">drive__create_file</div>
+              <div class="td">Crea un file su Google Drive in una cartella indicata. Usalo per salvare un documento o un allegato.</div>
+              <div class="ta">name: string · folder: string · content: string</div>
+            </div>
+          </div>
+          <p class="hint" style="margin-top:10px">Ogni strumento ha un <b>nome</b>, una <b>descrizione in linguaggio naturale</b> e i suoi <b>argomenti</b>. Nient'altro.</p>
+        </div>
+        <div class="step" id="mcpSrvRun">
+          <div class="txtbox"><span class="c">// il server esegue e risponde. In testo.</span>
+<span class="k">Trovata 1 conversazione</span>
+  da: <span class="s">m.rossi@studio.it</span>
+  oggetto: <span class="s">"Preventivo Q3 — revisione"</span>
+  allegato: <span class="s">preventivo_q3.pdf</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wire">
+      <span class="lbl" id="wireL">&nbsp;</span>
+      <span class="arrow" id="wireA"></span>
+    </div>
+
+    <div class="step" id="mcpStep1">
+      <div class="ctxhd">Cosa succede lato modello</div>
+      <div class="txtbox"><span class="c">// la risposta del server entra dritta nella context window</span>
+{
+  <span class="k">"tools"</span>: [
+    { <span class="k">"name"</span>: <span class="s">"gmail__search_threads"</span>,
+      <span class="k">"description"</span>: <span class="s">"Cerca conversazioni nella casella dell'utente. Usalo quando serve trovare una mail per mittente, oggetto o contenuto."</span> },
+    { <span class="k">"name"</span>: <span class="s">"drive__create_file"</span>,
+      <span class="k">"description"</span>: <span class="s">"Crea un file su Google Drive in una cartella indicata…"</span> }
+  ]
+}</div>
+      <p class="hint">Il modello non «impara» il server: <b>lo legge</b>. Quelle descrizioni occupano token nella finestra, esattamente come il resto. Sono ciò su cui deciderà.</p>
+    </div>
+
+    <div class="step" id="mcpStep2">
+      <div class="ctxhd">La chiamata che il modello produce</div>
+      <div class="txtbox"><span class="c">// il modello non esegue: propone. Con argomenti scritti in testo.</span>
+{ <span class="k">"tool"</span>: <span class="s">"gmail__search_threads"</span>,
+  <span class="k">"arguments"</span>: { <span class="k">"query"</span>: <span class="s">"Rossi preventivo"</span>, <span class="k">"limit"</span>: <span class="b">3</span> } }</div>
+      <p class="hint">È lo stesso schema di stamattina: <b>il modello propone, l'applicazione esegue</b>. MCP standardizza solo il formato della busta.</p>
+    </div>
+  </div>
+
+  <div class="keypt">
+    <div><h4>Il server si descrive</h4><p>Non serve scrivere un'integrazione per ogni coppia modello-servizio. Il server dichiara i propri strumenti a parole, e qualunque modello capace di leggere può usarli.</p></div>
+    <div><h4>L'interfaccia è testo</h4><p>Richieste e risposte sono testo strutturato. Nessuna libreria da importare lato modello: se sai descrivere cosa fai, sei già integrabile.</p></div>
+  </div>
+
+  <div class="callout">Ne discende una conseguenza pratica che vi tornerà utile per tutta la settimana: <b>la qualità di una descrizione è la qualità dell'integrazione</b>. Un tool con una descrizione vaga verrà usato male, o non verrà usato affatto. La documentazione non accompagna l'interfaccia: <b>è</b> l'interfaccia.</div>
+
+  <div class="srvlist">
+    <span class="srvchip">Gmail</span><span class="srvchip">Google Drive</span><span class="srvchip">Calendar</span>
+    <span class="srvchip">Linear</span><span class="srvchip">Notion</span><span class="srvchip">GitHub</span>
+    <span class="srvchip">Slack</span><span class="srvchip">…e centinaia di altri</span>
+  </div>
+</section>
+
+<!-- 4 · connettori vs MCP -->
+<section id="s4" data-title="Connettori vs MCP">
+  <div class="kicker"><span class="n">04</span> <span class="act">Connettori</span></div>
+  <h2>Un connettore <span class="em">è</span> un server MCP</h2>
+  <p class="lead">La domanda arriva sempre: «ma allora i connettori sono un'altra cosa rispetto a MCP?». No. Un connettore è un server MCP <b>impacchettato per essere usato da chiunque</b>: ospitato da qualcuno, con il login già gestito, verificato, e installabile con un click da una directory. Il protocollo sotto è lo stesso che abbiamo appena visto.</p>
+
+  <div class="panel">
+    <span class="badge">Tre strati, uno sopra l'altro</span>
+    <div class="lay">
+      <div class="lrow l1">
+        <div class="lt"><span class="idx">01</span> Il protocollo — <b>MCP</b></div>
+        <p>Le regole della conversazione: come un server dichiara i suoi strumenti, come si chiamano, che forma hanno le risposte. È uno standard aperto: non appartiene a un prodotto.</p>
+      </div>
+      <div class="lrow l2">
+        <div class="lt"><span class="idx">02</span> L'implementazione — <b>il server</b></div>
+        <p>Qualcuno scrive un server che parla MCP e lo mette davanti a Gmail, a Drive, al gestionale della tua azienda. Da solo, però, è ancora roba da installare e da autenticare a mano.</p>
+      </div>
+      <div class="lrow l3">
+        <div class="lt"><span class="idx">03</span> Il packaging — <b>il connettore</b></div>
+        <p>Lo stesso server, ospitato in remoto, con l'autenticazione (OAuth) già risolta, i permessi espliciti, la verifica di sicurezza e una voce in una directory. Lo attivi con un interruttore, in Claude, in Cowork o in Code.</p>
+      </div>
+    </div>
+
+    <table class="cmp">
+      <tr><th>&nbsp;</th><th>Server MCP «nudo»</th><th>Connettore</th></tr>
+      <tr><td>Che cos'è</td><td>Un programma che espone strumenti secondo il protocollo</td><td><b>Lo stesso programma</b>, distribuito come prodotto</td></tr>
+      <tr><td>Chi lo installa</td><td>Chi sa configurarlo</td><td>Chiunque, dalla directory, con un click</td></tr>
+      <tr><td>Chi lo ospita</td><td>Tu, dove decidi tu</td><td>Chi lo pubblica, in remoto</td></tr>
+      <tr><td>Autenticazione</td><td>Da gestire</td><td>Login e permessi già integrati</td></tr>
+      <tr><td>Cosa vede il modello</td><td colspan="2" style="background:var(--accent-soft);color:#5a3520"><b>Identico nei due casi</b>: un elenco di strumenti descritti a parole, e testo che va e viene</td></tr>
+    </table>
+    <p class="hint">L'ultima riga è il punto della lezione. Sopra al protocollo cambia la comodità, non la sostanza.</p>
+  </div>
+
+  <div class="callout">Il connettore <b>non è un'alternativa a MCP: è il modo in cui MCP arriva all'utente finale</b>. Quando attivi Gmail su Claude non stai usando «un'integrazione Google»: stai autorizzando un server MCP a descriversi al modello e a ricevere richieste in testo.</div>
+</section>
+
+<!-- 5 · hands on -->
+<section id="s5" data-title="Hands on">
+  <div class="kicker"><span class="n">05</span> <span class="act">Hands on</span></div>
+  <h2>Adesso lo <span class="em">costruiamo</span></h2>
+  <p class="lead">Un Progetto vero, con dentro un contesto vero e almeno un connettore attivo. L'obiettivo non è finire per primi: è vedere, alla fine, <b>che cosa è finito in finestra</b> e perché.</p>
+
+  <div class="steps">
+    <div class="stp"><div><h4>Crea il Progetto</h4><p>Dagli il nome di un lavoro che fai davvero, non un titolo di prova. Il contesto ha senso solo se è il tuo.</p></div></div>
+    <div class="stp"><div><h4>Scrivi le Istruzioni</h4><p>Chi sei, per chi lavori, come vuoi le risposte, cosa non deve mai fare. Poche righe, in italiano, imperative. È il tuo <code>CLAUDE.md</code>.</p></div></div>
+    <div class="stp"><div><h4>Carica il Contesto</h4><p>Due o tre documenti di riferimento, non venti. Un contesto affollato è un contesto peggiore: l'abbiamo visto stamattina.</p></div></div>
+    <div class="stp"><div><h4>Attiva un connettore</h4><p>Drive o Gmail. Guarda i <b>permessi</b> che ti chiede prima di dire di sì: quello che concedi, il modello lo può usare.</p></div></div>
+    <div class="stp"><div><h4>Fai una richiesta che li usi entrambi</h4><p>Qualcosa che richieda insieme i tuoi documenti e il connettore. Esempio: «confronta questo preventivo con le condizioni standard nel documento di riferimento».</p></div></div>
+    <div class="stp"><div><h4>Guarda cosa è successo</h4><p>Quali strumenti ha chiamato? Che testo gli è tornato indietro? Riesci a ricostruire la finestra che aveva davanti quando ha risposto?</p></div></div>
+  </div>
+
+  <div class="warn"><b>Due avvertenze, e sono le stesse di sempre.</b> Primo: ogni connettore attivo <b>occupa contesto</b> — le descrizioni dei suoi strumenti entrano in finestra a ogni chat, anche quando non servono. Tenerne dieci accesi «per sicurezza» peggiora le risposte. Secondo: un connettore <b>agisce a tuo nome</b>. Concedi i permessi che servono, non tutti quelli che puoi.</div>
+</section>
+
+<!-- 6 · takeaway -->
+<section id="s6" data-title="Da portare a casa">
+  <div class="kicker"><span class="n">06</span> <span class="act">Da portare a casa</span></div>
+  <h2>Tre idee da portare a casa</h2>
+  <div class="takes">
+    <div class="take"><div class="tn">01</div><h4>Il prodotto è l'harness</h4><p>Chat, Cowork e Code condividono il modello. Quando scegli tra loro non scegli un'intelligenza, scegli gli strumenti e i permessi che le dai.</p></div>
+    <div class="take"><div class="tn">02</div><h4>Il Progetto è contesto riusabile</h4><p>Istruzioni, Contesto, Memoria: gli stessi blocchi di stamattina, con un'interfaccia sopra. Costruiscilo una volta, riusalo ogni giorno.</p></div>
+    <div class="take"><div class="tn">03</div><h4>MCP è descrivere, non programmare</h4><p>Il server dice a parole cosa sa fare e scambia testo. Il connettore è quel server con il login già fatto. Sotto, il protocollo è lo stesso.</p></div>
+  </div>
+</section>
+
+<footer>
+  Supporto visivo alla lezione <b>"Hands on: Project &amp; Connettori"</b> · Giornata 2 · Continua da <b>"Introduzione agli Agenti e Context Engineering"</b>.<br>
+  <code>← →</code> per navigare tra le sezioni · file autonomo, funziona offline a schermo intero.
+</footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+
+  /* ---------- progress + dot nav ---------- */
+  var secs=$$("section"), dots=$("#dots");
+  secs.forEach(function(s){var a=document.createElement("a");a.href="#"+s.id;a.innerHTML='<span>'+(s.getAttribute("data-title")||"")+'</span>';dots.appendChild(a);});
+  var dotEls=$$("#dots a");
+  function onScroll(){
+    var h=document.documentElement, p=h.scrollTop/(h.scrollHeight-h.clientHeight);
+    $("#prog").style.width=(p*100)+"%";
+    var mid=h.scrollTop+window.innerHeight*0.4, cur=0;
+    secs.forEach(function(s,i){if(s.offsetTop<=mid)cur=i;});
+    dotEls.forEach(function(d,i){d.classList.toggle("on",i===cur);});
+  }
+  window.addEventListener("scroll",onScroll,{passive:true});
+  window.addEventListener("resize",onScroll);
+  function curSec(){var t=document.documentElement.scrollTop+window.innerHeight*0.4,c=0;secs.forEach(function(s,i){if(s.offsetTop<=t)c=i;});return c;}
+  document.addEventListener("keydown",function(e){
+    if(/input|textarea/i.test((e.target.tagName||"")))return;
+    if(e.key==="ArrowRight"){e.preventDefault();secs[Math.min(secs.length-1,curSec()+1)].scrollIntoView();}
+    if(e.key==="ArrowLeft"){e.preventDefault();secs[Math.max(0,curSec()-1)].scrollIntoView();}
+  });
+  onScroll();
+
+  /* ---------- s1 · un modello, tre prodotti ---------- */
+  (function(){
+    var P=[
+      {model:"<b>Lo stesso LLM.</b> Legge una finestra di contesto, predice il testo che segue. Non sa se sta parlando in una chat o in un terminale.",
+       harness:"<b>Minimo.</b> Ricerca web, analisi dei file che carichi, artifact. Nessun accesso al tuo computer: il ciclo si ferma dopo la risposta.",
+       ui:"<b>Una conversazione a turni.</b> Tu chiedi, Claude risponde, il risultato lo porti via tu."},
+      {model:"<b>Lo stesso LLM.</b> Legge una finestra di contesto, predice il testo che segue. Non sa se sta parlando in una chat o in un terminale.",
+       harness:"<b>Agentico.</b> Lo stesso motore di Claude Code: pianifica, apre file, esegue passi, verifica il proprio lavoro. Con i connettori raggiunge le tue app.",
+       ui:"<b>Un'app desktop.</b> Documenti, fogli, cartelle, task che vanno avanti mentre fai altro. Nessun terminale."},
+      {model:"<b>Lo stesso LLM.</b> Legge una finestra di contesto, predice il testo che segue. Non sa se sta parlando in una chat o in un terminale.",
+       harness:"<b>Agentico, orientato al codice.</b> Legge e scrive nella repository, esegue comandi, lancia i test, prepara i commit. Permessi che concedi tu, passo per passo.",
+       ui:"<b>Il terminale (o l'IDE).</b> Vedi i diff, approvi, correggi. Il posto dove il codice vive già."}
+    ];
+    var btns=$$("#ps button"), lm=$("#lvModel"), lh=$("#lvHarness"), lu=$("#lvUi");
+    function show(i){
+      lm.innerHTML=P[i].model+' <span class="flag">identico</span>';
+      lh.innerHTML=P[i].harness+' <span class="flag">cambia</span>';
+      lu.innerHTML=P[i].ui+' <span class="flag">cambia</span>';
+      [lh,lu].forEach(function(el){el.classList.remove("lvchg");void el.offsetWidth;el.classList.add("lvchg");});
+      btns.forEach(function(b,j){b.classList.toggle("on",j===i);});
+    }
+    btns.forEach(function(b,i){b.addEventListener("click",function(){show(i);});});
+    show(0);
+  })();
+
+  /* ---------- s2 · i tre pannelli del Progetto ---------- */
+  (function(){
+    var D={
+      instr:{
+        t:"Istruzioni",
+        p:"Il testo che descrive come si lavora in questo progetto: chi sei, per chi, con che tono, cosa non fare mai. Viene messo in cima alla finestra <b>a ogni nuova chat</b>, prima ancora che tu scriva qualcosa.",
+        l:"È il <b>system prompt</b> del progetto. Stessa funzione del <b>CLAUDE.md</b> in una repository: le regole della casa, rilette ogni volta.",
+        blk:'<div class="blk instr"><div class="bh">Istruzioni del progetto</div>Sei l\'assistente commerciale di aidea. Rispondi in italiano, tono professionale. Cita sempre l\'articolo del contratto quando parli di condizioni.</div>'
+      },
+      memo:{
+        t:"Memoria",
+        p:"Le note che il progetto accumula da solo, chat dopo chat: preferenze, fatti ricorrenti, decisioni. Non è un ricordo: è <b>testo salvato da qualche parte e rimesso in finestra</b> all'inizio della conversazione successiva.",
+        l:"È la stessa illusione che abbiamo smontato stamattina parlando della «memoria» delle chat. Qui è solo <b>esplicita e visibile</b>: puoi leggerla e cancellarla.",
+        blk:'<div class="blk memo"><div class="bh">Memoria del progetto</div>L\'utente lavora sui contratti quadro. Preferisce risposte in punti. Il cliente di riferimento è <code>Rossi &amp; Partners</code>.</div>'
+      },
+      ctx:{
+        t:"Contesto",
+        p:"I documenti di riferimento: PDF, contratti, note, listini. Non entrano tutti interi a ogni messaggio — vengono <b>recuperati quando servono</b> e iniettati nella finestra, un pezzo alla volta.",
+        l:"È il <b>materiale di riferimento</b>. Vale la regola di stamattina: più ne carichi, più diluisci. Due documenti giusti battono venti documenti «per sicurezza».",
+        blk:'<div class="blk ctx"><div class="bh">Contesto recuperato</div>Da <code>condizioni_standard.pdf</code>, art. 7: «Il pagamento è previsto a 60 giorni data fattura…»</div>'
+      }
+    };
+    var order=["instr","memo","ctx"];
+    var cards=$$("#pjSide .pj-card"), ex=$("#mapEx"), win=$("#ctxWin");
+    function render(sel){
+      var d=D[sel];
+      ex.innerHTML='<h4>'+d.t+'</h4><p>'+d.p+'</p><div class="lnk">'+d.l+'</div>';
+      var html='<div class="blk sys"><div class="bh">System</div>Sei Claude. Rispondi in italiano.</div>';
+      order.forEach(function(k){
+        html+=D[k].blk.replace('class="blk','class="blk'+(k===sel?"":" off"));
+      });
+      html+='<div class="blk u"><div class="bh">Utente</div>Il preventivo di Rossi rispetta le condizioni standard?</div>';
+      win.innerHTML=html;
+      cards.forEach(function(c){c.classList.toggle("on",c.getAttribute("data-c")===sel);});
+    }
+    cards.forEach(function(c){c.addEventListener("click",function(){render(c.getAttribute("data-c"));});});
+    render("instr");
+  })();
+
+  /* ---------- s3 · il dialogo MCP ---------- */
+  (function(){
+    var b1=$("#mcpS1"), b2=$("#mcpS2"), br=$("#mcpR");
+    var idle=$("#mcpSrvIdle"), tools=$("#mcpSrvTools"), run=$("#mcpSrvRun");
+    var st1=$("#mcpStep1"), st2=$("#mcpStep2");
+    var wireA=$("#wireA"), wireL=$("#wireL"), ctx=$("#mcpCtx");
+    var toolBlk='<div class="blk tool"><div class="bh">Strumenti disponibili</div>gmail__search_threads · drive__create_file<br>+ descrizioni in linguaggio naturale</div>';
+    var resBlk='<div class="blk a"><div class="bh">Risultato del tool</div>Trovata 1 conversazione da m.rossi@studio.it — «Preventivo Q3 — revisione», con allegato.</div>';
+    var base=ctx.innerHTML;
+
+    function reset(){
+      ctx.innerHTML=base;
+      idle.style.display="";
+      [tools,run,st1,st2].forEach(function(e){e.classList.remove("on");});
+      wireA.className="arrow"; wireL.innerHTML="&nbsp;";
+      b1.disabled=false; b2.disabled=true;
+    }
+    b1.addEventListener("click",function(){
+      b1.disabled=true;
+      wireL.textContent="tools/list →"; wireA.className="arrow live";
+      setTimeout(function(){
+        idle.style.display="none";
+        tools.classList.add("on");
+        wireL.textContent="← elenco degli strumenti"; wireA.className="arrow back live";
+        setTimeout(function(){
+          st1.classList.add("on");
+          ctx.insertAdjacentHTML("beforeend",toolBlk);
+          b2.disabled=false; b2.classList.add("acc");
+        },500);
+      },500);
+    });
+    b2.addEventListener("click",function(){
+      b2.disabled=true;
+      st2.classList.add("on");
+      wireL.textContent="chiamata al tool →"; wireA.className="arrow live";
+      setTimeout(function(){
+        run.classList.add("on");
+        wireL.textContent="← testo di risposta"; wireA.className="arrow back live";
+        ctx.insertAdjacentHTML("beforeend",resBlk);
+      },600);
+    });
+    br.addEventListener("click",reset);
+  })();
+})();
+</script>
+</body>
+</html>
