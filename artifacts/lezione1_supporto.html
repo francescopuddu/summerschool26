@@ -96,6 +96,7 @@
   .toggle button{font-family:inherit;font-size:13px;font-weight:600;background:var(--card-2);color:var(--ink-2);border:none;padding:8px 14px;cursor:pointer}
   .toggle button.on{background:var(--accent);color:#fff}
   .readout{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);margin-top:12px;display:flex;gap:16px;flex-wrap:wrap}
+  .readout.big{font-size:14.5px}
   .readout b{color:var(--ink)}
   .hint{font-size:13px;color:var(--muted);margin-top:12px;max-width:68ch}
   .cap{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:10px}
@@ -231,11 +232,14 @@
       <button data-op="scal">× scalare</button>
       <button data-op="dot">Dot product</button>
     </div>
-    <canvas id="cOps" height="260" style="margin-top:14px"></canvas>
+    <canvas id="cOps" height="360" style="margin-top:14px"></canvas>
     <div class="ctrls" id="scalCtrl" style="display:none">
       <div class="ctrl"><label>fattore k <b id="kv">2.0</b></label><input id="kSl" type="range" min="-2" max="2.5" step="0.1" value="2"></div>
     </div>
-    <div class="readout" id="opRead">a + b = (1.0, 2.5)</div>
+    <div class="ctrls" id="angCtrl">
+      <div class="ctrl"><label>angolo di b <b id="angv">116.6°</b></label><input id="angSl" type="range" min="0" max="360" step="0.1" value="116.6"></div>
+    </div>
+    <div class="readout big" id="opRead">a + b = (1.0, 2.5)</div>
   </div>
 
   <h3>Matrici e prodotto matriciale</h3>
@@ -526,41 +530,49 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
 
 /* ================= 03b VECTOR OPERATIONS ================= */
 (function(){const {c,fit,h}=C('cOps');let mode='sum';
- const a=[2,1],b=[-1,2];
+ const a=[2,1];const bLen=Math.hypot(-1,2);
+ function bVec(){const th=+document.getElementById('angSl').value*Math.PI/180;
+  return [bLen*Math.cos(th),bLen*Math.sin(th)];}
  function draw(){const x=fit();const cw=c.clientWidth,ch=h;x.clearRect(0,0,cw,ch);
-  const cx=cw*0.42,cy=ch*0.62,s=Math.min(cw,ch)/9;
+  const cx=cw*0.42,cy=ch*0.55,s=Math.min(cw/11,ch/6.2);
   function X(u){return cx+u*s;}function Y(u){return cy-u*s;}
   x.strokeStyle=CO.line;for(let i=-6;i<=6;i++){x.beginPath();x.moveTo(X(i),0);x.lineTo(X(i),ch);x.stroke();x.beginPath();x.moveTo(0,Y(i));x.lineTo(cw,Y(i));x.stroke();}
   x.strokeStyle=CO.lineS;x.lineWidth=1.3;x.beginPath();x.moveTo(0,Y(0));x.lineTo(cw,Y(0));x.moveTo(X(0),0);x.lineTo(X(0),ch);x.stroke();
   function arrow(from,to,col,lw){x.strokeStyle=col;x.lineWidth=lw||3;x.beginPath();x.moveTo(X(from[0]),Y(from[1]));x.lineTo(X(to[0]),Y(to[1]));x.stroke();
    const ang=Math.atan2(-(Y(to[1])-Y(from[1])),X(to[0])-X(from[0]));x.fillStyle=col;x.beginPath();
-   x.moveTo(X(to[0]),Y(to[1]));x.lineTo(X(to[0])-10*Math.cos(ang-0.4),Y(to[1])+10*Math.sin(ang-0.4));x.lineTo(X(to[0])-10*Math.cos(ang+0.4),Y(to[1])+10*Math.sin(ang+0.4));x.fill();}
+   x.moveTo(X(to[0]),Y(to[1]));x.lineTo(X(to[0])-13*Math.cos(ang-0.4),Y(to[1])+13*Math.sin(ang-0.4));x.lineTo(X(to[0])-13*Math.cos(ang+0.4),Y(to[1])+13*Math.sin(ang+0.4));x.fill();}
   const rd=document.getElementById('opRead');
+  const b=bVec();
+  document.getElementById('angv').textContent=(+document.getElementById('angSl').value).toFixed(1)+'°';
   if(mode==='sum'){
    arrow([0,0],a,CO.accent);arrow(a,[a[0]+b[0],a[1]+b[1]],CO.amber);arrow([0,0],[a[0]+b[0],a[1]+b[1]],CO.teal);
-   x.fillStyle=CO.accent;x.font='700 12px '+mono();x.fillText('a',X(a[0])+6,Y(a[1])+4);
-   x.fillStyle=CO.amber;x.fillText('b',X(a[0]+b[0]/2)+6,Y(a[1]+b[1]/2));
-   x.fillStyle=CO.teal;x.fillText('a+b',X(a[0]+b[0])-6,Y(a[1]+b[1])-8);
-   rd.innerHTML='a + b = ('+(a[0]+b[0]).toFixed(1)+', '+(a[1]+b[1]).toFixed(1)+') — coda di b attaccata alla testa di a';
+   x.fillStyle=CO.accent;x.font='700 16px '+mono();x.fillText('a',X(a[0])+8,Y(a[1])+5);
+   x.fillStyle=CO.amber;x.fillText('b',X(a[0]+b[0]/2)+8,Y(a[1]+b[1]/2));
+   x.fillStyle=CO.teal;x.fillText('a+b',X(a[0]+b[0])-8,Y(a[1]+b[1])-10);
+   rd.innerHTML='b = ('+b[0].toFixed(1)+', '+b[1].toFixed(1)+') · a + b = <b>('+(a[0]+b[0]).toFixed(1)+', '+(a[1]+b[1]).toFixed(1)+')</b> — coda di b attaccata alla testa di a';
   } else if(mode==='scal'){
    const k=+document.getElementById('kSl').value;
    arrow([0,0],[a[0]*k,a[1]*k],CO.teal,4);arrow([0,0],a,CO.accent);
-   x.fillStyle=CO.accent;x.font='700 12px '+mono();x.fillText('a',X(a[0])+6,Y(a[1])+4);
-   x.fillStyle=CO.teal;x.fillText(k.toFixed(1)+'·a',X(a[0]*k)+6,Y(a[1]*k));
+   x.fillStyle=CO.accent;x.font='700 16px '+mono();x.fillText('a',X(a[0])+8,Y(a[1])+5);
+   x.fillStyle=CO.teal;x.fillText(k.toFixed(1)+'·a',X(a[0]*k)+8,Y(a[1]*k));
    document.getElementById('kv').textContent=k.toFixed(1);
    rd.innerHTML=k.toFixed(1)+'·a = ('+(a[0]*k).toFixed(1)+', '+(a[1]*k).toFixed(1)+') — stessa direzione, lunghezza scalata';
   } else {
    arrow([0,0],a,CO.accent);arrow([0,0],b,CO.amber);
    const dp=a[0]*b[0]+a[1]*b[1];
-   x.fillStyle=CO.accent;x.font='700 12px '+mono();x.fillText('a',X(a[0])+6,Y(a[1])+4);
-   x.fillStyle=CO.amber;x.fillText('b',X(b[0])-14,Y(b[1]));
-   rd.innerHTML='a · b = ('+a[0]+'·'+b[0]+') + ('+a[1]+'·'+b[1]+') = <b>'+dp+'</b> — un solo numero';
+   x.fillStyle=CO.accent;x.font='700 16px '+mono();x.fillText('a',X(a[0])+8,Y(a[1])+5);
+   x.fillStyle=CO.amber;x.fillText('b',X(b[0])-18,Y(b[1]));
+   const seg=Math.abs(dp)<0.15?'i due vettori sono perpendicolari → zero'
+     :(dp>0?'stessa direzione di fondo → positivo':'direzioni opposte → negativo');
+   rd.innerHTML='a · b = ('+a[0].toFixed(1)+'·'+b[0].toFixed(1)+') + ('+a[1].toFixed(1)+'·'+b[1].toFixed(1)+') = <b>'+dp.toFixed(2)+'</b> — un solo numero: '+seg;
   }
  }
  document.querySelectorAll('#opTog button').forEach(btn=>btn.addEventListener('click',()=>{
    mode=btn.dataset.op;document.querySelectorAll('#opTog button').forEach(b=>b.classList.toggle('on',b===btn));
-   document.getElementById('scalCtrl').style.display=(mode==='scal')?'flex':'none';draw();}));
+   document.getElementById('scalCtrl').style.display=(mode==='scal')?'flex':'none';
+   document.getElementById('angCtrl').style.display=(mode==='scal')?'none':'flex';draw();}));
  document.getElementById('kSl').addEventListener('input',draw);
+ document.getElementById('angSl').addEventListener('input',draw);
  onResize(draw);requestAnimationFrame(draw);
 })();
 
