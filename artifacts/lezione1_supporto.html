@@ -75,6 +75,10 @@
 
   #cMat{cursor:default}
   #cMat:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:10px}
+  #lossHint{top:32px;right:auto;left:12px;font-size:11.5px}
+  #cLoss{cursor:grab;touch-action:none}
+  #cLoss.grabbing{cursor:grabbing}
+  #cLoss:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:10px}
 
   .ctrls{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-top:14px}
   .ctrl{display:flex;flex-direction:column;gap:4px;min-width:150px;flex:1}
@@ -97,6 +101,7 @@
   .hint{font-size:13px;color:var(--muted);margin-top:12px;max-width:68ch}
   .cap{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:10px}
   canvas{display:block;width:100%;border-radius:12px;background:var(--card-2);border:1px solid var(--line)}
+  .stack{display:grid;gap:22px}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   @media(max-width:760px){.grid2{grid-template-columns:1fr}}
   .chip{display:inline-block;font-family:var(--mono);font-size:12px;padding:4px 10px;border-radius:6px;border:1px solid var(--line);margin:3px 4px 0 0;background:var(--card-2)}
@@ -287,16 +292,17 @@
   <h2>Come si trovano i pesi</h2>
   <p class="lead">Nessuna formula magica. Solo un'idea: parti a caso, misura <b>quanto sbagli</b>, e <b>scivola verso l'errore minimo</b>. Passo dopo passo. È il <em>gradient descent</em>.</p>
   <p>Un esempio concreto: le temperature di primavera. Ogni giorno una misura, con un po' di rumore. Cerchiamo la retta che le descrive meglio. Premi <b>Allena</b>: a sinistra la retta si sistema, a destra una pallina scende sulla "superficie dell'errore" verso il fondo.</p>
-  <div class="panel">    <div class="grid2">
+  <div class="panel">    <div class="stack">
       <div>
         <div class="cap" style="margin:0 0 6px">il dataset e la retta</div>
-        <canvas id="cFit" height="240"></canvas>
-        <div class="readout">y = <b id="fitW">-0.10</b>·giorno + <b id="fitB">20.0</b> · errore <b id="fitL">—</b></div>
+        <canvas id="cFit" height="340"></canvas>
+        <div class="readout">y = <b id="fitW">-0.25</b>·giorno + <b id="fitB">19.0</b> · errore medio <b id="fitL">—</b> °C</div>
       </div>
-      <div>
+      <div class="canvas-hint">
         <div class="cap" style="margin:0 0 6px">la superficie dell'errore</div>
-        <canvas id="cLoss" height="280"></canvas>
-        <div class="cap" style="margin-top:6px">la pallina scivola sulla superficie verso il minimo (più scuro = errore minore).</div>
+        <div class="clickcue" id="lossHint">Trascina per <b>ruotare</b> ↻</div>
+        <canvas id="cLoss" height="560" tabindex="0" aria-label="Superficie dell'errore in funzione di W e b: ruotala trascinando il mouse o con le frecce"></canvas>
+        <div class="cap" style="margin-top:6px">ogni punto del piano è una coppia (W, b); l'altezza è l'errore che quella retta commette. La pallina scivola nel canyon fino al fondo.</div>
       </div>
     </div>
     <div class="ctrls" style="margin-top:16px">
@@ -788,9 +794,14 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
 (function(){const fitC=C('cFit'),lossC=C('cLoss');
  const data=[];let seed=7;function rnd(){seed=(seed*9301+49297)%233280;return seed/233280;}
  for(let d=0;d<=60;d+=2){data.push([d,0.17*d+10+(rnd()-0.5)*4.5]);}
- const trueW=0.17,trueB=10;let W=-0.1,b=20,epoch=0,anim=null;
+ let W=-0.25,b=19,epoch=0,anim=null;
  function loss(w,bb){let s=0;data.forEach(p=>{const e=(w*p[0]+bb)-p[1];s+=e*e;});return s/data.length;}
+ function rmse(w,bb){return Math.sqrt(loss(w,bb));} // stessa quota usata dalle figure del libro
  function grad(){let gw=0,gb=0;data.forEach(p=>{const e=(W*p[0]+b)-p[1];gw+=2*e*p[0];gb+=2*e;});return[gw/data.length,gb/data.length];}
+ /* minimo esatto (minimi quadrati): dove la pallina deve finire */
+ const mD=data.reduce((s,p)=>s+p[0],0)/data.length, mT=data.reduce((s,p)=>s+p[1],0)/data.length;
+ let sXY=0,sXX=0;data.forEach(p=>{sXY+=(p[0]-mD)*(p[1]-mT);sXX+=(p[0]-mD)*(p[0]-mD);});
+ const bestW=sXY/sXX, bestB=mT-bestW*mD;
  function drawFit(){const x=fitC.fit();const cw=fitC.c.clientWidth,ch=fitC.h;const pad=34;x.clearRect(0,0,cw,ch);
   function X(d){return pad+d/60*(cw-pad-14);}function Y(t){return (ch-pad)-(t-4)/24*(ch-pad-14);}
   x.strokeStyle=CO.line;x.beginPath();x.moveTo(pad,ch-pad);x.lineTo(cw-14,ch-pad);x.moveTo(pad,ch-pad);x.lineTo(pad,10);x.stroke();
@@ -799,76 +810,182 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   x.strokeStyle=CO.accent;x.lineWidth=3;x.beginPath();x.moveTo(X(0),Y(b));x.lineTo(X(60),Y(W*60+b));x.stroke();
   document.getElementById('fitW').textContent=W.toFixed(2);
   document.getElementById('fitB').textContent=b.toFixed(1);
-  document.getElementById('fitL').textContent=loss(W,b).toFixed(2);
+  document.getElementById('fitL').textContent=rmse(W,b).toFixed(2);
  }
  const Wm=-0.3,WM=0.5,bm=4,bM=22;
- /* --- superficie 3D della loss (proiezione assonometrica, stile figura del libro) --- */
- const AZ=-0.96,EL=0.61,cA=Math.cos(AZ),sA=Math.sin(AZ),sE=Math.sin(EL);
- const Lmax=Math.max(loss(Wm,bm),loss(Wm,bM),loss(WM,bm),loss(WM,bM)); // MSE convessa: max ai vertici
- let path=[[W,b,loss(W,b)]];
+ /* --- superficie 3D dell'errore (RMSE, come le figure del libro) ---
+    quota = radice dell'errore quadratico medio: e' la stessa scala dei gradi
+    del pannello di sinistra, e non schiaccia la conca come farebbe l'MSE. */
+ const NG=48, GS=6;                 // nodi della griglia; passo del reticolo disegnato
+ const Z=[];let Rmin=Infinity,Rmax=-Infinity;
+ for(let i=0;i<=NG;i++){Z[i]=[];for(let j=0;j<=NG;j++){
+   const r=rmse(Wm+i/NG*(WM-Wm), bm+j/NG*(bM-bm));Z[i][j]=r;
+   if(r<Rmin)Rmin=r;if(r>Rmax)Rmax=r;}}
+ const HZ=1.15;                     // altezza del box, in unita' del piano (W,b)
+ let AZ=-0.60,EL=0.72;              // camera: ruotabile col drag
+ let path=[[W,b,rmse(W,b)]];
  let geo=null;
- function calcGeo(cw,ch){const sx=(cw-70)/2.8, sy=Math.min(sx*0.62,(ch-120)/1.6), zs=ch*0.30;
-  return {sx,sy,zs,cx:cw/2,cy:ch-36-0.8*sy};}
- function P(w,bb,l,g){const xN=((w-Wm)/(WM-Wm))*2-1, yN=((bb-bm)/(bM-bm))*2-1, zN=Math.min(1,l/Lmax);
-  const rx=xN*cA-yN*sA, ry=xN*sA+yN*cA;
-  return [g.cx+rx*g.sx, g.cy+ry*sE*g.sy-zN*g.zs];}
- let lossBg=null,lossBgW=0,lossBgH=0;
- function buildLoss(cw,ch){const dpr=Math.max(1,window.devicePixelRatio||1);
+
+ const VIR=[[68,1,84],[71,44,122],[59,81,139],[44,113,142],[33,144,141],[39,173,129],[92,200,99],[170,220,50],[253,231,37]];
+ function viridis(t){t=t<0?0:t>1?1:t;const x=t*(VIR.length-1),i=Math.min(VIR.length-2,Math.floor(x)),f=x-i,a=VIR[i],c=VIR[i+1];
+  return [a[0]+(c[0]-a[0])*f, a[1]+(c[1]-a[1])*f, a[2]+(c[2]-a[2])*f];}
+ function zN(r){return (r-Rmin)/(Rmax-Rmin);}
+ function uP(xN,yN,zn,g){return [xN*g.cA-yN*g.sA, (xN*g.sA+yN*g.cA)*g.sE - zn*HZ];}
+ function PN(xN,yN,zn,g){const u=uP(xN,yN,zn,g);return [g.cx+u[0]*g.s, g.cy+u[1]*g.s];}
+ function P(w,bb,r,g){return PN(((w-Wm)/(WM-Wm))*2-1, ((bb-bm)/(bM-bm))*2-1, zN(r), g);}
+ function depth(xN,yN,g){return xN*g.sA+yN*g.cA;} // > = piu' vicino all'osservatore
+ /* la scala si ricava dal bounding box degli 8 vertici proiettati: cosi' la
+    superficie riempie il riquadro e non ne esce mai, a qualunque angolo. */
+ function calcGeo(cw,ch){
+  const g={cA:Math.cos(AZ),sA:Math.sin(AZ),sE:Math.sin(EL),s:1,cx:0,cy:0};
+  const padL=52,padR=70,padT=18,padB=52;
+  let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;
+  [-1,1].forEach(xN=>[-1,1].forEach(yN=>[0,1].forEach(zn=>{const u=uP(xN,yN,zn,g);
+   if(u[0]<x0)x0=u[0];if(u[0]>x1)x1=u[0];if(u[1]<y0)y0=u[1];if(u[1]>y1)y1=u[1];})));
+  const bw=cw-padL-padR, bh=ch-padT-padB;
+  g.s=Math.min(bw/(x1-x0), bh/(y1-y0));
+  g.cx=padL+(bw-(x1-x0)*g.s)/2-x0*g.s;
+  g.cy=padT+(bh-(y1-y0)*g.s)/2-y0*g.s;
+  return g;}
+
+ /* pavimento + spigolo verticale dell'errore: stanno dietro, si disegnano prima della mesh */
+ function drawFloor(ox,g){
+  const c=[PN(-1,-1,0,g),PN(1,-1,0,g),PN(1,1,0,g),PN(-1,1,0,g)];
+  ox.beginPath();ox.moveTo(c[0][0],c[0][1]);for(let i=1;i<4;i++)ox.lineTo(c[i][0],c[i][1]);ox.closePath();
+  ox.fillStyle='rgba(26,26,26,.035)';ox.fill();
+  ox.strokeStyle=CO.line;ox.lineWidth=1;ox.stroke();
+  const cn=[[-1,-1],[1,-1],[1,1],[-1,1]];
+  let far=0,fd=1e9;cn.forEach((q,i)=>{const d=depth(q[0],q[1],g);if(d<fd){fd=d;far=i;}});
+  const q=cn[far], p0=PN(q[0],q[1],0,g), p1=PN(q[0],q[1],1,g);
+  ox.strokeStyle=CO.lineS;ox.lineWidth=1.2;
+  ox.beginPath();ox.moveTo(p0[0],p0[1]);ox.lineTo(p1[0],p1[1]);ox.stroke();
+  ox.fillStyle=CO.mut;ox.font='9.5px '+mono();ox.textAlign='right';ox.textBaseline='middle';
+  [0,0.5,1].forEach(t=>{const p=PN(q[0],q[1],t,g);
+   ox.beginPath();ox.moveTo(p[0]-4,p[1]);ox.lineTo(p[0]+4,p[1]);ox.stroke();
+   ox.fillText((Rmin+t*(Rmax-Rmin)).toFixed(0),p[0]-7,p[1]);});}
+
+ /* assi W e b: sulle due coste in primo piano, disegnati sopra la mesh */
+ function axis(ox,g,horiz,fix,vals,toN,dp,label,ctr){
+  const at=(v)=>horiz?PN(toN(v),fix,0,g):PN(fix,toN(v),0,g);
+  const e0=horiz?PN(-1,fix,0,g):PN(fix,-1,0,g), e1=horiz?PN(1,fix,0,g):PN(fix,1,0,g);
+  ox.strokeStyle=CO.lineS;ox.lineWidth=1.4;
+  ox.beginPath();ox.moveTo(e0[0],e0[1]);ox.lineTo(e1[0],e1[1]);ox.stroke();
+  ox.textAlign='center';ox.textBaseline='middle';
+  const out=(p,d)=>{let dx=p[0]-ctr[0],dy=p[1]-ctr[1];const l=Math.hypot(dx,dy)||1;return [p[0]+dx/l*d,p[1]+dy/l*d];};
+  vals.forEach(v=>{const p=at(v),t1=out(p,5),t2=out(p,15);
+   ox.strokeStyle=CO.lineS;ox.lineWidth=1;
+   ox.beginPath();ox.moveTo(p[0],p[1]);ox.lineTo(t1[0],t1[1]);ox.stroke();
+   ox.fillStyle=CO.mut;ox.font='9.5px '+mono();ox.fillText(v.toFixed(dp),t2[0],t2[1]);});
+  const m=[(e0[0]+e1[0])/2,(e0[1]+e1[1])/2], lp=out(m,38);
+  ox.fillStyle=CO.ink2;ox.font='italic 15px '+sans();ox.fillText(label,lp[0],lp[1]);}
+
+ function drawAxes(ox,g){
+  const c=[PN(-1,-1,0,g),PN(1,-1,0,g),PN(1,1,0,g),PN(-1,1,0,g)];
+  const ctr=[(c[0][0]+c[2][0])/2,(c[0][1]+c[2][1])/2];
+  const fw=(c[0][1]+c[1][1])>(c[2][1]+c[3][1])?-1:1;   // costa piu' in basso = in primo piano
+  const fb=(c[0][1]+c[3][1])>(c[1][1]+c[2][1])?-1:1;
+  // tick interni: gli estremi cadrebbero sull'angolo condiviso dai due assi e si sovrapporrebbero
+  axis(ox,g,true, fw,[-0.2,0,0.2,0.4],v=>((v-Wm)/(WM-Wm))*2-1,1,'W',ctr);
+  axis(ox,g,false,fb,[6,10,14,18],    v=>((v-bm)/(bM-bm))*2-1,0,'b',ctr);}
+
+ function drawBar(ox,cw,ch){
+  const x=cw-40,y=30,w=13,h=ch-96;
+  for(let i=0;i<h;i++){const c=viridis(1-i/h);
+   ox.fillStyle='rgb('+(c[0]|0)+','+(c[1]|0)+','+(c[2]|0)+')';ox.fillRect(x,y+i,w,1);}
+  ox.strokeStyle=CO.line;ox.lineWidth=1;ox.strokeRect(x+.5,y+.5,w,h);
+  ox.fillStyle=CO.mut;ox.font='9.5px '+mono();ox.textBaseline='middle';
+  ox.textAlign='left';
+  ox.fillText(Rmax.toFixed(0),x+w+5,y);
+  ox.fillText(Rmin.toFixed(1),x+w+5,y+h);
+  ox.textAlign='center';ox.fillText('errore',x+w/2,y-13);ox.fillText('°C',x+w/2,y+h+14);}
+
+ let lossBg=null,lossKey='';
+ function buildLoss(cw,ch,step){
+  const dpr=Math.max(1,window.devicePixelRatio||1);
   const off=document.createElement('canvas');off.width=Math.round(cw*dpr);off.height=Math.round(ch*dpr);
   const ox=off.getContext('2d');ox.setTransform(dpr,0,0,dpr,0,0);
   const g=calcGeo(cw,ch);geo=g;
-  // assi alla base
-  const a0=P(WM,bm,0,g),a1=P(Wm,bm,0,g),a2=P(Wm,bM,0,g);
-  ox.strokeStyle=CO.lineS;ox.lineWidth=1.2;
-  ox.beginPath();ox.moveTo(a0[0],a0[1]);ox.lineTo(a1[0],a1[1]);ox.lineTo(a2[0],a2[1]);ox.stroke();
-  ox.fillStyle=CO.mut;ox.font='11px '+mono();ox.textAlign='center';
-  const lw=P((Wm+WM)/2,bm,0,g);ox.fillText('W',lw[0]+10,lw[1]+18);
-  const lb=P(Wm,(bm+bM)/2,0,g);ox.fillText('b',lb[0]-18,lb[1]+14);
-  ox.save();ox.translate(13,ch*0.40);ox.rotate(-Math.PI/2);ox.textAlign='center';ox.fillText('errore',0,0);ox.restore();
-  // mesh: quad ordinati dal più lontano al più vicino (painter's algorithm)
-  const N=32;const quads=[];
-  for(let i=0;i<N;i++)for(let j=0;j<N;j++){
-   const w0=Wm+i/N*(WM-Wm),w1=Wm+(i+1)/N*(WM-Wm);
-   const b0=bm+j/N*(bM-bm),b1=bm+(j+1)/N*(bM-bm);
-   const zAvg=(loss(w0,b0)+loss(w1,b0)+loss(w1,b1)+loss(w0,b1))/4/Lmax;
-   const xN=((w0+w1)/2-Wm)/(WM-Wm)*2-1, yN=((b0+b1)/2-bm)/(bM-bm)*2-1;
-   // pendenza locale lungo w → shading direzionale (luce da sinistra): dà volume alla scodella
-   const bc=(b0+b1)/2, sh=(loss(w0,bc)-loss(w1,bc))/Lmax;
-   quads.push({d:xN*sA+yN*cA, z:zAvg, sh,
-    pts:[P(w0,b0,loss(w0,b0),g),P(w1,b0,loss(w1,b0),g),P(w1,b1,loss(w1,b1),g),P(w0,b1,loss(w0,b1),g)]});}
+  drawFloor(ox,g);
+  // mesh: quad ordinati dal piu' lontano al piu' vicino (painter's algorithm)
+  const quads=[],LT=[-0.42,-0.55,0.72];
+  for(let i=0;i<NG;i+=step)for(let j=0;j<NG;j+=step){
+   const i2=Math.min(NG,i+step), j2=Math.min(NG,j+step);
+   const xa=i/NG*2-1, xb=i2/NG*2-1, ya=j/NG*2-1, yb=j2/NG*2-1;
+   const z00=zN(Z[i][j]),z10=zN(Z[i2][j]),z11=zN(Z[i2][j2]),z01=zN(Z[i][j2]);
+   // normale vera (cross product dei due edge): shading Lambert, da' volume alle pareti
+   const ux=xb-xa, uz=(z10-z00)*HZ, vy=yb-ya, vz=(z01-z00)*HZ;
+   let nx=-uz*vy, ny=-ux*vz, nz=ux*vy;
+   const nl=Math.hypot(nx,ny,nz)||1;
+   const lam=Math.max(0,(nx*LT[0]+ny*LT[1]+nz*LT[2])/nl);
+   quads.push({d:depth((xa+xb)/2,(ya+yb)/2,g), z:(z00+z10+z11+z01)/4, k:0.70+0.55*lam,
+    gu:i%GS===0, gv:j%GS===0,
+    pts:[PN(xa,ya,z00,g),PN(xb,ya,z10,g),PN(xb,yb,z11,g),PN(xa,yb,z01,g)]});}
   quads.sort((q1,q2)=>q1.d-q2.d);
-  quads.forEach(q=>{const t=Math.pow(1-q.z,1.35);
-   const k=Math.max(0.74,Math.min(1.16,1+q.sh*2.4));
-   const r=Math.floor(Math.min(255,lerp(233,67,t)*k)),gg=Math.floor(Math.min(255,lerp(230,56,t)*k)),bl=Math.floor(Math.min(255,lerp(221,202,t)*k));
-   ox.fillStyle='rgb('+r+','+gg+','+bl+')';
-   ox.strokeStyle='rgba(95,94,90,.20)';ox.lineWidth=0.6;
-   ox.beginPath();ox.moveTo(q.pts[0][0],q.pts[0][1]);for(let k=1;k<4;k++)ox.lineTo(q.pts[k][0],q.pts[k][1]);
-   ox.closePath();ox.fill();ox.stroke();});
-  lossBg=off;lossBgW=cw;lossBgH=ch;}
- function invalidateLoss(){lossBg=null;}
+  quads.forEach(q=>{const c=viridis(q.z);
+   const col='rgb('+Math.min(255,c[0]*q.k|0)+','+Math.min(255,c[1]*q.k|0)+','+Math.min(255,c[2]*q.k|0)+')';
+   ox.beginPath();ox.moveTo(q.pts[0][0],q.pts[0][1]);for(let t=1;t<4;t++)ox.lineTo(q.pts[t][0],q.pts[t][1]);ox.closePath();
+   ox.fillStyle=col;ox.fill();
+   ox.strokeStyle=col;ox.lineWidth=0.7;ox.stroke();   // chiude le cuciture tra quad adiacenti
+   if(q.gu||q.gv){ox.strokeStyle='rgba(255,255,255,.28)';ox.lineWidth=0.9;ox.beginPath();
+    if(q.gu){ox.moveTo(q.pts[0][0],q.pts[0][1]);ox.lineTo(q.pts[3][0],q.pts[3][1]);}
+    if(q.gv){ox.moveTo(q.pts[0][0],q.pts[0][1]);ox.lineTo(q.pts[1][0],q.pts[1][1]);}
+    ox.stroke();}});
+  drawAxes(ox,g);
+  drawBar(ox,cw,ch);
+  lossBg=off;}
+
+ let dragging=false,lastX=0,lastY=0,pending=false;
  function drawLoss(){const x=lossC.fit();const cw=lossC.c.clientWidth,ch=lossC.h;
-  if(!lossBg||lossBgW!==cw||lossBgH!==ch)buildLoss(cw,ch);
-  x.drawImage(lossBg,0,0,cw,ch);
+  const step=dragging?2:1;
+  const key=cw+'x'+ch+'|'+AZ.toFixed(3)+'|'+EL.toFixed(3)+'|'+step;
+  if(!lossBg||lossKey!==key){buildLoss(cw,ch,step);lossKey=key;}
   const g=geo;
-  // anello del minimo
-  const pm=P(trueW,trueB,loss(trueW,trueB),g);
-  x.strokeStyle=CO.teal;x.lineWidth=2;x.beginPath();x.arc(pm[0],pm[1],7,0,7);x.stroke();
-  // traccia della discesa (arancione, come la pallina)
-  if(path.length>1){x.strokeStyle='rgba(180,83,9,.8)';x.lineWidth=2;x.beginPath();
+  x.clearRect(0,0,cw,ch);
+  x.drawImage(lossBg,0,0,cw,ch);
+  // anello del minimo: segue la superficie, non e' un cerchio appiccicato allo schermo
+  x.strokeStyle=CO.teal;x.lineWidth=2;x.beginPath();
+  for(let t=0;t<=36;t++){const a=t/36*Math.PI*2;
+   const w=bestW+Math.cos(a)*(WM-Wm)*0.04, bb=bestB+Math.sin(a)*(bM-bm)*0.04;
+   const p=P(w,bb,rmse(w,bb),g);t?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]);}
+  x.closePath();x.stroke();
+  // traccia della discesa
+  if(path.length>1){x.strokeStyle='rgba(180,83,9,.9)';x.lineWidth=2.2;x.beginPath();
    path.forEach((p,i)=>{const q=P(p[0],p[1],p[2],g);i?x.lineTo(q[0],q[1]):x.moveTo(q[0],q[1]);});x.stroke();}
   // stelo verticale + pallina
-  const l=loss(W,b);const pb=P(W,b,l,g),pz=P(W,b,0,g);
-  x.setLineDash([3,3]);x.strokeStyle='rgba(95,94,90,.5)';x.lineWidth=1;x.beginPath();x.moveTo(pb[0],pb[1]);x.lineTo(pz[0],pz[1]);x.stroke();x.setLineDash([]);
-  x.fillStyle=CO.amber;x.strokeStyle='#fff';x.lineWidth=2;x.beginPath();x.arc(pb[0],pb[1],6.5,0,7);x.fill();x.stroke();
- }
+  const pb=P(W,b,rmse(W,b),g), pz=P(W,b,Rmin,g);
+  x.setLineDash([3,3]);x.strokeStyle='rgba(26,26,26,.4)';x.lineWidth=1;
+  x.beginPath();x.moveTo(pb[0],pb[1]);x.lineTo(pz[0],pz[1]);x.stroke();x.setLineDash([]);
+  x.fillStyle=CO.amber;x.strokeStyle='#fff';x.lineWidth=2;x.beginPath();x.arc(pb[0],pb[1],6.5,0,7);x.fill();x.stroke();}
+ function queueLoss(){if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;drawLoss();});}
+
+ /* rotazione della camera: drag col mouse, frecce da tastiera */
+ const el=lossC.c, hint=document.getElementById('lossHint');
+ el.addEventListener('pointerdown',e=>{dragging=true;lastX=e.clientX;lastY=e.clientY;
+  el.setPointerCapture(e.pointerId);el.classList.add('grabbing');if(hint)hint.classList.add('off');});
+ el.addEventListener('pointermove',e=>{if(!dragging)return;
+  AZ+=(e.clientX-lastX)*0.008;
+  EL=Math.max(0.18,Math.min(1.25,EL-(e.clientY-lastY)*0.006));
+  lastX=e.clientX;lastY=e.clientY;queueLoss();});
+ function endDrag(){if(!dragging)return;dragging=false;el.classList.remove('grabbing');queueLoss();}
+ el.addEventListener('pointerup',endDrag);el.addEventListener('pointercancel',endDrag);
+ el.addEventListener('keydown',e=>{let h=0,v=0;
+  if(e.key==='ArrowLeft')h=-1;else if(e.key==='ArrowRight')h=1;
+  else if(e.key==='ArrowUp')v=1;else if(e.key==='ArrowDown')v=-1;else return;
+  e.preventDefault();AZ+=h*0.12;EL=Math.max(0.18,Math.min(1.25,EL+v*0.08));
+  if(hint)hint.classList.add('off');queueLoss();});
+
  function redraw(){drawFit();drawLoss();document.getElementById('epoch').textContent=epoch;}
- function step(){const[gw,gb]=grad();W-=0.00045*gw;b-=0.02*gb;epoch++;
-   path.push([W,b,loss(W,b)]);if(path.length>500)path.shift();
+ const SLOW=3;let tick=0;   // un passo di gradiente ogni 3 frame: stessa traiettoria, un terzo della velocita'
+ function step(){
+   if(tick++%SLOW){anim=requestAnimationFrame(step);return;}
+   const[gw,gb]=grad();W-=0.00045*gw;b-=0.02*gb;epoch++;
+   path.push([W,b,rmse(W,b)]);if(path.length>500)path.shift();
    redraw();
    if(epoch<400&&(Math.abs(gw)>0.02||Math.abs(gb)>0.02))anim=requestAnimationFrame(step);else anim=null;}
- document.getElementById('trainBtn').addEventListener('click',()=>{if(anim)return;step();});
- document.getElementById('resetBtn').addEventListener('click',()=>{if(anim){cancelAnimationFrame(anim);anim=null;}W=-0.3+Math.random()*0.7;b=6+Math.random()*12;epoch=0;path=[[W,b,loss(W,b)]];redraw();});
- onResize(()=>{invalidateLoss();redraw();});requestAnimationFrame(redraw);
+ document.getElementById('trainBtn').addEventListener('click',()=>{if(anim)return;tick=0;step();});
+ document.getElementById('resetBtn').addEventListener('click',()=>{if(anim){cancelAnimationFrame(anim);anim=null;}
+   W=-0.28+Math.random()*0.7;b=5+Math.random()*16;epoch=0;tick=0;path=[[W,b,rmse(W,b)]];redraw();});
+ onResize(()=>{lossBg=null;lossKey='';redraw();});requestAnimationFrame(redraw);
 })();
 
 /* ================= 06a LA RELU ================= */
