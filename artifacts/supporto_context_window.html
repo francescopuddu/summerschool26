@@ -57,12 +57,6 @@
   .scrollcue .a{animation:bob 1.6s ease-in-out infinite}
   @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
 
-  .pillars{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:30px;max-width:760px}
-  @media(max-width:720px){.pillars{grid-template-columns:1fr}}
-  .pill{border:1px solid var(--line);border-radius:14px;padding:16px 18px;background:var(--card)}
-  .pill .pk{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
-  .pill h4{margin:0 0 4px;font-size:17px}
-  .pill p{font-size:13.5px;color:var(--ink-2);margin:0}
 
   .callout{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;
     padding:16px 20px;margin:22px 0;font-size:17px;color:#5a3520}
@@ -285,41 +279,38 @@
   .asm-prev .xph{color:#8fb8e6}
   .asm-empty{color:#6a6a64;font-style:italic}
 
-  /* progressive discovery */
-  .pd{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  @media(max-width:720px){.pd{grid-template-columns:1fr}}
-  .pd-col h4{margin:0 0 10px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-  .pd-item{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-family:var(--mono);font-size:12.5px;background:var(--card-2);transition:all .35s;display:flex;justify-content:space-between;align-items:center;gap:8px}
-  .pd-item.ghost{opacity:.4}
-  .pd-item .tagx{font-family:var(--sans);font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:20px}
-  .tag-always{background:var(--purple-soft);color:#4b45b0}
-  .tag-doc{background:var(--blue-soft);color:#1c5a94}
-  .tag-skill{background:var(--green-soft);color:#12664b}
-  .pd-ctx{border:1.5px solid var(--accent);border-radius:12px;padding:12px;min-height:140px;background:var(--accent-soft)}
-  .pd-ctx .pd-item{background:#fff;border-color:#eccdbf;opacity:1}
-  .pd-tok{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:700;margin-top:8px}
-  .pd-log{font-size:13px;color:var(--ink-2);margin-top:14px;min-height:22px}
-  .pd-log b{color:var(--accent)}
+  /* euler artefatti (scrivania / schedario) */
+  .eu{position:relative;height:330px;margin-top:6px}
+  .eu-set{position:absolute;top:0;bottom:0;width:60%;border:2px solid;border-radius:50% / 42%}
+  .eu-desk{left:0;border-color:var(--accent);background:rgba(216,90,48,.06)}
+  .eu-cab{right:0;border-color:var(--blue);background:rgba(47,126,201,.06)}
+  .eu-lab{position:absolute;top:16px;left:0;right:0;text-align:center;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+  .eu-desk .eu-lab{color:var(--accent);right:32%}
+  .eu-cab .eu-lab{color:#1c5a94;left:32%}
+  .eu-chip{position:absolute;transform:translate(-50%,-50%);background:var(--card);border:1.5px solid var(--line-strong);border-radius:12px;padding:9px 13px;width:186px;text-align:center;font-size:13.5px;font-weight:700;box-shadow:0 10px 24px -18px rgba(0,0,0,.45)}
+  .eu-chip small{display:block;font-weight:400;font-size:11.5px;line-height:1.35;color:var(--ink-2);margin-top:3px}
+  .eu-chip code{font-family:var(--mono);font-size:.9em}
+  .eu-chip.c-claude{border-color:var(--purple);color:#3d379a;background:var(--purple-soft)}
+  .eu-chip.c-conv{border-color:#e0b9a5;color:#5a3520;background:var(--accent-soft)}
+  .eu-chip.c-skill{border-color:var(--green);color:#12664b;background:var(--green-soft)}
+  .eu-chip.c-doc{border-color:#a8c8e8;color:#1c5a94;background:var(--blue-soft)}
+  .eu-chip.c-claude{left:22%;top:41%}
+  .eu-chip.c-conv{left:22%;top:70%}
+  .eu-chip.c-skill{left:50%;top:54%}
+  .eu-chip.c-doc{left:78%;top:55%}
+  @media(max-width:720px){
+    .eu{height:520px}
+    .eu-set{width:auto;left:0;right:0;border-radius:42% / 50%}
+    .eu-desk{top:0;bottom:38%}
+    .eu-cab{top:38%;bottom:0}
+    .eu-desk .eu-lab{right:0;top:14px}
+    .eu-cab .eu-lab{left:0;top:auto;bottom:14px}
+    .eu-chip.c-claude{left:50%;top:16%}
+    .eu-chip.c-conv{left:50%;top:33%}
+    .eu-chip.c-skill{left:50%;top:56%}
+    .eu-chip.c-doc{left:50%;top:80%}
+  }
 
-  /* supervisor / worker */
-  .sw-stage{display:flex;flex-direction:column;align-items:center;gap:14px}
-  .sw-node{border:1px solid var(--line);border-radius:12px;padding:12px 16px;text-align:center;background:var(--card-2);min-width:180px}
-  .sw-sup{border-color:var(--accent);background:var(--accent-soft)}
-  .sw-title{font-weight:700;font-size:14px}.sw-sub{font-size:11px;color:var(--muted);font-family:var(--mono)}
-  .sw-workers{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
-  .sw-w{border:1px solid var(--line);border-radius:12px;padding:10px 12px;width:180px;background:var(--card-2)}
-  .sw-wbar{height:8px;background:var(--paper-2);border-radius:5px;overflow:hidden;margin-top:8px}
-  .sw-wfill{height:100%;width:0;background:var(--blue);border-radius:5px;transition:width .6s linear}
-  .sw-wtok{font-family:var(--mono);font-size:11px;color:var(--ink-2);margin-top:5px;display:flex;justify-content:space-between}
-  .sw-ret{color:var(--green);font-weight:700;opacity:0;transition:opacity .3s}
-  .sw-ret.on{opacity:1}
-  .sw-readout{display:flex;gap:20px;flex-wrap:wrap;font-family:var(--mono);font-size:13px;margin-top:6px}
-  .sw-readout b{font-size:18px}
-  .sw-readout .big-tot{color:var(--blue)}.sw-readout .big-sup{color:var(--accent)}
-  .levers{display:flex;flex-direction:column;gap:8px;margin-top:16px}
-  .lever{display:flex;gap:12px;align-items:baseline;font-size:14.5px;border-bottom:1px dashed var(--line);padding-bottom:8px}
-  .lever code{font-family:var(--mono);font-size:12.5px;background:var(--paper-2);color:var(--accent);padding:1px 7px;border-radius:5px;white-space:nowrap}
-  .lever span{color:var(--ink-2)}
 
   /* takeaways */
   .takes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px}
@@ -348,10 +339,6 @@
   <h1><span>Agenti</span> &amp; <span>Context&nbsp;Engineering</span></h1>
   <div class="sub">Un LLM, da solo, sa fare una cosa sola: completare testo. Tutto il resto lo costruiamo noi.</div>
   <p class="lead">Non ha memoria tra una richiesta e l'altra, non vede nulla al di fuori di ciò che gli passiamo, non può agire sul mondo. Da questo unico limite nasce tutto ciò che vediamo oggi.</p>
-  <div class="pillars">
-    <div class="pill"><div class="pk">Agenti</div><h4>Estendere il modello</h4><p>Gli diamo strumenti per informarsi e agire, e un ciclo per usarli. Smette di «solo rispondere» e inizia a <em>fare</em>.</p></div>
-    <div class="pill"><div class="pk">Context engineering</div><h4>Governare uno spazio finito</h4><p>Tutto passa dalla context window, che ha una capacità massima. Cosa ci mettiamo, in che ordine, cosa ne teniamo fuori.</p></div>
-  </div>
   <div class="scrollcue"><span class="a">↓</span> Scorri, oppure usa le frecce ← →</div>
 </section>
 
@@ -699,40 +686,17 @@
     <div class="dcard long"><h4>🗄️ Lo schedario</h4><p>La <b>memoria esterna</b>: file su disco a cui l'agente torna quando serve. Persistente, non occupa la scrivania finché non lo apri.</p></div>
   </div>
   <p class="lead">Gli artefatti stanno a diverse «distanze» dal modello — cioè quanto sono vicini alla scrivania:</p>
-  <div class="grid2">
-    <div class="panel" style="margin-top:8px">
-      <div style="font-size:13px;font-weight:800;color:#4b45b0;letter-spacing:.06em;text-transform:uppercase">CLAUDE.md · sempre presente</div>
-      <p style="margin:8px 0 0;font-size:15px;color:var(--ink-2)">Il file che l'agente legge <b>sempre all'avvio</b>: convenzioni, comandi, struttura del progetto, cosa fare e non fare. È il contesto di base che viaggia col repo. Sta <b>sulla scrivania</b>.</p>
-    </div>
-    <div class="panel" style="margin-top:8px">
-      <div style="font-size:13px;font-weight:800;color:#1c5a94;letter-spacing:.06em;text-transform:uppercase">Documentazione · on-demand</div>
-      <p style="margin:8px 0 0;font-size:15px;color:var(--ink-2)">Markdown esplicativi: informazione <b>su</b> qualcosa (architettura, policy, decisioni). Vive <b>nello schedario</b> e viene caricata <b>solo quando serve</b>.</p>
-    </div>
-  </div>
-  <div class="panel" style="margin-top:16px;border-color:var(--green);background:var(--green-soft)">
-    <div style="font-size:13px;font-weight:800;color:#12664b;letter-spacing:.06em;text-transform:uppercase">Skill · il know-how, on-demand</div>
-    <p style="margin:8px 0 0;font-size:16px;color:#124e3c">Una skill è know-how su <b>come</b> fare qualcosa: un <code>SKILL.md</code> (più eventuali script) che l'agente carica <b>solo quando il task lo richiede</b>. Documentazione = «cosa»; skill = «come».</p>
-  </div>
-  <div class="callout"><b>Progressive discovery.</b> L'agente non ingoia tutto in una volta: parte da <code>CLAUDE.md</code>, esplora i file (vede i <em>nomi</em>, non i contenuti) e tira dentro una skill o un doc <b>solo al momento del bisogno</b>. Scopre il contesto per gradi — così la scrivania resta ordinata.</div>
   <div class="panel">
-    <span class="badge">guarda l'agente scoprire il contesto un pezzo alla volta</span>
-    <div class="pd">
-      <div class="pd-col">
-        <h4>Repository (sul disco)</h4>
-        <div id="pd-shelf"></div>
-      </div>
-      <div class="pd-col">
-        <h4>Context window dell'agente</h4>
-        <div class="pd-ctx" id="pd-ctx"></div>
-        <div class="pd-tok" id="pd-tok">0 token nel contesto</div>
-      </div>
+    <span class="badge">dove sta ogni artefatto</span>
+    <div class="eu">
+      <div class="eu-set eu-desk"><span class="eu-lab">🗒️ Scrivania · context window</span></div>
+      <div class="eu-set eu-cab"><span class="eu-lab">🗄️ Schedario · file su disco</span></div>
+      <div class="eu-chip c-claude"><code>CLAUDE.md</code><small>letto <b>sempre all'avvio</b>: convenzioni, comandi, struttura del progetto</small></div>
+      <div class="eu-chip c-conv">Conversazione<small>i messaggi e i tool result della sessione in corso</small></div>
+      <div class="eu-chip c-skill"><code>SKILL.md</code><small>know-how su <b>come</b> fare — sale sulla scrivania solo quando il task lo richiede</small></div>
+      <div class="eu-chip c-doc">Documentazione<small>informazione su <b>cosa</b> (architettura, policy) — letta on-demand</small></div>
     </div>
-    <div class="pd-log" id="pd-log">Premi <b>Avvia task</b>: «Pianifica la manutenzione del convoglio ETR 400 #12 e verifica la procedura di sicurezza sul binario».</div>
-    <div class="ctrls" style="margin-top:12px">
-      <button class="b acc" id="pd-next">Avvia task →</button>
-      <button class="b ghost" id="pd-auto">▶ Auto</button>
-      <button class="b ghost" id="pd-reset">Reset</button>
-    </div>
+    <div class="hint"><code>CLAUDE.md</code> e la conversazione vivono <b>sulla scrivania</b>: sono sempre davanti al modello. La documentazione resta <b>nello schedario</b> finché qualcuno non la apre. La skill sta <b>a cavallo</b>: è un file nello schedario, ma è progettata per salire sulla scrivania da sola, nel momento del bisogno.</div>
   </div>
 </section>
 
@@ -785,43 +749,12 @@ plan requires ambiguous choices, <span class="xtag">ask the user</span>."
 the relevant tools <span class="xtag">in parallel</span>. Do not call them one by one."</div>
     <div class="hint">Nota il tema: <b>proattività controllata</b>, <b>pianificare prima di agire</b>, <b>mettere in discussione le richieste ambigue</b>, <b>parallelizzare</b>. Nulla di magico: sono istruzioni scritte, testate e limate.</div>
   </div>
-  <div class="callout"><b>La definizione completa, adesso sì.</b> Un <b>agente</b> è un modello — predizione più reasoning — con i <b>tool</b> per agire sul mondo, un <b>contesto</b> governato e una <b>memoria</b> esterna su file, tenuti insieme dall'harness. Abbiamo visto come funziona il sistema; ora vediamo come si usa bene.</div>
+  <div class="callout"><b>La definizione completa, adesso sì.</b> Un <b>agente</b> = <b>LLM + reasoning + tool + memoria</b>: il modello che predice, il ragionamento che pianifica, i tool per agire sul mondo e una memoria esterna su file — tenuti insieme dall'harness. Abbiamo visto come funziona il sistema; ora vediamo come si usa bene.</div>
 </section>
 
-<!-- 18 · gestione attiva + subagenti -->
-<section id="s13" data-title="Gestione attiva e subagenti">
-  <div class="kicker"><span class="n">13</span> <span class="act">Gestione attiva del contesto</span></div>
-  <h2>Tenere la scrivania in ordine</h2>
-  <p class="lead">Ricordi il gancio dell'agent loop? Ogni azione e ogni risultato <b>si accumulano nel contesto</b>: su task lunghi la scrivania si riempie da sola, soprattutto per via dei <b>tool result</b> voluminosi. Servono leve per gestirla attivamente:</p>
-  <div class="levers">
-    <div class="lever"><code>/compact</code><span><b>Compaction.</b> Riassumo la conversazione e riparto con un contesto ripulito, conservando le decisioni importanti.</span></div>
-    <div class="lever"><code>note-taking</code><span><b>Appunti strutturati.</b> L'agente scrive note in un file fuori dal contesto (un TODO, uno scratchpad) e le rilegge quando serve.</span></div>
-    <div class="lever"><code>just-in-time</code><span><b>Retrieval on-demand.</b> Carico un dato solo nel momento in cui serve, invece di pre-caricare tutto in anticipo.</span></div>
-    <div class="lever"><code>/clear</code><span><b>Reset esplicito.</b> Task nuovo = conversazione nuova. Il modo più semplice per non trascinarsi contesto inutile.</span></div>
-  </div>
-  <p class="lead" style="margin-top:26px">E la leva più potente per i task grossi: <b>i subagenti</b>. Un supervisore scompone il lavoro e lo delega a worker specializzati, <b>ognuno con la propria scrivania pulita</b>. Ogni worker può bruciare decine di migliaia di token esplorando, ma restituisce solo un riassunto distillato.</p>
-  <div class="panel">
-    <span class="badge">avvia il flusso supervisor → worker → sintesi</span>
-    <div class="sw-stage">
-      <div class="sw-node sw-sup" id="sw-sup"><div class="sw-title">Supervisore</div><div class="sw-sub" id="sw-sup-sub">in attesa del task</div></div>
-      <div style="font-size:20px;color:var(--line-strong)">▼</div>
-      <div class="sw-workers" id="sw-workers"></div>
-    </div>
-    <div class="sw-readout" style="margin-top:18px">
-      <span>Lavoro totale svolto: <b class="big-tot" id="sw-tot">0</b> token</span>
-      <span>Rientrati nel supervisore: <b class="big-sup" id="sw-sup-tok">0</b> token</span>
-    </div>
-    <div class="ctrls" style="margin-top:14px">
-      <button class="b acc" id="sw-run">Avvia il lavoro</button>
-      <button class="b ghost" id="sw-reset">Reset</button>
-    </div>
-    <div class="hint">Il lavoro totale è enorme, ma il contesto del supervisore resta piccolo e ordinato: ecco perché i subagenti scalano dove un singolo agente si intasa.</div>
-  </div>
-</section>
-
-<!-- 14 · workflow vs agente -->
-<section id="s14" data-title="Workflow vs agente">
-  <div class="kicker"><span class="n">14</span> <span class="act">Workflow vs agente</span></div>
+<!-- 13 · workflow vs agente -->
+<section id="s13" data-title="Workflow vs agente">
+  <div class="kicker"><span class="n">13</span> <span class="act">Workflow vs agente</span></div>
   <h2>Non tutto deve essere un agente</h2>
   <p class="lead">Autonomia non è sempre la scelta giusta. Spesso un <b>percorso fisso</b> è più prevedibile e più sicuro. Vale la pena distinguere due modi di usare un LLM:</p>
   <div class="wf">
@@ -832,8 +765,8 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
 </section>
 
 <!-- CLOSING -->
-<section id="s15" data-title="Da portare a casa">
-  <div class="kicker"><span class="n">15</span> Da portare a casa</div>
+<section id="s14" data-title="Da portare a casa">
+  <div class="kicker"><span class="n">14</span> Da portare a casa</div>
   <h2>Tre idee da portare a casa</h2>
   <p class="lead">Un LLM da solo completa testo. Tutto ciò che lo rende utile — estenderlo e governarlo — ruota attorno a un'unica risorsa: il contesto.</p>
   <div class="takes">
@@ -1241,93 +1174,6 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
     render();
   })();
 
-  /* ---------- progressive discovery ---------- */
-  (function(){
-    var shelf=$("#pd-shelf"),ctx=$("#pd-ctx"),tokEl=$("#pd-tok"),log=$("#pd-log"),nextB=$("#pd-next"),autoB=$("#pd-auto"),resetB=$("#pd-reset");
-    var items=[
-      {id:"claude",name:"CLAUDE.md",tag:"always",cls:"tag-always",lab:"sempre",tok:1200},
-      {id:"index",name:"indice dei file (glob/grep)",tag:"doc",cls:"tag-doc",lab:"solo i nomi",tok:300},
-      {id:"skill",name:"skills/manutenzione-programmata/SKILL.md",tag:"skill",cls:"tag-skill",lab:"skill",tok:2500},
-      {id:"doc",name:"docs/procedura-sicurezza-binario.md",tag:"doc",cls:"tag-doc",lab:"doc",tok:1800}
-    ];
-    var steps=[
-      {msg:'Avvio: l\'agente carica <b>CLAUDE.md</b> — il contesto sempre presente.',add:"claude"},
-      {msg:'Esplora il repository con <b>glob/grep</b>: vede i <b>nomi</b> dei file, non i contenuti.',add:"index"},
-      {msg:'Il task riguarda una manutenzione programmata → carica <b>la skill manutenzione</b> (il know-how, on-demand).',add:"skill"},
-      {msg:'Serve una regola di sicurezza sul binario → carica <b>il doc procedura</b> just-in-time.',add:"doc"},
-      {msg:'Fine: nel contesto è entrato <b>solo ciò che serviva</b>, un pezzo alla volta.',add:null}
-    ];
-    var inCtx=[],step=0,timer=null;
-    function draw(){
-      shelf.innerHTML="";
-      items.forEach(function(it){
-        var used=inCtx.indexOf(it.id)>=0;
-        var d=document.createElement("div");d.className="pd-item"+(used?" ghost":"");
-        d.innerHTML='<span>'+it.name+'</span><span class="tagx '+it.cls+'">'+it.lab+'</span>';
-        shelf.appendChild(d);
-      });
-      ctx.innerHTML="";var tot=0;
-      if(!inCtx.length){ctx.innerHTML='<div style="color:#9a6b4c;font-size:13px;font-family:var(--mono)">vuoto — in attesa del task</div>';}
-      inCtx.forEach(function(id){var it=items.filter(function(x){return x.id===id})[0];tot+=it.tok;
-        var d=document.createElement("div");d.className="pd-item";
-        d.innerHTML='<span>'+it.name+'</span><span class="tagx '+it.cls+'">+'+it.tok+'</span>';ctx.appendChild(d);});
-      tokEl.textContent=fmt(tot)+" token nel contesto";
-    }
-    function go(){
-      if(step>=steps.length)return false;
-      var s=steps[step];log.innerHTML=s.msg;if(s.add)inCtx.push(s.add);step++;draw();
-      nextB.textContent="Prossimo passo →";nextB.disabled=step>=steps.length;return step<steps.length;
-    }
-    nextB.onclick=function(){go();};
-    autoB.onclick=function(){
-      if(timer){clearInterval(timer);timer=null;autoB.textContent="▶ Auto";return;}
-      if(step>=steps.length){step=0;inCtx=[];draw();}
-      autoB.textContent="❚❚ Pausa";timer=setInterval(function(){if(!go()){clearInterval(timer);timer=null;autoB.textContent="▶ Auto";}},1300);
-    };
-    resetB.onclick=function(){if(timer){clearInterval(timer);timer=null;autoB.textContent="▶ Auto";}step=0;inCtx=[];draw();log.innerHTML='Premi <b>Avvia task</b>: «Pianifica la manutenzione del convoglio ETR 400 #12 e verifica la procedura di sicurezza sul binario».';nextB.textContent="Avvia task →";nextB.disabled=false;};
-    draw();
-  })();
-
-  /* ---------- supervisor / worker ---------- */
-  (function(){
-    var wrap=$("#sw-workers"),supSub=$("#sw-sup-sub"),totEl=$("#sw-tot"),supTokEl=$("#sw-sup-tok"),runB=$("#sw-run"),resetB=$("#sw-reset");
-    var workers=[
-      {name:"Worker · Guasti",sub:"interroga lo storico guasti",work:52000,ret:1600},
-      {name:"Worker · Log di bordo",sub:"legge i log diagnostici",work:38000,ret:1400},
-      {name:"Worker · Manuali",sub:"scorre i manuali di manutenzione",work:31000,ret:1200}
-    ];
-    var els=[],timers=[];
-    function build(){
-      wrap.innerHTML="";els=[];
-      workers.forEach(function(w){
-        var d=document.createElement("div");d.className="sw-w";
-        d.innerHTML='<div class="sw-title" style="font-size:13px">'+w.name+'</div><div class="sw-sub">'+w.sub+'</div>'+
-          '<div class="sw-wbar"><div class="sw-wfill"></div></div>'+
-          '<div class="sw-wtok"><span class="cur">0k</span><span class="sw-ret">↑ ≈'+Math.round(w.ret/1000*10)/10+'k</span></div>';
-        wrap.appendChild(d);els.push(d);
-      });
-    }
-    function clearTimers(){timers.forEach(clearTimeout);timers=[];}
-    function reset(){clearTimers();build();supSub.textContent="in attesa del task";totEl.textContent="0";supTokEl.textContent="0";runB.disabled=false;runB.textContent="Avvia il lavoro";}
-    function run(){
-      clearTimers();build();runB.disabled=true;runB.textContent="in corso…";supSub.textContent="delega ai worker…";
-      var tot=0,sup=0;
-      workers.forEach(function(w,i){
-        var fill=els[i].querySelector(".sw-wfill"),cur=els[i].querySelector(".cur"),ret=els[i].querySelector(".sw-ret");
-        timers.push(setTimeout(function(){fill.style.background="var(--blue)";fill.style.width="100%";
-          var t0=Date.now(),dur=1200;
-          var iv=setInterval(function(){var p=Math.min(1,(Date.now()-t0)/dur);cur.textContent=Math.round(w.work/1000*p)+"k";if(p>=1)clearInterval(iv);},60);
-          timers.push(iv);
-        },300+i*250));
-        timers.push(setTimeout(function(){ret.classList.add("on");fill.style.background="var(--green)";
-          tot+=w.work;sup+=w.ret;totEl.textContent=fmt(tot);supTokEl.textContent=fmt(sup);
-        },1700+i*250));
-      });
-      timers.push(setTimeout(function(){supSub.textContent="sintesi dei risultati → risposta finale ✓";runB.disabled=false;runB.textContent="Rilancia";},1700+workers.length*250+400));
-    }
-    runB.onclick=run;resetB.onclick=reset;
-    build();
-  })();
 
   /* ---------- reasoning toggle ---------- */
   (function(){
