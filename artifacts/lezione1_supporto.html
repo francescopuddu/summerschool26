@@ -147,7 +147,7 @@
   <div class="kicker"><span class="n">01</span> Il neurone</div>
   <h2>Tutto comincia da un neurone</h2>
   <p class="lead">L'IA di oggi nasce da un'idea vecchia di decenni: costruire algoritmi che apprendono <em>imitando il cervello</em>. E il mattone del cervello è il neurone.</p>
-  <p>Nel cervello ogni neurone è "in ascolto": raccoglie segnali dagli altri attraverso i <b>dendriti</b>, li integra nel <b>soma</b>, e se lo stimolo è abbastanza intenso <b>si attiva</b>, mandando il segnale lungo l'<b>assone</b> fino alla <b>sinapsi</b>, il punto di contatto col neurone successivo. Ciò che conta non è il singolo neurone, ma <em>come sono connessi</em>: 86 miliardi di neuroni, ~100 mila miliardi di sinapsi.</p>
+  <p>Nel cervello ogni neurone è "in ascolto": raccoglie segnali dagli altri attraverso i <b>dendriti</b>, li integra nel <b>soma</b>, e se lo stimolo è abbastanza intenso <b>si attiva</b>, mandando il segnale lungo l'<b>assone</b> fino alla <b>sinapsi</b>, la giunzione col neurone successivo. I due neuroni non si toccano mai: il segnale attraversa una fessura di pochi nanometri, portato dai neurotrasmettitori. Ciò che conta non è il singolo neurone, ma <em>come sono connessi</em>: 86 miliardi di neuroni, ~100 mila miliardi di sinapsi.</p>
 
   <div class="panel">
     <div class="phd"><strong>Anatomia di un neurone</strong></div>
@@ -419,23 +419,30 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   x.fillStyle=CO.amberSoft;x.strokeStyle=CO.amber;x.lineWidth=2;roundRect(x,axStart+cw*0.04,cy-9,cw*0.28,18,9);x.fill();x.stroke();
   // signal arrow
   x.fillStyle=CO.amber;const ax=axStart+cw*0.04+cw*0.14;x.beginPath();x.moveTo(ax-6,cy-5);x.lineTo(ax+6,cy);x.lineTo(ax-6,cy+5);x.fill();
-  // terminal + synapse
+  // terminal + synapse: bottone presinaptico, fessura, membrana postsinaptica
   x.strokeStyle=CO.lineS;x.beginPath();x.moveTo(axStart+cw*0.04+cw*0.28,cy);x.lineTo(axEnd,cy);x.stroke();
-  x.fillStyle=CO.accent;x.beginPath();x.arc(axEnd,cy,7,0,7);x.fill();
-  x.setLineDash([4,3]);x.strokeStyle=CO.accent;x.lineWidth=1.5;x.beginPath();x.arc(axEnd+cw*0.045,cy,13,0,7);x.stroke();x.setLineDash([]);
+  const bR=7,cleft=12,postX=axEnd+bR+cleft;
+  x.fillStyle=CO.accent;x.beginPath();x.arc(axEnd,cy,bR,0,7);x.fill();
+  // neurotrasmettitori nella fessura
+  x.fillStyle=CO.accent;[[0.3,-3],[0.55,3],[0.8,-2]].forEach(p=>{x.beginPath();x.arc(axEnd+bR+cleft*p[0],cy+p[1],1.8,0,7);x.fill();});
   // downstream neuron
   x.fillStyle='#efeafb';x.strokeStyle=CO.accent;x.lineWidth=2;x.beginPath();x.arc(cw*0.92,cy,somaR*0.7,0,7);x.fill();x.stroke();
-  x.strokeStyle=CO.accent;x.beginPath();x.moveTo(axEnd+cw*0.058,cy);x.lineTo(cw*0.92-somaR*0.7,cy);x.stroke();
+  x.strokeStyle=CO.accent;x.beginPath();x.moveTo(postX,cy);x.lineTo(cw*0.92-somaR*0.7,cy);x.stroke();
+  x.beginPath();x.moveTo(postX,cy-5);x.lineTo(postX,cy+5);x.stroke();
+  // alone: la sinapsi è la giunzione, non il vuoto
+  const synX=axEnd+(bR+cleft)/2;
+  x.setLineDash([4,3]);x.strokeStyle=CO.accent;x.lineWidth=1.5;x.beginPath();x.arc(synX,cy,20,0,7);x.stroke();x.setLineDash([]);
   // labels
   x.fillStyle=CO.ink;x.font='italic 13px '+sans();x.textAlign='center';
   x.fillText('dendriti',dOrigin[0]-cw*0.08,cy-ch*0.30);
   x.fillText('soma',somaX,cy+somaR+18);
   x.fillText('assone',axStart+cw*0.18,cy-32);
-  x.fillStyle=CO.accent;x.fillText('sinapsi',axEnd+cw*0.045,cy-24);
+  x.fillStyle=CO.accent;x.fillText('sinapsi',synX,cy-30);
   x.fillStyle=CO.mut;x.font='11px '+sans();
   x.fillText('ricevono i segnali',dOrigin[0]-cw*0.08,cy-ch*0.30+15);
   x.fillText('integra e decide',somaX,cy+somaR+32);
   x.fillText('trasmette a valle',axStart+cw*0.18,cy-18);
+  x.fillText('i neuroni non si toccano',synX,cy+34);
  }
  onResize(draw);requestAnimationFrame(draw);
 })();
