@@ -241,7 +241,7 @@
   .wf .a1{border-top:3px solid var(--blue)}.wf .a2{border-top:3px solid var(--accent)}
 
   /* illustrazioni delle due card */
-  .ill{background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:10px 8px 6px;margin:2px 0 14px}
+  .ill{background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:12px 8px 8px;margin:18px 0 16px}
   .ill svg{display:block;width:100%;height:auto}
   .ill .leg{font-size:11px;color:var(--muted);text-align:center;margin-top:6px;letter-spacing:.01em}
   .ill .leg b{font-weight:700;color:var(--ink-2)}
@@ -816,7 +816,7 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
     <div class="wcard a1">
       <div class="wk">Workflow · percorso fisso</div>
       <div class="ill">
-        <svg viewBox="0 0 340 156" role="img" aria-label="Un grafo di passi collegati: alcuni nodi sono deterministici, altri contengono un modello; i dati scorrono lungo un percorso disegnato in anticipo.">
+        <svg viewBox="0 0 360 190" role="img" aria-label="Un grafo di passi collegati con un bivio e un ricongiungimento: alcuni nodi sono deterministici, altri contengono un modello; i dati scorrono lungo un percorso disegnato in anticipo.">
           <defs>
             <marker id="ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
               <path d="M0,1 L7,4 L0,7 Z" fill="var(--line-strong)"/>
@@ -828,48 +828,66 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
               <path d="M-9,-4 C-6,-3 -5,-1 -6,1"/>
               <path d="M9,-4 C6,-3 5,-1 6,1"/>
             </g>
-            <path id="rt" d="M34,72 H94 C114,72 118,35 136,35 H180 C200,35 204,72 222,72 H336"/>
-            <path id="rb" d="M34,72 H94 C114,72 118,111 136,111 H180 C200,111 204,72 222,72 H336"/>
+            <path id="rt" d="M26,95 H110 C130,80 132,43 146,43 H250 C272,43 272,72 288,95 H348"/>
+            <path id="rb" d="M26,95 H110 C130,110 132,147 146,147 H250 C272,147 272,118 288,95 H348"/>
           </defs>
 
           <!-- connettori -->
-          <path class="wire" d="M34,72 H48" marker-end="url(#ar)"/>
-          <path class="wire" d="M94,72 C114,72 118,35 134,35" marker-end="url(#ar)"/>
-          <path class="wire" d="M94,72 C114,72 118,111 134,111" marker-end="url(#ar)"/>
-          <path class="wire" d="M180,35 C200,35 204,72 220,72" marker-end="url(#ar)"/>
-          <path class="wire" d="M180,111 C200,111 204,72 220,72" marker-end="url(#ar)"/>
-          <path class="wire" d="M266,72 H304" marker-end="url(#ar)"/>
+          <path class="wire" d="M26,95 H32" marker-end="url(#ar)"/>
+          <path class="wire" d="M74,95 H88" marker-end="url(#ar)"/>
+          <path class="wire" d="M117,86 C132,78 132,43 143,43" marker-end="url(#ar)"/>
+          <path class="wire" d="M117,104 C132,112 132,147 143,147" marker-end="url(#ar)"/>
+          <path class="wire" d="M186,43 H207" marker-end="url(#ar)"/>
+          <path class="wire" d="M186,147 H207" marker-end="url(#ar)"/>
+          <path class="wire" d="M250,43 C272,43 272,70 281,83" marker-end="url(#ar)"/>
+          <path class="wire" d="M250,147 C272,147 272,120 281,107" marker-end="url(#ar)"/>
+          <path class="wire" d="M308,95 H317" marker-end="url(#ar)"/>
 
           <!-- input / output -->
-          <rect class="box" x="4" y="58" width="30" height="28" rx="8"/>
-          <text class="lbl" x="19" y="100">input</text>
-          <rect class="box" x="306" y="58" width="30" height="28" rx="8"/>
-          <text class="lbl" x="321" y="100">invia</text>
+          <rect class="box" x="2" y="82" width="24" height="26" rx="7"/>
+          <text class="lbl" x="14" y="122">in</text>
+          <rect class="box" x="320" y="82" width="26" height="26" rx="7"/>
+          <text class="lbl" x="333" y="122">invia</text>
 
           <!-- step deterministico: estrai -->
-          <rect class="box" x="50" y="55" width="44" height="34" rx="10"/>
-          <path class="gl" d="M66,63 h9 l3,3 v13 h-12 z M69,70 h6 M69,75 h6"/>
-          <text class="lbl" x="72" y="102">estrai</text>
+          <rect class="box" x="34" y="80" width="40" height="30" rx="9"/>
+          <path class="gl" d="M49,87 h8 l3,3 v13 h-11 z M52,94 h5 M52,99 h5"/>
+          <text class="lbl" x="54" y="122">estrai</text>
+
+          <!-- gate deterministico: valida -->
+          <polygon class="box" points="110,76 129,95 110,114 91,95"/>
+          <text class="lbl" x="110" y="99" style="font-size:11px;font-weight:700">?</text>
+          <text class="lbl" x="110" y="130">valida</text>
 
           <!-- step AI: classifica -->
-          <rect class="box ai" x="136" y="18" width="44" height="34" rx="10"/>
-          <use href="#brn" transform="translate(158,35)" style="color:var(--blue)"/>
-          <text class="lbl" x="158" y="64">classifica</text>
+          <rect class="box ai" x="146" y="28" width="40" height="30" rx="9"/>
+          <use href="#brn" transform="translate(166,43)" style="color:var(--blue)"/>
+          <text class="lbl" x="166" y="70">classifica</text>
 
-          <!-- step deterministico: verifica -->
-          <rect class="box" x="136" y="94" width="44" height="34" rx="10"/>
-          <path class="gl" d="M152,111 l4,4 l8,-9"/>
-          <text class="lbl" x="158" y="140">verifica</text>
+          <!-- step deterministico: arricchisci da DB -->
+          <rect class="box" x="210" y="28" width="40" height="30" rx="9"/>
+          <path class="gl" transform="translate(230,43)" d="M-6,-5 a6,2.5 0 1,0 12,0 a6,2.5 0 1,0 -12,0 M-6,-5 v9 a6,2.5 0 0,0 12,0 v-9"/>
+          <text class="lbl" x="230" y="70">arricchisci</text>
 
-          <!-- step AI: scrivi -->
-          <rect class="box ai" x="222" y="55" width="44" height="34" rx="10"/>
-          <use href="#brn" transform="translate(244,72)" style="color:var(--blue)"/>
-          <text class="lbl" x="244" y="102">scrivi</text>
+          <!-- step deterministico: regole -->
+          <rect class="box" x="146" y="132" width="40" height="30" rx="9"/>
+          <path class="gl" transform="translate(166,147)" d="M-6,-5 h12 M-6,0 h12 M-6,5 h7"/>
+          <text class="lbl" x="166" y="174">regole</text>
+
+          <!-- step AI: riscrivi -->
+          <rect class="box ai" x="210" y="132" width="40" height="30" rx="9"/>
+          <use href="#brn" transform="translate(230,147)" style="color:var(--blue)"/>
+          <text class="lbl" x="230" y="174">riscrivi</text>
+
+          <!-- step AI: componi il report -->
+          <rect class="box ai" x="268" y="80" width="40" height="30" rx="9"/>
+          <use href="#brn" transform="translate(288,95)" style="color:var(--blue)"/>
+          <text class="lbl" x="288" y="122">componi</text>
 
           <!-- dati che scorrono -->
-          <circle class="dot" r="2.8"><animateMotion dur="5s" begin="0s" repeatCount="indefinite"><mpath href="#rt"/></animateMotion></circle>
-          <circle class="dot" r="2.8"><animateMotion dur="5s" begin="1.7s" repeatCount="indefinite"><mpath href="#rb"/></animateMotion></circle>
-          <circle class="dot" r="2.8"><animateMotion dur="5s" begin="3.4s" repeatCount="indefinite"><mpath href="#rt"/></animateMotion></circle>
+          <circle class="dot" r="2.8"><animateMotion dur="6s" begin="0s" repeatCount="indefinite"><mpath href="#rt"/></animateMotion></circle>
+          <circle class="dot" r="2.8"><animateMotion dur="6s" begin="2s" repeatCount="indefinite"><mpath href="#rb"/></animateMotion></circle>
+          <circle class="dot" r="2.8"><animateMotion dur="6s" begin="4s" repeatCount="indefinite"><mpath href="#rt"/></animateMotion></circle>
         </svg>
         <div class="leg"><b>■</b> step con modello · <b>□</b> step deterministico — il percorso è disegnato prima</div>
       </div>
@@ -878,53 +896,75 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
     <div class="wcard a2">
       <div class="wk">Agente · sceglie i passi</div>
       <div class="ill">
-        <svg viewBox="0 0 340 160" role="img" aria-label="Un modello al centro, collegato a molti strumenti: a ogni input ne accende solo alcuni, e il sottoinsieme cambia di volta in volta.">
-          <!-- archi verso tutti i tool (spenti) -->
-          <line class="arc" x1="170" y1="80" x2="143" y2="22"/>
-          <line class="arc" x1="170" y1="80" x2="193" y2="20"/>
-          <line class="arc" x1="170" y1="80" x2="229" y2="55"/>
-          <line class="arc" x1="170" y1="80" x2="229" y2="105"/>
-          <line class="arc" x1="170" y1="80" x2="193" y2="140"/>
-          <line class="arc" x1="170" y1="80" x2="143" y2="138"/>
+        <svg viewBox="0 0 360 190" role="img" aria-label="Un modello al centro, collegato a molti strumenti: il compito entra da sinistra, il modello accende solo alcuni tool — e il sottoinsieme cambia di volta in volta — poi la risposta esce a destra.">
+          <defs>
+            <path id="pin" d="M48,95 H152"/>
+            <path id="pout" d="M208,95 H312"/>
+          </defs>
 
-          <!-- input -->
-          <rect class="in" x="4" y="66" width="52" height="28" rx="8"/>
-          <text class="lbl" x="30" y="84">input</text>
-          <path class="wire" d="M56,80 H140" marker-end="url(#ar)"/>
+          <!-- archi verso tutti i tool: passano dietro il cervello -->
+          <line class="arc" x1="180" y1="95" x2="126" y2="57"/>
+          <line class="arc" x1="180" y1="95" x2="180" y2="29"/>
+          <line class="arc" x1="180" y1="95" x2="234" y2="57"/>
+          <line class="arc" x1="180" y1="95" x2="234" y2="133"/>
+          <line class="arc" x1="180" y1="95" x2="180" y2="161"/>
+          <line class="arc" x1="180" y1="95" x2="126" y2="133"/>
 
-          <!-- cervello -->
-          <circle class="brain" cx="170" cy="80" r="26"/>
-          <use href="#brn" transform="translate(170,80) scale(1.6)" style="color:var(--accent)"/>
-
-          <!-- tool, stato spento -->
-          <g class="tool" transform="translate(143,22)"><circle r="15"/><path class="gl" d="M-5,-1 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 M2,2 L5,5"/></g>
-          <g class="tool" transform="translate(193,20)"><circle r="15"/><path class="gl" d="M-4,-6 h5 l3,3 v9 h-8 z M-2,1 h4"/></g>
-          <g class="tool" transform="translate(229,55)"><circle r="15"/><path class="gl" d="M-5,-4 l3,3 l-3,3 M0,4 h5"/></g>
-          <g class="tool" transform="translate(229,105)"><circle r="15"/><path class="gl" d="M-6,-4 h12 v8 h-12 z M-6,-4 l6,5 l6,-5"/></g>
-          <g class="tool" transform="translate(193,140)"><circle r="15"/><path class="gl" d="M-6,-5 h12 v10 h-12 z M-6,-1 h12 M-2,-8 v3 M2,-8 v3"/></g>
-          <g class="tool" transform="translate(143,138)"><circle r="15"/><path class="gl" d="M-6,-5 a6,2.5 0 1,0 12,0 a6,2.5 0 1,0 -12,0 M-6,-5 v9 a6,2.5 0 0,0 12,0 v-9"/></g>
-
-          <!-- sottoinsiemi accesi, a rotazione -->
+          <!-- archi accesi, a rotazione (sempre sotto il cervello) -->
           <g class="on on1">
-            <line class="arc" x1="170" y1="80" x2="193" y2="20"/>
-            <line class="arc" x1="170" y1="80" x2="229" y2="55"/>
-            <g class="tool" transform="translate(193,20)"><circle r="15"/><path class="gl" d="M-4,-6 h5 l3,3 v9 h-8 z M-2,1 h4"/></g>
-            <g class="tool" transform="translate(229,55)"><circle r="15"/><path class="gl" d="M-5,-4 l3,3 l-3,3 M0,4 h5"/></g>
+            <line class="arc" x1="180" y1="95" x2="180" y2="29"/>
+            <line class="arc" x1="180" y1="95" x2="234" y2="57"/>
           </g>
           <g class="on on2">
-            <line class="arc" x1="170" y1="80" x2="143" y2="22"/>
-            <line class="arc" x1="170" y1="80" x2="143" y2="138"/>
-            <g class="tool" transform="translate(143,22)"><circle r="15"/><path class="gl" d="M-5,-1 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 M2,2 L5,5"/></g>
-            <g class="tool" transform="translate(143,138)"><circle r="15"/><path class="gl" d="M-6,-5 a6,2.5 0 1,0 12,0 a6,2.5 0 1,0 -12,0 M-6,-5 v9 a6,2.5 0 0,0 12,0 v-9"/></g>
+            <line class="arc" x1="180" y1="95" x2="126" y2="57"/>
+            <line class="arc" x1="180" y1="95" x2="126" y2="133"/>
           </g>
           <g class="on on3">
-            <line class="arc" x1="170" y1="80" x2="229" y2="105"/>
-            <line class="arc" x1="170" y1="80" x2="193" y2="140"/>
-            <g class="tool" transform="translate(229,105)"><circle r="15"/><path class="gl" d="M-6,-4 h12 v8 h-12 z M-6,-4 l6,5 l6,-5"/></g>
-            <g class="tool" transform="translate(193,140)"><circle r="15"/><path class="gl" d="M-6,-5 h12 v10 h-12 z M-6,-1 h12 M-2,-8 v3 M2,-8 v3"/></g>
+            <line class="arc" x1="180" y1="95" x2="234" y2="133"/>
+            <line class="arc" x1="180" y1="95" x2="180" y2="161"/>
           </g>
+
+          <!-- il compito entra, la risposta esce -->
+          <path class="wire" d="M48,95 H150" marker-end="url(#ar)"/>
+          <path class="wire" d="M210,95 H310" marker-end="url(#ar)"/>
+
+          <!-- cervello -->
+          <circle class="brain" cx="180" cy="95" r="27"/>
+          <use href="#brn" transform="translate(180,95) scale(1.7)" style="color:var(--accent)"/>
+
+          <!-- tool, stato spento -->
+          <g class="tool" transform="translate(126,57)"><circle r="15"/><path class="gl" d="M-5,-1 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 M2,2 L5,5"/></g>
+          <g class="tool" transform="translate(180,29)"><circle r="15"/><path class="gl" d="M-4,-6 h5 l3,3 v9 h-8 z M-2,1 h4"/></g>
+          <g class="tool" transform="translate(234,57)"><circle r="15"/><path class="gl" d="M-5,-4 l3,3 l-3,3 M0,4 h5"/></g>
+          <g class="tool" transform="translate(234,133)"><circle r="15"/><path class="gl" d="M-6,-4 h12 v8 h-12 z M-6,-4 l6,5 l6,-5"/></g>
+          <g class="tool" transform="translate(180,161)"><circle r="15"/><path class="gl" d="M-6,-5 h12 v10 h-12 z M-6,-1 h12 M-2,-8 v3 M2,-8 v3"/></g>
+          <g class="tool" transform="translate(126,133)"><circle r="15"/><path class="gl" d="M-6,-5 a6,2.5 0 1,0 12,0 a6,2.5 0 1,0 -12,0 M-6,-5 v9 a6,2.5 0 0,0 12,0 v-9"/></g>
+
+          <!-- tool accesi, a rotazione -->
+          <g class="on on1">
+            <g class="tool" transform="translate(180,29)"><circle r="15"/><path class="gl" d="M-4,-6 h5 l3,3 v9 h-8 z M-2,1 h4"/></g>
+            <g class="tool" transform="translate(234,57)"><circle r="15"/><path class="gl" d="M-5,-4 l3,3 l-3,3 M0,4 h5"/></g>
+          </g>
+          <g class="on on2">
+            <g class="tool" transform="translate(126,57)"><circle r="15"/><path class="gl" d="M-5,-1 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 M2,2 L5,5"/></g>
+            <g class="tool" transform="translate(126,133)"><circle r="15"/><path class="gl" d="M-6,-5 a6,2.5 0 1,0 12,0 a6,2.5 0 1,0 -12,0 M-6,-5 v9 a6,2.5 0 0,0 12,0 v-9"/></g>
+          </g>
+          <g class="on on3">
+            <g class="tool" transform="translate(234,133)"><circle r="15"/><path class="gl" d="M-6,-4 h12 v8 h-12 z M-6,-4 l6,5 l6,-5"/></g>
+            <g class="tool" transform="translate(180,161)"><circle r="15"/><path class="gl" d="M-6,-5 h12 v10 h-12 z M-6,-1 h12 M-2,-8 v3 M2,-8 v3"/></g>
+          </g>
+
+          <!-- input / output -->
+          <rect class="in" x="2" y="81" width="46" height="28" rx="8"/>
+          <text class="lbl" x="25" y="99">input</text>
+          <rect class="in" x="310" y="81" width="48" height="28" rx="8"/>
+          <text class="lbl" x="334" y="99">output</text>
+
+          <!-- lo stesso task che scorre: entra, poi esce -->
+          <circle class="dot" r="2.8"><animateMotion dur="3s" begin="0s" repeatCount="indefinite"><mpath href="#pin"/></animateMotion></circle>
+          <circle class="dot" r="2.8"><animateMotion dur="3s" begin="1.5s" repeatCount="indefinite"><mpath href="#pout"/></animateMotion></circle>
         </svg>
-        <div class="leg">gli stessi tool sempre collegati — <b>quali accendere</b> lo decide a runtime, input per input</div>
+        <div class="leg">gli stessi tool sempre collegati — <b>quali accendere</b> lo decide a runtime, task per task</div>
       </div>
       <h4>Decide il modello</h4><p>Il percorso non è noto in partenza: l'agente decide a runtime quali tool usare e in che ordine, in base a ciò che trova. Flessibile, per problemi aperti.</p>
     </div>
