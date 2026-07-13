@@ -117,8 +117,23 @@
   .dlbtn:active{transform:translateY(1px)}
   .dlbtn span{font-family:var(--mono);font-size:11.5px;font-weight:400;color:#b9b8b3}
 
+  /* mockup app matrice: barra ticket + canvas */
+  .mxapp{display:grid;grid-template-columns:230px 1fr;gap:14px;margin-top:16px;align-items:stretch}
+  @media(max-width:720px){.mxapp{grid-template-columns:1fr}}
+  .mxbar{background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+  .mxbar .h{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;display:flex;justify-content:space-between;align-items:center}
+  .mxbar .h b{font-size:11px;color:var(--accent-2)}
+  .mxchip{background:var(--card);border:1px solid var(--line-strong);border-radius:8px;padding:7px 10px;font-size:12.5px;font-weight:600;line-height:1.3;transition:all .3s ease}
+  .mxchip .tid{display:block;font-family:var(--mono);font-size:10px;font-weight:400;color:var(--muted)}
+  .mxchip.hot{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-2);transform:scale(1.04)}
+  .mxchip.gone{opacity:.4;border-style:dashed;transform:none}
+  .mxchip.gone .tid::after{content:" · sul canvas ✓";color:var(--green)}
+  .mxsave{position:absolute;top:10px;right:10px;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--green);
+    background:var(--green-soft);border:1px solid #c6e5dd;border-radius:999px;padding:4px 11px;opacity:0;transform:translateY(-6px);transition:opacity .4s ease,transform .4s ease}
+  .mxsave.on{opacity:1;transform:none}
+
   /* mini matrice impatto/effort */
-  .matrix{position:relative;background:var(--card-2);border:1px solid var(--line);border-radius:12px;height:300px;margin-top:16px}
+  .matrix{position:relative;background:var(--card-2);border:1px solid var(--line);border-radius:12px;height:300px}
   .matrix .axx,.matrix .axy{position:absolute;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
   .matrix .axx{bottom:8px;left:50%;transform:translateX(-50%)}
   .matrix .axy{left:8px;top:50%;transform:translateY(-50%) rotate(-90deg);transform-origin:center}
@@ -126,7 +141,7 @@
   .matrix .qwin{color:var(--green)}
   .matrix .card{position:absolute;background:var(--card);border:1px solid var(--line-strong);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:600;box-shadow:0 6px 14px -10px rgba(0,0,0,.5);transform:translate(-50%,-50%)}
   .matrix .card.win{border-color:var(--green);color:var(--green);background:var(--green-soft)}
-  .matrix .card.new{border-color:var(--accent);color:var(--accent-2);background:var(--accent-soft);opacity:0;transition:opacity .5s, top .5s, left .5s}
+  .matrix .card.new{opacity:0;transition:opacity .45s ease, top .6s cubic-bezier(.2,.7,.3,1), left .6s cubic-bezier(.2,.7,.3,1)}
   .matrix .card.new.on{opacity:1}
   .matrix::before,.matrix::after{content:"";position:absolute;background:var(--line)}
   .matrix::before{left:50%;top:12px;bottom:26px;width:1px}
@@ -210,6 +225,7 @@
     .bpart.skel{animation:none;background:none}
     .bpart.skel>*{visibility:visible}
     .bchart .bars .b,.bsplit .row .fl,.bchart .tline,.bchart .tlab{transition:none}
+    .matrix .card.new,.mxchip,.mxsave{transition:none}
   }
 
   /* takeaway finali */
@@ -462,36 +478,54 @@
 <section id="s7"><div class="wrap reveal">
   <div class="kicker"><span class="n">07</span> Da fare</div>
   <h2>Esercizio: la matrice <span class="em">impatto / effort</span></h2>
-  <p class="lead">L'ultimo esercizio della giornata: costruite voi un artifact, su consegna nostra.</p>
+  <p class="lead">L'ultimo esercizio della giornata: costruite voi un artifact, su consegna nostra. Restiamo nel mondo della mobilità: stavolta siete il <b>responsabile del parco mezzi</b> di Trasvia Mobilità S.r.l., e avete dieci ticket aperti che aspettano una priorità.</p>
 
   <div class="panel star">
     <div class="badge you">Hands-on · fate voi</div>
     <h3 style="margin-top:0">La consegna</h3>
-    <p>Un'app per categorizzare i vostri ticket e task su due assi: <b>impatto</b> e <b>effort</b>. Inserisci un nuovo elemento, ne definisci le due dimensioni, e lo vedi comparire posizionato sul grafico — dove <b>resta salvato</b> anche la prossima volta che apri l'app.</p>
-    <div class="matrix" id="mx">
-      <span class="axy">Impatto →</span>
-      <span class="axx">Effort →</span>
-      <span class="ql qwin" style="left:12%;top:10%">Quick wins</span>
-      <span class="ql" style="right:6%;top:10%">Progetti grossi</span>
-      <span class="ql" style="left:12%;bottom:20%">Riempitivi</span>
-      <span class="ql" style="right:6%;bottom:20%">Da evitare</span>
-      <span class="card win" style="left:30%;top:26%">Automazione report</span>
-      <span class="card" style="left:74%;top:32%">Nuovo gestionale</span>
-      <span class="card" style="left:35%;top:72%">Riordino archivio</span>
-      <span class="card new" id="mxNew" style="left:50%;top:50%">Alert scadenze</span>
+    <p>Un'app per dare priorità ai ticket su due assi: <b>impatto</b> e <b>effort</b>. A sinistra una <b>barra con i ticket ancora da classificare</b>; al centro il <b>canvas</b> con i due assi, su cui trascinate ogni ticket nel punto che gli spetta. E la disposizione <b>resta salvata</b>: alla prossima apertura l'app riparte da dove l'avevate lasciata.</p>
+    <p>I dieci ticket ve li diamo noi, in un CSV: dal guasto sul singolo mezzo al progetto di infrastruttura. Deciderne la posizione sulla matrice è la parte vostra.</p>
+    <p style="margin-top:14px"><a class="dlbtn" href="../materiali/ticket_parco_mezzi.csv" download>↓ Scarica i 10 ticket <span>csv · 2 KB</span></a></p>
+
+    <div class="mxapp" id="mx">
+      <div class="mxbar">
+        <div class="h">Da classificare <b id="mxLeft">5</b></div>
+        <div class="mxchip" data-t="0"><span class="tid">TM-104</span>Scadenzario revisioni su Excel</div>
+        <div class="mxchip" data-t="1"><span class="tid">TM-105</span>Sensore porta minibus M-07</div>
+        <div class="mxchip" data-t="2"><span class="tid">TM-103</span>App segnalazione guasti</div>
+        <div class="mxchip" data-t="3"><span class="tid">TM-106</span>Colonnine deposito sud</div>
+        <div class="mxchip" data-t="4"><span class="tid">TM-108</span>Vetrofanie vecchio logo</div>
+      </div>
+      <div class="matrix">
+        <span class="axy">Impatto →</span>
+        <span class="axx">Effort →</span>
+        <span class="ql qwin" style="left:12%;top:10%">Quick wins</span>
+        <span class="ql" style="right:6%;top:10%">Progetti grossi</span>
+        <span class="ql" style="left:12%;bottom:20%">Riempitivi</span>
+        <span class="ql" style="right:6%;bottom:20%">Da evitare</span>
+        <span class="card new win" data-t="0" data-x="27%" data-y="22%">Scadenzario revisioni</span>
+        <span class="card new win" data-t="1" data-x="24%" data-y="40%">Sensore porta M-07</span>
+        <span class="card new" data-t="2" data-x="68%" data-y="25%">App segnalazione guasti</span>
+        <span class="card new" data-t="3" data-x="78%" data-y="40%">Colonnine deposito sud</span>
+        <span class="card new" data-t="4" data-x="30%" data-y="74%">Vetrofanie logo</span>
+        <span class="mxsave" id="mxSave">💾 Situazione salvata</span>
+      </div>
     </div>
-    <div style="text-align:center;margin-top:14px"><button class="cycbtn" id="mxBtn">＋ Aggiungi "Alert scadenze"</button></div>
-    <p class="cap" style="text-align:center" id="mxCap">Così funzionerà il vostro artifact: nuovo elemento → posizionato sui due assi → salvato.</p>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:14px">
+      <p class="cap" style="margin:0" id="mxCap">La barra a sinistra, il canvas a destra: ogni ticket va al suo posto.</p>
+      <button class="cycbtn" id="mxBtn">▶ Guarda come funziona</button>
+    </div>
+
     <h3>Gli step</h3>
     <div class="steps you">
-      <div class="st"><p><b>Descrivete l'app a Claude</b>: una matrice con effort sull'asse orizzontale e impatto su quello verticale, e un modo per inserire nuovi elementi.</p></div>
-      <div class="st"><p><b>Inserite un elemento</b> con le sue due dimensioni e verificate che compaia nel punto giusto del grafico.</p></div>
-      <div class="st"><p><b>Chiedete la persistenza</b>: gli elementi devono restare salvati tra una sessione e l'altra.</p></div>
-      <div class="st"><p><b>Iterate sul vostro gusto</b>: colori per categoria, evidenza delle quick wins, quello che vi serve davvero.</p></div>
+      <div class="st"><p><b>Scaricate il CSV e datelo a Claude</b> descrivendo l'app: una barra a sinistra con i ticket da classificare, un canvas con effort sull'asse orizzontale e impatto su quello verticale.</p></div>
+      <div class="st"><p><b>Posizionate i ticket</b> trascinandoli sul canvas, e verificate che la disposizione regga: i guasti rapidi in alto a sinistra, i progetti di infrastruttura a destra.</p></div>
+      <div class="st"><p><b>Chiedete il salvataggio</b>: la disposizione deve restare tra una sessione e l'altra. Chiudete l'app, riapritela, e i ticket devono essere ancora lì.</p></div>
+      <div class="st"><p><b>Iterate sul vostro gusto</b>: colori per area, evidenza delle quick wins, un modo per aggiungere ticket nuovi a mano.</p></div>
     </div>
   </div>
   <div class="callout">
-    <b>Perché proprio questa app.</b> Vi dà una mappa visiva dei vostri task al posto di una lista piatta: i <b>low effort / high impact</b> saltano fuori da soli — sono le quick wins da cui partire lunedì.
+    <b>Perché proprio questa app.</b> Trasforma una coda di ticket piatta in una mappa: i <b>low effort / high impact</b> saltano fuori da soli — sono le quick wins da cui il responsabile del parco mezzi parte lunedì. E funziona identica con i ticket veri del vostro lavoro.
   </div>
 </div></section>
 
@@ -597,22 +631,46 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   btn.addEventListener('click',()=>{if(!running)play();});
 })();
 
-/* ---------- matrice: aggiungi card ---------- */
+/* ---------- matrice: dalla barra al canvas ---------- */
 (function(){
-  const card=document.getElementById('mxNew'),btn=document.getElementById('mxBtn'),cap=document.getElementById('mxCap');
-  let added=false;
-  btn.addEventListener('click',()=>{
-    if(!added){
+  const root=document.getElementById('mx');if(!root)return;
+  const chips=[...root.querySelectorAll('.mxchip')],cards=[...root.querySelectorAll('.card.new')];
+  const save=document.getElementById('mxSave'),left=document.getElementById('mxLeft');
+  const cap=document.getElementById('mxCap'),btn=document.getElementById('mxBtn');
+  const slow=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  let timers=[],running=false;
+  const at=(ms,fn)=>timers.push(setTimeout(fn,slow?0:ms));
+
+  function reset(){
+    timers.forEach(clearTimeout);timers=[];
+    chips.forEach(c=>c.classList.remove('hot','gone'));
+    cards.forEach(c=>{c.classList.remove('on');c.style.left='4%';c.style.top='55%';});
+    save.classList.remove('on');left.textContent=chips.length;
+    cap.textContent='La barra a sinistra, il canvas a destra: ogni ticket va al suo posto.';
+  }
+
+  function place(i){
+    const chip=chips[i],card=cards.find(c=>c.dataset.t===chip.dataset.t);
+    chip.classList.add('hot');
+    at(450,()=>{
+      chip.classList.remove('hot');chip.classList.add('gone');
       card.classList.add('on');
-      requestAnimationFrame(()=>{card.style.left='26%';card.style.top='38%';});
-      cap.textContent='"Alert scadenze": impatto alto, effort basso → finisce tra le quick wins. E resta salvato.';
-      btn.textContent='↻ Rimuovi';added=true;
-    }else{
-      card.classList.remove('on');card.style.left='50%';card.style.top='50%';
-      cap.textContent='Così funzionerà il vostro artifact: nuovo elemento → posizionato sui due assi → salvato.';
-      btn.textContent='＋ Aggiungi "Alert scadenze"';added=false;
-    }
-  });
+      requestAnimationFrame(()=>{card.style.left=card.dataset.x;card.style.top=card.dataset.y;});
+      left.textContent=String(chips.length-(i+1));
+    });
+  }
+
+  function play(){
+    reset();running=true;btn.textContent='… in corso';btn.disabled=true;
+    chips.forEach((_,i)=>at(400+i*1100,()=>place(i)));
+    at(400+chips.length*1100+600,()=>{
+      save.classList.add('on');
+      cap.textContent='Tutti classificati e salvati: alla prossima apertura l\'app riparte da qui.';
+      running=false;btn.textContent='↻ Rigioca';btn.disabled=false;
+    });
+  }
+
+  btn.addEventListener('click',()=>{if(!running)play();});
 })();
 </script>
 </body>
