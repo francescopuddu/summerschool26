@@ -1130,13 +1130,13 @@ the relevant tools <span class="xtag">in parallel</span>. Do not call them one b
         nextB=$("#mem-next"),autoB=$("#mem-auto"),resetB=$("#mem-reset");
     if(!chat)return;
     var SYS="Sei un assistente utile. Rispondi in italiano, in modo conciso.";
-    var MEMO="<code>[12-07-2026]</code> L'utente si chiama Francesco e insegna alla summer school.";
+    var MEMO="<code>[12-07-2026]</code> L'utente si chiama Marta e insegna alla summer school.";
     var pairs=[
       {u:"Sto preparando una lezione sugli agenti AI. Da dove parto?",a:"Parti dal limite di base: un LLM completa testo, e da solo non ricorda nulla."},
       {u:"E la finestra di contesto, come la spiego?",a:"Come uno spazio finito: tutto ciò che il modello vede in una chiamata deve starci dentro."},
-      {u:"Perfetto. Ricordati che mi chiamo Francesco e che insegno alla summer school.",a:"Segnato! Lo terrò a mente anche nelle prossime conversazioni."}
+      {u:"Perfetto. Ricordati che mi chiamo Marta e che insegno alla summer school.",a:"Segnato! Lo terrò a mente anche nelle prossime conversazioni."}
     ];
-    var NEW={u:"Ciao! Riprendiamo da dove eravamo?",a:"Ciao Francesco! Certo — come procede la lezione per la summer school?"};
+    var NEW={u:"Ciao! Riprendiamo da dove eravamo?",a:"Ciao Marta! Certo — come procede la lezione per la summer school?"};
     var notes=[
       "<b>Turno 1</b> · La prima chiamata contiene solo il system prompt e il tuo messaggio. Non c'è nessuna cronologia da mandare.",
       "<b>Turno 2</b> · Il tool <b>ri-manda tutta la cronologia</b> insieme al nuovo messaggio. Il modello non «ricorda» il turno 1: lo sta <b>rileggendo da zero</b>.",

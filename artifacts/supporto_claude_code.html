@@ -161,7 +161,7 @@
   <div class="tag">Summer School 2026 · Giornata 3 · <b>Claude Code</b></div>
   <h1>Claude Code: <span>vibe coding</span></h1>
   <p class="sub">Costruire software vero descrivendolo: stamattina un gestionale per la manutenzione dei treni, dal database all'interfaccia — con l'AI dentro, non solo intorno.</p>
-  <p class="subm">Quattro ore, con Federico. Nessuna esperienza di programmazione richiesta: l'obiettivo è che impariate a costruirvi i vostri tool interni.</p>
+  <p class="subm">Quattro ore. Nessuna esperienza di programmazione richiesta: l'obiettivo è che impariate a costruirvi i vostri tool interni.</p>
   <div class="arc">
     <span class="step"><b>1</b> · Git essenziale</span>
     <span class="step"><b>2</b> · DB / BE / FE / API</span>
@@ -289,12 +289,12 @@
 <section id="s4"><div class="wrap reveal">
   <div class="kicker"><span class="n">04</span> Da vedere</div>
   <h2>Demo: la dashboard <span class="em">dei treni</span></h2>
-  <p class="lead">Federico viba davanti a voi, ad alta voce, un gestionale per la <b>manutenzione ordinaria dei mezzi</b>: dallo schema di prima all'app funzionante. Ogni passo è raccontato con il vocabolario appena imparato.</p>
+  <p class="lead">Un gestionale per la <b>manutenzione ordinaria dei mezzi</b>, costruito dal vivo: dallo schema di prima all'app funzionante. Ogni passo usa il vocabolario appena introdotto.</p>
 
   <div class="panel star">
-    <div class="badge doer">Demo · Federico viba</div>
+    <div class="badge doer">Demo · dashboard treni</div>
     <div class="steps">
-      <div class="st"><p><b>La fonte dati: un ERP mockato.</b> Un componente preparato in anticipo che, ricevute le chiamate, risponde con dati presi da un JSON prefatto — mezzi, manutentori con le loro disponibilità, revisioni con le scadenze. Lo diciamo esplicitamente perché "mockare" è a sua volta un concetto utile: per costruire non serve il sistema vero.</p></div>
+      <div class="st"><p><b>La fonte dati: un ERP mockato.</b> Un componente preparato in anticipo che, ricevute le chiamate, risponde con dati presi da un JSON prefatto — mezzi, manutentori con le loro disponibilità, revisioni con le scadenze. "Mockare" è a sua volta un concetto da fissare: per costruire l'app non serve il sistema vero.</p></div>
       <div class="st"><p><b>La dashboard.</b> Visione d'insieme dei mezzi con lo stato delle revisioni e dei controlli obbligatori a scadenza: otto mezzi di categoria tre, tre con revisione fatta, cinque da fare.</p></div>
       <div class="st"><p><b>Il bottone "Organizza revisione".</b> Crea l'agenda del giorno o della settimana dei manutentori, incrociando revisioni da fare e disponibilità.</p></div>
       <div class="st"><p><b>Human in the loop.</b> L'agenda proposta si rivede: solo quando l'utente <b>conferma</b>, parte la mail ai manutentori con il programma ("il tuo tragitto del giorno è questo").</p></div>
@@ -305,30 +305,30 @@
   <div class="callout">
     <b>Il punto non scontato:</b> finora l'AI era nel <i>processo</i> di sviluppo (Claude che scrive il codice). Qui l'AI è <b>dentro il software</b>: l'app, una volta costruita, usa a sua volta un modello per comporre la mail. Sono due cose diverse, e servono entrambe.
   </div>
-  <p class="hint">La scheda treno è un documento d'esempio generato da noi: se qualcosa non torna col vostro mondo reale — e voi i treni li conoscete davvero — prendetelo per quello che è, un esempio astratto.</p>
+  <p class="hint">La scheda treno è un documento d'esempio, non un modello reale: se qualcosa non torna con il mondo che conoscete, va preso per quello che è — un'astrazione utile alla demo.</p>
 </div></section>
 
 <!-- ============ 05 ESERCIZIO REVISORE ============ -->
 <section id="s5"><div class="wrap reveal">
   <div class="kicker"><span class="n">05</span> Da fare</div>
   <h2>Hands-on: il documento <span class="em">del revisore</span></h2>
-  <p class="lead">Ora vibate voi, con consegna nostra. Non un'app nuova: <b>una pagina in più della stessa app</b> appena vista — così riusate tutto il contesto della demo.</p>
+  <p class="lead">Esercitazione su consegna assegnata. Non un'app nuova: <b>una pagina in più della stessa app</b> appena vista — così si riusa tutto il contesto della demo.</p>
 
   <div class="panel star">
-    <div class="badge you">Hands-on · vibate voi (~2 ore)</div>
+    <div class="badge you">Hands-on · ~2 ore</div>
     <h3 style="margin-top:0">La consegna</h3>
     <p>Il revisore, dopo il giro sui mezzi, produce un <b>documento destrutturato</b>: appunti sparsi su treni visti e interventi da fare. Costruite la pagina in cui quel documento si carica e diventa una <b>lista di interventi</b> strutturata, collegata alle revisioni di quel revisore, pronta per chi li prenderà in carico.</p>
     <h3>Gli step</h3>
     <div class="steps you">
-      <div class="st"><p><b>La pagina di caricamento.</b> Una box in cui trascinare il documento del revisore (il documento ve lo diamo noi, già pronto).</p></div>
+      <div class="st"><p><b>La pagina di caricamento.</b> Una box in cui trascinare il documento del revisore (fornito già pronto insieme alla consegna).</p></div>
       <div class="st"><p><b>Il collegamento.</b> L'app aggancia il documento alle revisioni che quel revisore doveva fare — i dati sono già nel database della demo.</p></div>
-      <div class="st"><p><b>L'estrazione.</b> Dal testo destrutturato l'app estrae la <b>lista degli interventi</b>: qui entra l'AI dentro il software, con la <b>chiave API</b> che vi distribuiamo adesso.</p></div>
+      <div class="st"><p><b>L'estrazione.</b> Dal testo destrutturato l'app estrae la <b>lista degli interventi</b>: qui entra l'AI dentro il software, con la <b>chiave API</b> distribuita in aula.</p></div>
       <div class="st"><p><b>Modifica e conferma.</b> Gli interventi estratti si possono correggere e integrare; poi OK, e vengono <b>salvati</b> — qualcun altro li prenderà in carico.</p></div>
     </div>
   </div>
 
   <div class="callout">
-    <b>Ritmo consigliato:</b> committate a ogni passo che funziona. È il checkpoint di stamattina: se una vibata prende una brutta piega, si torna all'ultimo commit e si riparte. E il gruppo è piccolo: chi resta indietro, lo finiamo insieme.
+    <b>Ritmo consigliato:</b> un commit a ogni passo che funziona. È il checkpoint di stamattina: se una vibata prende una brutta piega, si torna all'ultimo commit e si riparte. Il gruppo è piccolo: c'è tempo per riallineare chi rimane indietro.
   </div>
 </div></section>
 
@@ -342,12 +342,12 @@
     <div class="take"><h4>Descrivere, non digitare</h4><p>Con Claude Code il software si costruisce raccontandolo. Il vostro mestiere è la consegna, non la sintassi.</p></div>
     <div class="take"><h4>AI nel software</h4><p>Non solo AI che scrive il codice: app che, una volta costruite, usano un modello per lavorare (la mail, l'estrazione).</p></div>
   </div>
-  <p class="hint" style="margin-top:24px">Nel pomeriggio, con Francesco: il codice esce dal vostro computer — Claude Code in cloud, deploy su Fly.io, e il database che migra su Supabase.</p>
+  <p class="hint" style="margin-top:24px">Nel pomeriggio il codice esce dal vostro computer: Claude Code in cloud, deploy su Fly.io, e il database che migra su Supabase.</p>
 </div></section>
 
 <footer><div class="wrap">
   <b>Summer School 2026 — Giornata 3</b> · Claude Code: Introduzione al vibe coding &amp; La mia prima automazione.<br>
-  Con Federico. Reference: <a href="guida_comandi_claude_code.html" style="color:var(--accent)">guida base</a>.
+  Reference: <a href="guida_comandi_claude_code.html" style="color:var(--accent)">guida base</a>.
 </div></footer>
 
 <script>
