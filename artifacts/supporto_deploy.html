@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Deploy &amp; Infrastruttura | Summer School Giornata 3</title>
+<style>
+  :root{
+    --paper:#f1efe8; --paper-2:#e9e6dd;
+    --card:#ffffff; --card-2:#faf8f6;
+    --ink:#1a1a1a; --ink-2:#5f5e5a; --muted:#8a887f;
+    --line:#d9d6cc; --line-strong:#b4b2a9;
+    --accent:#BE185D; --accent-2:#9D174D; --accent-soft:#fbe8f1; --accent-soft2:#f6cfe0;
+    --green:#0F766E; --green-soft:#e2f2ef;
+    --amber:#B45309; --amber-soft:#fbeedd;
+    --blue:#2f7ec9; --blue-soft:#e7f0fa;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(var(--paper-2) 0.5px, transparent 0.5px);background-size:22px 22px;}
+
+  #prog{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:60;transition:width .1s linear}
+  #dots{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:55;display:flex;flex-direction:column;gap:10px}
+  #dots a{width:9px;height:9px;border-radius:50%;background:var(--line-strong);opacity:.55;transition:all .2s;position:relative}
+  #dots a.on{background:var(--accent);opacity:1;transform:scale(1.35)}
+  #dots a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:11px;
+    color:var(--ink-2);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:2px 7px;opacity:0;pointer-events:none;transition:opacity .15s}
+  #dots a:hover span{opacity:1}
+  @media(max-width:900px){#dots{display:none}}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:0 28px}
+  section{padding:60px 0;border-top:1px solid var(--line)}
+  section:first-of-type{border-top:0}
+
+  .kicker{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);
+    display:flex;align-items:center;gap:10px;margin:0 0 14px}
+  .kicker .n{font-family:var(--mono);background:var(--accent);color:#fff;border-radius:5px;padding:1px 7px;font-size:11px;letter-spacing:.05em}
+  h1{font-size:clamp(40px,8vw,84px);line-height:.98;letter-spacing:-.02em;font-weight:850;margin:0 0 18px}
+  h2{font-size:clamp(27px,4.4vw,44px);line-height:1.04;letter-spacing:-.015em;font-weight:850;margin:0 0 16px}
+  h3{font-size:19px;font-weight:750;margin:30px 0 6px}
+  .lead{font-size:clamp(17px,2vw,21px);color:var(--ink-2);margin:0 0 10px}
+  p{font-size:16.5px}
+  .em{color:var(--accent);font-weight:600}
+  .mut{color:var(--muted)}
+
+  .hero{padding-top:78px;min-height:82vh;display:flex;flex-direction:column;justify-content:center}
+  .hero .tag{font-family:var(--mono);font-size:12px;color:var(--ink-2);border:1px solid var(--line-strong);
+    border-radius:999px;padding:5px 13px;display:inline-flex;gap:8px;align-items:center;margin-bottom:24px;background:var(--card-2);width:max-content}
+  .hero .tag b{color:var(--accent)}
+  .hero h1 span{color:var(--accent)}
+  .hero .sub{font-size:clamp(18px,2.4vw,24px);font-weight:600;color:var(--ink);margin:0 0 8px}
+  .hero .subm{font-size:16px;color:var(--ink-2)}
+  .arc{display:flex;gap:8px;flex-wrap:wrap;margin-top:30px}
+  .arc .step{font-family:var(--mono);font-size:11px;color:var(--ink-2);border:1px solid var(--line);border-radius:20px;padding:6px 11px;white-space:nowrap;background:var(--card-2)}
+  .arc .step b{color:var(--accent)}
+  .scrollcue{margin-top:36px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+  .scrollcue .a{animation:bob 1.6s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+
+  .callout{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;
+    padding:16px 20px;margin:22px 0;font-size:16.5px;color:#701a43}
+  .callout b{color:var(--accent)}
+  .callout.warn{border-left-color:var(--amber);background:var(--amber-soft);color:#7a3c06}
+  .callout.warn b{color:var(--amber)}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:26px;
+    box-shadow:0 1px 0 var(--line),0 18px 40px -32px rgba(0,0,0,.35)}
+  .panel.star{border-color:var(--accent-soft2);box-shadow:0 1px 0 var(--accent-soft2),0 22px 50px -30px rgba(190,24,93,.4);background:linear-gradient(180deg,#fff,#fffafc)}
+  .panel .badge{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);
+    display:inline-flex;align-items:center;gap:7px;margin-bottom:14px}
+  .panel .badge.doer{background:var(--accent);color:#fff;border-radius:6px;padding:3px 10px}
+  .panel .badge.you{background:var(--amber);color:#fff;border-radius:6px;padding:3px 10px}
+
+  .hint{font-size:13px;color:var(--muted);margin-top:12px}
+  .cap{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:10px}
+  code,.mono{font-family:var(--mono)}
+  .cmd{font-family:var(--mono);font-weight:700;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-soft2);border-radius:6px;padding:2px 8px;font-size:.92em;white-space:nowrap}
+
+  .why{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0}
+  @media(max-width:720px){.why{grid-template-columns:1fr}}
+  .wbox{border-radius:14px;padding:18px 20px;border:1px solid}
+  .wbox h4{margin:0 0 8px;font-size:15px;display:flex;align-items:center;gap:9px;font-family:var(--mono)}
+  .wbox h4::before{content:"";width:9px;height:9px;border-radius:50%}
+  .wbox p{margin:0 0 8px;font-size:14.5px;max-width:none}
+  .wbox p:last-child{margin-bottom:0}
+  .wbox.a{background:var(--accent-soft);border-color:var(--accent-soft2)}
+  .wbox.a h4{color:var(--accent-2)} .wbox.a h4::before{background:var(--accent)}
+  .wbox.b{background:var(--green-soft);border-color:#c6e5dd}
+  .wbox.b h4{color:var(--green)} .wbox.b h4::before{background:var(--green)}
+
+  /* flow a 3 stadi (riciclato) */
+  .flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:stretch;gap:0;margin-top:20px}
+  @media(max-width:720px){.flow{grid-template-columns:1fr;gap:14px}.flow .arrow{transform:rotate(90deg);justify-self:center;margin:2px 0}}
+  .stage{background:var(--card-2);border:1.5px solid var(--line);border-radius:14px;padding:16px;text-align:center;transition:all .35s}
+  .stage.hot{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 10px 30px -20px rgba(190,24,93,.6);transform:translateY(-3px)}
+  .stage.done{border-color:#c6e5dd}
+  .stage .icn{font-size:26px;line-height:1}
+  .stage .nm{font-weight:800;font-size:15px;margin-top:8px}
+  .stage .sub{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);margin-top:2px}
+  .stage .file{margin-top:12px;height:26px;display:flex;align-items:center;justify-content:center;gap:6px}
+  .dot{width:12px;height:12px;border-radius:3px;background:var(--line-strong);transition:all .35s;transform:scale(.6);opacity:.35}
+  .stage.hot .dot{background:var(--accent);transform:scale(1);opacity:1}
+  .stage.done .dot{background:var(--green);transform:scale(1);opacity:1}
+  .arrow{display:flex;align-items:center;justify-content:center;color:var(--line-strong);font-size:22px;padding:0 6px}
+  .fcmd{font-family:var(--mono);font-size:12px;color:var(--accent-2);margin-top:8px;font-weight:700}
+  .cycbtn{font-family:var(--sans);font-size:14px;font-weight:700;background:var(--ink);color:#fff;border:0;border-radius:10px;padding:11px 18px;cursor:pointer;transition:transform .05s,background .15s;display:inline-flex;align-items:center;gap:10px}
+  .cycbtn:hover{background:#000}.cycbtn:active{transform:translateY(1px)}
+  .cycbtn:disabled{opacity:.6;cursor:default}
+
+  /* steps numerati */
+  .steps{counter-reset:st;display:flex;flex-direction:column;gap:0;margin-top:8px}
+  .steps .st{counter-increment:st;display:grid;grid-template-columns:34px 1fr;gap:14px;padding:14px 0;border-bottom:1px dashed var(--line);align-items:start}
+  .steps .st:last-child{border-bottom:0}
+  .steps .st::before{content:counter(st,decimal-leading-zero);font-family:var(--mono);font-weight:800;font-size:13px;color:#fff;background:var(--accent);border-radius:8px;width:34px;height:26px;display:flex;align-items:center;justify-content:center;margin-top:2px}
+  .steps .st p{margin:0;font-size:15.5px}
+  .steps .st p b{color:var(--ink)}
+  .steps.you .st::before{background:var(--amber)}
+
+  /* always-on toggle */
+  .aow{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:start;margin-top:18px}
+  @media(max-width:720px){.aow{grid-template-columns:1fr}}
+  .switch{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .sw{width:74px;height:40px;border-radius:40px;background:var(--line-strong);position:relative;cursor:pointer;transition:background .25s;border:0}
+  .sw::after{content:"";position:absolute;top:4px;left:4px;width:32px;height:32px;border-radius:50%;background:#fff;transition:left .25s;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+  .sw.on{background:var(--accent)}
+  .sw.on::after{left:38px}
+  .swlab{font-family:var(--mono);font-size:11px;color:var(--ink-2);letter-spacing:.08em;text-transform:uppercase}
+  .aobox{border:1px solid var(--line);border-radius:14px;padding:18px 20px;background:var(--card-2);transition:all .25s}
+  .aobox h4{margin:0 0 6px;font-size:16px;font-family:var(--mono)}
+  .aobox p{margin:0;font-size:14.5px;color:var(--ink-2)}
+  .aobox p b{color:var(--ink)}
+
+  .faq{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:20px 22px;margin-top:22px}
+  .faq .q{font-family:var(--serif);font-style:italic;font-size:18px;margin:0 0 10px}
+  .faq .a{margin:0;font-size:15.5px;color:var(--ink-2)}
+  .faq .a b{color:var(--ink)}
+
+  .takes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+  @media(max-width:720px){.takes{grid-template-columns:1fr}}
+  .take{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:16px 18px}
+  .take h4{margin:0 0 6px;font-size:15px}
+  .take p{margin:0;font-size:14px;color:var(--ink-2)}
+
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  footer{padding:50px 0 90px;color:var(--ink-2);font-size:13.5px;border-top:1px solid var(--line)}
+  footer b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<nav id="dots"></nav>
+
+<!-- ============ HERO ============ -->
+<section id="s0" class="hero"><div class="wrap reveal">
+  <div class="tag">Summer School 2026 · Giornata 3 · <b>Deploy &amp; Infrastruttura</b></div>
+  <h1>La prima app <span>in produzione</span></h1>
+  <p class="sub">Stamattina l'app dei treni è nata sul vostro computer. Stasera sarà online, con un vero database in cloud, e si aggiornerà da sola a ogni push.</p>
+  <p class="subm">Il pomeriggio, con Francesco: due ore di teoria, due di pratica.</p>
+  <div class="arc">
+    <span class="step"><b>1</b> · Dove vive il codice</span>
+    <span class="step"><b>2</b> · Claude Code in cloud</span>
+    <span class="step"><b>3</b> · Deploy: Fly.io</span>
+    <span class="step"><b>4</b> · CD: push → deploy</span>
+    <span class="step"><b>5</b> · DB in cloud: Supabase</span>
+    <span class="step"><b>6</b> · Bonus: backup</span>
+  </div>
+  <div class="scrollcue"><span class="a">↓</span> scorri per iniziare</div>
+</div></section>
+
+<!-- ============ 01 DOVE VIVE IL CODICE ============ -->
+<section id="s1"><div class="wrap reveal">
+  <div class="kicker"><span class="n">01</span> Il punto di partenza</div>
+  <h2>Il codice non sta (solo) <span class="em">sul tuo computer</span></h2>
+  <p class="lead">Fino a stamattina tutto — codice, database, app — viveva sulla vostra macchina. Ma il codice può vivere <b>altrove</b>: su GitHub ne esiste già una copia (l'avete pushata voi), e altre macchine possono prenderla, eseguirla, lavorarci.</p>
+  <p>Da questa idea, apparentemente banale, discende tutto il pomeriggio:</p>
+  <div class="why">
+    <div class="wbox a">
+      <h4>Altre macchine ci lavorano</h4>
+      <p>Se il codice sta su GitHub, una macchina di Anthropic può clonarlo e farci lavorare Claude — <b>anche a computer vostro spento</b>.</p>
+      <p>→ Claude Code in cloud, tra un attimo.</p>
+    </div>
+    <div class="wbox b">
+      <h4>Altre macchine lo eseguono</h4>
+      <p>Se il codice sta nel cloud, una macchina sempre raggiungibile può <b>eseguire la vostra app</b> e servirla a chiunque, a un indirizzo pubblico.</p>
+      <p>→ Il deploy, il pezzo grosso di oggi.</p>
+    </div>
+  </div>
+  <div class="callout">
+    <b>Senza questo concetto, il resto è magia inspiegabile.</b> Con questo concetto, il resto è meccanica: si tratta solo di decidere <i>quale</i> macchina fa <i>cosa</i>.
+  </div>
+</div></section>
+
+<!-- ============ 02 CLOUD + REMOTE CONTROL ============ -->
+<section id="s2"><div class="wrap reveal">
+  <div class="kicker"><span class="n">02</span> Prima applicazione</div>
+  <h2>Claude Code <span class="em">in cloud</span> — e dal telefono</h2>
+  <p class="lead">La prima conseguenza del "codice altrove": Claude può lavorare al vostro progetto da una macchina che non è la vostra. Il giro è esattamente il Git di stamattina, visto dall'altra parte.</p>
+
+  <div class="panel">
+    <div class="badge">Come dialoga con la vostra repo</div>
+    <div class="flow">
+      <div class="stage done">
+        <div class="icn">☁️</div>
+        <div class="nm">Macchina cloud</div>
+        <div class="sub">clona la vostra repo</div>
+        <div class="file"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="fcmd">git clone</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="stage done">
+        <div class="icn">🤖</div>
+        <div class="nm">Claude lavora</div>
+        <div class="sub">modifica e committa</div>
+        <div class="file"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="fcmd">git commit</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="stage done">
+        <div class="icn">⬆️</div>
+        <div class="nm">Risale su GitHub</div>
+        <div class="sub">il lavoro torna a voi</div>
+        <div class="file"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="fcmd">git push</div>
+      </div>
+    </div>
+    <p class="hint">Ecco perché stamattina serviva la repo individuale: senza una repo da clonare, Claude Code in cloud semplicemente non esiste.</p>
+  </div>
+
+  <h3>Remote Control o cloud? Non confonderli</h3>
+  <div class="why">
+    <div class="wbox a">
+      <h4>Remote Control (/rc)</h4>
+      <p>La sessione gira sul <b>vostro computer</b>, che deve restare <b>acceso</b>. Nel terminale digitate <span class="cmd">/rc</span>: appare un link e un QR, e controllate la stessa sessione da telefono o browser.</p>
+    </div>
+    <div class="wbox b">
+      <h4>Claude Code on the web</h4>
+      <p>La sessione gira <b>sui server di Anthropic</b>: prosegue anche a computer spento. Si avvia da <span class="mono">claude.ai/code</span> o dall'app Claude, scheda <b>Code</b>.</p>
+    </div>
+  </div>
+
+  <div class="panel star">
+    <div class="badge you">Momento pratico · fate voi</div>
+    <h3 style="margin-top:0">Finite di vibare dal telefono</h3>
+    <div class="steps you">
+      <div class="st"><p><b>Tirate fuori il telefono</b> e aprite l'app Claude, scheda <b>Code</b> (o <span class="mono">claude.ai/code</span> dal browser).</p></div>
+      <div class="st"><p><b>Agganciate la vostra repo</b> — quella individuale creata stamattina, con l'app dei treni dentro.</p></div>
+      <div class="st"><p><b>Chiedete una piccola modifica all'app</b>: un ritocco a una pagina, una colonna in più, quello che vi va.</p></div>
+      <div class="st"><p><b>Claude lavora in cloud e pusha</b>: la modifica arriva sulla vostra repo su GitHub, pronta da tirare giù.</p></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ============ 03 FLY.IO ============ -->
+<section id="s3"><div class="wrap reveal">
+  <div class="kicker"><span class="n">03</span> Il deploy</div>
+  <h2>L'app va online: <span class="em">Fly.io</span></h2>
+  <p class="lead">Deployare significa mettere l'app su una macchina nel cloud che la esegue e la serve a un indirizzo pubblico. La piattaforma scelta è <b>Fly.io</b> — e la scelta è didattica prima che tecnica.</p>
+  <p>Fly.io è di fatto una macchina nel cloud (una "EC2", nel gergo AWS) dove front-end e back-end girano <b>insieme, nello stesso posto</b>: il deploy diventa letteralmente "prendere lo schema che avete visto stamattina e metterlo in cloud", senza concetti estranei. Non è il modo migliore in assoluto (quello sarebbe configurarsi AWS — impossibile in mezzo pomeriggio), ma è il più veloce e il più spiegabile. E ha un free tier collaudato.</p>
+
+  <div class="panel star">
+    <div class="badge">Lo switch che vale una lezione di cloud</div>
+    <div class="aow">
+      <div class="switch">
+        <button class="sw" id="aoSw" aria-label="always-on"></button>
+        <span class="swlab" id="aoLab">always-on: off</span>
+      </div>
+      <div class="aobox" id="aoBox">
+        <h4 id="aoTitle">Macchina non always-on — “modello Lambda”</h4>
+        <p id="aoDesc">La macchina <b>si spegne quando nessuno la usa</b> e si riaccende alla prima richiesta (con un attimo di lag). Paghi solo quando lavora. È l'idea delle <b>AWS Lambda</b>: calcolo a chiamata.</p>
+      </div>
+    </div>
+    <p class="hint">Per la nostra app basta così: è <b>stateless</b> — tutti i dati stanno nel database — quindi può spegnersi e riaccendersi senza perdere nulla. Al massimo, la prima richiesta lagga un attimo. Come si attiva l'always-on? Lo si chiede a Claude.</p>
+  </div>
+</div></section>
+
+<!-- ============ 04 CD ============ -->
+<section id="s4"><div class="wrap reveal">
+  <div class="kicker"><span class="n">04</span> Il clou</div>
+  <h2>Push su main → <span class="em">deploy automatico</span></h2>
+  <p class="lead">Il punto principale del pomeriggio: collegare la repo alla piattaforma così che <b>a ogni push su main parta da solo il deploy</b>. Si chiama continuous deployment, e chiude il cerchio con il Git di stamattina.</p>
+
+  <div class="panel star">
+    <div class="badge doer">Demo · Francesco</div>
+    <div class="flow" id="cdflow">
+      <div class="stage" data-s="0">
+        <div class="icn">⬆️</div>
+        <div class="nm">Push su main</div>
+        <div class="sub">il gesto di stamattina</div>
+        <div class="file"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="fcmd">git push</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="stage" data-s="1">
+        <div class="icn">🤖</div>
+        <div class="nm">GitHub Action</div>
+        <div class="sub">si sveglia da sola</div>
+        <div class="file"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="fcmd">build &amp; deploy</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="stage" data-s="2">
+        <div class="icn">🌍</div>
+        <div class="nm">App aggiornata</div>
+        <div class="sub">online, per tutti</div>
+        <div class="file"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="fcmd">fly.dev</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:18px">
+      <button class="cycbtn" id="cdPlay">▶ Pusha una modifica</button>
+    </div>
+    <p class="cap" id="cdStatus" style="text-align:center">Premi il pulsante per seguire una modifica dal push all'app online.</p>
+  </div>
+
+  <div class="callout">
+    <b>La GitHub Action non la scriviamo a mano.</b> La si chiede a Claude Code, e la si capisce ad alto livello: "quando arriva un push su main, esegui questi passi". Che è esattamente il livello a cui vi serve conoscerla.
+  </div>
+
+  <div class="panel">
+    <div class="badge you">Pratica · fate voi</div>
+    <div class="steps you">
+      <div class="st"><p><b>Fate una modifica all'app</b> — anche piccola, purché visibile.</p></div>
+      <div class="st"><p><b>Commit e push su main.</b> I due gesti di stamattina, nient'altro.</p></div>
+      <div class="st"><p><b>Guardate la Action partire</b> su GitHub: build, deploy, spunta verde.</p></div>
+      <div class="st"><p><b>Ricaricate l'app online</b>: la modifica è lì. Ecco perché stamattina vi abbiamo fatto imparare commit e push.</p></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ============ 05 SUPABASE ============ -->
+<section id="s5"><div class="wrap reveal">
+  <div class="kicker"><span class="n">05</span> L'ultimo pezzo</div>
+  <h2>Un vero database <span class="em">in cloud</span>: Supabase</h2>
+  <p class="lead">L'app è online, ma i dati stanno ancora nel Postgres sul vostro computer. L'ultimo pezzo dell'architettura da portare in cloud è il database — e deve essere un database <b>vero</b>, non un file JSON travestito.</p>
+  <p><b>Supabase</b> è un vero Postgres gestito in cloud. Ed è qui che torna il vincolo di stamattina: il database locale della demo era Postgres <i>apposta</i>, così la migrazione è naturale — stesso motore, altro posto.</p>
+
+  <div class="panel star">
+    <div class="badge doer">Migrazione · la si chiede a Claude</div>
+    <div class="steps">
+      <div class="st"><p><b>Dump del database locale</b>: Claude esporta schema e dati del Postgres sul vostro computer.</p></div>
+      <div class="st"><p><b>Reload su Supabase</b>: lo stesso dump viene ricaricato sul Postgres in cloud.</p></div>
+      <div class="st"><p><b>L'app cambia indirizzo</b>: si punta la connessione al database di Supabase invece che a quello locale.</p></div>
+      <div class="st"><p><b>Verifica</b>: l'app online ora legge e scrive dati che vivono anch'essi nel cloud. L'architettura di stamattina è tutta lassù.</p></div>
+    </div>
+    <p class="hint">Il pattern è sempre lo stesso: non dovete saperlo <i>fare</i>, dovete saperlo <i>chiedere</i> — e capire cosa sta succedendo.</p>
+  </div>
+
+  <div class="callout warn">
+    <b>Obiezione prevedibile — la governance del dato.</b> "Ma i nostri dati su un servizio terzo…": obiezione legittima, in azienda va affrontata con IT e legale. Oggi serve capire il <i>concetto</i> di database in cloud; le policy aziendali vengono dopo.
+  </div>
+</div></section>
+
+<!-- ============ 06 BONUS ============ -->
+<section id="s6"><div class="wrap reveal">
+  <div class="kicker"><span class="n">06</span> Bonus · solo se avanza tempo</div>
+  <h2>Il signature move: <span class="em">backup periodico</span></h2>
+  <p class="lead">Se il pomeriggio lo consente: le <b>routine di Claude Code in cloud</b> — task che si eseguono da soli, a orari programmati, su macchine di Anthropic.</p>
+  <p>L'idea: una routine che periodicamente fa il <b>backup dell'applicazione appena costruita</b> (per esempio un dump del database salvato al sicuro). Nessun server vostro, nessun cron da amministrare: la si descrive, e da lì gira da sola.</p>
+  <div class="callout">
+    <b>Dichiaratamente bonus.</b> Se le domande si mangiano il tempo, si taglia questo pezzo e la lezione resta completa. Se avanza, chiudiamo con l'effetto wow.
+  </div>
+
+  <div class="faq">
+    <p class="q">"Ora che l'app è su miaapp.fly.dev… posso metterla sul mio dominio?"</p>
+    <p class="a"><b>Sì.</b> Si compra un dominio (una decina di euro l'anno), si dice al fornitore del dominio di puntare alla piattaforma (un record DNS: "chi cerca miaapp.it, va lì") e si dice alla piattaforma di aspettarsi quel nome, con il certificato per l'https gestito in automatico. Anche qui: la procedura esatta la si chiede a Claude. Oggi non lo facciamo dal vivo — ma è tutto qui.</p>
+  </div>
+</div></section>
+
+<!-- ============ TAKEAWAYS ============ -->
+<section id="s7"><div class="wrap reveal">
+  <div class="kicker"><span class="n">✓</span> Da portare a casa</div>
+  <h2>Dov'è finita <span class="em">l'app</span></h2>
+  <div class="takes">
+    <div class="take"><h4>Il codice vive altrove</h4><p>Su GitHub, su una macchina cloud che lo esegue, su una che ci fa lavorare Claude. Il vostro PC è solo uno dei posti.</p></div>
+    <div class="take"><h4>Push su main = deploy</h4><p>Il continuous deployment chiude il cerchio con Git: i due gesti del mattino ora pubblicano l'app da soli.</p></div>
+    <div class="take"><h4>Lambda vs EC2, in uno switch</h4><p>Macchina che si spegne quando non serve, o sempre accesa: l'always-on di Fly.io è tutta la differenza, in una levetta.</p></div>
+    <div class="take"><h4>Saperlo chiedere</h4><p>GitHub Action, migrazione del database, always-on, dominio: niente configurato a mano — tutto chiesto a Claude e capito ad alto livello.</p></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <b>Summer School 2026 — Giornata 3</b> · Deploy e Infrastruttura &amp; La prima app in produzione.<br>
+  Con Francesco. L'app del mattino, stasera, è online.
+</div></footer>
+
+<script>
+/* ---------- reveal + progress + dots ---------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+let _scrTick=false;const _prog=document.getElementById('prog');
+addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimationFrame(()=>{_scrTick=false;
+  const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight);_prog.style.width=(p*100)+'%';});});
+(function(){const labels={s0:'Intro',s1:'Dove vive il codice',s2:'Cloud + telefono',s3:'Deploy: Fly.io',s4:'CD: push → deploy',s5:'Supabase',s6:'Bonus & dominio',s7:'Da portare a casa'};
+ const nav=document.getElementById('dots');const secs=[...document.querySelectorAll('section')];
+ secs.forEach(s=>{const a=document.createElement('a');a.href='#'+s.id;a.innerHTML='<span>'+(labels[s.id]||s.id)+'</span>';a.dataset.id=s.id;nav.appendChild(a);});
+ const links=[...nav.querySelectorAll('a')];
+ const ob=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.dataset.id===e.target.id));}});},{rootMargin:'-45% 0px -45% 0px'});
+ secs.forEach(s=>ob.observe(s));
+})();
+
+/* ---------- always-on toggle ---------- */
+(function(){
+  const sw=document.getElementById('aoSw'),lab=document.getElementById('aoLab'),
+        title=document.getElementById('aoTitle'),desc=document.getElementById('aoDesc'),box=document.getElementById('aoBox');
+  let on=false;
+  sw.addEventListener('click',()=>{
+    on=!on;sw.classList.toggle('on',on);
+    lab.textContent='always-on: '+(on?'on':'off');
+    if(on){
+      title.textContent='Macchina always-on — “modello EC2”';
+      desc.innerHTML='La macchina resta <b>sempre accesa</b>, che ci sia traffico o no. Nessun lag alla prima richiesta, ma la paghi anche quando dorme. È l\'idea delle <b>EC2</b>: un computer nel cloud, tuo, acceso.';
+      box.style.borderColor='var(--accent)';box.style.background='var(--accent-soft)';
+    }else{
+      title.textContent='Macchina non always-on — “modello Lambda”';
+      desc.innerHTML='La macchina <b>si spegne quando nessuno la usa</b> e si riaccende alla prima richiesta (con un attimo di lag). Paghi solo quando lavora. È l\'idea delle <b>AWS Lambda</b>: calcolo a chiamata.';
+      box.style.borderColor='var(--line)';box.style.background='var(--card-2)';
+    }
+  });
+})();
+
+/* ---------- CD pipeline animation ---------- */
+(function(){
+  const stages=[...document.querySelectorAll('#cdflow .stage')];
+  const status=document.getElementById('cdStatus');
+  const btn=document.getElementById('cdPlay');
+  const msgs=[
+    'git push — la modifica sale su main…',
+    'GitHub Action in esecuzione: build dell\'app e deploy su Fly.io…',
+    'Deploy completato: la modifica è online, per tutti. 🌍'
+  ];
+  let running=false;
+  function play(){
+    if(running)return;running=true;btn.disabled=true;
+    stages.forEach(s=>s.classList.remove('hot','done'));
+    let i=0;
+    function stepTo(){
+      stages.forEach((s,k)=>{s.classList.toggle('hot',k===i);s.classList.toggle('done',k<i);});
+      status.textContent=msgs[i];
+      i++;
+      if(i<=2){setTimeout(stepTo,1150);}
+      else{setTimeout(()=>{stages.forEach(s=>{s.classList.remove('hot');s.classList.add('done');});
+        status.textContent='Nessun altro gesto richiesto: il push era tutto. ✅';
+        running=false;btn.disabled=false;},1000);}
+    }
+    stepTo();
+  }
+  btn.addEventListener('click',play);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Claude Code — La lezione | Summer School Giornata 3</title>
+<style>
+  :root{
+    --paper:#f1efe8; --paper-2:#e9e6dd;
+    --card:#ffffff; --card-2:#faf8f6;
+    --ink:#1a1a1a; --ink-2:#5f5e5a; --muted:#8a887f;
+    --line:#d9d6cc; --line-strong:#b4b2a9;
+    --accent:#DC2626; --accent-2:#B91C1C; --accent-soft:#fdecec; --accent-soft2:#f9d6d6;
+    --green:#0F766E; --green-soft:#e2f2ef;
+    --amber:#B45309; --amber-soft:#fbeedd;
+    --blue:#2f7ec9; --blue-soft:#e7f0fa;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(var(--paper-2) 0.5px, transparent 0.5px);background-size:22px 22px;}
+
+  #prog{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:60;transition:width .1s linear}
+  #dots{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:55;display:flex;flex-direction:column;gap:10px}
+  #dots a{width:9px;height:9px;border-radius:50%;background:var(--line-strong);opacity:.55;transition:all .2s;position:relative}
+  #dots a.on{background:var(--accent);opacity:1;transform:scale(1.35)}
+  #dots a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:11px;
+    color:var(--ink-2);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:2px 7px;opacity:0;pointer-events:none;transition:opacity .15s}
+  #dots a:hover span{opacity:1}
+  @media(max-width:900px){#dots{display:none}}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:0 28px}
+  section{padding:60px 0;border-top:1px solid var(--line)}
+  section:first-of-type{border-top:0}
+
+  .kicker{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);
+    display:flex;align-items:center;gap:10px;margin:0 0 14px}
+  .kicker .n{font-family:var(--mono);background:var(--accent);color:#fff;border-radius:5px;padding:1px 7px;font-size:11px;letter-spacing:.05em}
+  h1{font-size:clamp(40px,8vw,84px);line-height:.98;letter-spacing:-.02em;font-weight:850;margin:0 0 18px}
+  h2{font-size:clamp(27px,4.4vw,44px);line-height:1.04;letter-spacing:-.015em;font-weight:850;margin:0 0 16px}
+  h3{font-size:19px;font-weight:750;margin:30px 0 6px}
+  .lead{font-size:clamp(17px,2vw,21px);color:var(--ink-2);margin:0 0 10px}
+  p{font-size:16.5px}
+  .em{color:var(--accent);font-weight:600}
+  .mut{color:var(--muted)}
+
+  .hero{padding-top:78px;min-height:82vh;display:flex;flex-direction:column;justify-content:center}
+  .hero .tag{font-family:var(--mono);font-size:12px;color:var(--ink-2);border:1px solid var(--line-strong);
+    border-radius:999px;padding:5px 13px;display:inline-flex;gap:8px;align-items:center;margin-bottom:24px;background:var(--card-2);width:max-content}
+  .hero .tag b{color:var(--accent)}
+  .hero h1 span{color:var(--accent)}
+  .hero .sub{font-size:clamp(18px,2.4vw,24px);font-weight:600;color:var(--ink);margin:0 0 8px}
+  .hero .subm{font-size:16px;color:var(--ink-2)}
+  .arc{display:flex;gap:8px;flex-wrap:wrap;margin-top:30px}
+  .arc .step{font-family:var(--mono);font-size:11px;color:var(--ink-2);border:1px solid var(--line);border-radius:20px;padding:6px 11px;white-space:nowrap;background:var(--card-2)}
+  .arc .step b{color:var(--accent)}
+  .scrollcue{margin-top:36px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+  .scrollcue .a{animation:bob 1.6s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+
+  .callout{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;
+    padding:16px 20px;margin:22px 0;font-size:16.5px;color:#7c1d1d}
+  .callout b{color:var(--accent)}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:26px;
+    box-shadow:0 1px 0 var(--line),0 18px 40px -32px rgba(0,0,0,.35)}
+  .panel.star{border-color:var(--accent-soft2);box-shadow:0 1px 0 var(--accent-soft2),0 22px 50px -30px rgba(220,38,38,.4);background:linear-gradient(180deg,#fff,#fffafa)}
+  .panel .badge{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);
+    display:inline-flex;align-items:center;gap:7px;margin-bottom:14px}
+  .panel .badge.doer{background:var(--accent);color:#fff;border-radius:6px;padding:3px 10px}
+  .panel .badge.you{background:var(--amber);color:#fff;border-radius:6px;padding:3px 10px}
+
+  .hint{font-size:13px;color:var(--muted);margin-top:12px}
+  .cap{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:10px}
+  code,.mono{font-family:var(--mono)}
+  .cmd{font-family:var(--mono);font-weight:700;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-soft2);border-radius:6px;padding:2px 8px;font-size:.92em;white-space:nowrap}
+  .kbd{font-family:var(--mono);font-size:.85em;font-weight:700;color:var(--ink);background:var(--card);border:1px solid var(--line-strong);border-bottom-width:2px;border-radius:6px;padding:2px 8px;white-space:nowrap;box-shadow:0 1px 0 var(--line)}
+
+  .why{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0}
+  @media(max-width:720px){.why{grid-template-columns:1fr}}
+  .wbox{border-radius:14px;padding:18px 20px;border:1px solid}
+  .wbox h4{margin:0 0 8px;font-size:15px;display:flex;align-items:center;gap:9px;font-family:var(--mono)}
+  .wbox h4::before{content:"";width:9px;height:9px;border-radius:50%}
+  .wbox p{margin:0 0 8px;font-size:14.5px;max-width:none}
+  .wbox p:last-child{margin-bottom:0}
+  .wbox.a{background:var(--accent-soft);border-color:var(--accent-soft2)}
+  .wbox.a h4{color:var(--accent-2)} .wbox.a h4::before{background:var(--accent)}
+  .wbox.b{background:var(--green-soft);border-color:#c6e5dd}
+  .wbox.b h4{color:var(--green)} .wbox.b h4::before{background:var(--green)}
+
+  /* GIT pipeline (riciclata dalla guida comandi) */
+  .gitflow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:stretch;gap:0;margin-top:20px}
+  @media(max-width:720px){.gitflow{grid-template-columns:1fr;gap:14px}.gitflow .arrow{transform:rotate(90deg);justify-self:center;margin:2px 0}}
+  .stage{background:var(--card-2);border:1.5px solid var(--line);border-radius:14px;padding:16px;text-align:center;transition:all .35s}
+  .stage.hot{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 10px 30px -20px rgba(220,38,38,.6);transform:translateY(-3px)}
+  .stage .icn{font-size:26px;line-height:1}
+  .stage .nm{font-weight:800;font-size:15px;margin-top:8px}
+  .stage .sub{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);margin-top:2px}
+  .stage .file{margin-top:12px;height:26px;display:flex;align-items:center;justify-content:center;gap:6px}
+  .dot{width:12px;height:12px;border-radius:3px;background:var(--line-strong);transition:all .35s;transform:scale(.6);opacity:.35}
+  .stage.hot .dot{background:var(--accent);transform:scale(1);opacity:1}
+  .stage.done .dot{background:var(--green);transform:scale(1);opacity:1}
+  .arrow{display:flex;align-items:center;justify-content:center;color:var(--line-strong);font-size:22px;padding:0 6px}
+  .gitcmd{font-family:var(--mono);font-size:12px;color:var(--accent-2);margin-top:8px;font-weight:700}
+  .cycbtn{font-family:var(--sans);font-size:14px;font-weight:700;background:var(--ink);color:#fff;border:0;border-radius:10px;padding:11px 18px;cursor:pointer;transition:transform .05s,background .15s;display:inline-flex;align-items:center;gap:10px}
+  .cycbtn:hover{background:#000}.cycbtn:active{transform:translateY(1px)}
+
+  /* architettura DB / BE / FE */
+  .arch{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:0;align-items:stretch;margin-top:20px}
+  @media(max-width:760px){.arch{grid-template-columns:1fr}.arch .aarr{transform:rotate(90deg);justify-self:center;padding:4px 0}}
+  .abox{border:1.5px solid var(--line);border-radius:14px;padding:16px;background:var(--card-2);text-align:center;transition:all .25s;cursor:pointer}
+  .abox.on{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 10px 30px -20px rgba(220,38,38,.6);transform:translateY(-3px)}
+  .abox .icn{font-size:26px;line-height:1}
+  .abox .nm{font-weight:800;font-size:15px;margin-top:8px}
+  .abox .tech{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);margin-top:2px}
+  .abox ul{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:5px}
+  .abox li{font-family:var(--mono);font-size:11.5px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:3px 8px}
+  .aarr{display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--line-strong);font-size:20px;padding:0 8px;gap:2px}
+  .aarr small{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.05em}
+  .archdesc{margin-top:18px;font-size:15px;color:var(--ink-2);min-height:44px}
+  .archdesc b{color:var(--ink)}
+
+  /* steps numerati */
+  .steps{counter-reset:st;display:flex;flex-direction:column;gap:0;margin-top:8px}
+  .steps .st{counter-increment:st;display:grid;grid-template-columns:34px 1fr;gap:14px;padding:14px 0;border-bottom:1px dashed var(--line);align-items:start}
+  .steps .st:last-child{border-bottom:0}
+  .steps .st::before{content:counter(st,decimal-leading-zero);font-family:var(--mono);font-weight:800;font-size:13px;color:#fff;background:var(--accent);border-radius:8px;width:34px;height:26px;display:flex;align-items:center;justify-content:center;margin-top:2px}
+  .steps .st p{margin:0;font-size:15.5px}
+  .steps .st p b{color:var(--ink)}
+  .steps.you .st::before{background:var(--amber)}
+
+  /* linkbox verso la guida */
+  .linkbox{display:block;border:2px solid var(--accent-soft2);border-radius:14px;padding:18px 20px;margin-top:22px;background:var(--card);
+    text-decoration:none;color:var(--ink);transition:all .15s;box-shadow:0 14px 30px -26px rgba(220,38,38,.5)}
+  .linkbox:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .linkbox .t{font-weight:800;font-size:16px;color:var(--accent)}
+  .linkbox .d{font-size:14px;color:var(--ink-2);margin-top:3px}
+
+  .takes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+  @media(max-width:720px){.takes{grid-template-columns:1fr}}
+  .take{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:16px 18px}
+  .take h4{margin:0 0 6px;font-size:15px}
+  .take p{margin:0;font-size:14px;color:var(--ink-2)}
+
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  footer{padding:50px 0 90px;color:var(--ink-2);font-size:13.5px;border-top:1px solid var(--line)}
+  footer b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<nav id="dots"></nav>
+
+<!-- ============ HERO ============ -->
+<section id="s0" class="hero"><div class="wrap reveal">
+  <div class="tag">Summer School 2026 · Giornata 3 · <b>Claude Code</b></div>
+  <h1>Claude Code: <span>vibe coding</span></h1>
+  <p class="sub">Costruire software vero descrivendolo: stamattina un gestionale per la manutenzione dei treni, dal database all'interfaccia — con l'AI dentro, non solo intorno.</p>
+  <p class="subm">Quattro ore, con Federico. Nessuna esperienza di programmazione richiesta: l'obiettivo è che impariate a costruirvi i vostri tool interni.</p>
+  <div class="arc">
+    <span class="step"><b>1</b> · Git essenziale</span>
+    <span class="step"><b>2</b> · DB / BE / FE / API</span>
+    <span class="step"><b>3</b> · Onboarding Claude Code</span>
+    <span class="step"><b>4</b> · Demo: dashboard treni</span>
+    <span class="step"><b>5</b> · Hands-on: il revisore</span>
+  </div>
+  <div class="scrollcue"><span class="a">↓</span> scorri per iniziare</div>
+</div></section>
+
+<!-- ============ 01 GIT ============ -->
+<section id="s1"><div class="wrap reveal">
+  <div class="kicker"><span class="n">01</span> Git essenziale</div>
+  <h2>Prima di tutto: i <span class="em">checkpoint</span> del lavoro</h2>
+  <p class="lead">Con Claude Code si lavora per iterazioni veloci: si prova, si cambia, a volte si sbaglia. Git è il modo per avere <b>checkpoint del proprio lavoro</b> e poter tornare indietro quando una vibata va male — e, come vedrete nel pomeriggio, è ciò che abilita Claude Code in cloud.</p>
+
+  <div class="why">
+    <div class="wbox a">
+      <h4>Versionare</h4>
+      <p>Salvare <b>istantanee</b> del progetto man mano che lavori. Se qualcosa si rompe, torni all'istantanea di prima.</p>
+      <p>È il "salva partita" del codice.</p>
+    </div>
+    <div class="wbox b">
+      <h4>GitHub</h4>
+      <p>Il posto <b>nel cloud</b> dove le istantanee vengono conservate: backup del progetto e — dal pomeriggio — la porta d'ingresso di Claude Code in cloud.</p>
+    </div>
+  </div>
+
+  <p>Di Git vi servono <b>due gesti soli</b>: committare e pushare. Niente branch, niente mondo infinito di Git.</p>
+  <div class="panel star">
+    <div class="gitflow" id="gitflow">
+      <div class="stage" data-s="0">
+        <div class="icn">✏️</div>
+        <div class="nm">Working directory</div>
+        <div class="sub">i file che stai modificando</div>
+        <div class="file"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="gitcmd">&nbsp;</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="stage" data-s="1">
+        <div class="icn">📸</div>
+        <div class="nm">Commit</div>
+        <div class="sub">istantanea, sul tuo PC</div>
+        <div class="file"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="gitcmd">git commit -m "…"</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="stage" data-s="2">
+        <div class="icn">☁️</div>
+        <div class="nm">Push</div>
+        <div class="sub">online, su GitHub</div>
+        <div class="file"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="gitcmd">git push</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:18px">
+      <button class="cycbtn" id="gitPlay">▶ Fai partire una modifica</button>
+    </div>
+    <p class="cap" id="gitStatus" style="text-align:center">Premi il pulsante per seguire una modifica lungo i tre stati.</p>
+  </div>
+
+  <div class="callout">
+    <b>Setup in aula (~20 minuti).</b> Installiamo Git su tutte le macchine — Claude Code stesso lo richiede — e ognuno crea la <b>propria repo individuale</b> su GitHub. Non è burocrazia: quella repo è il prerequisito per il remote control e il deploy del pomeriggio.
+  </div>
+</div></section>
+
+<!-- ============ 02 BASICS SW ============ -->
+<section id="s2"><div class="wrap reveal">
+  <div class="kicker"><span class="n">02</span> Il vocabolario</div>
+  <h2>Database, back-end, front-end, <span class="em">API</span></h2>
+  <p class="lead">Quattro parole che useremo tutta la giornata. Non servono per programmare: servono per <b>seguire cosa sta succedendo dove</b> mentre Claude costruisce l'app. Ecco l'architettura dell'app che nascerà tra poco — clicca sui blocchi.</p>
+
+  <div class="panel star">
+    <div class="badge">Architettura dell'app dei treni</div>
+    <div class="arch" id="arch">
+      <div class="abox" data-i="0">
+        <div class="icn">🗄️</div>
+        <div class="nm">Database</div>
+        <div class="tech">Postgres, sul tuo PC</div>
+        <ul><li>mezzi</li><li>manutentori</li><li>revisioni</li></ul>
+      </div>
+      <div class="aarr">⇄<small>API</small></div>
+      <div class="abox" data-i="1">
+        <div class="icn">⚙️</div>
+        <div class="nm">Back-end</div>
+        <div class="tech">la logica</div>
+        <ul><li>espone le API</li><li>regole &amp; calcoli</li><li>parla con l'ERP</li></ul>
+      </div>
+      <div class="aarr">⇄<small>API</small></div>
+      <div class="abox" data-i="2">
+        <div class="icn">🖥️</div>
+        <div class="nm">Front-end</div>
+        <div class="tech">quello che vedi</div>
+        <ul><li>pagine &amp; bottoni</li><li>tabelle e stati</li><li>l'interazione</li></ul>
+      </div>
+    </div>
+    <p class="archdesc" id="archDesc">Tre pezzi, ognuno col suo mestiere. Le <b>API</b> sono il linguaggio con cui si parlano: richieste e risposte con un formato concordato.</p>
+  </div>
+
+  <div class="callout">
+    <b>Perché Postgres.</b> Il database della demo è un vero Postgres in locale, non un giocattolo: nel pomeriggio lo migreremo così com'è su un Postgres in cloud (Supabase). Stesso schema, altro posto.
+  </div>
+</div></section>
+
+<!-- ============ 03 ONBOARDING ============ -->
+<section id="s3"><div class="wrap reveal">
+  <div class="kicker"><span class="n">03</span> Onboarding</div>
+  <h2>Il giro base di <span class="em">Claude Code</span></h2>
+  <p class="lead">Claude Code è Claude nel terminale, dentro la cartella del progetto: legge i file, scrive codice, esegue comandi. Ieri con Cowork l'agente lavorava sulla cartella dei documenti — qui lavora sulla cartella del codice, e può fare molto di più.</p>
+
+  <div class="why">
+    <div class="wbox a">
+      <h4>Artifact</h4>
+      <p>Una piccola app self-contained: alla fine è <b>un singolo file HTML</b> che vive dentro Claude.</p>
+      <p>Perfetto per la matrice di ieri. Ma tutto — dati compresi — sta in quel file.</p>
+    </div>
+    <div class="wbox b">
+      <h4>Claude Code</h4>
+      <p>Un <b>progetto vero</b>: database, back-end, front-end, file separati, librerie, versionamento.</p>
+      <p>Quando l'idea è più grande di un singolo HTML, si passa qui.</p>
+    </div>
+  </div>
+
+  <p>I comandi che useremo da subito: <span class="cmd">/init</span> per generare il CLAUDE.md del progetto, <span class="cmd">/clear</span> e <span class="cmd">/compact</span> per gestire il contesto, <span class="kbd">Shift+Tab</span> per cambiare modalità operativa, <span class="kbd">Esc</span> per interrompere.</p>
+
+  <div class="callout">
+    <b>Il CLAUDE.md lo conoscete già.</b> È lo stesso concetto del Claude MD scritto ieri con Cowork: il documento con il <i>come</i>. Qui non lo rispieghiamo — lo vedrete semplicemente comparire e agire nel flusso di lavoro, generato con <span class="cmd">/init</span>.
+  </div>
+
+  <a class="linkbox" href="guida_comandi_claude_code.html">
+    <div class="t">→ Guida ai comandi di Claude Code</div>
+    <div class="d">Comandi <span class="mono">/</span>, gestione del contesto, modalità, effort, scorciatoie. Tienila aperta di fianco per tutta la mattina.</div>
+  </a>
+</div></section>
+
+<!-- ============ 04 DEMO DASHBOARD TRENI ============ -->
+<section id="s4"><div class="wrap reveal">
+  <div class="kicker"><span class="n">04</span> Da vedere</div>
+  <h2>Demo: la dashboard <span class="em">dei treni</span></h2>
+  <p class="lead">Federico viba davanti a voi, ad alta voce, un gestionale per la <b>manutenzione ordinaria dei mezzi</b>: dallo schema di prima all'app funzionante. Ogni passo è raccontato con il vocabolario appena imparato.</p>
+
+  <div class="panel star">
+    <div class="badge doer">Demo · Federico viba</div>
+    <div class="steps">
+      <div class="st"><p><b>La fonte dati: un ERP mockato.</b> Un componente preparato in anticipo che, ricevute le chiamate, risponde con dati presi da un JSON prefatto — mezzi, manutentori con le loro disponibilità, revisioni con le scadenze. Lo diciamo esplicitamente perché "mockare" è a sua volta un concetto utile: per costruire non serve il sistema vero.</p></div>
+      <div class="st"><p><b>La dashboard.</b> Visione d'insieme dei mezzi con lo stato delle revisioni e dei controlli obbligatori a scadenza: otto mezzi di categoria tre, tre con revisione fatta, cinque da fare.</p></div>
+      <div class="st"><p><b>Il bottone "Organizza revisione".</b> Crea l'agenda del giorno o della settimana dei manutentori, incrociando revisioni da fare e disponibilità.</p></div>
+      <div class="st"><p><b>Human in the loop.</b> L'agenda proposta si rivede: solo quando l'utente <b>conferma</b>, parte la mail ai manutentori con il programma ("il tuo tragitto del giorno è questo").</p></div>
+      <div class="st"><p><b>L'AI dentro il software.</b> La composizione della mail la scrive un modello, chiamato via API dall'app stessa. La mail allega anche la <b>scheda treno</b> del mezzo, la documentazione da portare con sé.</p></div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <b>Il punto non scontato:</b> finora l'AI era nel <i>processo</i> di sviluppo (Claude che scrive il codice). Qui l'AI è <b>dentro il software</b>: l'app, una volta costruita, usa a sua volta un modello per comporre la mail. Sono due cose diverse, e servono entrambe.
+  </div>
+  <p class="hint">La scheda treno è un documento d'esempio generato da noi: se qualcosa non torna col vostro mondo reale — e voi i treni li conoscete davvero — prendetelo per quello che è, un esempio astratto.</p>
+</div></section>
+
+<!-- ============ 05 ESERCIZIO REVISORE ============ -->
+<section id="s5"><div class="wrap reveal">
+  <div class="kicker"><span class="n">05</span> Da fare</div>
+  <h2>Hands-on: il documento <span class="em">del revisore</span></h2>
+  <p class="lead">Ora vibate voi, con consegna nostra. Non un'app nuova: <b>una pagina in più della stessa app</b> appena vista — così riusate tutto il contesto della demo.</p>
+
+  <div class="panel star">
+    <div class="badge you">Hands-on · vibate voi (~2 ore)</div>
+    <h3 style="margin-top:0">La consegna</h3>
+    <p>Il revisore, dopo il giro sui mezzi, produce un <b>documento destrutturato</b>: appunti sparsi su treni visti e interventi da fare. Costruite la pagina in cui quel documento si carica e diventa una <b>lista di interventi</b> strutturata, collegata alle revisioni di quel revisore, pronta per chi li prenderà in carico.</p>
+    <h3>Gli step</h3>
+    <div class="steps you">
+      <div class="st"><p><b>La pagina di caricamento.</b> Una box in cui trascinare il documento del revisore (il documento ve lo diamo noi, già pronto).</p></div>
+      <div class="st"><p><b>Il collegamento.</b> L'app aggancia il documento alle revisioni che quel revisore doveva fare — i dati sono già nel database della demo.</p></div>
+      <div class="st"><p><b>L'estrazione.</b> Dal testo destrutturato l'app estrae la <b>lista degli interventi</b>: qui entra l'AI dentro il software, con la <b>chiave API</b> che vi distribuiamo adesso.</p></div>
+      <div class="st"><p><b>Modifica e conferma.</b> Gli interventi estratti si possono correggere e integrare; poi OK, e vengono <b>salvati</b> — qualcun altro li prenderà in carico.</p></div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <b>Ritmo consigliato:</b> committate a ogni passo che funziona. È il checkpoint di stamattina: se una vibata prende una brutta piega, si torna all'ultimo commit e si riparte. E il gruppo è piccolo: chi resta indietro, lo finiamo insieme.
+  </div>
+</div></section>
+
+<!-- ============ TAKEAWAYS ============ -->
+<section id="s6"><div class="wrap reveal">
+  <div class="kicker"><span class="n">✓</span> Da portare a casa</div>
+  <h2>Cosa resta di <span class="em">stamattina</span></h2>
+  <div class="takes">
+    <div class="take"><h4>Commit e push, sempre</h4><p>Due gesti: istantanea locale, copia nel cloud. Checkpoint per voi, prerequisito per il pomeriggio.</p></div>
+    <div class="take"><h4>DB / BE / FE / API</h4><p>Il vocabolario per capire cosa succede dove. Lo stesso schema tornerà nel pomeriggio, quando andrà in cloud.</p></div>
+    <div class="take"><h4>Descrivere, non digitare</h4><p>Con Claude Code il software si costruisce raccontandolo. Il vostro mestiere è la consegna, non la sintassi.</p></div>
+    <div class="take"><h4>AI nel software</h4><p>Non solo AI che scrive il codice: app che, una volta costruite, usano un modello per lavorare (la mail, l'estrazione).</p></div>
+  </div>
+  <p class="hint" style="margin-top:24px">Nel pomeriggio, con Francesco: il codice esce dal vostro computer — Claude Code in cloud, deploy su Fly.io, e il database che migra su Supabase.</p>
+</div></section>
+
+<footer><div class="wrap">
+  <b>Summer School 2026 — Giornata 3</b> · Claude Code: Introduzione al vibe coding &amp; La mia prima automazione.<br>
+  Con Federico. Reference: <a href="guida_comandi_claude_code.html" style="color:var(--accent)">guida ai comandi</a>.
+</div></footer>
+
+<script>
+/* ---------- reveal + progress + dots ---------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+let _scrTick=false;const _prog=document.getElementById('prog');
+addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimationFrame(()=>{_scrTick=false;
+  const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight);_prog.style.width=(p*100)+'%';});});
+(function(){const labels={s0:'Intro',s1:'Git essenziale',s2:'DB/BE/FE/API',s3:'Onboarding',s4:'Demo: dashboard treni',s5:'Hands-on: il revisore',s6:'Da portare a casa'};
+ const nav=document.getElementById('dots');const secs=[...document.querySelectorAll('section')];
+ secs.forEach(s=>{const a=document.createElement('a');a.href='#'+s.id;a.innerHTML='<span>'+(labels[s.id]||s.id)+'</span>';a.dataset.id=s.id;nav.appendChild(a);});
+ const links=[...nav.querySelectorAll('a')];
+ const ob=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.dataset.id===e.target.id));}});},{rootMargin:'-45% 0px -45% 0px'});
+ secs.forEach(s=>ob.observe(s));
+})();
+
+/* ---------- GIT pipeline animation ---------- */
+(function(){
+  const stages=[...document.querySelectorAll('#gitflow .stage')];
+  const status=document.getElementById('gitStatus');
+  const btn=document.getElementById('gitPlay');
+  const msgs=[
+    'Stai modificando i file nella cartella di lavoro…',
+    'git commit — istantanea salvata sul tuo computer 📸',
+    'git push — istantanea inviata su GitHub, ora è al sicuro ☁️'
+  ];
+  let running=false;
+  function reset(){stages.forEach(s=>{s.classList.remove('hot','done');});}
+  function play(){
+    if(running)return;running=true;reset();btn.disabled=true;btn.style.opacity=.6;
+    let i=0;
+    function stepTo(){
+      stages.forEach((s,k)=>{s.classList.toggle('hot',k===i);s.classList.toggle('done',k<i);});
+      status.textContent=msgs[i];
+      i++;
+      if(i<=2){setTimeout(stepTo,1150);}
+      else{setTimeout(()=>{stages.forEach((s)=>{s.classList.remove('hot');s.classList.add('done');});
+        status.textContent='Fatto: la modifica è passata da locale a online. ✅';
+        running=false;btn.disabled=false;btn.style.opacity=1;},1000);}
+    }
+    stepTo();
+  }
+  btn.addEventListener('click',play);
+})();
+
+/* ---------- architettura: click sui blocchi ---------- */
+(function(){
+  const boxes=[...document.querySelectorAll('#arch .abox')];
+  const desc=document.getElementById('archDesc');
+  const texts=[
+    '<b>Il database</b> è la memoria: tabelle con i mezzi, i manutentori e le revisioni. Qui è un Postgres che gira sul vostro computer — nel pomeriggio migrerà in cloud.',
+    '<b>Il back-end</b> è la logica: espone le API, applica le regole (chi è disponibile? cosa scade?), e va a chiedere i dati all\'ERP mockato.',
+    '<b>Il front-end</b> è quello che vedete e toccate: le pagine, le tabelle, il bottone "Organizza revisione". Parla col back-end tramite le API.'
+  ];
+  const def='Tre pezzi, ognuno col suo mestiere. Le <b>API</b> sono il linguaggio con cui si parlano: richieste e risposte con un formato concordato.';
+  boxes.forEach((b,i)=>b.addEventListener('click',()=>{
+    const was=b.classList.contains('on');
+    boxes.forEach(x=>x.classList.remove('on'));
+    if(was){desc.innerHTML=def;return;}
+    b.classList.add('on');desc.innerHTML=texts[i];
+  }));
+})();
+</script>
+</body>
+</html>

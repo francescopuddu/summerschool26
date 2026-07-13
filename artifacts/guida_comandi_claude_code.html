@@ -116,26 +116,6 @@
   .arrow{display:flex;align-items:center;justify-content:center;color:var(--line-strong);font-size:22px;padding:0 6px}
   .gitcmd{font-family:var(--mono);font-size:12px;color:var(--accent-2);margin-top:8px;font-weight:700}
 
-  /* levers + supervisor / worker */
-  .levers{display:flex;flex-direction:column;gap:8px;margin-top:16px}
-  .lever{display:flex;gap:12px;align-items:baseline;font-size:14.5px;border-bottom:1px dashed var(--line);padding-bottom:8px}
-  .lever code{font-family:var(--mono);font-size:12.5px;background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:5px;white-space:nowrap}
-  .lever span{color:var(--ink-2)}
-  .sw-stage{display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:6px}
-  .sw-node{border:1px solid var(--line);border-radius:12px;padding:12px 16px;text-align:center;background:var(--card-2);min-width:180px}
-  .sw-sup{border-color:var(--accent);background:var(--accent-soft)}
-  .sw-title{font-weight:700;font-size:14px}.sw-sub{font-size:11px;color:var(--muted);font-family:var(--mono)}
-  .sw-workers{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
-  .sw-w{border:1px solid var(--line);border-radius:12px;padding:10px 12px;width:180px;background:var(--card-2)}
-  .sw-wbar{height:8px;background:var(--paper-2);border-radius:5px;overflow:hidden;margin-top:8px}
-  .sw-wfill{height:100%;width:0;background:var(--amber);border-radius:5px;transition:width .6s linear}
-  .sw-wtok{font-family:var(--mono);font-size:11px;color:var(--ink-2);margin-top:5px;display:flex;justify-content:space-between}
-  .sw-ret{color:var(--green);font-weight:700;opacity:0;transition:opacity .3s}
-  .sw-ret.on{opacity:1}
-  .sw-readout{display:flex;gap:20px;flex-wrap:wrap;font-family:var(--mono);font-size:13px;justify-content:center}
-  .sw-readout b{font-size:18px}
-  .sw-readout .big-tot{color:var(--amber)}.sw-readout .big-sup{color:var(--accent)}
-
   /* mode cycler */
   .modewrap{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;margin-top:22px;align-items:start}
   @media(max-width:720px){.modewrap{grid-template-columns:1fr}}
@@ -205,11 +185,10 @@
   <div class="arc">
     <span class="step"><b>1</b> · Git &amp; GitHub</span>
     <span class="step"><b>2</b> · Comandi <span class="mono">/</span></span>
-    <span class="step"><b>3</b> · Modalità <span class="mono">Shift+Tab</span></span>
-    <span class="step"><b>4</b> · Effort</span>
-    <span class="step"><b>5</b> · Scorciatoie</span>
-    <span class="step"><b>6</b> · Da mobile</span>
-    <span class="step"><b>7</b> · In cloud</span>
+    <span class="step"><b>3</b> · Contesto</span>
+    <span class="step"><b>4</b> · Modalità <span class="mono">Shift+Tab</span></span>
+    <span class="step"><b>5</b> · Effort</span>
+    <span class="step"><b>6</b> · Scorciatoie</span>
   </div>
   <div class="scrollcue"><span class="a">↓</span> scorri per iniziare</div>
 </div></section>
@@ -323,10 +302,6 @@
       <p class="d"><b>Genera il <span class="mono">CLAUDE.md</span></b> del progetto: un file con le istruzioni e il contesto che Claude leggerà a ogni sessione.</p>
     </div>
     <div class="cmdcard">
-      <div class="c">/agents</div>
-      <p class="d"><b>Crea e gestisce i subagent</b>: aiutanti specializzati a cui Claude delega pezzi di lavoro in parallelo.</p>
-    </div>
-    <div class="cmdcard">
       <div class="c">/mcp</div>
       <p class="d"><b>Stato e gestione dei server MCP</b>: i connettori che collegano Claude a strumenti esterni (Gmail, GitHub, database…).</p>
     </div>
@@ -334,7 +309,7 @@
       <div class="c">/usage</div>
       <p class="d"><b>Mostra l'utilizzo</b>: token e costo stimato della sessione e, sui piani Pro/Max, quanto hai consumato rispetto ai limiti.</p>
     </div>
-    <div class="cmdcard" style="grid-column:1/-1">
+    <div class="cmdcard">
       <div class="c">/resume</div>
       <p class="d"><b>Riprende una sessione precedente.</b> Ritrovi una conversazione di ieri esattamente dov'era rimasta, con tutto il suo contesto.</p>
     </div>
@@ -364,42 +339,9 @@
   </div>
 </div></section>
 
-<!-- ============ SCRIVANIA / SUBAGENTI ============ -->
-<section id="s4"><div class="wrap reveal">
-  <div class="kicker"><span class="n">04</span> Gestione attiva e subagenti</div>
-  <h2>Tenere la <span class="em">scrivania</span> in ordine</h2>
-  <p class="lead">Il contesto è la scrivania di Claude: su task lunghi si riempie da sola, soprattutto per via dei <b>risultati dei tool</b> voluminosi. Oltre a <span class="cmd">/clear</span> e <span class="cmd">/compact</span>, l'agente ha altre leve per gestirla attivamente:</p>
-  <div class="levers">
-    <div class="lever"><code>/compact</code><span><b>Compaction.</b> Riassume la conversazione e riparte con un contesto ripulito, conservando le decisioni importanti.</span></div>
-    <div class="lever"><code>note-taking</code><span><b>Appunti strutturati.</b> L'agente scrive note in un file fuori dal contesto (un TODO, uno scratchpad) e le rilegge quando serve.</span></div>
-    <div class="lever"><code>just-in-time</code><span><b>Retrieval on-demand.</b> Carica un dato solo nel momento in cui serve, invece di pre-caricare tutto in anticipo.</span></div>
-    <div class="lever"><code>/clear</code><span><b>Reset esplicito.</b> Task nuovo = conversazione nuova. Il modo più semplice per non trascinarsi contesto inutile.</span></div>
-  </div>
-  <p class="lead" style="margin-top:26px">E la leva più potente per i task grossi: <b>i subagenti</b>. Un supervisore scompone il lavoro e lo delega a worker specializzati, <b>ognuno con la propria scrivania pulita</b>. Ogni worker può bruciare decine di migliaia di token esplorando, ma restituisce solo un riassunto distillato.</p>
-  <div class="panel star">
-    <div class="badge">avvia il flusso supervisor → worker → sintesi</div>
-    <div class="sw-stage">
-      <div class="sw-node sw-sup"><div class="sw-title">Supervisore</div><div class="sw-sub" id="sw-sup-sub">in attesa del task</div></div>
-      <div style="font-size:20px;color:var(--line-strong)">▼</div>
-      <div class="sw-workers" id="sw-workers"></div>
-    </div>
-    <div class="sw-readout" style="margin-top:18px">
-      <span>Lavoro totale svolto: <b class="big-tot" id="sw-tot">0</b> token</span>
-      <span>Rientrati nel supervisore: <b class="big-sup" id="sw-sup-tok">0</b> token</span>
-    </div>
-    <div style="text-align:center;margin-top:16px">
-      <button class="cycbtn" id="sw-run">▶ Avvia il lavoro</button>
-    </div>
-    <p class="hint">Il lavoro totale è enorme, ma il contesto del supervisore resta piccolo e ordinato: ecco perché i subagenti scalano dove un singolo agente si intasa.</p>
-  </div>
-  <div class="callout">
-    <b>In pratica:</b> i subagenti si creano e si gestiscono con <span class="cmd">/agents</span> — e Claude li usa anche da solo, quando valuta che un pezzo di lavoro convenga delegarlo.
-  </div>
-</div></section>
-
 <!-- ============ MODES ============ -->
 <section id="s5"><div class="wrap reveal">
-  <div class="kicker"><span class="n">05</span> Le modalità operative</div>
+  <div class="kicker"><span class="n">04</span> Le modalità operative</div>
   <h2>Quanta libertà dai a Claude — <span class="em">Shift+Tab</span></h2>
   <p class="lead">Premendo <span class="kbd">Shift+Tab</span> cicli tra le modalità: cambiano quanto Claude chiede il permesso prima di agire. Provale qui sotto.</p>
 
@@ -438,7 +380,7 @@
 
 <!-- ============ EFFORT ============ -->
 <section id="s6"><div class="wrap reveal">
-  <div class="kicker"><span class="n">06</span> Effort &amp; ragionamento</div>
+  <div class="kicker"><span class="n">05</span> Effort &amp; ragionamento</div>
   <h2>Quanto far <span class="em">ragionare</span> Claude</h2>
   <p class="lead">Puoi decidere quanto a fondo Claude ragiona prima di rispondere. Il comando <span class="cmd">/effort</span> imposta il livello su una scala di cinque: più sali, più pensa — ma impiega più tempo. Trascina il cursore.</p>
 
@@ -476,7 +418,7 @@
 
 <!-- ============ SHORTCUTS ============ -->
 <section id="s7"><div class="wrap reveal">
-  <div class="kicker"><span class="n">07</span> Scorciatoie utili</div>
+  <div class="kicker"><span class="n">06</span> Scorciatoie utili</div>
   <h2>Tre gesti da tastiera che <span class="em">salvano tempo</span></h2>
 
   <div class="scut">
@@ -498,81 +440,6 @@
   </div>
 </div></section>
 
-<!-- ============ REMOTE CONTROL ============ -->
-<section id="s8"><div class="wrap reveal">
-  <div class="kicker"><span class="n">08</span> Lavorare dal telefono</div>
-  <h2>Continua la sessione da mobile — <span class="em">/rc</span></h2>
-  <p class="lead">Hai avviato Claude Code sul computer e devi allontanarti? Con <b>Remote Control</b> prosegui e monitori la stessa sessione dal telefono, dal tablet o da un browser qualsiasi.</p>
-
-  <div class="panel star">
-    <div class="badge">Come funziona</div>
-    <div style="display:grid;grid-template-columns:auto 1fr;gap:14px 16px;align-items:start">
-      <div class="mono" style="color:var(--accent);font-weight:800">1</div>
-      <p style="margin:0">Nel terminale digiti <span class="cmd">/remote-control</span> (in breve <span class="cmd">/rc</span>). Claude mostra un <b>link</b> e un <b>QR code</b>.</p>
-      <div class="mono" style="color:var(--accent);font-weight:800">2</div>
-      <p style="margin:0">Apri l'<b>app Claude</b> sul telefono (iOS/Android) nella scheda <b>Code</b>, oppure inquadri il QR, oppure vai su <span class="mono">claude.ai/code</span> da browser.</p>
-      <div class="mono" style="color:var(--accent);font-weight:800">3</div>
-      <p style="margin:0">Scrivi e segui l'avanzamento dal telefono: la conversazione resta <b>sincronizzata</b> con il terminale sul computer.</p>
-    </div>
-  </div>
-
-  <div class="callout" style="border-left-color:var(--amber);background:var(--amber-soft);color:#7a3c06">
-    <b>Attenzione:</b> la sessione gira sul <b>tuo computer</b>, che deve restare <b>acceso</b>. Se chiudi il terminale o lo spegni, la sessione remota finisce. Per far proseguire il lavoro a computer spento serve il cloud → sezione successiva.
-  </div>
-</div></section>
-
-<!-- ============ CLOUD ============ -->
-<section id="s9"><div class="wrap reveal">
-  <div class="kicker"><span class="n">09</span> Lavorare in cloud</div>
-  <h2>Va avanti anche a <span class="em">computer spento</span></h2>
-  <p class="lead"><b>Claude Code on the web</b> esegue i task su macchine in cloud gestite da Anthropic, non sul tuo PC. Puoi chiudere il browser, spegnere il computer, andare offline: la sessione <b>continua</b> e la ritrovi dov'era.</p>
-
-  <div class="panel">
-    <div class="badge">Come dialoga con GitHub</div>
-    <div class="gitflow" style="margin-top:6px">
-      <div class="stage done">
-        <div class="icn">☁️</div>
-        <div class="nm">Macchina cloud</div>
-        <div class="sub">clona il repo da GitHub</div>
-        <div class="file"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
-        <div class="gitcmd">claude --cloud "…"</div>
-      </div>
-      <div class="arrow">→</div>
-      <div class="stage done">
-        <div class="icn">🌿</div>
-        <div class="nm">Branch</div>
-        <div class="sub">lavora e committa a parte</div>
-        <div class="file"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
-        <div class="gitcmd">git push</div>
-      </div>
-      <div class="arrow">→</div>
-      <div class="stage done">
-        <div class="icn">🔀</div>
-        <div class="nm">Pull Request</div>
-        <div class="sub">apre la PR da rivedere</div>
-        <div class="file"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
-        <div class="gitcmd">auto-fix su CI</div>
-      </div>
-    </div>
-    <p class="hint">Si avvia da <span class="mono">claude.ai/code</span> o da terminale con <span class="cmd">claude --cloud "sistema il bug X"</span>. Collega GitHub una volta (tramite l'app GitHub di Claude): da lì la macchina cloud clona il progetto, lavora su un <b>branch</b>, apre una <b>Pull Request</b> e — con l'auto-fix attivo — reagisce agli errori dei test (CI) e ai commenti di revisione.</p>
-  </div>
-
-  <h3>Remote Control o cloud? Non confonderli</h3>
-  <div class="why">
-    <div class="wbox clear">
-      <h4>Remote Control (/rc)</h4>
-      <p>La sessione gira sul <b>tuo computer</b>, che deve restare <b>acceso</b>.</p>
-      <p>Tu la controlli da <b>telefono/browser</b>. Ideale per seguire un lavoro già avviato mentre sei in giro.</p>
-    </div>
-    <div class="wbox compact">
-      <h4>Claude Code on the web</h4>
-      <p>La sessione gira <b>sui server di Anthropic</b>: va avanti anche a <b>computer spento</b>.</p>
-      <p>Dialoga con <b>GitHub</b> (branch + Pull Request). Ideale per delegare un task e ritrovarlo pronto.</p>
-    </div>
-  </div>
-  <p class="hint">Disponibile sui piani Pro, Max, Team ed Enterprise (in fase di preview).</p>
-</div></section>
-
 <footer><div class="wrap">
   <b>Summer School 2026 — Giornata 3</b> · Claude Code: Introduzione al vibe coding &amp; La mia prima automazione.<br>
   Guida di supporto ai comandi principali. Tienila aperta durante l'hands-on.
@@ -585,7 +452,7 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 let _scrTick=false;const _prog=document.getElementById('prog');
 addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimationFrame(()=>{_scrTick=false;
   const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight);_prog.style.width=(p*100)+'%';});});
-(function(){const labels={s0:'Intro',s1:'Git & GitHub',s2:'Comandi /',s3:'Contesto',s4:'Subagenti',s5:'Modalità',s6:'Effort',s7:'Scorciatoie',s8:'Da mobile',s9:'In cloud'};
+(function(){const labels={s0:'Intro',s1:'Git & GitHub',s2:'Comandi /',s3:'Contesto',s5:'Modalità',s6:'Effort',s7:'Scorciatoie'};
  const nav=document.getElementById('dots');const secs=[...document.querySelectorAll('section')];
  secs.forEach(s=>{const a=document.createElement('a');a.href='#'+s.id;a.innerHTML='<span>'+(labels[s.id]||s.id)+'</span>';a.dataset.id=s.id;nav.appendChild(a);});
  const links=[...nav.querySelectorAll('a')];
@@ -620,49 +487,6 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
     stepTo();
   }
   btn.addEventListener('click',play);
-})();
-
-/* ---------- SUPERVISOR / WORKER ---------- */
-(function(){
-  const wrap=document.getElementById('sw-workers'),supSub=document.getElementById('sw-sup-sub'),
-        totEl=document.getElementById('sw-tot'),supTokEl=document.getElementById('sw-sup-tok'),
-        runB=document.getElementById('sw-run');
-  const fmt=n=>Math.round(n).toLocaleString('it-IT');
-  const workers=[
-    {name:'Worker · Ricerca',sub:'esplora la codebase',work:52000,ret:1600},
-    {name:'Worker · Log',sub:'legge i log degli errori',work:38000,ret:1400},
-    {name:'Worker · Docs',sub:'scorre la documentazione',work:31000,ret:1200}
-  ];
-  let els=[],timers=[];
-  function build(){
-    wrap.innerHTML='';els=[];
-    workers.forEach(w=>{
-      const d=document.createElement('div');d.className='sw-w';
-      d.innerHTML='<div class="sw-title" style="font-size:13px">'+w.name+'</div><div class="sw-sub">'+w.sub+'</div>'+
-        '<div class="sw-wbar"><div class="sw-wfill"></div></div>'+
-        '<div class="sw-wtok"><span class="cur">0k</span><span class="sw-ret">↑ ≈'+Math.round(w.ret/1000*10)/10+'k</span></div>';
-      wrap.appendChild(d);els.push(d);
-    });
-  }
-  function clearTimers(){timers.forEach(clearTimeout);timers=[];}
-  function run(){
-    clearTimers();build();runB.disabled=true;runB.style.opacity=.6;supSub.textContent='delega ai worker…';
-    let tot=0,sup=0;
-    workers.forEach((w,i)=>{
-      const fill=els[i].querySelector('.sw-wfill'),cur=els[i].querySelector('.cur'),ret=els[i].querySelector('.sw-ret');
-      timers.push(setTimeout(()=>{fill.style.background='var(--amber)';fill.style.width='100%';
-        const t0=Date.now(),dur=1200;
-        const iv=setInterval(()=>{const p=Math.min(1,(Date.now()-t0)/dur);cur.textContent=Math.round(w.work/1000*p)+'k';if(p>=1)clearInterval(iv);},60);
-        timers.push(iv);
-      },300+i*250));
-      timers.push(setTimeout(()=>{ret.classList.add('on');fill.style.background='var(--green)';
-        tot+=w.work;sup+=w.ret;totEl.textContent=fmt(tot);supTokEl.textContent=fmt(sup);
-      },1700+i*250));
-    });
-    timers.push(setTimeout(()=>{supSub.textContent='sintesi dei risultati → risposta finale ✓';runB.disabled=false;runB.style.opacity=1;runB.textContent='↻ Rilancia';},1700+workers.length*250+400));
-  }
-  runB.addEventListener('click',run);
-  build();
 })();
 
 /* ---------- MODE cycler ---------- */

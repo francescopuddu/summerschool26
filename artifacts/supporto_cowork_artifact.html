@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Cowork + Artifact | Summer School Giornata 3</title>
+<style>
+  :root{
+    --paper:#f1efe8; --paper-2:#e9e6dd;
+    --card:#ffffff; --card-2:#faf8f6;
+    --ink:#1a1a1a; --ink-2:#5f5e5a; --muted:#8a887f;
+    --line:#d9d6cc; --line-strong:#b4b2a9;
+    --accent:#0EA5E9; --accent-2:#0284C7; --accent-soft:#e5f4fd; --accent-soft2:#c7e8fa;
+    --green:#0F766E; --green-soft:#e2f2ef;
+    --amber:#B45309; --amber-soft:#fbeedd;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(var(--paper-2) 0.5px, transparent 0.5px);background-size:22px 22px;}
+
+  #prog{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:60;transition:width .1s linear}
+  #dots{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:55;display:flex;flex-direction:column;gap:10px}
+  #dots a{width:9px;height:9px;border-radius:50%;background:var(--line-strong);opacity:.55;transition:all .2s;position:relative}
+  #dots a.on{background:var(--accent);opacity:1;transform:scale(1.35)}
+  #dots a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:11px;
+    color:var(--ink-2);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:2px 7px;opacity:0;pointer-events:none;transition:opacity .15s}
+  #dots a:hover span{opacity:1}
+  @media(max-width:900px){#dots{display:none}}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:0 28px}
+  section{padding:60px 0;border-top:1px solid var(--line)}
+  section:first-of-type{border-top:0}
+
+  .kicker{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-2);
+    display:flex;align-items:center;gap:10px;margin:0 0 14px}
+  .kicker .n{font-family:var(--mono);background:var(--accent);color:#fff;border-radius:5px;padding:1px 7px;font-size:11px;letter-spacing:.05em}
+  h1{font-size:clamp(40px,8vw,84px);line-height:.98;letter-spacing:-.02em;font-weight:850;margin:0 0 18px}
+  h2{font-size:clamp(27px,4.4vw,44px);line-height:1.04;letter-spacing:-.015em;font-weight:850;margin:0 0 16px}
+  h3{font-size:19px;font-weight:750;margin:30px 0 6px}
+  .lead{font-size:clamp(17px,2vw,21px);color:var(--ink-2);margin:0 0 10px}
+  p{font-size:16.5px}
+  .em{color:var(--accent-2);font-weight:600}
+  .mut{color:var(--muted)}
+
+  .hero{padding-top:78px;min-height:82vh;display:flex;flex-direction:column;justify-content:center}
+  .hero .tag{font-family:var(--mono);font-size:12px;color:var(--ink-2);border:1px solid var(--line-strong);
+    border-radius:999px;padding:5px 13px;display:inline-flex;gap:8px;align-items:center;margin-bottom:24px;background:var(--card-2);width:max-content}
+  .hero .tag b{color:var(--accent-2)}
+  .hero h1 span{color:var(--accent)}
+  .hero .sub{font-size:clamp(18px,2.4vw,24px);font-weight:600;color:var(--ink);margin:0 0 8px}
+  .hero .subm{font-size:16px;color:var(--ink-2)}
+  .arc{display:flex;gap:8px;flex-wrap:wrap;margin-top:30px}
+  .arc .step{font-family:var(--mono);font-size:11px;color:var(--ink-2);border:1px solid var(--line);border-radius:20px;padding:6px 11px;white-space:nowrap;background:var(--card-2)}
+  .arc .step b{color:var(--accent-2)}
+  .scrollcue{margin-top:36px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+  .scrollcue .a{animation:bob 1.6s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+
+  .callout{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;
+    padding:16px 20px;margin:22px 0;font-size:16.5px;color:#0c4a6e}
+  .callout b{color:var(--accent-2)}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:26px;
+    box-shadow:0 1px 0 var(--line),0 18px 40px -32px rgba(0,0,0,.35)}
+  .panel.star{border-color:var(--accent-soft2);box-shadow:0 1px 0 var(--accent-soft2),0 22px 50px -30px rgba(14,165,233,.4);background:linear-gradient(180deg,#fff,#fafdff)}
+  .panel .badge{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-2);
+    display:inline-flex;align-items:center;gap:7px;margin-bottom:14px}
+  .panel .badge.doer{background:var(--accent);color:#fff;border-radius:6px;padding:3px 10px}
+  .panel .badge.you{background:var(--amber);color:#fff;border-radius:6px;padding:3px 10px}
+
+  .hint{font-size:13px;color:var(--muted);margin-top:12px}
+  .cap{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:10px}
+  code,.mono{font-family:var(--mono)}
+  .cmd{font-family:var(--mono);font-weight:700;color:var(--accent-2);background:var(--accent-soft);border:1px solid var(--accent-soft2);border-radius:6px;padding:2px 8px;font-size:.92em;white-space:nowrap}
+
+  .why{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0}
+  @media(max-width:720px){.why{grid-template-columns:1fr}}
+  .wbox{border-radius:14px;padding:18px 20px;border:1px solid}
+  .wbox h4{margin:0 0 8px;font-size:15px;display:flex;align-items:center;gap:9px;font-family:var(--mono)}
+  .wbox h4::before{content:"";width:9px;height:9px;border-radius:50%}
+  .wbox p{margin:0 0 8px;font-size:14.5px;max-width:none}
+  .wbox p:last-child{margin-bottom:0}
+  .wbox.a{background:var(--accent-soft);border-color:var(--accent-soft2)}
+  .wbox.a h4{color:var(--accent-2)} .wbox.a h4::before{background:var(--accent)}
+  .wbox.b{background:var(--green-soft);border-color:#c6e5dd}
+  .wbox.b h4{color:var(--green)} .wbox.b h4::before{background:var(--green)}
+
+  /* lista di step numerati (demo & esercizi) */
+  .steps{counter-reset:st;display:flex;flex-direction:column;gap:0;margin-top:8px}
+  .steps .st{counter-increment:st;display:grid;grid-template-columns:34px 1fr;gap:14px;padding:14px 0;border-bottom:1px dashed var(--line);align-items:start}
+  .steps .st:last-child{border-bottom:0}
+  .steps .st::before{content:counter(st,decimal-leading-zero);font-family:var(--mono);font-weight:800;font-size:13px;color:#fff;background:var(--accent);border-radius:8px;width:34px;height:26px;display:flex;align-items:center;justify-content:center;margin-top:2px}
+  .steps .st p{margin:0;font-size:15.5px}
+  .steps .st p b{color:var(--ink)}
+  .steps.you .st::before{background:var(--amber)}
+
+  /* mock finder / cartella */
+  .folder{background:var(--card-2);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:16px;font-family:var(--mono);font-size:13.5px}
+  .folder .bar{background:var(--paper-2);border-bottom:1px solid var(--line);padding:8px 14px;display:flex;gap:6px;align-items:center;color:var(--ink-2);font-size:12px}
+  .folder .bar i{width:9px;height:9px;border-radius:50%;background:var(--line-strong);display:inline-block;font-style:normal}
+  .folder ul{list-style:none;margin:0;padding:10px 6px}
+  .folder li{padding:7px 12px;border-radius:8px;display:flex;gap:10px;align-items:baseline}
+  .folder li .desc{color:var(--muted);font-size:12px;margin-left:auto;font-family:var(--sans)}
+  .folder li.hl{background:var(--accent-soft);color:var(--accent-2);font-weight:700}
+  .folder li.hl .desc{color:var(--accent-2);font-weight:400}
+
+  /* mini matrice impatto/effort */
+  .matrix{position:relative;background:var(--card-2);border:1px solid var(--line);border-radius:12px;height:300px;margin-top:16px}
+  .matrix .axx,.matrix .axy{position:absolute;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+  .matrix .axx{bottom:8px;left:50%;transform:translateX(-50%)}
+  .matrix .axy{left:8px;top:50%;transform:translateY(-50%) rotate(-90deg);transform-origin:center}
+  .matrix .ql{position:absolute;font-size:11px;font-weight:700;color:var(--line-strong);letter-spacing:.06em;text-transform:uppercase}
+  .matrix .qwin{color:var(--green)}
+  .matrix .card{position:absolute;background:var(--card);border:1px solid var(--line-strong);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:600;box-shadow:0 6px 14px -10px rgba(0,0,0,.5);transform:translate(-50%,-50%)}
+  .matrix .card.win{border-color:var(--green);color:var(--green);background:var(--green-soft)}
+  .matrix .card.new{border-color:var(--accent);color:var(--accent-2);background:var(--accent-soft);opacity:0;transition:opacity .5s, top .5s, left .5s}
+  .matrix .card.new.on{opacity:1}
+  .matrix::before,.matrix::after{content:"";position:absolute;background:var(--line)}
+  .matrix::before{left:50%;top:12px;bottom:26px;width:1px}
+  .matrix::after{top:50%;left:26px;right:12px;height:1px}
+  .cycbtn{font-family:var(--sans);font-size:14px;font-weight:700;background:var(--ink);color:#fff;border:0;border-radius:10px;padding:11px 18px;cursor:pointer;transition:transform .05s,background .15s;display:inline-flex;align-items:center;gap:10px}
+  .cycbtn:hover{background:#000}.cycbtn:active{transform:translateY(1px)}
+
+  /* takeaway finali */
+  .takes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+  @media(max-width:720px){.takes{grid-template-columns:1fr}}
+  .take{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:16px 18px}
+  .take h4{margin:0 0 6px;font-size:15px}
+  .take p{margin:0;font-size:14px;color:var(--ink-2)}
+
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  footer{padding:50px 0 90px;color:var(--ink-2);font-size:13.5px;border-top:1px solid var(--line)}
+  footer b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<nav id="dots"></nav>
+
+<!-- ============ HERO ============ -->
+<section id="s0" class="hero"><div class="wrap reveal">
+  <div class="tag">Summer School 2026 · Giornata 3 · <b>Cowork + Artifact</b></div>
+  <h1>Un agente sulla tua <span>cartella</span></h1>
+  <p class="sub">Claude Cowork lavora dove lavori tu: dentro la cartella che contiene già i tuoi documenti. E quando serve un'app, un artifact la fa nascere da una frase.</p>
+  <p class="subm">Due ore, con Federico. Per ciascun tema: prima una cosa da vedere, poi una cosa da fare.</p>
+  <div class="arc">
+    <span class="step"><b>1</b> · Agente + cartella</span>
+    <span class="step"><b>2</b> · Dati e istruzioni</span>
+    <span class="step"><b>3</b> · I bottoni</span>
+    <span class="step"><b>4</b> · Demo: il libro</span>
+    <span class="step"><b>5</b> · Esercizio: revisione</span>
+    <span class="step"><b>6</b> · Gli artifact</span>
+    <span class="step"><b>7</b> · Demo: dashboard</span>
+    <span class="step"><b>8</b> · Esercizio: matrice</span>
+  </div>
+  <div class="scrollcue"><span class="a">↓</span> scorri per iniziare</div>
+</div></section>
+
+<!-- ============ 01 CONCETTO ============ -->
+<section id="s1"><div class="wrap reveal">
+  <div class="kicker"><span class="n">01</span> Il concetto</div>
+  <h2>Io <span class="em">ho già</span> questa cartella</h2>
+  <p class="lead">Ognuno di noi ha un posto dove il lavoro si accumula: una cartella con i documenti, le versioni, gli appunti di un progetto. Cowork è un agente che opera <b>dentro quel posto</b> — l'analogo, per il lavoro d'ufficio, di quello che una repository di codice è per chi programma.</p>
+  <p>L'interazione resta una chat, ma è innatamente più potente del parlare in una chat: l'agente vede i tuoi file, li legge, li modifica, ne crea di nuovi. Il risultato è un'operazione che <b>senza il contesto di quei file non avresti potuto fare</b>.</p>
+
+  <div class="callout">
+    <b>Il passaparola in chat era il 2024/25.</b> Copiare pezzi di documento dentro una chat, incollare la risposta da qualche parte, ricominciare… non serve più. Adesso lavori nel tuo luogo abituale, e l'agente viene da te.
+  </div>
+
+  <div class="folder">
+    <div class="bar"><i></i><i></i><i></i>&nbsp; 📁 progetto-fornitori/</div>
+    <ul>
+      <li>📄 contratto_v3.docx <span class="desc">il documento su cui stai lavorando</span></li>
+      <li>📄 note_riunione_giugno.md <span class="desc">gli appunti accumulati</span></li>
+      <li>📊 preventivi_2026.xlsx <span class="desc">i numeri</span></li>
+      <li>📁 versioni_precedenti/ <span class="desc">la storia del lavoro</span></li>
+    </ul>
+  </div>
+  <p class="hint">La cartella che hai già. Contiene il <i>cosa</i> — magari nessun <i>come</i>. Per ora va benissimo così.</p>
+
+  <p style="margin-top:22px">È qui che cambia il modo di lavorare con l'AI: non conta più trovare la frase magica da scrivere in chat, conta <b>che cosa metti a disposizione dell'agente</b>. Il <span class="em">context engineering sostituisce il prompt engineering</span>.</p>
+  <p class="mut">E se questo posto non ce l'hai? Puoi costruirlo — ma è un problema di dopo. Lo capirai da solo dopo aver lavorato un po' con Cowork.</p>
+</div></section>
+
+<!-- ============ 02 DATI E ISTRUZIONI ============ -->
+<section id="s2"><div class="wrap reveal">
+  <div class="kicker"><span class="n">02</span> Il secondo scatto</div>
+  <h2>Nella cartella: dati <span class="em">e istruzioni</span></h2>
+  <p class="lead">Una volta capito che l'agente opera sulla cartella, c'è un secondo scatto da fare: nella cartella non metti solo i dati e il contesto. Ci metti anche le <b>istruzioni su come lavorare</b>.</p>
+
+  <div class="why">
+    <div class="wbox a">
+      <h4>Il come</h4>
+      <p>Un documento di istruzioni: come vuoi che il lavoro venga fatto, con che stile, con che regole, cosa non toccare.</p>
+      <p>È il documento che scriverai tra poco nell'esercizio: il <b>CLAUDE.md</b>.</p>
+    </div>
+    <div class="wbox b">
+      <h4>Il su cosa</h4>
+      <p>I documenti di lavoro veri e propri: contratti, appunti, trascrizioni, fogli di calcolo.</p>
+      <p>Il materiale che hai già — l'agente lo legge e ci lavora sopra.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <b>La formula.</b> Lasci un documento con il <b>come</b> e documenti con il <b>su cosa</b> — e Claude fa <i>quella cosa lì</i>, <i>in quel modo lì</i>, <i>su quello che vuoi tu</i>. Ogni volta, senza rispiegarglielo.
+  </div>
+  <p class="hint">Questo concetto tornerà domattina in Claude Code, dove il CLAUDE.md lo vedrete solo in azione: la spiegazione è questa, adesso.</p>
+</div></section>
+
+<!-- ============ 03 I BOTTONI ============ -->
+<section id="s3"><div class="wrap reveal">
+  <div class="kicker"><span class="n">03</span> Prima di tutto</div>
+  <h2>I bottoni <span class="em">funzionano</span></h2>
+  <p class="lead">Prima della demo vera, una dimostrazione operativa di un minuto: la meccanica di base, per togliere ogni attrito prima di concentrarci sul contenuto.</p>
+  <div class="panel">
+    <div class="badge doer">Dimostrazione · Federico</div>
+    <div class="steps">
+      <div class="st"><p><b>Agganciare la cartella.</b> Da Cowork si seleziona la cartella di lavoro: da quel momento Claude è autorizzato a operare lì dentro (e solo lì).</p></div>
+      <div class="st"><p><b>Avviare una chat.</b> La conversazione parte come sempre — ma questa volta con la cartella sotto.</p></div>
+      <div class="st"><p><b>Le istruzioni vengono riconosciute.</b> Se nella cartella c'è un documento di istruzioni, Claude lo trova e lo dichiara.</p></div>
+      <div class="st"><p><b>Vedere i file.</b> Come si controlla cosa c'è nella cartella e cosa l'agente ha letto, creato o modificato.</p></div>
+    </div>
+  </div>
+  <p class="hint">Per la mappa completa di permessi, connettori e modalità di Cowork c'è la <a href="mappa_claude_cowork.html" style="color:var(--accent-2);font-weight:600">mappa delle capacità</a>, da tenere come reference.</p>
+</div></section>
+
+<!-- ============ 04 DEMO LIBRO ============ -->
+<section id="s4"><div class="wrap reveal">
+  <div class="kicker"><span class="n">04</span> Da vedere</div>
+  <h2>Demo: il capitolo del <span class="em">libro</span></h2>
+  <p class="lead">Federico riusa una cartella vera: quella del libro a cui stiamo lavorando — contenuti che da domani mastichererete anche voi. Il caso è dei più concreti: <b>manipolare un documento</b>, cioè avere un testo e volerci aggiungere qualcosa.</p>
+  <div class="panel star">
+    <div class="badge doer">Demo · Federico</div>
+    <div class="steps">
+      <div class="st"><p><b>Si parte dal capitolo in versione puramente testuale</b>, dentro la cartella del libro già collegata a Cowork.</p></div>
+      <div class="st"><p><b>Si evidenzia un paragrafo che chiede un'immagine</b>: un passaggio che, senza una figura, resta astratto.</p></div>
+      <div class="st"><p><b>Si chiede a Cowork di generare l'immagine</b> coerente con il testo del paragrafo.</p></div>
+      <div class="st"><p><b>Cowork produce la nuova versione del capitolo</b> con l'immagine dentro, al posto giusto — un nuovo file nella cartella, la storia resta.</p></div>
+    </div>
+  </div>
+  <div class="callout">
+    <b>Perché questa demo.</b> Non è un trucco da palco: è il proxy di un caso generale e genuinamente utile — hai un documento, vuoi trasformarlo. La cartella dà all'agente tutto il contesto per farlo bene.
+  </div>
+</div></section>
+
+<!-- ============ 05 ESERCIZIO PTS ============ -->
+<section id="s5"><div class="wrap reveal">
+  <div class="kicker"><span class="n">05</span> Da fare</div>
+  <h2>Esercizio: la revisione <span class="em">guidata dalle trascrizioni</span></h2>
+  <p class="lead">Ora tocca a voi. Sul vostro computer trovate una cartella di lavoro già pronta — come se fosse la vostra, accumulata nel tempo.</p>
+
+  <div class="panel star">
+    <div class="badge you">Hands-on · fate voi</div>
+    <h3 style="margin-top:0">La consegna</h3>
+    <p>Nella cartella ci sono un <b>documento da revisionare</b> e le <b>trascrizioni di alcune riunioni</b>. Nel marasma delle trascrizioni ci sono i segnali su <i>cosa</i> va cambiato nel documento e <i>come</i>. Il vostro compito: far produrre a Cowork il <b>documento revisionato</b>.</p>
+    <div class="folder">
+      <div class="bar"><i></i><i></i><i></i>&nbsp; 📁 cartella-esercizio/</div>
+      <ul>
+        <li>📄 documento_da_revisionare.docx <span class="desc">il su cosa</span></li>
+        <li>📄 trascrizione_meeting_1.md <span class="desc">i segnali sono qui dentro…</span></li>
+        <li>📄 trascrizione_meeting_2.md <span class="desc">…e qui</span></li>
+        <li class="hl">📄 CLAUDE.md <span class="desc">il come — lo scrivete voi</span></li>
+      </ul>
+    </div>
+    <h3>Gli step</h3>
+    <div class="steps you">
+      <div class="st"><p><b>Esplorate la cartella.</b> Aprite i file, capite cosa c'è: qual è il documento, cosa dicono le trascrizioni.</p></div>
+      <div class="st"><p><b>Scrivete il CLAUDE.md.</b> Il documento con il <i>come</i>: che lavoro va fatto, dove cercare i segnali, come deve essere il risultato. È la prima volta che lo scrivete — è il cuore dell'esercizio.</p></div>
+      <div class="st"><p><b>Agganciate la cartella e lanciate Cowork.</b> Una richiesta semplice basta: le istruzioni le avete già messe nella cartella.</p></div>
+      <div class="st"><p><b>Verificate il documento revisionato.</b> Confrontatelo con i segnali nelle trascrizioni: l'agente li ha colti tutti? Se no, raffinate il CLAUDE.md e rilanciate.</p></div>
+    </div>
+  </div>
+  <p class="hint">Esercizio volutamente base: serve a far cliccare le cose giuste di Cowork, ed è comunque un lavoro completo con un risultato tangibile.</p>
+</div></section>
+
+<!-- ============ 06 ARTIFACT ============ -->
+<section id="s6"><div class="wrap reveal">
+  <div class="kicker"><span class="n">06</span> Cambio di scena</div>
+  <h2>Gli artifact: una piccola <span class="em">app self-contained</span></h2>
+  <p class="lead">Finora abbiamo fatto lavorare Claude sui documenti. Ma Claude sa anche costruire: un <b>artifact</b> è una piccola applicazione autonoma che nasce da una conversazione — la descrivi, e lei appare.</p>
+  <div class="why">
+    <div class="wbox a">
+      <h4>Cos'è davvero</h4>
+      <p>Un'app che vive dentro Claude: interfaccia, logica e perfino un suo <b>storage di dati</b>. Non serve installare nulla, non serve un server.</p>
+      <p>Un po' più di una semplice pagina: quello che salvi resta salvato.</p>
+    </div>
+    <div class="wbox b">
+      <h4>Quando rende al meglio</h4>
+      <p>Quando c'è una <b>componente visiva</b> interessante: grafici, mappe, cose che si muovono quando giri una levetta.</p>
+      <p>I due esempi che seguono sono scelti esattamente con questo criterio.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- ============ 07 DEMO DASHBOARD ============ -->
+<section id="s7"><div class="wrap reveal">
+  <div class="kicker"><span class="n">07</span> Da vedere</div>
+  <h2>Demo: la dashboard <span class="em">economica</span></h2>
+  <p class="lead">Federico costruisce live una mini dashboard di lavoro per ragionare su margini e costi: levette per configurare i parametri, grafici che si aggiornano in tempo reale.</p>
+  <div class="panel star">
+    <div class="badge doer">Demo · Federico</div>
+    <div class="steps">
+      <div class="st"><p><b>Si descrive lo scenario a Claude</b>: una dashboard per valutare margini e costi, con i parametri configurabili.</p></div>
+      <div class="st"><p><b>Claude genera l'artifact</b>: levette per i parametri, grafici per i risultati. Pochi secondi, non pochi giorni.</p></div>
+      <div class="st"><p><b>Si gioca con le levette</b>: cambi un costo, il margine si muove; cambi un prezzo, il grafico si ridisegna.</p></div>
+      <div class="st"><p><b>Si itera a voce</b>: "aggiungi un terzo scenario", "metti il break-even" — l'app si aggiorna in conversazione.</p></div>
+    </div>
+  </div>
+  <div class="callout">
+    <b>La narrativa giusta:</b> è un Excel molto più bello e molto più comodo. Infinitamente più veloce da mettere in piedi di tutta quella configurazione — e con grafici molto migliori di quelli che escono da Excel.
+  </div>
+</div></section>
+
+<!-- ============ 08 ESERCIZIO MATRICE ============ -->
+<section id="s8"><div class="wrap reveal">
+  <div class="kicker"><span class="n">08</span> Da fare</div>
+  <h2>Esercizio: la matrice <span class="em">impatto / effort</span></h2>
+  <p class="lead">L'ultimo esercizio della giornata: costruite voi un artifact, su consegna nostra.</p>
+
+  <div class="panel star">
+    <div class="badge you">Hands-on · fate voi</div>
+    <h3 style="margin-top:0">La consegna</h3>
+    <p>Un'app per categorizzare i vostri ticket e task su due assi: <b>impatto</b> e <b>effort</b>. Inserisci un nuovo elemento, ne definisci le due dimensioni, e lo vedi comparire posizionato sul grafico — dove <b>resta salvato</b> anche la prossima volta che apri l'app.</p>
+    <div class="matrix" id="mx">
+      <span class="axy">Impatto →</span>
+      <span class="axx">Effort →</span>
+      <span class="ql qwin" style="left:12%;top:10%">Quick wins</span>
+      <span class="ql" style="right:6%;top:10%">Progetti grossi</span>
+      <span class="ql" style="left:12%;bottom:20%">Riempitivi</span>
+      <span class="ql" style="right:6%;bottom:20%">Da evitare</span>
+      <span class="card win" style="left:30%;top:26%">Automazione report</span>
+      <span class="card" style="left:74%;top:32%">Nuovo gestionale</span>
+      <span class="card" style="left:35%;top:72%">Riordino archivio</span>
+      <span class="card new" id="mxNew" style="left:50%;top:50%">Alert scadenze</span>
+    </div>
+    <div style="text-align:center;margin-top:14px"><button class="cycbtn" id="mxBtn">＋ Aggiungi "Alert scadenze"</button></div>
+    <p class="cap" style="text-align:center" id="mxCap">Così funzionerà il vostro artifact: nuovo elemento → posizionato sui due assi → salvato.</p>
+    <h3>Gli step</h3>
+    <div class="steps you">
+      <div class="st"><p><b>Descrivete l'app a Claude</b>: una matrice con effort sull'asse orizzontale e impatto su quello verticale, e un modo per inserire nuovi elementi.</p></div>
+      <div class="st"><p><b>Inserite un elemento</b> con le sue due dimensioni e verificate che compaia nel punto giusto del grafico.</p></div>
+      <div class="st"><p><b>Chiedete la persistenza</b>: gli elementi devono restare salvati tra una sessione e l'altra.</p></div>
+      <div class="st"><p><b>Iterate sul vostro gusto</b>: colori per categoria, evidenza delle quick wins, quello che vi serve davvero.</p></div>
+    </div>
+  </div>
+  <div class="callout">
+    <b>Perché proprio questa app.</b> Vi dà una mappa visiva dei vostri task al posto di una lista piatta: i <b>low effort / high impact</b> saltano fuori da soli — sono le quick wins da cui partire lunedì.
+  </div>
+</div></section>
+
+<!-- ============ TAKEAWAYS ============ -->
+<section id="s9"><div class="wrap reveal">
+  <div class="kicker"><span class="n">✓</span> Da portare a casa</div>
+  <h2>Quattro idee, <span class="em">due gesti</span></h2>
+  <div class="takes">
+    <div class="take"><h4>L'agente lavora dove lavori tu</h4><p>Cowork opera sulla cartella che hai già. Niente più copia-incolla in chat: quello era il 2024/25.</p></div>
+    <div class="take"><h4>Dati e istruzioni</h4><p>Nella cartella metti il <i>su cosa</i> e il <i>come</i> (il CLAUDE.md): Claude fa quella cosa lì, in quel modo lì, su quello che vuoi tu.</p></div>
+    <div class="take"><h4>Context engineering</h4><p>Non la frase magica, ma cosa metti a disposizione dell'agente. È questo che decide la qualità del risultato.</p></div>
+    <div class="take"><h4>Gli artifact sono app</h4><p>Piccole, self-contained, con i loro dati. Quando serve qualcosa di visivo e interattivo, si descrive — e appare.</p></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <b>Summer School 2026 — Giornata 3</b> · Claude Cowork: Introduzione al Vibe Working &amp; Hands on.<br>
+  Con Federico. Domattina: Claude Code — il CLAUDE.md lo vedrete di nuovo, in azione.
+</div></footer>
+
+<script>
+/* ---------- reveal + progress + dots ---------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+let _scrTick=false;const _prog=document.getElementById('prog');
+addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimationFrame(()=>{_scrTick=false;
+  const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight);_prog.style.width=(p*100)+'%';});});
+(function(){const labels={s0:'Intro',s1:'Agente + cartella',s2:'Dati e istruzioni',s3:'I bottoni',s4:'Demo: il libro',s5:'Esercizio: revisione',s6:'Gli artifact',s7:'Demo: dashboard',s8:'Esercizio: matrice',s9:'Da portare a casa'};
+ const nav=document.getElementById('dots');const secs=[...document.querySelectorAll('section')];
+ secs.forEach(s=>{const a=document.createElement('a');a.href='#'+s.id;a.innerHTML='<span>'+(labels[s.id]||s.id)+'</span>';a.dataset.id=s.id;nav.appendChild(a);});
+ const links=[...nav.querySelectorAll('a')];
+ const ob=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.dataset.id===e.target.id));}});},{rootMargin:'-45% 0px -45% 0px'});
+ secs.forEach(s=>ob.observe(s));
+})();
+
+/* ---------- matrice: aggiungi card ---------- */
+(function(){
+  const card=document.getElementById('mxNew'),btn=document.getElementById('mxBtn'),cap=document.getElementById('mxCap');
+  let added=false;
+  btn.addEventListener('click',()=>{
+    if(!added){
+      card.classList.add('on');
+      requestAnimationFrame(()=>{card.style.left='26%';card.style.top='38%';});
+      cap.textContent='"Alert scadenze": impatto alto, effort basso → finisce tra le quick wins. E resta salvato.';
+      btn.textContent='↻ Rimuovi';added=true;
+    }else{
+      card.classList.remove('on');card.style.left='50%';card.style.top='50%';
+      cap.textContent='Così funzionerà il vostro artifact: nuovo elemento → posizionato sui due assi → salvato.';
+      btn.textContent='＋ Aggiungi "Alert scadenze"';added=false;
+    }
+  });
+})();
+</script>
+</body>
+</html>
