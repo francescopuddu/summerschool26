@@ -156,14 +156,14 @@
   <div class="tag">Summer School 2026 · Giornata 3 · <b>Cowork + Artifact</b></div>
   <h1>Un agente sulla tua <span>cartella</span></h1>
   <p class="sub">Claude Cowork lavora dove lavori tu: dentro la cartella che contiene già i tuoi documenti. E quando serve un'app, un artifact la fa nascere da una frase.</p>
-  <p class="subm">Due ore, con Federico. Per ciascun tema: prima una cosa da vedere, poi una cosa da fare.</p>
+  <p class="subm">Due ore. Per ciascun tema: prima una cosa da vedere, poi una cosa da fare.</p>
   <div class="arc">
     <span class="step"><b>1</b> · Agente + cartella</span>
     <span class="step"><b>2</b> · Dati e istruzioni</span>
-    <span class="step"><b>3</b> · Demo: il libro</span>
+    <span class="step"><b>3</b> · Un capitolo da illustrare</span>
     <span class="step"><b>4</b> · Esercizio: revisione</span>
     <span class="step"><b>5</b> · Gli artifact</span>
-    <span class="step"><b>6</b> · Demo: dashboard</span>
+    <span class="step"><b>6</b> · La dashboard</span>
     <span class="step"><b>7</b> · Esercizio: matrice</span>
   </div>
   <div class="scrollcue"><span class="a">↓</span> scorri per iniziare</div>
@@ -220,22 +220,22 @@
   <p class="hint">Questo concetto tornerà domattina in Claude Code, dove il CLAUDE.md lo vedrete solo in azione: la spiegazione è questa, adesso.</p>
 </div></section>
 
-<!-- ============ 03 DEMO LIBRO ============ -->
+<!-- ============ 03 CAPITOLO DA ILLUSTRARE ============ -->
 <section id="s3"><div class="wrap reveal">
   <div class="kicker"><span class="n">03</span> Da vedere</div>
-  <h2>Demo: il capitolo del <span class="em">libro</span></h2>
-  <p class="lead">Federico riusa una cartella vera: quella del libro a cui stiamo lavorando — contenuti che da domani mastichererete anche voi. Il caso è dei più concreti: <b>manipolare un documento</b>, cioè avere un testo e volerci aggiungere qualcosa.</p>
+  <h2>Un capitolo che <span class="em">chiede una figura</span></h2>
+  <p class="lead">Lo scenario: si sta redigendo un documento divulgativo. La bozza è nella cartella di lavoro, insieme al materiale che le sta intorno. Il caso è dei più concreti: <b>manipolare un documento</b>, cioè avere un testo e volerci aggiungere qualcosa.</p>
   <div class="panel star">
-    <div class="badge doer">Demo · Federico</div>
+    <div class="badge doer">Lo scenario</div>
     <div class="steps">
-      <div class="st"><p><b>Si parte dal capitolo in versione puramente testuale</b>, dentro la cartella del libro già collegata a Cowork.</p></div>
+      <div class="st"><p><b>Si parte dal capitolo in versione puramente testuale</b>, dentro la cartella del documento già collegata a Cowork.</p></div>
       <div class="st"><p><b>Si evidenzia un paragrafo che chiede un'immagine</b>: un passaggio che, senza una figura, resta astratto.</p></div>
       <div class="st"><p><b>Si chiede a Cowork di generare l'immagine</b> coerente con il testo del paragrafo.</p></div>
       <div class="st"><p><b>Cowork produce la nuova versione del capitolo</b> con l'immagine dentro, al posto giusto — un nuovo file nella cartella, la storia resta.</p></div>
     </div>
   </div>
   <div class="callout">
-    <b>Perché questa demo.</b> Non è un trucco da palco: è il proxy di un caso generale e genuinamente utile — hai un documento, vuoi trasformarlo. La cartella dà all'agente tutto il contesto per farlo bene.
+    <b>Perché questo scenario.</b> È il proxy di un caso generale e genuinamente utile — hai un documento, vuoi trasformarlo. La cartella dà all'agente tutto il contesto per farlo bene.
   </div>
   <p class="hint">Per la mappa completa di permessi, connettori e modalità di Cowork c'è la <a href="mappa_claude_cowork.html" style="color:var(--accent-2);font-weight:600">mappa delle capacità</a>, da tenere come reference.</p>
 </div></section>
@@ -318,10 +318,10 @@
 <!-- ============ 06 DEMO DASHBOARD ============ -->
 <section id="s6"><div class="wrap reveal">
   <div class="kicker"><span class="n">06</span> Da vedere</div>
-  <h2>Demo: la dashboard <span class="em">economica</span></h2>
-  <p class="lead">Federico costruisce live una mini dashboard di lavoro per ragionare su margini e costi: levette per configurare i parametri, grafici che si aggiornano in tempo reale.</p>
+  <h2>La dashboard <span class="em">economica</span></h2>
+  <p class="lead">Si costruisce live una mini dashboard di lavoro per ragionare su margini e costi: levette per configurare i parametri, grafici che si aggiornano in tempo reale.</p>
   <div class="panel star">
-    <div class="badge doer">Demo · Federico</div>
+    <div class="badge doer">Lo scenario</div>
     <div class="steps">
       <div class="st"><p><b>Si descrive lo scenario a Claude</b>: una dashboard per valutare margini e costi, con i parametri configurabili.</p></div>
       <div class="st"><p><b>Claude genera l'artifact</b>: levette per i parametri, grafici per i risultati. Pochi secondi, non pochi giorni.</p></div>
@@ -385,7 +385,7 @@
 
 <footer><div class="wrap">
   <b>Summer School 2026 — Giornata 3</b> · Claude Cowork: Introduzione al Vibe Working &amp; Hands on.<br>
-  Con Federico. Domattina: Claude Code — il CLAUDE.md lo vedrete di nuovo, in azione.
+  Domattina: Claude Code — il CLAUDE.md lo vedrete di nuovo, in azione.
 </div></footer>
 
 <script>
@@ -395,7 +395,7 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 let _scrTick=false;const _prog=document.getElementById('prog');
 addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimationFrame(()=>{_scrTick=false;
   const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight);_prog.style.width=(p*100)+'%';});});
-(function(){const labels={s0:'Intro',s1:'Agente + cartella',s2:'Dati e istruzioni',s3:'Demo: il libro',s4:'Esercizio: revisione',s5:'Gli artifact',s6:'Demo: dashboard',s7:'Esercizio: matrice',s8:'Da portare a casa'};
+(function(){const labels={s0:'Intro',s1:'Agente + cartella',s2:'Dati e istruzioni',s3:'Un capitolo da illustrare',s4:'Esercizio: revisione',s5:'Gli artifact',s6:'La dashboard',s7:'Esercizio: matrice',s8:'Da portare a casa'};
  const nav=document.getElementById('dots');const secs=[...document.querySelectorAll('section')];
  secs.forEach(s=>{const a=document.createElement('a');a.href='#'+s.id;a.innerHTML='<span>'+(labels[s.id]||s.id)+'</span>';a.dataset.id=s.id;nav.appendChild(a);});
  const links=[...nav.querySelectorAll('a')];
