@@ -220,6 +220,11 @@
   table.cmp td{background:var(--card);color:var(--ink-2)}
   table.cmp td b{color:var(--ink)}
 
+  /* s5 · skill: requisito informale */
+  .brief{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--purple);border-radius:0 14px 14px 0;padding:16px 20px;margin:22px 0}
+  .brief .bl{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);margin-bottom:8px}
+  .brief p{margin:0;font-family:var(--serif);font-size:16.5px;line-height:1.5;color:var(--ink-2);font-style:italic}
+
   /* s5 · skill: albero dei file */
   .skillx{display:grid;grid-template-columns:290px 1fr;gap:16px;margin-top:6px}
   @media(max-width:820px){.skillx{grid-template-columns:1fr}}
@@ -515,15 +520,20 @@
 
   <div class="quote">La documentazione dice <em>che cos'è</em>. Una skill dice <em>come si fa</em>.</div>
 
+  <div class="brief">
+    <div class="bl">Il requisito — come te lo racconta l'ufficio contabilità</div>
+    <p>«Le note spese mi arrivano in tutti i modi: un Excel, una foto degli scontrini, le righe in fondo a una mail. Le voci rimborsabili sono solo queste: pranzo, cena, hotel, taxi, mezzi pubblici e i chilometri con l'auto propria — il resto no, e va segnalato. I conti devono tornare al centesimo: chilometri per tariffa, totali per categoria. E nessuna voce sopra i massimali della policy trasferte. Ah, se manca una ricevuta o una data non tirate a indovinare: ditemelo.»</p>
+  </div>
+
   <div class="panel">
-    <span class="badge">Anatomia di una skill — clicca i file</span>
+    <span class="badge">Il requisito diventa una cartella — clicca i file</span>
     <div class="skillx">
       <div class="ftree" id="ftree">
-        <div class="dir">📁 report-vendite/</div>
+        <div class="dir">📁 controllo-nota-spese/</div>
         <button data-f="skill" class="on">SKILL.md<span class="fb">obbligatorio · il punto d'ingresso</span></button>
-        <button data-f="tmpl">template.md<span class="fb">materiale di supporto</span></button>
+        <button data-f="tmpl">policy.md<span class="fb">materiale di supporto</span></button>
         <div class="dir" style="padding-left:24px">📁 scripts/</div>
-        <button data-f="py" style="padding-left:40px">statistiche.py<span class="fb">script eseguibile</span></button>
+        <button data-f="py" style="padding-left:40px">controlla.py<span class="fb">script eseguibile</span></button>
       </div>
       <div>
         <div class="ctxhd" id="fvCap"></div>
@@ -544,7 +554,7 @@
   <div class="panel">
     <span class="badge">Tre livelli — attraversali cliccando</span>
     <div class="ctrls" style="margin-bottom:16px">
-      <button class="b acc" id="pdS1">1 · «Fammi il report di marzo» + CSV</button>
+      <button class="b acc" id="pdS1">1 · «Controllami questa nota spese» + allegato</button>
       <button class="b" id="pdS2" disabled>2 · Serve il calcolo</button>
       <button class="b ghost" id="pdR">Ricomincia</button>
     </div>
@@ -568,7 +578,7 @@
 
   <div class="grid2">
     <div class="pill"><div class="pk">Strada 1 · Conversazionale</div><h4>Chiedila a Claude</h4><p>«Creami una skill che…». Claude attiva una skill ufficiale, <b>skill-creator</b>, che fa il lavoro per te: ti fa domande («quando la useresti? com'è fatto un buon output?»), scrive SKILL.md, prepara materiali e script, impacchetta tutto. Una skill che costruisce skill.</p></div>
-    <div class="pill"><div class="pk">Strada 2 · Manuale</div><h4>Cartella → ZIP → upload</h4><p>Scrivi i file a mano, comprimi <b>con la cartella come radice</b> (<code>report-vendite.zip → report-vendite/ → SKILL.md</code>) e carica lo ZIP da <b>Personalizza → Skill</b>. È la strada che ti serve quando vuoi ritoccare una skill esistente.</p></div>
+    <div class="pill"><div class="pk">Strada 2 · Manuale</div><h4>Cartella → ZIP → upload</h4><p>Scrivi i file a mano, comprimi <b>con la cartella come radice</b> (<code>controllo-nota-spese.zip → controllo-nota-spese/ → SKILL.md</code>) e carica lo ZIP da <b>Personalizza → Skill</b>. È la strada che ti serve quando vuoi ritoccare una skill esistente.</p></div>
   </div>
 
   <p class="hint" style="margin-top:14px">Le due strade si incontrano: quello che skill-creator produce è una normale cartella zippata, che puoi scaricare, aprire, modificare e ricaricare. Nell'esercizio faremo esattamente questo. Nota: le skill custom caricate su claude.ai restano <b>private del tuo account</b>.</p>
@@ -579,26 +589,16 @@
 <!-- 8 · hands on -->
 <section id="s8" data-title="Hands on">
   <div class="kicker"><span class="n">08</span> <span class="act">Hands on</span></div>
-  <h2>Adesso lo <span class="em">costruiamo</span></h2>
-  <p class="lead">Due esercizi in sequenza. Primo: un Progetto vero, con dentro un contesto vero e almeno un connettore attivo. Secondo: la tua prima skill, creata in chat e poi smontata a mano. L'obiettivo non è finire per primi: è vedere, alla fine, <b>che cosa è finito in finestra</b> e perché.</p>
+  <h2>La tua prima <span class="em">skill</span></h2>
+  <p class="lead">Costruiamo la skill che avete appena visto smontata: <b>controllo-nota-spese</b>. È il caso perfetto da skill, non da istruzioni: c'è una policy che non vuoi incollare in ogni chat, e ci sono conti che devono venire giusti sempre — quindi li fa uno script. La creiamo in chat, la apriamo per capire com'è fatta, la ritocchiamo a mano e la mettiamo alla prova.</p>
 
-  <h3>Parte 1 — Il Progetto e il connettore</h3>
   <div class="steps">
-    <div class="stp"><div><h4>Crea il Progetto</h4><p>Dagli il nome di un lavoro che fai davvero, non un titolo di prova. Il contesto ha senso solo se è il tuo.</p></div></div>
-    <div class="stp"><div><h4>Scrivi le Istruzioni</h4><p>Chi sei, per chi lavori, come vuoi le risposte, cosa non deve mai fare. Poche righe, in italiano, imperative. È il tuo <code>CLAUDE.md</code>.</p></div></div>
-    <div class="stp"><div><h4>Carica il Contesto</h4><p>Due o tre documenti di riferimento, non venti. Un contesto affollato è un contesto peggiore: l'abbiamo visto stamattina.</p></div></div>
-    <div class="stp"><div><h4>Attiva un connettore</h4><p>Drive o Gmail. Guarda i <b>permessi</b> che ti chiede prima di dire di sì: quello che concedi, il modello lo può usare.</p></div></div>
-    <div class="stp"><div><h4>Fai una richiesta che li usi entrambi</h4><p>Qualcosa che richieda insieme i tuoi documenti e il connettore. Esempio: «confronta questo preventivo con le condizioni standard nel documento di riferimento».</p></div></div>
-    <div class="stp"><div><h4>Guarda cosa è successo</h4><p>Quali strumenti ha chiamato? Che testo gli è tornato indietro? Riesci a ricostruire la finestra che aveva davanti quando ha risposto?</p></div></div>
-  </div>
-
-  <h3>Parte 2 — La tua prima skill</h3>
-  <div class="steps">
-    <div class="stp"><div><h4>Genera i dati di prova</h4><p>Chiedi a Claude un CSV di vendite fittizie: 30 righe con <code>data</code>, <code>prodotto</code>, <code>importo</code>, <code>venditore</code>, su due mesi. Scaricalo: è il tuo dataset per il test.</p></div></div>
-    <div class="stp"><div><h4>Chiedi la skill</h4><p>In chat: «Creami una skill che generi il report mensile delle vendite da un CSV: totali calcolati con uno script, report impaginato secondo un template». Guarda il ragionamento mentre lavora: vedrai <code>skill-creator</code> entrare in scena.</p></div></div>
-    <div class="stp"><div><h4>Apri lo ZIP e riconosci i pezzi</h4><p>Scarica il pacchetto e apri i file: il frontmatter con <code>name</code> e <code>description</code>, il corpo di <code>SKILL.md</code>, i materiali, lo script. Sono i tre livelli che hai appena visto.</p></div></div>
-    <div class="stp"><div><h4>Ritocca a mano e ricarica</h4><p>Cambia una cosa piccola ma vera: la <code>description</code> (per esempio: attivati anche quando l'utente chiede «un totale»), o una voce del template. Rizippa <b>con la cartella come radice</b> e ricarica da Personalizza → Skill.</p></div></div>
-    <div class="stp"><div><h4>Test e controprova</h4><p>Nuova chat: carica il CSV e chiedi il report → la skill si attiva, lo script gira nella sandbox, in finestra arriva solo l'output. Poi fai una domanda che non c'entra nulla → la skill resta al livello 1. Hai appena visto la progressive disclosure dal vivo.</p></div></div>
+    <div class="stp"><div><h4>Genera i dati di prova</h4><p>Chiedi a Claude una nota spese fittizia di una trasferta, <b>in un formato volutamente disordinato</b>: un Excel, o le righe di una finta mail. Dentro: voci valide, un paio sopra i massimali, e una voce non rimborsabile (un regalo, un minibar). Scaricala o tienila da parte.</p></div></div>
+    <div class="stp"><div><h4>Scrivi la policy</h4><p>Tre righe, anche inventate: pranzo max 35 €, hotel max 140 € a notte, rimborso 0,45 €/km. È il materiale che nella skill diventerà <code>policy.md</code> — il pezzo che non vuoi ripetere ogni volta.</p></div></div>
+    <div class="stp"><div><h4>Chiedi la skill</h4><p>Passa a Claude il requisito della contabilità (l'hai letto nella sezione 05, parafrasalo pure) e aggiungi: «fanne una skill: i totali li calcola uno script, i massimali stanno in un file di policy». Guarda il ragionamento mentre lavora: vedrai <code>skill-creator</code> entrare in scena.</p></div></div>
+    <div class="stp"><div><h4>Apri lo ZIP e riconosci i pezzi</h4><p>Scarica il pacchetto e apri i file: il frontmatter con <code>name</code> e <code>description</code>, il corpo di <code>SKILL.md</code>, la policy, lo script. Sono i tre livelli che hai appena visto.</p></div></div>
+    <div class="stp"><div><h4>Ritocca a mano e ricarica</h4><p>Cambia una cosa piccola ma vera: un massimale in <code>policy.md</code>, o la <code>description</code> (per esempio: attivati anche quando l'utente dice «rimborso spese»). Rizippa <b>con la cartella come radice</b> e ricarica da Personalizza → Skill.</p></div></div>
+    <div class="stp"><div><h4>Test e controprova</h4><p>Nuova chat: carica la nota spese disordinata e chiedi «controllami questa prima che la mandi» → la skill si attiva, normalizza le voci, lo script gira nella sandbox, e saltano fuori le voci fuori policy e quella non rimborsabile. Poi fai una domanda che non c'entra nulla → la skill resta al livello 1. Hai appena visto la progressive disclosure dal vivo.</p></div></div>
   </div>
 </section>
 
@@ -761,18 +761,18 @@
     var F={
       skill:{
         cap:"SKILL.md — il punto d'ingresso",
-        body:'<span class="c">--- frontmatter: l\'unica parte sempre in contesto ---</span>\n<span class="k">name:</span> <span class="s">report-vendite</span>\n<span class="k">description:</span> <span class="s">Genera il report mensile delle vendite a partire da un CSV. Usala quando l\'utente carica dati di vendita o chiede un report, un totale o un confronto sulle vendite.</span>\n<span class="c">---</span>\n\n<span class="k"># Report vendite</span>\n1. Esegui <span class="b">scripts/statistiche.py</span> sul CSV: non calcolare i totali a mano.\n2. Impagina il report seguendo <span class="b">template.md</span>.\n3. Evidenzia sempre il confronto col periodo precedente.\n4. Se a una riga manca l\'importo, segnalalo: non inventare il valore.',
+        body:'<span class="c">--- frontmatter: l\'unica parte sempre in contesto ---</span>\n<span class="k">name:</span> <span class="s">controllo-nota-spese</span>\n<span class="k">description:</span> <span class="s">Controlla una nota spese prima dell\'invio: ricalcola i totali con uno script e verifica ogni voce contro i massimali della policy aziendale. Usala quando l\'utente carica una nota spese o chiede di verificare un rimborso.</span>\n<span class="c">---</span>\n\n<span class="k"># Controllo nota spese</span>\n1. La nota spese può arrivare in qualsiasi formato (foglio, PDF,\n   foto, testo di una mail): estrai le voci e normalizzale in una\n   tabella <span class="b">data, categoria, importo, km</span>.\n2. Le categorie rimborsabili sono solo: pranzo, cena, hotel, taxi,\n   mezzi-pubblici, viaggio-km. Il resto: non rimborsabile, da segnalare.\n3. Esegui <span class="b">scripts/controlla.py</span> sulla tabella: non ricalcolare a mano.\n4. Confronta ogni voce con i massimali in <span class="b">policy.md</span> ed elenca\n   quelle fuori policy: data, importo, massimale superato.\n5. Se manca un importo, una data o una ricevuta, segnalalo: non inventare.',
         hint:'Il frontmatter ha regole precise: <b>name</b> minuscolo, max 64 caratteri; <b>description</b> fino a 1024, in terza persona, e deve dire <b>cosa fa</b> e <b>quando usarla</b> — è l\'unica cosa che il modello vede sempre, ed è ciò su cui decide se attivare la skill.'
       },
       tmpl:{
-        cap:"template.md — materiale di supporto",
-        body:'<span class="k"># Report vendite — {mese}</span>\n\n<span class="k">## Sintesi</span>   <span class="c">← massimo tre righe</span>\n<span class="k">## Totali per prodotto</span>   <span class="c">← tabella, ordinata per importo</span>\n<span class="k">## Confronto col periodo precedente</span>\n<span class="k">## Segnali da tenere d\'occhio</span>',
-        hint:'Materiale di supporto: SKILL.md lo cita, e Claude lo legge <b>solo se ci arriva</b>. Può essere un template, un listino, uno schema, un esempio di output fatto bene.'
+        cap:"policy.md — materiale di supporto",
+        body:'<span class="k"># Policy trasferte — massimali</span>\n\n- Pranzo: max <span class="b">35,00 €</span> a persona\n- Cena: max <span class="b">50,00 €</span>\n- Hotel: max <span class="b">140,00 €</span> a notte\n- Auto propria: rimborso <span class="b">0,45 €/km</span>\n- Taxi: solo con giustificazione scritta',
+        hint:'Materiale di supporto: SKILL.md lo cita, e Claude lo legge <b>solo se ci arriva</b>. Qui è la policy aziendale — il documento che altrimenti dovresti incollare in ogni chat in cui controlli una nota spese.'
       },
       py:{
-        cap:"scripts/statistiche.py — script eseguibile",
-        body:'<span class="c"># calcola i totali per prodotto da un CSV di vendite</span>\n<span class="k">import</span> csv, sys\n<span class="k">from</span> collections <span class="k">import</span> defaultdict\n\ntot = defaultdict(float)\n<span class="k">with</span> open(sys.argv[1], newline=<span class="s">""</span>) <span class="k">as</span> f:\n    <span class="k">for</span> r <span class="k">in</span> csv.DictReader(f):\n        tot[r[<span class="s">"prodotto"</span>]] += float(r[<span class="s">"importo"</span>])\n\n<span class="k">for</span> p, v <span class="k">in</span> sorted(tot.items(), key=<span class="k">lambda</span> x: -x[1]):\n    print(f<span class="s">"{p};{v:.2f}"</span>)\nprint(f<span class="s">"TOTALE;{sum(tot.values()):.2f}"</span>)',
-        hint:'Lo script gira nella <b>sandbox</b> dell\'esecuzione di codice: Claude lo lancia, non lo legge. Il codice non passa mai per la finestra di contesto — <b>entra solo l\'output</b>: poche righe di totali, già giusti.'
+        cap:"scripts/controlla.py — script eseguibile",
+        body:'<span class="c"># formule della policy: km per tariffa, totali per categoria</span>\n<span class="k">import</span> csv, sys\nKM = <span class="b">0.45</span>  <span class="c"># tariffa da policy.md</span>\n\ntot = {}\n<span class="k">with</span> open(sys.argv[1], newline=<span class="s">""</span>) <span class="k">as</span> f:\n    <span class="k">for</span> r <span class="k">in</span> csv.DictReader(f):\n        imp = float(r[<span class="s">"importo"</span>] <span class="k">or</span> 0) + KM * float(r[<span class="s">"km"</span>] <span class="k">or</span> 0)\n        tot[r[<span class="s">"categoria"</span>]] = tot.get(r[<span class="s">"categoria"</span>], 0) + imp\n\n<span class="k">for</span> c, v <span class="k">in</span> sorted(tot.items()):\n    print(f<span class="s">"{c};{v:.2f}"</span>)\nprint(f<span class="s">"TOTALE;{sum(tot.values()):.2f}"</span>)',
+        hint:'Lo script gira nella <b>sandbox</b> dell\'esecuzione di codice: Claude lo lancia, non lo legge. Il codice non passa mai per la finestra di contesto — <b>entra solo l\'output</b>: totali già giusti, categoria per categoria.'
       }
     };
     var btns=$$("#ftree button"), cap=$("#fvCap"), box=$("#fvBox"), hint=$("#fvHint");
@@ -789,11 +789,11 @@
     var b1=$("#pdS1"), b2=$("#pdS2"), br=$("#pdR");
     var ex=$("#pdEx"), win=$("#pdWin"), fill=$("#pdFill"), tok=$("#pdTok");
     var sysBlk='<div class="blk sys"><div class="bh">System</div>Sei Claude. Rispondi in italiano.</div>';
-    var metaBlk='<div class="blk meta"><div class="bh">Skill installate — solo i metadati</div><code>report-vendite</code> — Genera il report mensile delle vendite a partire da un CSV. Usala quando…<br><code>verbale-riunione</code> — Redige il verbale di una riunione a partire dagli appunti. Usala quando…</div>';
-    var uBlk='<div class="blk u"><div class="bh">Utente</div>Fammi il report di marzo. 📎 <code>vendite_marzo.csv</code></div>';
-    var bodyBlk='<div class="blk instr"><div class="bh">SKILL.md — il corpo, appena letto</div># Report vendite — 1. Esegui <code>scripts/statistiche.py</code> sul CSV · 2. Impagina seguendo <code>template.md</code> · 3. Confronto col periodo precedente · 4. Importi mancanti: segnala, non inventare.</div>';
-    var toolBlk='<div class="blk tool"><div class="bh">Esecuzione nella sandbox</div>$ python scripts/statistiche.py vendite_marzo.csv</div>';
-    var outBlk='<div class="blk a"><div class="bh">Output dello script — il codice resta fuori</div>Widget Pro; 18.240,00 · Widget Base; 12.410,00 · Accessori; 4.980,00 · TOTALE; 35.630,00</div>';
+    var metaBlk='<div class="blk meta"><div class="bh">Skill installate — solo i metadati</div><code>controllo-nota-spese</code> — Controlla una nota spese prima dell\'invio: totali con uno script, massimali dalla policy. Usala quando…<br><code>verbale-riunione</code> — Redige il verbale di una riunione a partire dagli appunti. Usala quando…</div>';
+    var uBlk='<div class="blk u"><div class="bh">Utente</div>Controllami questa nota spese prima che la mandi. 📎 <code>nota_spese_giugno.xlsx</code></div>';
+    var bodyBlk='<div class="blk instr"><div class="bh">SKILL.md — il corpo, appena letto</div># Controllo nota spese — 1. Qualsiasi formato: normalizza le voci in una tabella · 2. Solo le categorie rimborsabili · 3. Esegui <code>scripts/controlla.py</code> · 4. Confronta con i massimali in <code>policy.md</code> · 5. Dati mancanti: segnala, non inventare.</div>';
+    var toolBlk='<div class="blk tool"><div class="bh">Esecuzione nella sandbox</div>$ python scripts/controlla.py spese_normalizzate.csv</div>';
+    var outBlk='<div class="blk a"><div class="bh">Output dello script — il codice resta fuori</div>cena; 96,00 · hotel; 460,00 · pranzo; 148,50 · viaggio-km; 106,20 · TOTALE; 810,70</div>';
     var EX=[
       {t:"Livello 1 — I metadati, sempre",
        p:"All'avvio di ogni chat entra solo il frontmatter di ciascuna skill installata: <b>name</b> + <b>description</b>. Un centinaio di token a skill: il costo fisso di sapere che esiste.",
@@ -802,7 +802,7 @@
        p:"La richiesta matcha la description: Claude va a leggere SKILL.md e il corpo entra in finestra — di norma qualche migliaio di token. Solo in questa chat, solo perché serve.",
        l:"Nelle altre skill installate non è successo niente: restano al livello 1."},
       {t:"Livello 3 — File e script, solo se servono",
-       p:"SKILL.md dice di eseguire lo script e seguire il template: Claude lancia <code>statistiche.py</code> nella sandbox. In finestra entrano la chiamata e il suo output — <b>mai il codice</b>.",
+       p:"SKILL.md dice di eseguire lo script e confrontare con la policy: Claude lancia <code>controlla.py</code> nella sandbox e legge <code>policy.md</code>. In finestra entrano la chiamata e il suo output — <b>mai il codice</b>.",
        l:"I totali sono giusti per costruzione: li ha fatti lo script, non il modello. E in token costano poche righe."}
     ];
     function state(n){
