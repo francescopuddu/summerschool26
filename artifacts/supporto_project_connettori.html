@@ -518,19 +518,19 @@
   <div class="quote">La documentazione dice <em>che cos'è</em>. Una skill dice <em>come si fa</em>.</div>
 
   <div class="brief">
-    <div class="bl">Il requisito — come te lo racconta l'ufficio contabilità</div>
-    <p>«Le note spese mi arrivano in tutti i modi: un Excel, una foto degli scontrini, le righe in fondo a una mail. Le voci rimborsabili sono solo queste: pranzo, cena, hotel, taxi, mezzi pubblici e i chilometri con l'auto propria — il resto no, e va segnalato. I conti devono tornare al centesimo: chilometri per tariffa, totali per categoria. E nessuna voce sopra i massimali della policy trasferte. Ah, se manca una ricevuta o una data non tirate a indovinare: ditemelo.»</p>
+    <div class="bl">Il requisito — come te lo racconta chi segue la comunicazione</div>
+    <p>«Ogni volta che qualcuno prepara delle slide salta fuori un font diverso, colori a caso, il logo vecchio. Le slide si fanno sempre sul nostro template PowerPoint, punto. Io vorrei solo descrivere il contenuto — "cinque slide sul lancio, taglio commerciale" — e ricevere il PDF già impaginato giusto: titoli corti, una idea per slide, i nostri layout. Il template te lo do io.»</p>
   </div>
 
   <div class="panel">
     <span class="badge">Il requisito diventa una cartella — clicca i file</span>
     <div class="skillx">
       <div class="ftree" id="ftree">
-        <div class="dir">📁 controllo-nota-spese/</div>
+        <div class="dir">📁 slide-aziendali/</div>
         <button data-f="skill" class="on">SKILL.md<span class="fb">obbligatorio · il punto d'ingresso</span></button>
-        <button data-f="tmpl">policy.md<span class="fb">materiale di supporto</span></button>
+        <button data-f="tmpl">template.pptx<span class="fb">il dato non-prompt: un file binario</span></button>
         <div class="dir" style="padding-left:24px">📁 scripts/</div>
-        <button data-f="py" style="padding-left:40px">controlla.py<span class="fb">script eseguibile</span></button>
+        <button data-f="py" style="padding-left:40px">esporta_pdf.py<span class="fb">script eseguibile</span></button>
       </div>
       <div>
         <div class="ctxhd" id="fvCap"></div>
@@ -551,8 +551,8 @@
   <div class="panel">
     <span class="badge">Tre livelli — attraversali cliccando</span>
     <div class="ctrls" style="margin-bottom:16px">
-      <button class="b acc" id="pdS1">1 · «Controllami questa nota spese» + allegato</button>
-      <button class="b" id="pdS2" disabled>2 · Serve il calcolo</button>
+      <button class="b acc" id="pdS1">1 · «Fammi cinque slide sul lancio di NovaCRM»</button>
+      <button class="b" id="pdS2" disabled>2 · Si compone il file</button>
       <button class="b ghost" id="pdR">Ricomincia</button>
     </div>
     <div class="grid2">
@@ -575,7 +575,7 @@
 
   <div class="grid2">
     <div class="pill"><div class="pk">Strada 1 · Conversazionale</div><h4>Chiedila a Claude</h4><p>«Creami una skill che…». Claude attiva una skill ufficiale, <b>skill-creator</b>, che fa il lavoro per te: ti fa domande («quando la useresti? com'è fatto un buon output?»), scrive SKILL.md, prepara materiali e script, impacchetta tutto. Una skill che costruisce skill.</p></div>
-    <div class="pill"><div class="pk">Strada 2 · Manuale</div><h4>Cartella → ZIP → upload</h4><p>Scrivi i file a mano, comprimi <b>con la cartella come radice</b> (<code>controllo-nota-spese.zip → controllo-nota-spese/ → SKILL.md</code>) e carica lo ZIP da <b>Personalizza → Skill</b>. È la strada che ti serve quando vuoi ritoccare una skill esistente.</p></div>
+    <div class="pill"><div class="pk">Strada 2 · Manuale</div><h4>Cartella → ZIP → upload</h4><p>Scrivi i file a mano, comprimi <b>con la cartella come radice</b> (<code>slide-aziendali.zip → slide-aziendali/ → SKILL.md</code>) e carica lo ZIP da <b>Personalizza → Skill</b>. È la strada che ti serve quando vuoi ritoccare una skill esistente.</p></div>
   </div>
 
   <p class="hint" style="margin-top:14px">Le due strade si incontrano: quello che skill-creator produce è una normale cartella zippata, che puoi scaricare, aprire, modificare e ricaricare. Nell'esercizio faremo esattamente questo. Nota: le skill custom caricate su claude.ai restano <b>private del tuo account</b>.</p>
@@ -587,15 +587,19 @@
 <section id="s8" data-title="Hands on">
   <div class="kicker"><span class="n">08</span> <span class="act">Hands on</span></div>
   <h2>La tua prima <span class="em">skill</span></h2>
-  <p class="lead">Costruiamo la skill che avete appena visto smontata: <b>controllo-nota-spese</b>. È il caso perfetto da skill, non da istruzioni: c'è una policy che non vuoi incollare in ogni chat, e ci sono conti che devono venire giusti sempre — quindi li fa uno script. La creiamo in chat, la apriamo per capire com'è fatta, la ritocchiamo a mano e la mettiamo alla prova.</p>
+  <p class="lead">Adesso tocca a voi, su un caso nuovo: il <b>controllo delle note spese</b>. È il caso perfetto da skill, non da istruzioni: regole aziendali stabili e una serie di conti che devono venire giusti sempre. Come organizzarla — cosa mettere nelle istruzioni, cosa nei materiali, quanti script — è la parte interessante, e <b>non ve lo diciamo prima</b>.</p>
+
+  <div class="brief">
+    <div class="bl">La consegna — come te la racconta l'ufficio contabilità</div>
+    <p>«Le note spese mi arrivano in tutti i modi: un Excel, le foto degli scontrini, le righe in fondo a una mail. Si rimborsano solo: pranzo, cena, hotel, taxi, mezzi pubblici, parcheggi e pedaggi, e i chilometri con l'auto propria — il resto no, e va segnalato. I conti: i chilometri si pagano 0,45 € l'uno; pranzo massimo 35 €, cena massimo 50 €, ma pranzo e cena insieme non più di 75 € al giorno; hotel massimo 140 € a notte. E alla fine voglio i totali: per categoria, per giornata, e il totale della trasferta. Se manca una ricevuta, una data o un importo, non tirate a indovinare: ditemelo.»</p>
+  </div>
 
   <div class="steps">
-    <div class="stp"><div><h4>Genera i dati di prova</h4><p>Chiedi a Claude una nota spese fittizia di una trasferta, <b>in un formato volutamente disordinato</b>: un Excel, o le righe di una finta mail. Dentro: voci valide, un paio sopra i massimali, e una voce non rimborsabile (un regalo, un minibar). Scaricala o tienila da parte.</p></div></div>
-    <div class="stp"><div><h4>Scrivi la policy</h4><p>Tre righe, anche inventate: pranzo max 35 €, hotel max 140 € a notte, rimborso 0,45 €/km. È il materiale che nella skill diventerà <code>policy.md</code> — il pezzo che non vuoi ripetere ogni volta.</p></div></div>
-    <div class="stp"><div><h4>Chiedi la skill</h4><p>Passa a Claude il requisito della contabilità (l'hai letto nella sezione 05, parafrasalo pure) e aggiungi: «fanne una skill: i totali li calcola uno script, i massimali stanno in un file di policy». Guarda il ragionamento mentre lavora: vedrai <code>skill-creator</code> entrare in scena.</p></div></div>
-    <div class="stp"><div><h4>Apri lo ZIP e riconosci i pezzi</h4><p>Scarica il pacchetto e apri i file: il frontmatter con <code>name</code> e <code>description</code>, il corpo di <code>SKILL.md</code>, la policy, lo script. Sono i tre livelli che hai appena visto.</p></div></div>
-    <div class="stp"><div><h4>Ritocca a mano e ricarica</h4><p>Cambia una cosa piccola ma vera: un massimale in <code>policy.md</code>, o la <code>description</code> (per esempio: attivati anche quando l'utente dice «rimborso spese»). Rizippa <b>con la cartella come radice</b> e ricarica da Personalizza → Skill.</p></div></div>
-    <div class="stp"><div><h4>Test e controprova</h4><p>Nuova chat: carica la nota spese disordinata e chiedi «controllami questa prima che la mandi» → la skill si attiva, normalizza le voci, lo script gira nella sandbox, e saltano fuori le voci fuori policy e quella non rimborsabile. Poi fai una domanda che non c'entra nulla → la skill resta al livello 1. Hai appena visto la progressive disclosure dal vivo.</p></div></div>
+    <div class="stp"><div><h4>Genera i dati di prova</h4><p>Chiedi a Claude una nota spese fittizia di una trasferta di tre giorni, <b>in un formato volutamente disordinato</b>: un Excel, o le righe di una finta mail. Dentro: voci valide, sforamenti di regole <b>diverse</b> (una cena sopra i 50 €, un giorno che sfora il tetto pasti, un hotel troppo caro), e una voce non rimborsabile (un regalo, un minibar).</p></div></div>
+    <div class="stp"><div><h4>Chiedi la skill</h4><p>Passa a Claude la consegna della contabilità qui sopra, parola per parola, con un vincolo in più: <b>ogni calcolo deve farlo uno script dedicato — un calcolo, uno script</b>. Guarda il ragionamento mentre lavora: vedrai <code>skill-creator</code> entrare in scena.</p></div></div>
+    <div class="stp"><div><h4>Apri lo ZIP e guarda le scelte</h4><p>Scarica il pacchetto e confronta con l'anatomia della sezione 05: dove ha messo le regole? Quanti script ha fatto, e per quali calcoli? Cosa ha scritto nella <code>description</code>? Non c'è una soluzione unica: quello che vedi sono scelte di design.</p></div></div>
+    <div class="stp"><div><h4>Ritocca a mano e ricarica</h4><p>Cambia una cosa piccola ma vera: un massimale, o la <code>description</code> (per esempio: attivati anche quando l'utente dice «rimborso spese»). Rizippa <b>con la cartella come radice</b> e ricarica da Personalizza → Skill.</p></div></div>
+    <div class="stp"><div><h4>Test e controprova</h4><p>Nuova chat: carica la nota spese disordinata e chiedi «controllami questa prima che la mandi» → la skill si attiva, gli script girano nella sandbox, e devono saltare fuori <b>tutti</b> gli sforamenti che avevi nascosto, più la voce non rimborsabile. Poi fai una domanda che non c'entra nulla → la skill resta al livello 1: progressive disclosure dal vivo.</p></div></div>
   </div>
 </section>
 
@@ -758,18 +762,18 @@
     var F={
       skill:{
         cap:"SKILL.md — il punto d'ingresso",
-        body:'<span class="c">--- frontmatter: l\'unica parte sempre in contesto ---</span>\n<span class="k">name:</span> <span class="s">controllo-nota-spese</span>\n<span class="k">description:</span> <span class="s">Controlla una nota spese prima dell\'invio: ricalcola i totali con uno script e verifica ogni voce contro i massimali della policy aziendale. Usala quando l\'utente carica una nota spese o chiede di verificare un rimborso.</span>\n<span class="c">---</span>\n\n<span class="k"># Controllo nota spese</span>\n1. La nota spese può arrivare in qualsiasi formato (foglio, PDF,\n   foto, testo di una mail): estrai le voci e normalizzale in una\n   tabella <span class="b">data, categoria, importo, km</span>.\n2. Le categorie rimborsabili sono solo: pranzo, cena, hotel, taxi,\n   mezzi-pubblici, viaggio-km. Il resto: non rimborsabile, da segnalare.\n3. Esegui <span class="b">scripts/controlla.py</span> sulla tabella: non ricalcolare a mano.\n4. Confronta ogni voce con i massimali in <span class="b">policy.md</span> ed elenca\n   quelle fuori policy: data, importo, massimale superato.\n5. Se manca un importo, una data o una ricevuta, segnalalo: non inventare.',
+        body:'<span class="c">--- frontmatter: l\'unica parte sempre in contesto ---</span>\n<span class="k">name:</span> <span class="s">slide-aziendali</span>\n<span class="k">description:</span> <span class="s">Crea presentazioni in PDF a partire da una descrizione del contenuto, impaginate sul template aziendale. Usala quando l\'utente chiede slide, una presentazione o un deck.</span>\n<span class="c">---</span>\n\n<span class="k"># Slide aziendali</span>\n1. Dalla descrizione ricava la scaletta: una idea per slide,\n   titoli di massimo 8 parole.\n2. Costruisci il file partendo da <span class="b">template.pptx</span>: mai slide\n   da zero, usa i layout del template (copertina, sezione,\n   contenuto, chiusura).\n3. Esegui <span class="b">scripts/esporta_pdf.py</span> per produrre il PDF.\n4. Consegna il PDF; allega il .pptx solo se l\'utente lo chiede.',
         hint:'Il frontmatter ha regole precise: <b>name</b> minuscolo, max 64 caratteri; <b>description</b> fino a 1024, in terza persona, e deve dire <b>cosa fa</b> e <b>quando usarla</b> — è l\'unica cosa che il modello vede sempre, ed è ciò su cui decide se attivare la skill.'
       },
       tmpl:{
-        cap:"policy.md — materiale di supporto",
-        body:'<span class="k"># Policy trasferte — massimali</span>\n\n- Pranzo: max <span class="b">35,00 €</span> a persona\n- Cena: max <span class="b">50,00 €</span>\n- Hotel: max <span class="b">140,00 €</span> a notte\n- Auto propria: rimborso <span class="b">0,45 €/km</span>\n- Taxi: solo con giustificazione scritta',
-        hint:'Materiale di supporto: SKILL.md lo cita, e Claude lo legge <b>solo se ci arriva</b>. Qui è la policy aziendale — il documento che altrimenti dovresti incollare in ogni chat in cui controlli una nota spese.'
+        cap:"template.pptx — il dato non-prompt",
+        body:'<span class="c"># file binario — 2,4 MB. Dentro, per capirci:</span>\nPK\\x03\\x04 …\nppt/slideMasters/slideMaster1.xml\nppt/slideLayouts/slideLayout1.xml   <span class="c">← copertina</span>\nppt/slideLayouts/slideLayout2.xml   <span class="c">← sezione</span>\nppt/slideLayouts/slideLayout3.xml   <span class="c">← contenuto</span>\nppt/theme/theme1.xml                <span class="c">← palette e font aziendali</span>\nppt/media/image1.png                <span class="c">← il logo, quello giusto</span>',
+        hint:'Questo è il pezzo che nessun prompt può sostituire: non è un\'istruzione, è un <b>materiale</b>. Il modello non lo incolla in finestra — lo usa come base nella sandbox. Layout, colori e font dell\'azienda vivono qui, identici in ogni presentazione.'
       },
       py:{
-        cap:"scripts/controlla.py — script eseguibile",
-        body:'<span class="c"># formule della policy: km per tariffa, totali per categoria</span>\n<span class="k">import</span> csv, sys\nKM = <span class="b">0.45</span>  <span class="c"># tariffa da policy.md</span>\n\ntot = {}\n<span class="k">with</span> open(sys.argv[1], newline=<span class="s">""</span>) <span class="k">as</span> f:\n    <span class="k">for</span> r <span class="k">in</span> csv.DictReader(f):\n        imp = float(r[<span class="s">"importo"</span>] <span class="k">or</span> 0) + KM * float(r[<span class="s">"km"</span>] <span class="k">or</span> 0)\n        tot[r[<span class="s">"categoria"</span>]] = tot.get(r[<span class="s">"categoria"</span>], 0) + imp\n\n<span class="k">for</span> c, v <span class="k">in</span> sorted(tot.items()):\n    print(f<span class="s">"{c};{v:.2f}"</span>)\nprint(f<span class="s">"TOTALE;{sum(tot.values()):.2f}"</span>)',
-        hint:'Lo script gira nella <b>sandbox</b> dell\'esecuzione di codice: Claude lo lancia, non lo legge. Il codice non passa mai per la finestra di contesto — <b>entra solo l\'output</b>: totali già giusti, categoria per categoria.'
+        cap:"scripts/esporta_pdf.py — script eseguibile",
+        body:'<span class="c"># converte il .pptx composto sul template in PDF</span>\n<span class="k">import</span> subprocess, sys\n\nsrc = sys.argv[1]  <span class="c"># es. slide_novacrm.pptx</span>\nsubprocess.run([<span class="s">"libreoffice"</span>, <span class="s">"--headless"</span>,\n                <span class="s">"--convert-to"</span>, <span class="s">"pdf"</span>, src], check=<span class="b">True</span>)\nprint(f<span class="s">"creato {src.replace(\'.pptx\', \'.pdf\')}"</span>)',
+        hint:'Lo script gira nella <b>sandbox</b> dell\'esecuzione di codice: Claude lo lancia, non lo legge. Il codice non passa mai per la finestra di contesto — <b>entra solo l\'output</b>: una riga con il nome del PDF creato.'
       }
     };
     var btns=$$("#ftree button"), cap=$("#fvCap"), box=$("#fvBox"), hint=$("#fvHint");
@@ -786,11 +790,11 @@
     var b1=$("#pdS1"), b2=$("#pdS2"), br=$("#pdR");
     var ex=$("#pdEx"), win=$("#pdWin"), fill=$("#pdFill"), tok=$("#pdTok");
     var sysBlk='<div class="blk sys"><div class="bh">System</div>Sei Claude. Rispondi in italiano.</div>';
-    var metaBlk='<div class="blk meta"><div class="bh">Skill installate — solo i metadati</div><code>controllo-nota-spese</code> — Controlla una nota spese prima dell\'invio: totali con uno script, massimali dalla policy. Usala quando…<br><code>verbale-riunione</code> — Redige il verbale di una riunione a partire dagli appunti. Usala quando…</div>';
-    var uBlk='<div class="blk u"><div class="bh">Utente</div>Controllami questa nota spese prima che la mandi. 📎 <code>nota_spese_giugno.xlsx</code></div>';
-    var bodyBlk='<div class="blk instr"><div class="bh">SKILL.md — il corpo, appena letto</div># Controllo nota spese — 1. Qualsiasi formato: normalizza le voci in una tabella · 2. Solo le categorie rimborsabili · 3. Esegui <code>scripts/controlla.py</code> · 4. Confronta con i massimali in <code>policy.md</code> · 5. Dati mancanti: segnala, non inventare.</div>';
-    var toolBlk='<div class="blk tool"><div class="bh">Esecuzione nella sandbox</div>$ python scripts/controlla.py spese_normalizzate.csv</div>';
-    var outBlk='<div class="blk a"><div class="bh">Output dello script — il codice resta fuori</div>cena; 96,00 · hotel; 460,00 · pranzo; 148,50 · viaggio-km; 106,20 · TOTALE; 810,70</div>';
+    var metaBlk='<div class="blk meta"><div class="bh">Skill installate — solo i metadati</div><code>slide-aziendali</code> — Crea presentazioni in PDF sul template aziendale a partire da una descrizione. Usala quando…<br><code>verbale-riunione</code> — Redige il verbale di una riunione a partire dagli appunti. Usala quando…</div>';
+    var uBlk='<div class="blk u"><div class="bh">Utente</div>Fammi cinque slide sul lancio di NovaCRM, taglio commerciale.</div>';
+    var bodyBlk='<div class="blk instr"><div class="bh">SKILL.md — il corpo, appena letto</div># Slide aziendali — 1. Scaletta: una idea per slide, titoli corti · 2. Costruisci da <code>template.pptx</code>, mai da zero · 3. Esegui <code>scripts/esporta_pdf.py</code> · 4. Consegna il PDF.</div>';
+    var toolBlk='<div class="blk tool"><div class="bh">Sandbox — compone sul template ed esegue</div>template.pptx → slide_novacrm.pptx<br>$ python scripts/esporta_pdf.py slide_novacrm.pptx</div>';
+    var outBlk='<div class="blk a"><div class="bh">Risultato — né template né codice, solo l\'esito</div>creato slide_novacrm.pdf · 5 slide · layout e palette del template aziendale</div>';
     var EX=[
       {t:"Livello 1 — I metadati, sempre",
        p:"All'avvio di ogni chat entra solo il frontmatter di ciascuna skill installata: <b>name</b> + <b>description</b>. Un centinaio di token a skill: il costo fisso di sapere che esiste.",
@@ -799,8 +803,8 @@
        p:"La richiesta matcha la description: Claude va a leggere SKILL.md e il corpo entra in finestra — di norma qualche migliaio di token. Solo in questa chat, solo perché serve.",
        l:"Nelle altre skill installate non è successo niente: restano al livello 1."},
       {t:"Livello 3 — File e script, solo se servono",
-       p:"SKILL.md dice di eseguire lo script e confrontare con la policy: Claude lancia <code>controlla.py</code> nella sandbox e legge <code>policy.md</code>. In finestra entrano la chiamata e il suo output — <b>mai il codice</b>.",
-       l:"I totali sono giusti per costruzione: li ha fatti lo script, non il modello. E in token costano poche righe."}
+       p:"SKILL.md dice di partire dal template e di esportare con lo script: Claude compone il file nella sandbox usando <code>template.pptx</code> e lancia <code>esporta_pdf.py</code>. In finestra entrano la chiamata e l'esito — <b>mai i 2,4 MB del template, mai il codice</b>.",
+       l:"Il risultato rispetta il template per costruzione. E in token è costato poche righe."}
     ];
     function state(n){
       ex.innerHTML='<h4>'+EX[n].t+'</h4><p>'+EX[n].p+'</p><div class="lnk">'+EX[n].l+'</div>';
