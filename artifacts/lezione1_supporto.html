@@ -95,6 +95,16 @@
   .toggle{display:inline-flex;border:1px solid var(--line-strong);border-radius:9px;overflow:hidden}
   .toggle button{font-family:inherit;font-size:13px;font-weight:600;background:var(--card-2);color:var(--ink-2);border:none;padding:8px 14px;cursor:pointer}
   .toggle button.on{background:var(--accent);color:#fff}
+  .ck{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:var(--ink-2);cursor:pointer;user-select:none}
+  .ck input{accent-color:var(--accent);width:16px;height:16px;cursor:pointer;margin:0}
+  .nrows{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+  .nrow{display:grid;grid-template-columns:88px repeat(4,1fr);gap:12px;align-items:center;padding:10px 14px;
+    border:1px solid var(--line);border-radius:12px;background:var(--card-2);cursor:pointer;transition:border-color .15s,background .15s}
+  .nrow .who{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--ink-2)}
+  .nrow .ctrl{min-width:0}
+  .nrow.sel{border-color:var(--accent);background:var(--accent-soft)}
+  .nrow.sel .who{color:var(--accent)}
+  @media(max-width:760px){.nrow{grid-template-columns:64px 1fr 1fr;row-gap:8px}}
   .readout{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);margin-top:12px;display:flex;gap:16px;flex-wrap:wrap}
   .readout.big{font-size:14.5px}
   .readout b{color:var(--ink)}
@@ -247,7 +257,7 @@
   <div class="panel star">
     <div class="badge">il nesso rete ↔ matematica</div>
     <div class="phd"><strong>Uno strato di neuroni <em>è</em> una moltiplicazione tra matrici</strong></div>
-    <p style="margin-top:6px">Il calcolo di un neurone — prendi gli input, moltiplica per i pesi, somma — <b>è</b> un dot product. Impila i pesi di tutti i neuroni e ottieni una matrice <span class="eq"><b>W</b></span>: allora un intero strato si scrive <span class="eq">v = ReLU(<b>W</b>·u + <b>b</b>)</span>. <b>Muovi i pesi</b> del neurone evidenziato: a sinistra cambia la rete, a destra la <em>stessa cosa</em> in forma di matrice.</p>
+    <p style="margin-top:6px">Il calcolo di un neurone — prendi gli input, moltiplica per i pesi, somma — <b>è</b> un dot product. Impila i pesi di tutti i neuroni e ottieni una matrice <span class="eq"><b>W</b></span>: allora un intero strato si scrive <span class="eq">v = ReLU(<b>W</b>·u + <b>b</b>)</span>. <b>Clicca un neurone</b> a sinistra per selezionarlo — si accende la riga corrispondente di <span class="eq"><b>W</b></span> — e <b>muovi i suoi pesi</b>: a sinistra cambia la rete, a destra la <em>stessa cosa</em> in forma di matrice.</p>
     <div class="grid2" style="margin-top:16px">
       <div>
         <div class="cap" style="margin:0 0 6px">la rete</div>
@@ -258,11 +268,28 @@
         <canvas id="cNexM" height="330"></canvas>
       </div>
     </div>
-    <div class="ctrls" style="margin-top:16px">
-      <div class="ctrl"><label>peso w₁ <b id="w1v">0.50</b></label><input id="w1" type="range" min="-1" max="1" step="0.05" value="0.5"></div>
-      <div class="ctrl"><label>peso w₂ <b id="w2v">-0.30</b></label><input id="w2" type="range" min="-1" max="1" step="0.05" value="-0.3"></div>
-      <div class="ctrl"><label>peso w₃ <b id="w3v">0.80</b></label><input id="w3" type="range" min="-1" max="1" step="0.05" value="0.8"></div>
-      <div class="ctrl"><label>bias b (soglia) <b id="nbv">0.10</b></label><input id="nb" type="range" min="-1" max="1" step="0.05" value="0.1"></div>
+    <div id="nrows" class="nrows">
+      <div class="nrow sel">
+        <span class="who">neurone 1</span>
+        <div class="ctrl"><label>w₁₁ <b id="w11v">0.20</b></label><input id="w11" type="range" min="-1" max="1" step="0.05" value="0.2"></div>
+        <div class="ctrl"><label>w₁₂ <b id="w12v">0.70</b></label><input id="w12" type="range" min="-1" max="1" step="0.05" value="0.7"></div>
+        <div class="ctrl"><label>w₁₃ <b id="w13v">-0.30</b></label><input id="w13" type="range" min="-1" max="1" step="0.05" value="-0.3"></div>
+        <div class="ctrl"><label>b₁ <b id="b1v">-0.20</b></label><input id="b1" type="range" min="-1" max="1" step="0.05" value="-0.2"></div>
+      </div>
+      <div class="nrow">
+        <span class="who">neurone 2</span>
+        <div class="ctrl"><label>w₂₁ <b id="w21v">0.50</b></label><input id="w21" type="range" min="-1" max="1" step="0.05" value="0.5"></div>
+        <div class="ctrl"><label>w₂₂ <b id="w22v">-0.30</b></label><input id="w22" type="range" min="-1" max="1" step="0.05" value="-0.3"></div>
+        <div class="ctrl"><label>w₂₃ <b id="w23v">0.80</b></label><input id="w23" type="range" min="-1" max="1" step="0.05" value="0.8"></div>
+        <div class="ctrl"><label>b₂ <b id="b2v">0.10</b></label><input id="b2" type="range" min="-1" max="1" step="0.05" value="0.1"></div>
+      </div>
+      <div class="nrow">
+        <span class="who">neurone 3</span>
+        <div class="ctrl"><label>w₃₁ <b id="w31v">-0.50</b></label><input id="w31" type="range" min="-1" max="1" step="0.05" value="-0.5"></div>
+        <div class="ctrl"><label>w₃₂ <b id="w32v">0.10</b></label><input id="w32" type="range" min="-1" max="1" step="0.05" value="0.1"></div>
+        <div class="ctrl"><label>w₃₃ <b id="w33v">0.40</b></label><input id="w33" type="range" min="-1" max="1" step="0.05" value="0.4"></div>
+        <div class="ctrl"><label>b₃ <b id="b3v">0.30</b></label><input id="b3" type="range" min="-1" max="1" step="0.05" value="0.3"></div>
+      </div>
     </div>
     <div class="readout"><span id="nexEq">w·u + b = —</span> · uscita <b id="nexV">—</b></div>
     <div class="cap">La <b>ReLU</b> (tiene i positivi, azzera i negativi) è ciò che replica il "supera la soglia?".</div>
@@ -290,7 +317,7 @@
   <div class="kicker"><span class="n">05</span> Training</div>
   <h2>Come si trovano i pesi</h2>
   <p class="lead">Nessuna formula magica. Solo un'idea: parti a caso, misura <b>quanto sbagli</b>, e <b>scivola verso l'errore minimo</b>. Passo dopo passo. È il <em>gradient descent</em>.</p>
-  <p>Un esempio concreto: le temperature di primavera. Ogni giorno una misura, con un po' di rumore. Cerchiamo la retta che le descrive meglio. Premi <b>Allena</b>: sopra la retta si sistema, sotto una pallina scende sulla "superficie dell'errore" verso il fondo.</p>
+  <p>Un esempio concreto: le temperature di primavera. Ogni giorno una misura, con un po' di rumore. Cerchiamo la retta che le descrive meglio. Premi <b>Allena</b>: sopra la retta si sistema, sotto una pallina scende sulla "superficie dell'errore" verso il fondo. Con <b>Stop</b> la fermi quando vuoi; le due spunte mostrano gli <b>scarti</b> (le distanze verticali punto–retta) e la direzione del <b>gradiente</b> sulla superficie.</p>
   <div class="panel">    <div class="stack">
       <div>
         <div class="cap" style="margin:0 0 6px">il dataset e la retta</div>
@@ -306,9 +333,15 @@
     </div>
     <div class="ctrls" style="margin-top:16px">
       <button class="b acc" id="trainBtn">▶ Allena</button>
+      <button class="b ghost" id="stopBtn">■ Stop</button>
       <button class="b ghost" id="resetBtn">↺ Ricomincia da valori a caso</button>
-      <span class="readout" style="margin:0">passo <b id="epoch">0</b></span>
+      <span class="readout" style="margin:0">passo <b id="epoch">0</b> <b id="clipInd" style="color:var(--amber);display:none">✂ clip</b></span>
     </div>
+    <div class="ctrls" style="margin-top:10px">
+      <label class="ck"><input type="checkbox" id="ckRes"> mostra gli scarti (y prevista − y misurata)</label>
+      <label class="ck"><input type="checkbox" id="ckGrad"> mostra il gradiente</label>
+    </div>
+    <p class="hint">Il primo passo di training sarebbe sempre troppo grande: all'inizio il gradiente è enorme e "sparerebbe" la pallina fuori dalla conca. Per questo ogni passo passa dal <b>gradient clipping</b> — se supera un tetto viene accorciato. Quando interviene compare ✂.</p>
   </div>
   <p class="mut">Nella realtà i pesi non sono 2 ma milioni (AlexNet ~60 milioni): la superficie non è più disegnabile, e il gradiente resta l'unica bussola — dice solo, localmente, da che parte scendere.</p>
 </div></section>
@@ -708,66 +741,94 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
  onResize(draw);requestAnimationFrame(draw);
 })();
 
-/* ================= 03d NEXUS (synchronized) ================= */
+/* ================= 03d NEXUS (synchronized, 3 neuroni cliccabili) ================= */
 (function(){
  const nN=C('cNexN'),nM=C('cNexM');
  const u=[0.6,0.9,0.4];              // input fissi
- const other0=[0.2,0.7,-0.3],other2=[-0.5,0.1,0.4]; // altre righe (statiche, grigie)
- function wArr(){return [+val('w1'),+val('w2'),+val('w3')];}
- function val(id){return document.getElementById(id).value;}
- function pre(){const w=wArr();return w[0]*u[0]+w[1]*u[1]+w[2]*u[2]+ (+val('nb'));}
+ const ids=[['w11','w12','w13','b1'],['w21','w22','w23','b2'],['w31','w32','w33','b3']];
+ let sel=0,hit=[];                   // neurone selezionato; centri dei neuroni per il click
+ function val(id){return +document.getElementById(id).value;}
+ function row(n){return [val(ids[n][0]),val(ids[n][1]),val(ids[n][2])];}
+ function pre(n){const w=row(n);return w[0]*u[0]+w[1]*u[1]+w[2]*u[2]+val(ids[n][3]);}
  function drawNeurons(){const x=nN.fit();const cw=nN.c.clientWidth,ch=nN.h;x.clearRect(0,0,cw,ch);
-  const w=wArr();const p=pre(),v=relu(p);
-  const inX=cw*0.17,outX=cw*0.72,cy=ch/2,ys=[ch*0.22,ch*0.5,ch*0.78];
-  for(let i=0;i<3;i++){const pos=w[i]>=0;
-   x.strokeStyle=pos?'rgba(15,118,110,.7)':'rgba(180,83,9,.7)';x.lineWidth=1+Math.abs(w[i])*4;
-   x.beginPath();x.moveTo(inX+19,ys[i]);x.lineTo(outX-32,cy);x.stroke();
-   x.fillStyle='#fff';x.strokeStyle=CO.lineS;x.lineWidth=1.5;x.beginPath();x.arc(inX,ys[i],19,0,7);x.fill();x.stroke();
-   x.fillStyle=CO.ink;x.font='13px '+mono();x.textAlign='center';x.fillText(u[i].toFixed(1),inX,ys[i]+4.5);
-   x.fillStyle=pos?CO.teal:CO.amber;x.font='700 12.5px '+mono();x.fillText('w'+(i+1)+'='+w[i].toFixed(2),(inX+outX)/2-6,ys[i]+(i-1)*9-8);}
-  const on=v>0;x.fillStyle=on?'rgba(15,118,110,'+Math.min(.8,0.25+v)+')':'rgba(67,56,202,.10)';x.beginPath();x.arc(outX,cy,46,0,7);x.fill();
-  x.fillStyle='#fff';x.strokeStyle=on?CO.teal:CO.accent;x.lineWidth=3;x.beginPath();x.arc(outX,cy,34,0,7);x.fill();x.stroke();
-  x.fillStyle=on?CO.teal:CO.mut;x.font='700 14px '+mono();x.fillText('v='+v.toFixed(2),outX,cy+5);
-  x.fillStyle=CO.mut;x.font='12.5px '+sans();x.textAlign='center';x.fillText('input u',inX,ch-12);x.fillText('neurone v',outX,ch-12);
+  const inX=cw*0.15,outX=cw*0.76;
+  const yIn=[ch*0.22,ch*0.5,ch*0.78],yOut=[ch*0.18,ch*0.5,ch*0.82];
+  hit=[];
+  // connessioni: prima i neuroni non selezionati (sbiadite), poi quello selezionato sopra
+  [0,1,2].filter(n=>n!==sel).concat([sel]).forEach(n=>{const w=row(n),isSel=n===sel;
+   for(let i=0;i<3;i++){
+    if(isSel){x.strokeStyle=w[i]>=0?'rgba(15,118,110,.75)':'rgba(180,83,9,.75)';x.lineWidth=1.2+Math.abs(w[i])*4;}
+    else{x.strokeStyle='rgba(26,26,26,.10)';x.lineWidth=1+Math.abs(w[i])*2;}
+    x.beginPath();x.moveTo(inX+19,yIn[i]);x.lineTo(outX-26,yOut[n]);x.stroke();}});
+  // etichette dei pesi solo sul neurone selezionato
+  {const w=row(sel);x.font='700 12px '+mono();x.textAlign='center';
+   for(let i=0;i<3;i++){const t=0.42,lx=lerp(inX+19,outX-26,t),ly=lerp(yIn[i],yOut[sel],t);
+    x.fillStyle=w[i]>=0?CO.teal:CO.amber;
+    x.fillText('w'+(sel+1)+(i+1)+'='+w[i].toFixed(2),lx,ly-7);}}
+  // input
+  for(let i=0;i<3;i++){x.fillStyle='#fff';x.strokeStyle=CO.lineS;x.lineWidth=1.5;x.beginPath();x.arc(inX,yIn[i],19,0,7);x.fill();x.stroke();
+   x.fillStyle=CO.ink;x.font='13px '+mono();x.textAlign='center';x.fillText(u[i].toFixed(1),inX,yIn[i]+4.5);}
+  // i 3 neuroni dello strato
+  for(let n=0;n<3;n++){const p=pre(n),v=relu(p),on=v>0,isSel=n===sel,r=isSel?30:25;
+   x.fillStyle=on?'rgba(15,118,110,'+Math.min(.8,0.25+v)+')':'rgba(67,56,202,.10)';x.beginPath();x.arc(outX,yOut[n],r+9,0,7);x.fill();
+   x.fillStyle='#fff';x.strokeStyle=on?CO.teal:CO.accent;x.lineWidth=isSel?3:2;x.beginPath();x.arc(outX,yOut[n],r,0,7);x.fill();x.stroke();
+   if(isSel){x.setLineDash([5,4]);x.strokeStyle=CO.accent;x.lineWidth=1.8;x.beginPath();x.arc(outX,yOut[n],r+7,0,7);x.stroke();x.setLineDash([]);}
+   x.fillStyle=on?CO.teal:CO.mut;x.font='700 '+(isSel?13:11.5)+'px '+mono();x.textAlign='center';
+   x.fillText('v'+(n+1)+'='+v.toFixed(2),outX,yOut[n]+4.5);
+   hit.push([outX,yOut[n],r+9]);}
+  x.fillStyle=CO.mut;x.font='12.5px '+sans();x.textAlign='center';
+  x.fillText('input u',inX,ch-6);x.fillText('clicca un neurone per selezionarlo',cw*0.6,ch-6);
  }
  function drawMatrix(){const x=nM.fit();const cw=nM.c.clientWidth,ch=nM.h;x.clearRect(0,0,cw,ch);
-  const w=wArr(),b=+val('nb'),p=pre(),v=relu(p);
-  const gap=7,cell=Math.min(54,cw*0.115),box=cell-gap,gx=cw*0.05,gy=34;
-  const rows=[other0,w,other2];
-  x.fillStyle=CO.mut;x.font='italic 13px '+sans();x.textAlign='center';x.fillText('W',gx+(3*cell-gap)/2,gy-10);
-  for(let i=0;i<3;i++)for(let j=0;j<3;j++){const active=(i===1);
-   x.fillStyle=active?CO.accentSoft:'#fff';x.strokeStyle=active?CO.accent:CO.line;x.lineWidth=active?1.6:1;
-   x.fillRect(gx+j*cell,gy+i*cell,box,box);x.strokeRect(gx+j*cell,gy+i*cell,box,box);
-   x.fillStyle=active?CO.accent:CO.mut;x.font=(active?'700 ':'')+'13px '+mono();x.textAlign='center';
-   x.fillText(rows[i][j].toFixed(1),gx+j*cell+box/2,gy+i*cell+box/2+4.5);}
-  // · u
-  let cxp=gx+3*cell-gap+16;x.fillStyle=CO.ink;x.font='17px '+mono();x.textAlign='left';x.fillText('·',cxp,gy+(3*cell-gap)/2+2);cxp+=18;
-  x.fillStyle=CO.mut;x.font='italic 13px '+sans();x.textAlign='center';x.fillText('u',cxp+box/2,gy-10);
-  for(let i=0;i<3;i++){x.fillStyle='#fff';x.strokeStyle=CO.line;x.lineWidth=1;x.fillRect(cxp,gy+i*cell,box,box);x.strokeRect(cxp,gy+i*cell,box,box);
-   x.fillStyle=CO.ink;x.font='13px '+mono();x.textAlign='center';x.fillText(u[i].toFixed(1),cxp+box/2,gy+i*cell+box/2+4.5);}
-  cxp+=box+14;x.fillStyle=CO.ink;x.font='17px '+mono();x.textAlign='left';x.fillText('+ b',cxp,gy+(3*cell-gap)/2+2);
-  // arithmetic of active row -> ReLU
+  const gap=6,cell=Math.min(46,cw*0.088),box=cell-gap,gx=cw*0.03,gy=34;
+  const W3=[row(0),row(1),row(2)],B3=[val(ids[0][3]),val(ids[1][3]),val(ids[2][3])];
+  const midY=gy+(3*cell-gap)/2+5;
+  function grid3(cx,cols,vals,label,hiRow){
+   x.fillStyle=CO.mut;x.font='italic 13px '+sans();x.textAlign='center';x.fillText(label,cx+(cols*cell-gap)/2,gy-10);
+   for(let i=0;i<3;i++)for(let j=0;j<cols;j++){const active=(i===hiRow);
+    x.fillStyle=active?CO.accentSoft:'#fff';x.strokeStyle=active?CO.accent:CO.line;x.lineWidth=active?1.6:1;
+    x.fillRect(cx+j*cell,gy+i*cell,box,box);x.strokeRect(cx+j*cell,gy+i*cell,box,box);
+    x.fillStyle=active?CO.accent:CO.mut;x.font=(active?'700 ':'')+'12px '+mono();x.textAlign='center';
+    x.fillText(vals[i][j],cx+j*cell+box/2,gy+i*cell+box/2+4);}
+   return cx+cols*cell-gap;}
+  let cxp=grid3(gx,3,W3.map(r=>r.map(v=>v.toFixed(1))),'W',sel)+12;
+  x.fillStyle=CO.ink;x.font='16px '+mono();x.textAlign='center';x.fillText('·',cxp+7,midY);cxp+=20;
+  cxp=grid3(cxp,1,u.map(v=>[v.toFixed(1)]),'u',-1)+12;
+  x.fillStyle=CO.ink;x.font='16px '+mono();x.textAlign='center';x.fillText('+',cxp+7,midY);cxp+=20;
+  cxp=grid3(cxp,1,B3.map(v=>[v.toFixed(1)]),'b',sel)+10;
+  x.fillStyle=CO.ink;x.font='15px '+mono();x.textAlign='center';x.fillText('→',cxp+16,midY);
+  x.fillStyle=CO.mut;x.font='10px '+mono();x.fillText('ReLU',cxp+16,midY-14);cxp+=32;
+  grid3(cxp,1,[0,1,2].map(n=>[relu(pre(n)).toFixed(2)]),'v',sel);
+  // aritmetica della riga selezionata
+  const w=W3[sel],b=B3[sel],p=pre(sel),v=relu(p);
   const parts=[];for(let k=0;k<3;k++)parts.push(fmt(w[k])+'·'+u[k].toFixed(1));
   const afs=cw<430?11.5:13.5; // font adattivo su schermi stretti
   x.fillStyle=CO.accent;x.font='700 13px '+mono();x.textAlign='left';
-  x.fillText('riga di W · u + b:',gx,ch-72);
+  x.fillText('riga '+(sel+1)+' di W · u + b'+(sel+1)+':',gx,ch-72);
   x.fillStyle=CO.ink2;x.font=afs+'px '+mono();x.fillText(parts.join(' + ')+' + '+fmt(b),gx,ch-48);
   x.fillStyle=CO.ink;x.font='14px '+mono();
   x.fillText('= '+fmt(p)+'   →   ReLU('+fmt(p)+') = ',gx,ch-22);
   const tw=x.measureText('= '+fmt(p)+'   →   ReLU('+fmt(p)+') = ').width;
   x.fillStyle=v>0?CO.teal:CO.mut;x.font='700 14px '+mono();x.fillText(fmt(v),gx+tw+2,ch-22);
  }
- function render(){drawNeurons();drawMatrix();
-  ['w1','w2','w3','nb'].forEach(id=>{const el=document.getElementById(id+ (id==='nb'?'v':'v'));});
-  document.getElementById('w1v').textContent=(+val('w1')).toFixed(2);
-  document.getElementById('w2v').textContent=(+val('w2')).toFixed(2);
-  document.getElementById('w3v').textContent=(+val('w3')).toFixed(2);
-  document.getElementById('nbv').textContent=(+val('nb')).toFixed(2);
-  const p=pre(),v=relu(p);
-  document.getElementById('nexEq').innerHTML='w·u + b = '+fmt(p);
-  const nv=document.getElementById('nexV');nv.textContent='v = '+fmt(v);nv.style.color=v>0?CO.teal:CO.mut;
+ function render(){
+  ids.flat().forEach(id=>{document.getElementById(id+'v').textContent=val(id).toFixed(2);});
+  document.querySelectorAll('#nrows .nrow').forEach((el,i)=>el.classList.toggle('sel',i===sel));
+  drawNeurons();drawMatrix();
+  const p=pre(sel),v=relu(p);
+  document.getElementById('nexEq').innerHTML='neurone '+(sel+1)+': w·u + b = '+fmt(p);
+  const nv=document.getElementById('nexV');nv.textContent='v'+(sel+1)+' = '+fmt(v);nv.style.color=v>0?CO.teal:CO.mut;
  }
- ['w1','w2','w3','nb'].forEach(id=>document.getElementById(id).addEventListener('input',render));
+ function select(n){if(n===sel)return;sel=n;render();}
+ // click sul neurone → evidenzia la riga di W (e viceversa: toccare una riga seleziona il neurone)
+ nN.c.addEventListener('click',ev=>{const r=nN.c.getBoundingClientRect();
+  const px=ev.clientX-r.left,py=ev.clientY-r.top;
+  for(let n=0;n<3;n++){const h=hit[n];if(h&&Math.hypot(px-h[0],py-h[1])<=h[2]+4){select(n);return;}}});
+ nN.c.addEventListener('mousemove',ev=>{const r=nN.c.getBoundingClientRect();
+  const px=ev.clientX-r.left,py=ev.clientY-r.top;
+  nN.c.style.cursor=hit.some(h=>Math.hypot(px-h[0],py-h[1])<=h[2]+4)?'pointer':'default';});
+ document.querySelectorAll('#nrows .nrow').forEach((el,i)=>el.addEventListener('click',()=>select(i)));
+ ids.forEach((r,i)=>r.forEach(id=>document.getElementById(id).addEventListener('input',()=>{sel=i;render();})));
  onResize(render);requestAnimationFrame(render);
 })();
 
@@ -805,6 +866,11 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   function X(d){return pad+d/60*(cw-pad-14);}function Y(t){return (ch-pad)-(t-4)/24*(ch-pad-14);}
   x.strokeStyle=CO.line;x.beginPath();x.moveTo(pad,ch-pad);x.lineTo(cw-14,ch-pad);x.moveTo(pad,ch-pad);x.lineTo(pad,10);x.stroke();
   x.fillStyle=CO.mut;x.font='10px '+mono();x.textAlign='center';x.fillText('giorno',cw/2,ch-8);
+  // scarti: segmento verticale tra y misurata (punto) e y prevista (retta)
+  if(document.getElementById('ckRes').checked){
+   x.strokeStyle='rgba(47,126,201,.65)';x.lineWidth=1.6;
+   data.forEach(p=>{x.beginPath();x.moveTo(X(p[0]),Y(p[1]));x.lineTo(X(p[0]),Y(W*p[0]+b));x.stroke();});
+  }
   data.forEach(p=>{x.fillStyle=CO.amber;x.beginPath();x.arc(X(p[0]),Y(p[1]),3.4,0,7);x.fill();});
   x.strokeStyle=CO.accent;x.lineWidth=3;x.beginPath();x.moveTo(X(0),Y(b));x.lineTo(X(60),Y(W*60+b));x.stroke();
   document.getElementById('fitW').textContent=W.toFixed(2);
@@ -954,7 +1020,25 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   const pb=P(W,b,rmse(W,b),g), pz=P(W,b,Rmin,g);
   x.setLineDash([3,3]);x.strokeStyle='rgba(26,26,26,.4)';x.lineWidth=1;
   x.beginPath();x.moveTo(pb[0],pb[1]);x.lineTo(pz[0],pz[1]);x.stroke();x.setLineDash([]);
-  x.fillStyle=CO.amber;x.strokeStyle='#fff';x.lineWidth=2;x.beginPath();x.arc(pb[0],pb[1],6.5,0,7);x.fill();x.stroke();}
+  x.fillStyle=CO.amber;x.strokeStyle='#fff';x.lineWidth=2;x.beginPath();x.arc(pb[0],pb[1],6.5,0,7);x.fill();x.stroke();
+  // freccia del gradiente: la direzione di discesa (−∇) dalla posizione corrente, adagiata sulla superficie
+  if(document.getElementById('ckGrad').checked){
+   const[gw,gb]=grad();
+   const dxn=-LRW*gw/(WM-Wm), dyn=-LRB*gb/(bM-bm);
+   const n=Math.hypot(dxn,dyn);
+   if(n>1e-6){
+    const L=0.22*Math.min(1,n/0.02);   // lunghezza solo indicativa: si accorcia vicino al minimo
+    const W2=Math.max(Wm,Math.min(WM,W+dxn/n*L*(WM-Wm)));
+    const b2=Math.max(bm,Math.min(bM,b+dyn/n*L*(bM-bm)));
+    const p2=P(W2,b2,rmse(W2,b2),g);
+    x.strokeStyle=CO.accent;x.lineWidth=3;x.beginPath();x.moveTo(pb[0],pb[1]);x.lineTo(p2[0],p2[1]);x.stroke();
+    const a=Math.atan2(p2[1]-pb[1],p2[0]-pb[0]);
+    x.fillStyle=CO.accent;x.beginPath();x.moveTo(p2[0],p2[1]);
+    x.lineTo(p2[0]-11*Math.cos(a-0.42),p2[1]-11*Math.sin(a-0.42));
+    x.lineTo(p2[0]-11*Math.cos(a+0.42),p2[1]-11*Math.sin(a+0.42));x.fill();
+    x.font='700 12px '+mono();x.textAlign='left';x.fillText('−∇',p2[0]+9,p2[1]-5);
+   }
+  }}
  function queueLoss(){if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;drawLoss();});}
 
  /* rotazione della camera: drag col mouse, frecce da tastiera */
@@ -975,15 +1059,29 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
 
  function redraw(){drawFit();drawLoss();document.getElementById('epoch').textContent=epoch;}
  const SLOW=3;let tick=0;   // un passo di gradiente ogni 3 frame: stessa traiettoria, un terzo della velocita'
+ const LRW=0.00045,LRB=0.02,CLIP=0.035; // tetto del clipping, in frazione del range (W,b)
+ const clipInd=document.getElementById('clipInd');
  function step(){
    if(tick++%SLOW){anim=requestAnimationFrame(step);return;}
-   const[gw,gb]=grad();W-=0.00045*gw;b-=0.02*gb;epoch++;
+   const[gw,gb]=grad();
+   let sW=LRW*gw,sB=LRB*gb;
+   // gradient clipping: il primo passo, altrimenti, scaglierebbe la pallina fuori dalla conca
+   const nrm=Math.hypot(sW/(WM-Wm),sB/(bM-bm));
+   const clipped=nrm>CLIP;
+   if(clipped){const f=CLIP/nrm;sW*=f;sB*=f;}
+   W-=sW;b-=sB;epoch++;
+   clipInd.style.display=clipped?'inline':'none';
    path.push([W,b,rmse(W,b)]);if(path.length>500)path.shift();
    redraw();
-   if(epoch<400&&(Math.abs(gw)>0.02||Math.abs(gb)>0.02))anim=requestAnimationFrame(step);else anim=null;}
+   if(epoch<400&&(Math.abs(gw)>0.02||Math.abs(gb)>0.02))anim=requestAnimationFrame(step);
+   else{anim=null;clipInd.style.display='none';}}
+ function stopTraining(){if(anim){cancelAnimationFrame(anim);anim=null;}clipInd.style.display='none';}
  document.getElementById('trainBtn').addEventListener('click',()=>{if(anim)return;tick=0;step();});
- document.getElementById('resetBtn').addEventListener('click',()=>{if(anim){cancelAnimationFrame(anim);anim=null;}
+ document.getElementById('stopBtn').addEventListener('click',stopTraining);
+ document.getElementById('resetBtn').addEventListener('click',()=>{stopTraining();
    W=-0.28+Math.random()*0.7;b=5+Math.random()*16;epoch=0;tick=0;path=[[W,b,rmse(W,b)]];redraw();});
+ document.getElementById('ckRes').addEventListener('change',drawFit);
+ document.getElementById('ckGrad').addEventListener('change',drawLoss);
  onResize(()=>{lossBg=null;lossKey='';redraw();});requestAnimationFrame(redraw);
 })();
 
