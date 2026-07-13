@@ -430,16 +430,29 @@
 <section id="s6"><div class="wrap reveal">
   <div class="kicker"><span class="n">06</span> Da vedere</div>
   <h2>La dashboard <span class="em">economica</span></h2>
-  <p class="lead">Si costruisce live una mini dashboard di lavoro per ragionare su margini e costi: levette per configurare i parametri, grafici che si aggiornano in tempo reale.</p>
+  <p class="lead">Si costruisce live una dashboard decisionale a partire da un Excel di dati economici: levette per configurare lo scenario, grafici che si aggiornano in tempo reale — e una decisione vera da prendere.</p>
+
   <div class="panel star">
     <div class="badge doer">Lo scenario</div>
+    <h3 style="margin:12px 0 6px">Movia Trasporti sceglie i fornitori</h3>
+    <p><b>Movia Trasporti</b> (azienda fittizia di trasporto pubblico locale) sta elettrificando la flotta: <b>40 bus elettrici su 3 depositi</b> — Levante, Ponente, Centro. Deve appaltare due lotti del progetto, ognuno con due fornitori in gara:</p>
+    <p><b>Lotto A — Infrastruttura di ricarica:</b> <i>ElettraCharge</i> costa poco all'acquisto ma tanto in manutenzione; <i>VoltRete</i> è l'opposto, con uptime migliore. Le curve dei costi cumulati si incrociano intorno al 7° anno.<br>
+    <b>Lotto B — Manutenzione full-service dei bus:</b> <i>OmniBus Service</i> propone un canone fisso per bus; <i>KilometroZero</i> una tariffa a chilometro. Chi conviene dipende da quanti km all'anno percorrono i bus.</p>
+    <p><b>L'obiettivo:</b> scegliere la coppia di fornitori (uno per lotto) che minimizza il costo totale nello scenario scelto. Nessun fornitore vince sempre: muovendo le levette il vincitore cambia — chi usa la dashboard decide, non guarda soltanto.</p>
+    <p>Tutti i numeri sono nell'Excel: un foglio con le <b>offerte dei 4 fornitori</b> (voce per voce, CAPEX e OPEX) e un foglio con i <b>parametri di scenario</b> (percorrenze, energia, uptime, punteggi qualitativi).</p>
+    <a href="https://summerschool26.vercel.app/materiali/dashboard_economica_movia.xlsx" download style="display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;font-weight:700;font-size:14px;padding:9px 16px;border-radius:10px;text-decoration:none;margin-top:10px">⬇ Scarica l'Excel dei dati (xlsx)</a>
+  </div>
+
+  <div class="panel">
+    <div class="badge doer">La consegna per Claude</div>
     <div class="steps">
-      <div class="st"><p><b>Si descrive lo scenario a Claude</b>: una dashboard per valutare margini e costi, con i parametri configurabili.</p></div>
-      <div class="st"><p><b>Claude genera l'artifact</b>: levette per i parametri, grafici per i risultati. Pochi secondi, non pochi giorni.</p></div>
-      <div class="st"><p><b>Si gioca con le levette</b>: cambi un costo, il margine si muove; cambi un prezzo, il grafico si ridisegna.</p></div>
-      <div class="st"><p><b>Si itera a voce</b>: "aggiungi un terzo scenario", "metti il break-even" — l'app si aggiorna in conversazione.</p></div>
+      <div class="st"><p><b>Le levette:</b> orizzonte di valutazione (5–12 anni), km/anno per bus, prezzo dell'energia, dimensione della flotta (30–50 bus), tasso di sconto. Più due selettori: il fornitore scelto per il Lotto A e per il Lotto B.</p></div>
+      <div class="st"><p><b>I grafici:</b> linee dei costi cumulati con il punto di crossover; barre raggruppate del TCO per fornitore; waterfall della composizione dei costi della combinazione scelta; radar qualitativo dei 4 fornitori; donut CAPEX vs OPEX.</p></div>
+      <div class="st"><p><b>Il pannello decisione:</b> TCO totale della combinazione scelta, anno di pareggio e quanto si risparmia (o si perde) rispetto all'alternativa — aggiornati a ogni levetta.</p></div>
+      <div class="st"><p><b>Si itera a voce:</b> "evidenzia il break-even", "aggiungi lo scenario a 50 bus", "cosa succede se l'energia raddoppia?" — l'app si aggiorna in conversazione.</p></div>
     </div>
   </div>
+
   <div class="callout">
     <b>La narrativa giusta:</b> è un Excel molto più bello e molto più comodo. Infinitamente più veloce da mettere in piedi di tutta quella configurazione — e con grafici molto migliori di quelli che escono da Excel.
   </div>
@@ -582,10 +595,6 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   }
 
   btn.addEventListener('click',()=>{if(!running)play();});
-  const ob=new IntersectionObserver(es=>es.forEach(e=>{
-    if(e.isIntersecting){ob.disconnect();play();}
-  }),{threshold:.35});
-  ob.observe(root);
 })();
 
 /* ---------- matrice: aggiungi card ---------- */
