@@ -330,7 +330,7 @@
   <div class="panel star">    <div class="phd"><strong>W per un one-hot = selezionare una colonna di W</strong></div>
     <p style="margin-top:6px;font-size:15px">Scegli una parola: il suo one-hot ha un 1 in una sola posizione. Tutti i prodotti colonna-per-elemento sono nulli tranne uno — e il risultato di Wx è esattamente <b>quella colonna</b> di W.</p>
     <div class="wbtns" id="ohBtns"></div>
-    <canvas id="cOneHot" height="440"></canvas>
+    <canvas id="cOneHot" height="580"></canvas>
     <div class="readout">Wx = colonna <b id="ohCol">4</b> di W · dimensione dell'embedding <b>d = 6</b></div>
     <p class="hint">Ad ogni parola corrisponde una colonna di W, e il contenuto di ciascuna colonna è indipendente dal contenuto delle altre. Questa matrice, come tutti i parametri delle reti neurali, viene allenata tramite gradient descent: i vettori che rappresentano le parole <em>emergono dal training</em>.</p>
   </div>
@@ -711,45 +711,55 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
    return v>=0?'rgba(95,94,90,'+(0.06+a*0.18)+')':'rgba(95,94,90,'+(0.06+a*0.18)+')';}
  function draw(){const x=fit();const cw=c.clientWidth,ch=h;x.clearRect(0,0,cw,ch);
   const n=words.length;
-  const cell=Math.min(38,Math.max(16,(cw-230)/n));
-  const gx=60,gy=118;const gw=n*cell,gh=d*cell;
+  // schema "di Falk", come nella parte 1: x in colonna in alto, W in basso a sinistra,
+  // il risultato Wx all'incrocio (sotto x, a destra di W)
+  const cell=Math.min(30,Math.max(16,(cw-140)/(n+2)));
+  const gapF=Math.round(cell*0.6);
+  const gx=Math.max(46,(cw-(n*cell+gapF+cell)-90)/2); // 90 ≈ le parole accanto a x
+  const xy=48, ux=gx+n*cell+gapF, wy=xy+n*cell+gapF;
+  const gh=d*cell;
   x.fillStyle=CO.ink2;x.font='italic 14px '+sans();x.textAlign='left';
   x.fillText('x = one-hot di «'+words[sel]+'»',gx,24);
-  // vettore one-hot in alto
-  x.font='700 13px '+mono();x.textAlign='center';
-  for(let j=0;j<n;j++){const px=gx+j*cell;
+  // guida: l'1 "caldo" di x seleziona la colonna corrispondente di W
+  const hotY=xy+sel*cell+cell/2, colX=gx+sel*cell+cell/2;
+  x.strokeStyle=CO.accent;x.lineWidth=1.6;x.setLineDash([4,3]);
+  x.beginPath();x.moveTo(ux-4,hotY);x.lineTo(colX,hotY);x.lineTo(colX,wy-6);x.stroke();x.setLineDash([]);
+  // riquadro attorno al blocco all'incrocio: e' il risultato Wx
+  x.fillStyle='rgba(29,158,117,.05)';roundRect(x,ux-5,wy-5,cell+10,gh+10,8);x.fill();
+  x.strokeStyle=CO.accent;x.lineWidth=2.2;roundRect(x,ux-5,wy-5,cell+10,gh+10,8);x.stroke();
+  // vettore one-hot in colonna, con le parole accanto
+  x.fillStyle=CO.ink2;x.font='italic 15px '+sans();x.textAlign='center';x.fillText('x',ux+cell/2,xy-10);
+  for(let j=0;j<n;j++){const py=xy+j*cell;
     x.fillStyle=j===sel?CO.accent:CO.card2;x.strokeStyle=j===sel?CO.accent2:CO.lineS;x.lineWidth=1;
-    roundRect(x,px+2,40,cell-4,26,4);x.fill();x.stroke();
-    x.fillStyle=j===sel?'#fff':CO.mut;x.fillText(j===sel?'1':'0',px+cell/2,58);}
-  // frecce dal one-hot alla colonna
-  x.strokeStyle=CO.accent;x.lineWidth=1.6;x.setLineDash([3,3]);
-  x.beginPath();x.moveTo(gx+sel*cell+cell/2,70);x.lineTo(gx+sel*cell+cell/2,gy-6);x.stroke();x.setLineDash([]);
+    roundRect(x,ux+2,py+2,cell-4,cell-4,4);x.fill();x.stroke();
+    x.fillStyle=j===sel?'#fff':CO.mut;x.font='700 13px '+mono();x.textAlign='center';
+    x.fillText(j===sel?'1':'0',ux+cell/2,py+cell/2+4);
+    x.font=(j===sel?'700 ':'')+'12.5px '+mono();x.fillStyle=j===sel?CO.accent2:CO.mut;x.textAlign='left';
+    x.fillText(words[j],ux+cell+10,py+cell/2+4);}
   // matrice W
   for(let r=0;r<d;r++)for(let j=0;j<n;j++){
-    const px=gx+j*cell,py=gy+r*cell;
+    const px=gx+j*cell,py=wy+r*cell;
     x.fillStyle=cellCol(W[r][j],j===sel);
     roundRect(x,px+2,py+2,cell-4,cell-4,4);x.fill();
     if(j===sel){x.strokeStyle=CO.accent2;x.lineWidth=1;x.stroke();}}
   // cornice colonna selezionata
-  x.strokeStyle=CO.accent;x.lineWidth=2.2;roundRect(x,gx+sel*cell,gy-2,cell,gh+4,6);x.stroke();
+  x.strokeStyle=CO.accent;x.lineWidth=2.2;roundRect(x,gx+sel*cell,wy-2,cell,gh+4,6);x.stroke();
   x.fillStyle=CO.ink2;x.font='italic 15px '+sans();x.textAlign='center';
-  x.fillText('W',gx-26,gy+gh/2+5);
+  x.fillText('W',gx-26,wy+gh/2+5);
   // etichette parole sotto le colonne
   x.save();x.font='13px '+mono();x.fillStyle=CO.mut;
-  for(let j=0;j<n;j++){x.save();x.translate(gx+j*cell+cell/2,gy+gh+22);x.rotate(0.65);x.textAlign='left';
+  for(let j=0;j<n;j++){x.save();x.translate(gx+j*cell+cell/2,wy+gh+22);x.rotate(0.65);x.textAlign='left';
     x.fillStyle=j===sel?CO.accent2:CO.mut;x.fillText(words[j],0,0);x.restore();}
   x.restore();
-  // = risultato: la colonna estratta
-  const rx=gx+gw+56;
-  x.fillStyle=CO.ink;x.font='700 22px '+mono();x.textAlign='center';x.fillText('=',rx-28,gy+gh/2+7);
-  for(let r=0;r<d;r++){const py=gy+r*cell;
-    x.fillStyle=cellCol(W[r][sel],true);roundRect(x,rx,py+2,cell-4,cell-4,4);x.fill();
+  // il risultato all'incrocio: la colonna estratta
+  for(let r=0;r<d;r++){const py=wy+r*cell;
+    x.fillStyle=cellCol(W[r][sel],true);roundRect(x,ux+2,py+2,cell-4,cell-4,4);x.fill();
     x.strokeStyle=CO.accent2;x.lineWidth=1;x.stroke();
-    x.fillStyle='#0d3d2e';x.font='700 11px '+mono();
-    x.fillText(W[r][sel].toFixed(1),rx+(cell-4)/2,py+cell/2+4);}
-  x.fillStyle=CO.accent2;x.font='italic 13.5px '+sans();
-  x.fillText('embedding',rx+(cell-4)/2,gy+gh+34);
-  x.fillText('di «'+words[sel]+'»',rx+(cell-4)/2,gy+gh+52);
+    x.fillStyle='#0d3d2e';x.font='700 11px '+mono();x.textAlign='center';
+    x.fillText(W[r][sel].toFixed(1),ux+cell/2,py+cell/2+4);}
+  x.fillStyle=CO.accent2;x.font='italic 13.5px '+sans();x.textAlign='left';
+  x.fillText('Wx = embedding',ux-5,wy+gh+32);
+  x.fillText('di «'+words[sel]+'»',ux-5,wy+gh+50);
   document.getElementById('ohCol').textContent=(sel+1);
  }
  onResize(draw);requestAnimationFrame(draw);
