@@ -146,6 +146,14 @@
   .take h4{margin:0 0 6px;font-size:15px}
   .take p{margin:0;font-size:14px;color:var(--ink-2)}
 
+  /* bottone di download del materiale */
+  .dlbtn{display:inline-flex;align-items:center;gap:10px;text-decoration:none;
+    font-size:14.5px;font-weight:700;color:#fff;background:var(--ink);border-radius:10px;padding:11px 16px;
+    transition:background .15s,transform .05s}
+  .dlbtn:hover{background:#000}
+  .dlbtn:active{transform:translateY(1px)}
+  .dlbtn span{font-family:var(--mono);font-size:11.5px;font-weight:400;color:#b9b8b3}
+
   .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
   .reveal.in{opacity:1;transform:none}
   footer{padding:50px 0 90px;color:var(--ink-2);font-size:13.5px;border-top:1px solid var(--line)}
@@ -300,6 +308,8 @@
       <div class="st"><p><b>Human in the loop.</b> L'agenda proposta si rivede: solo quando l'utente <b>conferma</b>, parte la mail ai manutentori con il programma ("il tuo tragitto del giorno è questo").</p></div>
       <div class="st"><p><b>L'AI dentro il software.</b> La composizione della mail la scrive un modello, chiamato via API dall'app stessa. La mail allega anche la <b>scheda treno</b> del mezzo, la documentazione da portare con sé.</p></div>
     </div>
+    <p style="margin-top:14px"><a class="dlbtn" href="https://drive.google.com/uc?export=download&amp;id=1Fx_j2mXsTkoVkEVvMDj27_1n1ruNoFoa" target="_blank" rel="noopener">↓ Scarica il JSON dell'ERP mockato <span>json · 24 KB</span></a></p>
+    <p class="hint">È il file da cui l'ERP mockato pesca i dati: mezzi, manutentori con le disponibilità, revisioni con le scadenze, schede treno.</p>
   </div>
 
 </div></section>
