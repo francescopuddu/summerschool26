@@ -265,7 +265,7 @@
       </div>
       <div>
         <div class="cap" style="margin:0 0 6px">la matematica — <b>una riga di W = i pesi di un neurone</b></div>
-        <canvas id="cNexM" height="330"></canvas>
+        <canvas id="cNexM" height="440"></canvas>
       </div>
     </div>
     <div id="nrows" class="nrows">
@@ -780,36 +780,57 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   x.fillText('input u',inX,ch-6);x.fillText('clicca un neurone per selezionarlo',cw*0.6,ch-6);
  }
  function drawMatrix(){const x=nM.fit();const cw=nM.c.clientWidth,ch=nM.h;x.clearRect(0,0,cw,ch);
-  const gap=6,cell=Math.min(46,cw*0.088),box=cell-gap,gx=cw*0.03,gy=34;
+  const gap=6,cell=Math.min(46,cw*0.088),box=cell-gap,gapF=Math.round(cell*0.6);
+  const fs=Math.max(9.5,Math.min(12,box*0.45));
   const W3=[row(0),row(1),row(2)],B3=[val(ids[0][3]),val(ids[1][3]),val(ids[2][3])];
-  const midY=gy+(3*cell-gap)/2+5;
-  function grid3(cx,cols,vals,label,hiRow){
-   x.fillStyle=CO.mut;x.font='italic 13px '+sans();x.textAlign='center';x.fillText(label,cx+(cols*cell-gap)/2,gy-10);
-   for(let i=0;i<3;i++)for(let j=0;j<cols;j++){const active=(i===hiRow);
-    x.fillStyle=active?CO.accentSoft:'#fff';x.strokeStyle=active?CO.accent:CO.line;x.lineWidth=active?1.6:1;
-    x.fillRect(cx+j*cell,gy+i*cell,box,box);x.strokeRect(cx+j*cell,gy+i*cell,box,box);
-    x.fillStyle=active?CO.accent:CO.mut;x.font=(active?'700 ':'')+'12px '+mono();x.textAlign='center';
-    x.fillText(vals[i][j],cx+j*cell+box/2,gy+i*cell+box/2+4);}
-   return cx+cols*cell-gap;}
-  let cxp=grid3(gx,3,W3.map(r=>r.map(v=>v.toFixed(1))),'W',sel)+12;
-  x.fillStyle=CO.ink;x.font='16px '+mono();x.textAlign='center';x.fillText('·',cxp+7,midY);cxp+=20;
-  cxp=grid3(cxp,1,u.map(v=>[v.toFixed(1)]),'u',-1)+12;
-  x.fillStyle=CO.ink;x.font='16px '+mono();x.textAlign='center';x.fillText('+',cxp+7,midY);cxp+=20;
-  cxp=grid3(cxp,1,B3.map(v=>[v.toFixed(1)]),'b',sel)+10;
-  x.fillStyle=CO.ink;x.font='15px '+mono();x.textAlign='center';x.fillText('→',cxp+16,midY);
-  x.fillStyle=CO.mut;x.font='10px '+mono();x.fillText('ReLU',cxp+16,midY-14);cxp+=32;
-  grid3(cxp,1,[0,1,2].map(n=>[relu(pre(n)).toFixed(2)]),'v',sel);
+  const WU=[0,1,2].map(n=>W3[n][0]*u[0]+W3[n][1]*u[1]+W3[n][2]*u[2]);
+  // schema "di Falk", coerente col prodotto matriciale qui sopra:
+  // u in alto, W in basso a sinistra, il prodotto intermedio W·u all'incrocio; poi + b → ReLU → v
+  const totW=3*cell-gap+gapF+box + 18+14 + box + 10+28 + box;
+  const ax=Math.max(26,(cw-totW)/2);
+  const uy=24, ux=ax+3*cell-gap+gapF, wy=uy+3*cell-gap+gapF;
+  // guide dell'incrocio (sotto le griglie): riga di W → cella di W·u ← colonna u
+  const gyC=wy+sel*cell+box/2, gxC=ux+box/2;
+  x.strokeStyle='rgba(67,56,202,.45)';x.lineWidth=1.5;x.setLineDash([5,4]);
+  x.beginPath();x.moveTo(ax,gyC);x.lineTo(gxC,gyC);x.stroke();
+  x.beginPath();x.moveTo(gxC,uy);x.lineTo(gxC,gyC);x.stroke();x.setLineDash([]);
+  // riquadro attorno al blocco all'incrocio: e' il risultato W·u
+  x.fillStyle='rgba(67,56,202,.05)';roundRect(x,ux-7,wy-7,box+14,3*cell-gap+14,9);x.fill();
+  x.strokeStyle='rgba(67,56,202,.5)';x.lineWidth=2;roundRect(x,ux-7,wy-7,box+14,3*cell-gap+14,9);x.stroke();
+  function cellDraw(cx,cy,txt,active){
+   x.fillStyle=active?CO.accentSoft:'#fff';x.strokeStyle=active?CO.accent:CO.line;x.lineWidth=active?1.6:1;
+   x.fillRect(cx,cy,box,box);x.strokeRect(cx,cy,box,box);
+   x.fillStyle=active?CO.accent:CO.mut;x.font=(active?'700 ':'')+fs+'px '+mono();x.textAlign='center';
+   x.fillText(txt,cx+box/2,cy+box/2+fs*0.36);}
+  x.fillStyle=CO.mut;x.font='italic 13px '+sans();x.textAlign='center';
+  x.fillText('u',ux+box/2,uy-9);
+  x.fillText('W',ax-16,wy+(3*cell-gap)/2+4);
+  x.fillText('W·u',ux+box/2,wy+3*cell-gap+22);
+  for(let i=0;i<3;i++)cellDraw(ux,uy+i*cell,u[i].toFixed(1),true);       // colonna u: usata da tutte le righe
+  for(let i=0;i<3;i++)for(let j=0;j<3;j++)cellDraw(ax+j*cell,wy+i*cell,W3[i][j].toFixed(1),i===sel);
+  for(let i=0;i<3;i++)cellDraw(ux,wy+i*cell,WU[i].toFixed(2),i===sel);   // il prodotto intermedio
+  // + b → ReLU → v, riga per riga
+  let cxp=ux+box+18;const midY=wy+(3*cell-gap)/2+5;
+  x.fillStyle=CO.ink;x.font='16px '+mono();x.textAlign='center';x.fillText('+',cxp,midY);cxp+=14;
+  x.fillStyle=CO.mut;x.font='italic 13px '+sans();x.fillText('b',cxp+box/2,wy-9);
+  for(let i=0;i<3;i++)cellDraw(cxp,wy+i*cell,B3[i].toFixed(1),i===sel);
+  cxp+=box+10;
+  x.fillStyle=CO.ink;x.font='15px '+mono();x.textAlign='center';x.fillText('→',cxp+14,midY);
+  x.fillStyle=CO.mut;x.font='10px '+mono();x.fillText('ReLU',cxp+14,midY-14);cxp+=28;
+  x.fillStyle=CO.mut;x.font='italic 13px '+sans();x.fillText('v',cxp+box/2,wy-9);
+  for(let i=0;i<3;i++)cellDraw(cxp,wy+i*cell,relu(WU[i]+B3[i]).toFixed(2),i===sel);
   // aritmetica della riga selezionata
+  const lx=Math.max(12,ax-16);
   const w=W3[sel],b=B3[sel],p=pre(sel),v=relu(p);
   const parts=[];for(let k=0;k<3;k++)parts.push(fmt(w[k])+'·'+u[k].toFixed(1));
   const afs=cw<430?11.5:13.5; // font adattivo su schermi stretti
   x.fillStyle=CO.accent;x.font='700 13px '+mono();x.textAlign='left';
-  x.fillText('riga '+(sel+1)+' di W · u + b'+(sel+1)+':',gx,ch-72);
-  x.fillStyle=CO.ink2;x.font=afs+'px '+mono();x.fillText(parts.join(' + ')+' + '+fmt(b),gx,ch-48);
+  x.fillText('riga '+(sel+1)+' di W · u = '+fmt(WU[sel])+', poi + b'+(sel+1)+' e ReLU:',lx,ch-72);
+  x.fillStyle=CO.ink2;x.font=afs+'px '+mono();x.fillText(parts.join(' + ')+' + '+fmt(b)+' = '+fmt(p),lx,ch-48);
   x.fillStyle=CO.ink;x.font='14px '+mono();
-  x.fillText('= '+fmt(p)+'   →   ReLU('+fmt(p)+') = ',gx,ch-22);
-  const tw=x.measureText('= '+fmt(p)+'   →   ReLU('+fmt(p)+') = ').width;
-  x.fillStyle=v>0?CO.teal:CO.mut;x.font='700 14px '+mono();x.fillText(fmt(v),gx+tw+2,ch-22);
+  x.fillText('→ ReLU('+fmt(p)+') = ',lx,ch-22);
+  const tw=x.measureText('→ ReLU('+fmt(p)+') = ').width;
+  x.fillStyle=v>0?CO.teal:CO.mut;x.font='700 14px '+mono();x.fillText(fmt(v),lx+tw+2,ch-22);
  }
  function render(){
   ids.flat().forEach(id=>{document.getElementById(id+'v').textContent=val(id).toFixed(2);});
