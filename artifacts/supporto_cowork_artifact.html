@@ -455,18 +455,9 @@
     <p><b>Lotto A — Infrastruttura di ricarica:</b> <i>ElettraCharge</i> costa poco all'acquisto ma tanto in manutenzione; <i>VoltRete</i> è l'opposto, con uptime migliore. Le curve dei costi cumulati si incrociano intorno al 7° anno.<br>
     <b>Lotto B — Manutenzione full-service dei bus:</b> <i>OmniBus Service</i> propone un canone fisso per bus; <i>KilometroZero</i> una tariffa a chilometro. Chi conviene dipende da quanti km all'anno percorrono i bus.</p>
     <p><b>L'obiettivo:</b> scegliere la coppia di fornitori (uno per lotto) che minimizza il costo totale nello scenario scelto. Nessun fornitore vince sempre: muovendo le levette il vincitore cambia — chi usa la dashboard decide, non guarda soltanto.</p>
+    <p>La dashboard deve permettere di <b>configurare lo scenario</b> — orizzonte di valutazione (5–12 anni), km/anno per bus, prezzo dell'energia, dimensione della flotta (30–50 bus), tasso di sconto — e di <b>selezionare il fornitore</b> di ciascun lotto. A ogni regolazione si devono aggiornare le viste: le curve dei costi cumulati con il punto di crossover, il confronto del TCO tra fornitori, la scomposizione dei costi della combinazione scelta, il profilo qualitativo dei quattro fornitori a confronto, il peso di CAPEX e OPEX. E un <b>riepilogo della decisione</b>: TCO della combinazione scelta, anno di pareggio, differenza rispetto all'alternativa.</p>
     <p>Tutti i numeri sono nell'Excel: un foglio con le <b>offerte dei 4 fornitori</b> (voce per voce, CAPEX e OPEX) e un foglio con i <b>parametri di scenario</b> (percorrenze, energia, uptime, punteggi qualitativi).</p>
     <p style="margin-top:14px"><a class="dlbtn" href="../materiali/dashboard_economica_movia.xlsx" download>↓ Scarica l'Excel dei dati <span>xlsx · 11 KB</span></a></p>
-  </div>
-
-  <div class="panel">
-    <div class="badge doer">La consegna per Claude</div>
-    <div class="steps">
-      <div class="st"><p><b>Le levette:</b> orizzonte di valutazione (5–12 anni), km/anno per bus, prezzo dell'energia, dimensione della flotta (30–50 bus), tasso di sconto. Più due selettori: il fornitore scelto per il Lotto A e per il Lotto B.</p></div>
-      <div class="st"><p><b>I grafici:</b> linee dei costi cumulati con il punto di crossover; barre raggruppate del TCO per fornitore; waterfall della composizione dei costi della combinazione scelta; radar qualitativo dei 4 fornitori; donut CAPEX vs OPEX.</p></div>
-      <div class="st"><p><b>Il pannello decisione:</b> TCO totale della combinazione scelta, anno di pareggio e quanto si risparmia (o si perde) rispetto all'alternativa — aggiornati a ogni levetta.</p></div>
-      <div class="st"><p><b>Si itera a voce:</b> "evidenzia il break-even", "aggiungi lo scenario a 50 bus", "cosa succede se l'energia raddoppia?" — l'app si aggiorna in conversazione.</p></div>
-    </div>
   </div>
 
   <div class="callout">
