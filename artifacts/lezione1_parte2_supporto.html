@@ -8,8 +8,8 @@
   :root{
     --paper:#f1efe8; --paper-2:#e9e6dd;
     --card:#ffffff; --card-2:#faf8f6;
-    --ink:#1a1a1a; --ink-2:#5f5e5a; --muted:#8a887f;
-    --line:#d9d6cc; --line-strong:#b4b2a9;
+    --ink:#141413; --ink-2:#45443f; --muted:#6e6c62;
+    --line:#d9d6cc; --line-strong:#98968b;
     --accent:#1D9E75; --accent-2:#157a5a; --accent-soft:#e4f4ee; --accent-soft2:#cfece0;
     --violet:#4338CA; --violet-soft:#ebe9fb;
     --amber:#B45309; --amber-soft:#fbeedd;
@@ -598,12 +598,21 @@
 
   <p>Dire che per farlo "fa solo calcoli" è vero quanto dire che il cervello fa solo "interazioni elettrochimiche" — e altrettanto poco ci dice del comportamento effettivo.</p>
 
-  <p>Questo non li rende perfetti né umani: l'approssimazione del completamento non è mai esatta, e agli errori diamo il nome di <b>allucinazioni</b>.</p>
+  <p>Questo non li rende perfetti né umani: l'approssimazione del completamento non è mai esatta, e agli errori diamo il nome di <b>allucinazioni</b>. Possono nascere in <b>due punti</b> diversi della catena: a volte le probabilità sono buone ma l'<b>estrazione a sorte</b> pesca un token improbabile; più spesso è la <b>distribuzione stessa a essere sbagliata</b> — l'approssimazione mette il picco di probabilità su un token errato, e nessuna estrazione può rimediare.</p>
 
   <div class="panel">
-    <div class="phd"><strong>La stessa estrazione di prima — ma stavolta esce la parola sbagliata</strong></div>
-    <p style="margin:4px 0 12px;color:var(--ink-2);font-size:14.5px">Le probabilità non sono mai perfette, e il token in uscita è comunque estratto a sorte: ogni tanto esce quello sbagliato.</p>
-    <canvas id="cHallu" height="320"></canvas>
+    <div class="phd"><strong>Due modi di sbagliare parola</strong></div>
+    <p style="margin:4px 0 12px;color:var(--ink-2);font-size:14.5px">A sinistra le probabilità sono giuste ma l'estrazione pesca male: capita di rado. A destra è la <b>distribuzione</b> a essere sbagliata: il modello è <em>confidente</em> nell'errore, e la parola sbagliata esce quasi sempre.</p>
+    <div class="grid2">
+      <div>
+        <div class="cap" style="margin:0 0 6px">1 · distribuzione giusta, estrazione sfortunata</div>
+        <canvas id="cHallu" height="320"></canvas>
+      </div>
+      <div>
+        <div class="cap" style="margin:0 0 6px">2 · distribuzione sbagliata: l'errore sta nelle probabilità</div>
+        <canvas id="cHallu2" height="320"></canvas>
+      </div>
+    </div>
   </div>
 </div></section>
 
@@ -625,7 +634,7 @@
     <div class="take a">
       <div class="kn">03 · un task, tante capacità</div>
       <h4>Prevedere il prossimo token</h4>
-      <p>Un token alla volta, estratto con una componente di caso. Dalla sola previsione del testo emergono le capacità — e dall'errore non nullo, le allucinazioni.</p>
+      <p>Un token alla volta, estratto con una componente di caso. Dalla sola previsione del testo emergono le capacità — e dall'approssimazione imperfetta, nelle probabilità o nell'estrazione, le allucinazioni.</p>
     </div>
   </div>
 </div></section>
@@ -637,7 +646,7 @@
 <script>
 "use strict";
 /* ---------- palette (JS side, coerente col CSS) ---------- */
-const CO={ink:'#1a1a1a',ink2:'#5f5e5a',mut:'#8a887f',line:'#d9d6cc',lineS:'#b4b2a9',
+const CO={ink:'#141413',ink2:'#45443f',mut:'#6e6c62',line:'#d9d6cc',lineS:'#98968b',
   paper2:'#e9e6dd',card2:'#faf8f6',accent:'#1D9E75',accent2:'#157a5a',accentSoft:'#e4f4ee',
   violet:'#4338CA',violetSoft:'#ebe9fb',amber:'#B45309',amberSoft:'#fbeedd',blue:'#2f7ec9',blueSoft:'#e7f0fa'};
 function mono(){return "ui-monospace,'SF Mono',Menlo,Consolas,monospace";}
@@ -707,8 +716,8 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
    b.addEventListener('click',()=>{sel=i;[...btnBox.children].forEach((x,j)=>x.classList.toggle('on',j===sel));draw();});
    btnBox.appendChild(b);});
  function cellCol(v,hot){const a=Math.min(1,Math.abs(v));
-   if(hot)return v>=0?'rgba(29,158,117,'+(0.25+a*0.6)+')':'rgba(21,122,90,'+(0.25+a*0.6)+')';
-   return v>=0?'rgba(95,94,90,'+(0.06+a*0.18)+')':'rgba(95,94,90,'+(0.06+a*0.18)+')';}
+   if(hot)return v>=0?'rgba(29,158,117,'+(0.3+a*0.6)+')':'rgba(21,122,90,'+(0.3+a*0.6)+')';
+   return v>=0?'rgba(95,94,90,'+(0.13+a*0.30)+')':'rgba(95,94,90,'+(0.13+a*0.30)+')';}
  function draw(){const x=fit();const cw=c.clientWidth,ch=h;x.clearRect(0,0,cw,ch);
   const n=words.length;
   // schema "di Falk", come nella parte 1: x in colonna in alto, W in basso a sinistra,
@@ -768,11 +777,11 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
 /* ================= 02a CLUSTER 2D ================= */
 (function(){const {c,fit,h}=C('cClust');
  const groups=[
-  {name:'animali',col:CO.accent,soft:'rgba(29,158,117,.10)',cx:0.24,cy:0.34,
+  {name:'animali',col:CO.accent,soft:'rgba(29,158,117,.16)',cx:0.24,cy:0.34,
    words:[['gatto',-0.06,-0.07],['cane',0.05,-0.02],['cavallo',-0.02,0.08],['delfino',0.09,0.06]]},
-  {name:'paesi',col:CO.violet,soft:'rgba(67,56,202,.09)',cx:0.72,cy:0.28,
+  {name:'paesi',col:CO.violet,soft:'rgba(67,56,202,.15)',cx:0.72,cy:0.28,
    words:[['Italia',-0.05,-0.05],['Francia',0.07,-0.03],['Germania',0.02,0.08],['Giappone',-0.08,0.05]]},
-  {name:'mezzi di trasporto',col:CO.amber,soft:'rgba(180,83,9,.09)',cx:0.48,cy:0.74,
+  {name:'mezzi di trasporto',col:CO.amber,soft:'rgba(180,83,9,.15)',cx:0.48,cy:0.74,
    words:[['treno',-0.07,-0.04],['auto',0.06,-0.06],['bicicletta',0.08,0.05],['aereo',-0.03,0.07]]}];
  let hov=null;
  function pts(cw){const out=[];groups.forEach(g=>g.words.forEach(w=>{
@@ -1701,41 +1710,54 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
  });
 })();
 
-/* ================= 07b ALLUCINAZIONE — estratto il token sbagliato ================= */
-(function(){const {c,fit,h}=C('cHallu');
+/* ================= 07b ALLUCINAZIONI — estrazione sfortunata O distribuzione sbagliata ================= */
+(function(){
  const RED='#c62828', RED2='#8e1c1c', REDSOFT='#fdecea';
- const vocab=[['vita',0.78],['via',0.07],['morte',0.05],['gente',0.04],['notte',0.03],['⟨altro⟩',0.03]];
- const WRONG=4;   /* «notte»: improbabile ma non impossibile */
- function draw(){const x=fit();const cw=c.clientWidth;x.clearRect(0,0,cw,h);
-  const pad=30,bw=Math.min(90,(cw-2*pad)/vocab.length-18);
-  const base=h-78;
-  vocab.forEach((v,i)=>{
-   const bx=pad+(cw-2*pad)*(i+0.5)/vocab.length-bw/2;
-   const bh=v[1]*(base-70);
-   const hot=i===WRONG;
-   if(hot){x.fillStyle=REDSOFT;roundRect(x,bx-9,base-bh-34,bw+18,bh+58,9);x.fill();}
-   x.fillStyle=hot?RED:'rgba(29,158,117,'+(0.2+v[1]*0.7)+')';
-   roundRect(x,bx,base-bh,bw,bh,5);x.fill();
-   if(hot){x.strokeStyle=RED2;x.lineWidth=2;x.stroke();}
-   x.fillStyle=hot?RED2:CO.ink2;x.font='700 13px '+mono();x.textAlign='center';
-   x.fillText(Math.round(v[1]*100)+'%',bx+bw/2,base-bh-9);
-   x.fillStyle=hot?RED2:CO.ink;x.font=(hot?'700 ':'')+'14px '+mono();
-   x.fillText(v[0],bx+bw/2,base+20);
-   if(hot){x.fillStyle=RED;x.font='700 12px '+mono();x.fillText('✗ estratto',bx+bw/2,base+38);}
-   if(i===0){x.fillStyle=CO.mut;x.font='12px '+mono();x.fillText('la più probabile',bx+bw/2,base+38);}
-  });
-  x.fillStyle=CO.mut;x.font='12.5px '+mono();x.textAlign='left';
-  x.fillText('stesse probabilità di prima · l\'estrazione a sorte stavolta pesca male',pad,24);
-  /* frase completata con l'errore */
-  x.textAlign='center';x.font='15px '+sans();
-  const s1='«Nel mezzo del cammin di nostra ',s2='notte',s3='»';
-  const w1=x.measureText(s1).width;x.font='700 15px '+sans();const w2=x.measureText(s2).width;
-  const tot=w1+w2+x.measureText(s3).width, x0=cw/2-tot/2;
-  x.textAlign='left';x.fillStyle=CO.ink;x.font='15px '+sans();x.fillText(s1,x0,h-16);
-  x.fillStyle=RED;x.font='700 15px '+sans();x.fillText(s2,x0+w1,h-16);
-  x.fillStyle=CO.ink;x.font='15px '+sans();x.fillText(s3,x0+w1+w2,h-16);
+ function halluPanel(id,vocab,wrongIdx,rightIdx,wrongLab,rightLab,caption,word){
+  const {c,fit,h}=C(id);
+  function draw(){const x=fit();const cw=c.clientWidth;x.clearRect(0,0,cw,h);
+   const pad=24,bw=Math.min(90,(cw-2*pad)/vocab.length-14);
+   const base=h-84;
+   vocab.forEach((v,i)=>{
+    const bx=pad+(cw-2*pad)*(i+0.5)/vocab.length-bw/2;
+    const bh=v[1]*(base-70);
+    const hot=i===wrongIdx;
+    if(hot){x.fillStyle=REDSOFT;roundRect(x,bx-8,base-bh-34,bw+16,bh+58+wrongLab.length*13,9);x.fill();}
+    x.fillStyle=hot?RED:'rgba(29,158,117,'+(0.2+v[1]*0.7)+')';
+    roundRect(x,bx,base-bh,bw,bh,5);x.fill();
+    if(hot){x.strokeStyle=RED2;x.lineWidth=2;x.stroke();}
+    x.fillStyle=hot?RED2:CO.ink2;x.font='700 13px '+mono();x.textAlign='center';
+    x.fillText(Math.round(v[1]*100)+'%',bx+bw/2,base-bh-9);
+    x.fillStyle=hot?RED2:CO.ink;x.font=(hot?'700 ':'')+'14px '+mono();
+    x.fillText(v[0],bx+bw/2,base+20);
+    if(hot){x.fillStyle=RED;x.font='700 11.5px '+mono();
+     wrongLab.forEach((s,k)=>x.fillText(s,bx+bw/2,base+37+k*13));}
+    if(i===rightIdx){x.fillStyle=CO.ink2;x.font='11.5px '+mono();
+     rightLab.forEach((s,k)=>x.fillText(s,bx+bw/2,base+37+k*13));}
+   });
+   x.fillStyle=CO.ink2;x.font='12px '+mono();x.textAlign='left';
+   x.fillText(caption,pad,22);
+   /* frase completata con l'errore */
+   x.textAlign='center';x.font='14.5px '+sans();
+   const s1='«Nel mezzo del cammin di nostra ',s2=word,s3='»';
+   const w1=x.measureText(s1).width;x.font='700 14.5px '+sans();const w2=x.measureText(s2).width;
+   const tot=w1+w2+x.measureText(s3).width, x0=cw/2-tot/2;
+   x.textAlign='left';x.fillStyle=CO.ink;x.font='14.5px '+sans();x.fillText(s1,x0,h-12);
+   x.fillStyle=RED;x.font='700 14.5px '+sans();x.fillText(s2,x0+w1,h-12);
+   x.fillStyle=CO.ink;x.font='14.5px '+sans();x.fillText(s3,x0+w1+w2,h-12);
+  }
+  onResize(draw);requestAnimationFrame(draw);
  }
- onResize(draw);requestAnimationFrame(draw);
+ /* caso 1: probabilità buone, ma l'estrazione a sorte pesca il token improbabile */
+ halluPanel('cHallu',
+  [['vita',0.78],['via',0.07],['morte',0.05],['gente',0.04],['notte',0.03],['⟨altro⟩',0.03]],
+  4,0,['✗ estratto'],['la corretta'],
+  'probabilità buone · l\'estrazione pesca male','notte');
+ /* caso 2: la distribuzione stessa e' sbagliata — il picco sta sul token errato */
+ halluPanel('cHallu2',
+  [['vita',0.12],['via',0.08],['morte',0.62],['gente',0.08],['notte',0.05],['⟨altro⟩',0.05]],
+  2,0,['✗ la più','probabile'],['la corretta'],
+  'il picco è sul token sbagliato: esce quasi sempre','morte');
 })();
 </script>
 </body>

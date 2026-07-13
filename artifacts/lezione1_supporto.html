@@ -8,8 +8,8 @@
   :root{
     --paper:#f1efe8; --paper-2:#e9e6dd;
     --card:#ffffff; --card-2:#faf8f6;
-    --ink:#1a1a1a; --ink-2:#5f5e5a; --muted:#8a887f;
-    --line:#d9d6cc; --line-strong:#b4b2a9;
+    --ink:#141413; --ink-2:#45443f; --muted:#6e6c62;
+    --line:#d9d6cc; --line-strong:#98968b;
     --accent:#4338CA; --accent-2:#3730A3; --accent-soft:#ebe9fb; --accent-soft2:#ddd9f7;
     --teal:#0F766E; --teal-soft:#e2f2ef;
     --amber:#B45309; --amber-soft:#fbeedd;
@@ -404,7 +404,7 @@
 <script>
 "use strict";
 /* ---------- palette (JS side, coerente col CSS) ---------- */
-const CO={ink:'#1a1a1a',ink2:'#5f5e5a',mut:'#8a887f',line:'#d9d6cc',lineS:'#b4b2a9',
+const CO={ink:'#141413',ink2:'#45443f',mut:'#6e6c62',line:'#d9d6cc',lineS:'#98968b',
   paper2:'#e9e6dd',card2:'#faf8f6',accent:'#4338CA',accent2:'#3730A3',accentSoft:'#ebe9fb',
   teal:'#0F766E',tealSoft:'#e2f2ef',amber:'#B45309',amberSoft:'#fbeedd',blue:'#2f7ec9'};
 function mono(){return "ui-monospace,'SF Mono',Menlo,Consolas,monospace";}
@@ -758,7 +758,7 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   [0,1,2].filter(n=>n!==sel).concat([sel]).forEach(n=>{const w=row(n),isSel=n===sel;
    for(let i=0;i<3;i++){
     if(isSel){x.strokeStyle=w[i]>=0?'rgba(15,118,110,.75)':'rgba(180,83,9,.75)';x.lineWidth=1.2+Math.abs(w[i])*4;}
-    else{x.strokeStyle='rgba(26,26,26,.10)';x.lineWidth=1+Math.abs(w[i])*2;}
+    else{x.strokeStyle='rgba(26,26,26,.20)';x.lineWidth=1+Math.abs(w[i])*2;}
     x.beginPath();x.moveTo(inX+19,yIn[i]);x.lineTo(outX-26,yOut[n]);x.stroke();}});
   // etichette dei pesi solo sul neurone selezionato
   {const w=row(sel);x.font='700 12px '+mono();x.textAlign='center';
@@ -1193,7 +1193,7 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   function X(v){return pad+v*(cw-2*pad);}function Y(v){return ch-pad-v*(ch-2*pad);}
   x.clearRect(0,0,cw,ch);
   x.strokeStyle=CO.line;x.lineWidth=1;for(let i=0;i<=8;i++){x.beginPath();x.moveTo(X(i/8),pad);x.lineTo(X(i/8),ch-pad);x.stroke();}
-  S.forEach(p=>{x.fillStyle='rgba(180,83,9,.5)';x.beginPath();x.arc(X(p[0]),Y(p[1]),2.6,0,7);x.fill();});
+  S.forEach(p=>{x.fillStyle='rgba(180,83,9,.7)';x.beginPath();x.arc(X(p[0]),Y(p[1]),2.6,0,7);x.fill();});
   const feats=S.map(p=>design(p[0],N,useReLU));const w=lsq(feats,S.map(p=>p[1]));
   let err=0;x.strokeStyle=useReLU?CO.teal:CO.accent;x.lineWidth=3;x.beginPath();
   S.forEach((p,i)=>{const f=design(p[0],N,useReLU);let yh=0;for(let k=0;k<w.length;k++)yh+=w[k]*f[k];err+=(yh-p[1])**2;i?x.lineTo(X(p[0]),Y(yh)):x.moveTo(X(p[0]),Y(yh));});x.stroke();
