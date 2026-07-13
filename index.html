@@ -143,6 +143,16 @@
   a.lesson:hover { color:var(--amber-400); border-color:var(--amber-400); }
   a.lesson:hover::after { transform:translate(2px,-2px); }
 
+  /* lezione con materiale scaricabile */
+  .title.stack { display:flex; flex-direction:column; align-items:flex-start; gap:5px; }
+  a.dl {
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:12.5px; font-weight:500; color:var(--fg-3); text-decoration:none;
+    transition:color .15s ease;
+  }
+  a.dl::after { content:"↓"; font-size:12px; color:var(--amber-500); }
+  a.dl:hover { color:var(--amber-400); }
+
   .slot.event .title { color:var(--fg-2); font-weight:400; }
 
   /* ---------- Footer ---------- */
@@ -189,7 +199,7 @@
   <div class="wrap">
     <div class="section-head">
       <h2>Il programma</h2>
-      <span>Le lezioni con ↗ aprono il materiale di supporto in una nuova scheda</span>
+      <span>Le lezioni con ↗ aprono il materiale di supporto in una nuova scheda; con ↓ scarichi il materiale dell'esercizio</span>
     </div>
 
     <div class="days">
@@ -230,7 +240,7 @@
           <div class="slot break"><span class="time">11:00 – 11:15</span><span class="title">Coffee break</span></div>
           <div class="slot"><span class="time">11:15 – 13:00</span><span class="title"><a class="lesson" href="artifacts/supporto_project_connettori.html" target="_blank" rel="noopener">Hands on: Project &amp; Connettori</a></span><span class="who francesco">Francesco</span></div>
           <div class="slot break"><span class="time">13:00 – 14:00</span><span class="title">Lunch</span></div>
-          <div class="slot"><span class="time">14:00 – 16:00</span><span class="title"><a class="lesson" href="artifacts/supporto_cowork_artifact.html" target="_blank" rel="noopener">Claude Cowork: Introduzione al Vibe Working</a></span><span class="who federico">Federico</span></div>
+          <div class="slot"><span class="time">14:00 – 16:00</span><span class="title stack"><a class="lesson" href="artifacts/supporto_cowork_artifact.html" target="_blank" rel="noopener">Claude Cowork: Introduzione al Vibe Working</a><a class="dl" href="materiali/contesto_di_esempio.zip" download>Materiale dell'esercizio (zip)</a></span><span class="who federico">Federico</span></div>
           <div class="slot break"><span class="time">16:00 – 16:15</span><span class="title">Coffee break</span></div>
           <div class="slot event"><span class="time">16:15 – 19:00</span><span class="title">Ciò che nessun algoritmo può calcolare</span></div>
           <div class="slot break"><span class="time">19:00 – 19:30</span><span class="title">Free time</span></div>

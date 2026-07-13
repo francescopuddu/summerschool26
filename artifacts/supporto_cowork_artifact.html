@@ -109,6 +109,14 @@
   .folder li.hl{background:var(--accent-soft);color:var(--accent-2);font-weight:700}
   .folder li.hl .desc{color:var(--accent-2);font-weight:400}
 
+  /* bottone di download del materiale */
+  .dlbtn{display:inline-flex;align-items:center;gap:10px;text-decoration:none;
+    font-size:14.5px;font-weight:700;color:#fff;background:var(--ink);border-radius:10px;padding:11px 16px;
+    transition:background .15s,transform .05s}
+  .dlbtn:hover{background:#000}
+  .dlbtn:active{transform:translateY(1px)}
+  .dlbtn span{font-family:var(--mono);font-size:11.5px;font-weight:400;color:#b9b8b3}
+
   /* mini matrice impatto/effort */
   .matrix{position:relative;background:var(--card-2);border:1px solid var(--line);border-radius:12px;height:300px;margin-top:16px}
   .matrix .axx,.matrix .axy{position:absolute;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
@@ -252,29 +260,55 @@
 <!-- ============ 05 ESERCIZIO PTS ============ -->
 <section id="s5"><div class="wrap reveal">
   <div class="kicker"><span class="n">05</span> Da fare</div>
-  <h2>Esercizio: la revisione <span class="em">guidata dalle trascrizioni</span></h2>
-  <p class="lead">Ora tocca a voi. Sul vostro computer trovate una cartella di lavoro già pronta — come se fosse la vostra, accumulata nel tempo.</p>
+  <h2>Esercizio: la revisione <span class="em">guidata dalla riunione</span></h2>
+  <p class="lead">Ora tocca a voi. Sul vostro computer trovate una cartella di lavoro già pronta — come se fosse la vostra, accumulata nel tempo. Per due ore non siete voi: siete Sara Ferri.</p>
+
+  <div class="panel">
+    <div class="badge">Lo scenario</div>
+    <p><b>Siete Sara Ferri, Project Manager di Iridia Solutions S.p.A.</b>, una software house italiana di medie dimensioni. Iridia si è candidata a un bando del <b>Ministero delle Infrastrutture e dei Trasporti</b> per la realizzazione di un sistema di monitoraggio dei flussi passeggeri sulla rete ferroviaria del Nord Italia. La candidatura è scritta, ma non è ancora consegnata.</p>
+    <div class="why">
+      <div class="wbox b">
+        <h4>Il team</h4>
+        <p><b>Marco Bellini</b> — Strategy Manager: tiene il posizionamento competitivo dell'offerta.</p>
+        <p><b>Davide Conti</b> — Senior Software Engineer: presidia cosa siamo davvero in grado di consegnare.</p>
+        <p><b>Elena Marchetti</b> — consulente esperta di bandi pubblici: conosce le regole della gara.</p>
+        <p><b>Sara Ferri</b> — Project Manager: siete voi, e la penna sul documento è la vostra.</p>
+      </div>
+      <div class="wbox a">
+        <h4>Cosa è successo</h4>
+        <p>Un advisor esterno ha letto la prima versione della candidatura e ha mandato un giro di feedback.</p>
+        <p>Il team si è riunito per discuterlo, punto per punto: cosa correggere, cosa riscrivere, cosa togliere. Eravate in quella riunione — e adesso ne avete la trascrizione.</p>
+        <p>La consegna al Ministero si avvicina. Il documento va aggiornato. <b>Tocca a voi.</b></p>
+      </div>
+    </div>
+  </div>
 
   <div class="panel star">
     <div class="badge you">Hands-on · fate voi</div>
     <h3 style="margin-top:0">La consegna</h3>
-    <p>Nella cartella ci sono un <b>documento da revisionare</b> e le <b>trascrizioni di alcune riunioni</b>. Nel marasma delle trascrizioni ci sono i segnali su <i>cosa</i> va cambiato nel documento e <i>come</i>. Il vostro compito: far produrre a Cowork il <b>documento revisionato</b>.</p>
+    <p>Nella cartella ci sono il <b>documento della candidatura</b> e la <b>trascrizione della riunione di review</b>. Nel marasma della trascrizione — parcheggi, biscotti, digressioni — ci sono i segnali su <i>cosa</i> va cambiato nel documento e <i>come</i>. Il vostro compito: far produrre a Cowork il <b>documento revisionato</b>.</p>
     <div class="folder">
-      <div class="bar"><i></i><i></i><i></i>&nbsp; 📁 cartella-esercizio/</div>
+      <div class="bar"><i></i><i></i><i></i>&nbsp; 📁 contesto_di_esempio/</div>
       <ul>
-        <li>📄 documento_da_revisionare.docx <span class="desc">il su cosa</span></li>
-        <li>📄 trascrizione_meeting_1.md <span class="desc">i segnali sono qui dentro…</span></li>
-        <li>📄 trascrizione_meeting_2.md <span class="desc">…e qui</span></li>
-        <li class="hl">📄 CLAUDE.md <span class="desc">il come — lo scrivete voi</span></li>
+        <li>📄 bando_monitoraggio_ferroviario.txt <span class="desc">il documento da revisionare</span></li>
+        <li>📄 trascrizione_riunione_team.pdf <span class="desc">i segnali sono qui dentro</span></li>
+        <li class="hl">📄 CLAUDE.md <span class="desc">c'è già, ma è una riga sola — lo completate voi</span></li>
       </ul>
     </div>
+    <p style="margin-top:14px"><a class="dlbtn" href="../materiali/contesto_di_esempio.zip" download>↓ Scarica la cartella dell'esercizio <span>zip · 100 KB</span></a></p>
+    <p class="hint">Se la cartella è già sul vostro computer, usate quella: è la stessa.</p>
+
     <h3>Gli step</h3>
     <div class="steps you">
-      <div class="st"><p><b>Esplorate la cartella.</b> Aprite i file, capite cosa c'è: qual è il documento, cosa dicono le trascrizioni.</p></div>
-      <div class="st"><p><b>Scrivete il CLAUDE.md.</b> Il documento con il <i>come</i>: che lavoro va fatto, dove cercare i segnali, come deve essere il risultato. È la prima volta che lo scrivete — è il cuore dell'esercizio.</p></div>
-      <div class="st"><p><b>Agganciate la cartella e lanciate Cowork.</b> Una richiesta semplice basta: le istruzioni le avete già messe nella cartella.</p></div>
-      <div class="st"><p><b>Verificate il documento revisionato.</b> Confrontatelo con i segnali nelle trascrizioni: l'agente li ha colti tutti? Se no, raffinate il CLAUDE.md e rilanciate.</p></div>
+      <div class="st"><p><b>Esplorate la cartella.</b> Leggete il bando e la trascrizione: qual è il documento, chi parla, cosa vi sta chiedendo il team.</p></div>
+      <div class="st"><p><b>Completate il CLAUDE.md.</b> Dentro c'è già una riga: chi siete. Aggiungete voi il <i>contesto</i> (che progetto è, chi sono le persone che parlano nella trascrizione, cos'è il documento) e le <i>linee guida</i> di lavoro: che lavoro va fatto, dove cercare i segnali, cosa non toccare, che forma deve avere il risultato. <b>È il cuore dell'esercizio.</b></p></div>
+      <div class="st"><p><b>Agganciate la cartella e lanciate Cowork.</b> Chiedete la revisione del documento — una richiesta breve basta: le istruzioni le avete già messe nella cartella.</p></div>
+      <div class="st"><p><b>Verificate il documento revisionato.</b> Confrontatelo con la trascrizione: l'agente ha colto tutti i segnali? Ha inventato qualcosa che nessuno aveva chiesto? Se sì, raffinate il CLAUDE.md e rilanciate.</p></div>
     </div>
+  </div>
+
+  <div class="callout">
+    <b>Il punto dell'esercizio.</b> Tra la prima e la seconda run cambierete pochissimo di quello che <i>scrivete in chat</i>. Quello che cambia — e che fa la differenza sul risultato — è il <b>CLAUDE.md</b>: il <i>come</i> accanto al <i>su cosa</i>.
   </div>
   <p class="hint">Esercizio volutamente base: serve a far cliccare le cose giuste di Cowork, ed è comunque un lavoro completo con un risultato tangibile.</p>
 </div></section>
