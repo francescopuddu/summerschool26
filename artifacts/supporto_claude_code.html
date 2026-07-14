@@ -253,26 +253,77 @@
     max-height:340px;overflow:auto;white-space:pre-wrap;background:linear-gradient(180deg,#fff,#fdfcfa)}
   @media(max-width:640px){.filebar{flex-wrap:wrap}.filebar .fdesc{display:none}}
 
-  /* mini-terminale animato degli step */
-  .term{border-radius:14px;overflow:hidden;background:var(--ink);border:1px solid #2c2b28;margin-top:6px;
-    box-shadow:0 20px 44px -30px rgba(0,0,0,.7)}
+  /* scena degli step: mini-GitHub + terminale */
+  .scene{display:grid;grid-template-columns:1.05fr 1fr;gap:16px;align-items:stretch;margin-top:8px}
+  @media(max-width:860px){.scene{grid-template-columns:1fr}}
+
+  /* pannello sinistro: il browser su GitHub */
+  .ghw{position:relative;display:flex;flex-direction:column;border-radius:14px;overflow:hidden;background:var(--card);
+    border:1px solid var(--line-strong);box-shadow:0 20px 44px -34px rgba(0,0,0,.55);
+    transition:filter .55s ease,opacity .55s ease}
+  .ghw.off{filter:grayscale(1);opacity:.4;pointer-events:none}
+  .ghw.off::after{content:'GitHub non serve più: da qui si lavora nel terminale';position:absolute;inset:auto 0 0 0;
+    background:var(--ink);color:#e8e6df;font-family:var(--mono);font-size:10.5px;letter-spacing:.03em;
+    padding:7px 10px;text-align:center}
+  .ghbar{display:flex;align-items:center;gap:7px;padding:9px 12px;background:var(--card-2);border-bottom:1px solid var(--line)}
+  .ghbar i{width:9px;height:9px;border-radius:50%;background:var(--line-strong);opacity:.55;display:block}
+  .ghurl{margin-left:6px;flex:1;background:#fff;border:1px solid var(--line);border-radius:20px;
+    font-family:var(--mono);font-size:10.5px;color:var(--muted);padding:4px 10px;overflow:hidden;white-space:nowrap}
+  .ghbody{flex:1;padding:16px 18px;display:flex;flex-direction:column}
+  .ghscreen{display:none;flex:1;flex-direction:column}
+  .ghscreen.on{display:flex}
+  .ghlogo{display:flex;align-items:center;gap:8px;padding-bottom:11px;border-bottom:1px solid var(--line)}
+  .ghlogo svg{width:22px;height:22px;fill:var(--ink)}
+  .ghlogo b{font-size:13px}
+  .ghh{font-size:15px;font-weight:800;margin:13px 0 3px}
+  .ghsub{font-size:11.5px;color:var(--muted);margin:0 0 13px}
+  .ghfield{margin-bottom:11px}
+  .ghfield label{display:block;font-size:11px;font-weight:700;color:var(--ink-2);margin-bottom:4px}
+  .ghinput{font-family:var(--mono);font-size:12px;border:1px solid var(--line-strong);border-radius:7px;
+    padding:7px 10px;background:var(--card-2);color:var(--ink)}
+  .ghinput.name{border-color:#1f883f;background:#fff;font-weight:700}
+  .ghrow{display:flex;align-items:center;gap:7px}
+  .ghrow .ghinput{flex:1}
+  .ghrow .sl{color:var(--muted);font-family:var(--mono)}
+  .ghpriv{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--ink-2);margin:2px 0 14px}
+  .ghpriv .rad{width:12px;height:12px;border-radius:50%;border:4px solid var(--ink);background:#fff;flex-shrink:0}
+  .ghbtn{margin-top:auto;align-self:flex-start;font-family:var(--sans);font-size:13.5px;font-weight:700;color:#fff;
+    background:#1f883f;border:1px solid #1a7f37;border-radius:8px;padding:9px 15px;cursor:pointer;
+    transition:background .15s,transform .05s,box-shadow .2s}
+  .ghbtn:hover{background:#1a7f37}
+  .ghbtn:active{transform:translateY(1px)}
+  .ghbtn.pulse{animation:ghpulse 1.6s ease-in-out infinite}
+  @keyframes ghpulse{0%,100%{box-shadow:0 0 0 0 rgba(31,136,63,.45)}50%{box-shadow:0 0 0 9px rgba(31,136,63,0)}}
+  .ghdone{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:#1a7f37;margin:13px 0 6px}
+  .ghempty{font-size:12.5px;color:var(--ink-2);margin:0 0 10px}
+  .ghclone{border:1px solid var(--line-strong);border-radius:8px;padding:9px 11px;background:var(--card-2);
+    font-family:var(--mono);font-size:11px;color:var(--ink-2);overflow-x:auto;white-space:nowrap}
+  .ghclone b{color:var(--accent);font-weight:700}
+
+  /* pannello destro: il terminale */
+  .term{display:flex;flex-direction:column;border-radius:14px;overflow:hidden;background:var(--ink);
+    border:1px solid #2c2b28;box-shadow:0 20px 44px -30px rgba(0,0,0,.7);transition:box-shadow .4s ease,border-color .4s ease}
+  .term.live{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft2),0 20px 44px -30px rgba(0,0,0,.7)}
   .termbar{display:flex;align-items:center;gap:7px;padding:9px 13px;background:#26251f;border-bottom:1px solid #35342e}
   .termbar i{width:9px;height:9px;border-radius:50%;background:#4a4941;display:block}
   .termbar i:first-child{background:var(--accent)}
   .termbar .tt{margin-left:8px;font-family:var(--mono);font-size:11px;color:#8d8b81;letter-spacing:.04em}
-  .termbody{padding:15px 16px;font-family:var(--mono);font-size:13px;line-height:1.85;color:#e8e6df;
-    min-height:206px;overflow-x:auto}
-  @media(max-width:640px){.termbody{font-size:11.5px;min-height:180px}}
-  .term .ln{white-space:pre;display:none}
+  .termbody{flex:1;padding:15px 16px;font-family:var(--mono);font-size:12.5px;line-height:1.8;color:#e8e6df;
+    min-height:290px}
+  @media(max-width:860px){.termbody{min-height:210px}}
+  .term .ln{display:none;white-space:pre-wrap;padding-left:18px;text-indent:-18px}
   .term .ln.in{display:block}
   .term .pr{color:var(--accent);font-weight:700;margin-right:7px}
   .term .pr.claude{color:#e6a33c}
   .term .ok{color:#5fbf9a}
   .term .cmt{color:#8d8b81}
-  .term .ln.typing::after{content:'▋';color:var(--accent);animation:tblink .9s step-end infinite;margin-left:1px}
+  .term .ln.typing::after,.term .idle::after{content:'▋';color:var(--accent);animation:tblink .9s step-end infinite;margin-left:1px}
+  .term .idle{color:#8d8b81}
   @keyframes tblink{50%{opacity:0}}
-  .termrun{margin-top:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-  .termrun .th{font-size:13px;color:var(--muted)}
+
+  .termrun{margin-top:16px;display:flex;align-items:center;gap:13px;flex-wrap:wrap}
+  .termrun .th{font-size:13px;color:var(--muted);flex:1;min-width:200px}
+  .cycbtn.mono{font-family:var(--mono);font-size:12.5px;letter-spacing:.01em}
   .steps .st{border-radius:10px;padding-left:8px;padding-right:8px;transition:background .35s ease}
   .steps .st.on{background:var(--accent-soft)}
 
@@ -682,22 +733,66 @@
   <div class="panel star">
     <div class="badge doer">La sequenza di avvio</div>
 
-    <div class="term">
-      <div class="termbar"><i></i><i></i><i></i><span class="tt">terminale — manutenzione-treni</span></div>
-      <div class="termbody" id="termBody">
-        <div class="ln" data-step="0"><span class="cmt"># su github.com: New repository → manutenzione-treni → Create</span></div>
-        <div class="ln" data-step="1"><span class="pr">$</span>git clone https://github.com/tuonome/manutenzione-treni.git</div>
-        <div class="ln" data-step="2"><span class="pr">$</span>cd manutenzione-treni</div>
-        <div class="ln" data-step="2"><span class="pr">$</span>claude</div>
-        <div class="ln" data-step="3"><span class="pr claude">&gt;</span>/init — «un gestionale per la manutenzione dei treni: Postgres in Docker, back-end FastAPI, front-end React…»</div>
-        <div class="ln" data-step="3"><span class="ok">  ✓ CLAUDE.md creato</span></div>
-        <div class="ln" data-step="4"><span class="pr claude">&gt;</span>«Costruisci la dashboard dei mezzi con lo stato delle revisioni.»</div>
+    <div class="scene">
+
+      <!-- il browser su GitHub -->
+      <div class="ghw" id="ghw">
+        <div class="ghbar"><i></i><i></i><i></i><span class="ghurl">github.com/new</span></div>
+        <div class="ghbody">
+
+          <div class="ghscreen on" id="ghNew">
+            <div class="ghlogo">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+              <b>GitHub</b>
+            </div>
+            <div class="ghh">Create a new repository</div>
+            <p class="ghsub">Una repo è il contenitore del progetto nel cloud.</p>
+            <div class="ghfield">
+              <label>Owner / Repository name</label>
+              <div class="ghrow">
+                <span class="ghinput">tuonome</span><span class="sl">/</span>
+                <span class="ghinput name">manutenzione-treni</span>
+              </div>
+            </div>
+            <div class="ghpriv"><span class="rad"></span> <b>Private</b> — la vede solo chi invitate voi</div>
+            <button class="ghbtn pulse" id="ghBtn">Create repository</button>
+          </div>
+
+          <div class="ghscreen" id="ghDone">
+            <div class="ghlogo">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+              <b>tuonome / manutenzione-treni</b>
+            </div>
+            <div class="ghdone">✓ Repository creata</div>
+            <div class="ghh" style="font-size:14px;margin-top:0">Quick setup</div>
+            <p class="ghempty">La repo è <b>vuota</b>: il codice non esiste ancora, lo scriverete adesso. Questo è l'indirizzo con cui agganciarla al computer.</p>
+            <div class="ghclone">https://github.com/tuonome/manutenzione-treni<b>.git</b></div>
+          </div>
+
+        </div>
       </div>
+
+      <!-- il terminale -->
+      <div class="term" id="term">
+        <div class="termbar"><i></i><i></i><i></i><span class="tt">terminale — la vostra cartella</span></div>
+        <div class="termbody" id="termBody">
+          <div class="idle" id="termIdle">$ </div>
+          <div class="ln" data-step="1"><span class="pr">$</span>git clone https://github.com/tuonome/manutenzione-treni.git</div>
+          <div class="ln" data-step="1"><span class="cmt">  Cloning into 'manutenzione-treni'… done.</span></div>
+          <div class="ln" data-step="2"><span class="pr">$</span>cd manutenzione-treni</div>
+          <div class="ln" data-step="2"><span class="pr">$</span>claude</div>
+          <div class="ln" data-step="2"><span class="cmt">  ✻ Claude Code — cartella: ~/manutenzione-treni</span></div>
+          <div class="ln" data-step="3"><span class="pr claude">&gt;</span>/init — «un gestionale per la manutenzione dei treni: Postgres in Docker, back-end FastAPI, front-end React, l'AI solo dal back-end. Commit a ogni pezzo che funziona.»</div>
+          <div class="ln" data-step="3"><span class="ok">  ✓ CLAUDE.md creato</span></div>
+          <div class="ln" data-step="4"><span class="pr claude">&gt;</span>«Iniziamo, partiamo con il creare la dashboard dei mezzi con lo stato delle revisioni.»</div>
+        </div>
+      </div>
+
     </div>
 
     <div class="termrun">
-      <button class="cycbtn next" id="termBtn">▶ Esegui la sequenza</button>
-      <span class="th" id="termHint">Sette righe, cinque step. Guarda quale step si accende qui sotto.</span>
+      <button class="cycbtn mono" id="termBtn" disabled>▶ git clone …</button>
+      <span class="th" id="termHint">Si parte dal browser: clicca il bottone verde <b>Create repository</b>.</span>
     </div>
 
     <div class="steps" id="stepList" style="margin-top:18px">
@@ -893,41 +988,92 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   setPhase(0);
 })();
 
-/* ---------- STEP DI LAVORO: terminale che digita ---------- */
+/* ---------- STEP DI LAVORO: browser + terminale, un click per step ---------- */
 (function(){
+  const ghw=document.getElementById('ghw');
+  const ghBtn=document.getElementById('ghBtn');
+  const ghNew=document.getElementById('ghNew');
+  const ghDone=document.getElementById('ghDone');
+  const term=document.getElementById('term');
   const body=document.getElementById('termBody');
+  const idle=document.getElementById('termIdle');
   const btn=document.getElementById('termBtn');
   const hint=document.getElementById('termHint');
   const steps=[...document.querySelectorAll('#stepList .st')];
   const lines=[...body.querySelectorAll('.ln')];
   const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let running=false,timers=[];
+  let phase=0,busy=false,timers=[];
 
-  function light(i){steps.forEach((s,k)=>s.classList.toggle('on',k===i));}
-  function reset(){timers.forEach(clearTimeout);timers=[];lines.forEach(l=>l.classList.remove('in','typing'));steps.forEach(s=>s.classList.remove('on'));}
-  function showAll(){reset();lines.forEach(l=>l.classList.add('in'));steps.forEach(s=>s.classList.add('on'));btn.textContent='↺ Rigioca';btn.classList.remove('next');}
+  // phase 0: browser · 1..4: terminale · 5: fine
+  const LABEL=['','▶ git clone …','▶ cd + claude','▶ /init','▶ «Iniziamo, partiamo con il creare…»','↺ Ricomincia'];
+  const HINT=[
+    'Si parte dal browser: clicca il bottone verde <b>Create repository</b>.',
+    'La repo esiste ma è vuota e sta nel cloud. Ora serve la copia sul vostro computer, già agganciata a lei.',
+    'Da qui GitHub non serve più. Si entra nella cartella e ci si avvia Claude <b>dentro</b>: vedrà solo questa.',
+    'Il file delle regole non si scrive a mano: lo si detta a <span class="mono">/init</span>, una volta sola.',
+    'Da adesso solo consegne. L\'architettura è nel <span class="mono">CLAUDE.md</span>, non va più ripetuta.',
+    'Fine: da qui in poi è tutto un ciclo di consegne, <b>commit</b> e <b>push</b>.'
+  ];
 
-  function play(){
-    if(running)return; running=true; reset();
-    btn.disabled=true; btn.classList.remove('next'); btn.textContent='● in corso…';
-    hint.textContent='Ogni riga accende lo step corrispondente.';
-    let t=250;
-    lines.forEach(ln=>{
-      const step=+ln.dataset.step;
-      timers.push(setTimeout(()=>{ln.classList.add('in','typing');light(step);},t));
-      const dur=Math.min(1500,300+ln.textContent.length*16);
+  function setBtn(){
+    btn.innerHTML=LABEL[phase]||LABEL[5];
+    btn.disabled=busy||phase===0;
+    btn.classList.toggle('next',!busy&&phase>0);
+  }
+  function say(){hint.innerHTML=HINT[Math.min(phase,5)];}
+
+  function typeLines(step,done){
+    const group=lines.filter(l=>+l.dataset.step===step);
+    if(still){group.forEach(l=>l.classList.add('in'));done();return;}
+    let t=120;
+    group.forEach(ln=>{
+      timers.push(setTimeout(()=>{ln.classList.add('in','typing');},t));
+      const dur=Math.min(1400,260+ln.textContent.length*14);
       timers.push(setTimeout(()=>ln.classList.remove('typing'),t+dur));
-      t+=dur+380;
+      t+=dur+260;
     });
-    timers.push(setTimeout(()=>{
-      running=false;btn.disabled=false;btn.textContent='↺ Rigioca';
-      steps.forEach(s=>s.classList.add('on'));
-      hint.textContent='Fine della sequenza: da qui in poi si lavora solo a consegne.';
-    },t+200));
+    timers.push(setTimeout(done,t));
   }
 
-  if(still){showAll();btn.addEventListener('click',showAll);}
-  else{btn.addEventListener('click',play);}
+  function run(step){
+    if(busy)return;
+    busy=true;setBtn();
+    idle.hidden=true;
+    steps.forEach((s,k)=>s.classList.toggle('on',k===step));
+    if(step===1){ghw.classList.add('off');term.classList.add('live');}
+    typeLines(step,()=>{
+      busy=false;phase=step+1;setBtn();say();
+      if(phase===5){steps.forEach(s=>s.classList.add('on'));}
+    });
+  }
+
+  function reset(){
+    timers.forEach(clearTimeout);timers=[];
+    busy=false;phase=0;
+    lines.forEach(l=>l.classList.remove('in','typing'));
+    steps.forEach(s=>s.classList.remove('on'));
+    ghw.classList.remove('off');term.classList.remove('live');
+    ghNew.classList.add('on');ghDone.classList.remove('on');
+    ghBtn.classList.add('pulse');
+    idle.hidden=false;
+    setBtn();say();
+  }
+
+  ghBtn.addEventListener('click',()=>{
+    if(phase!==0)return;
+    ghBtn.classList.remove('pulse');
+    ghNew.classList.remove('on');ghDone.classList.add('on');
+    steps[0].classList.add('on');
+    phase=1;setBtn();say();
+  });
+
+  btn.addEventListener('click',()=>{
+    if(busy)return;
+    if(phase>=5){reset();return;}
+    run(phase);
+  });
+
+  reset();
 })();
 
 /* ---------- CLAUDE.md: copia + download ---------- */
