@@ -249,7 +249,7 @@
   .tok .bar{flex:1;height:8px;background:var(--paper-2);border:1px solid var(--line);border-radius:99px;overflow:hidden}
   .tok .fill{display:block;height:100%;background:var(--accent);width:3%;transition:width .45s ease}
 
-  /* s10 · hands on */
+  /* s11 · hands on */
   .steps{counter-reset:st;display:flex;flex-direction:column;gap:10px;margin-top:20px}
   .stp{counter-increment:st;display:grid;grid-template-columns:36px 1fr;gap:14px;align-items:start;
     border:1px solid var(--line);border-radius:12px;padding:13px 15px;background:var(--card)}
@@ -651,7 +651,7 @@
     </div>
     <div class="lrow l2">
       <div class="lt"><span class="idx">02</span> Il repository ufficiale — <b>github.com/anthropics/skills</b></div>
-      <p>Le skill di Anthropic in versione open source, più una collezione di esempi: da scaricare, leggere, adattare. È il catalogo da cui vengono le due skill di oggi — <code>brand-guidelines</code> e <code>theme-factory</code> — ed è anche il posto giusto per imparare come si scrive una skill fatta bene: copiando dagli originali.</p>
+      <p>Le skill di Anthropic in versione open source, più una collezione di esempi: da scaricare, leggere, adattare. È il catalogo da cui vengono le due skill di oggi — <code>brand-guidelines</code> e <code>theme-factory</code> — e dentro <b>Claude Code</b> lo trovate già apparecchiato: sotto <b>Skill</b>, elencate e pronte da installare. È anche il posto giusto per imparare come si scrive una skill fatta bene: copiando dagli originali.</p>
     </div>
     <div class="lrow l3">
       <div class="lt"><span class="idx">03</span> Le directory di community — <b>il marketplace</b></div>
@@ -672,24 +672,37 @@
   <div class="warn"><b>Una skill è software che dai in mano all'agente</b> — e nel momento in cui la importi da un estraneo, questo conta doppio. Può orientare quello che Claude fa ed esegue: installa solo da fonti di cui ti fidi, leggi SKILL.md <b>e gli script</b> prima di abilitarla, diffida di skill che scaricano contenuti da URL esterni, e non scriverci dentro segreti — API key, password — da nessuna parte.</div>
 </section>
 
-<!-- 10 · hands on -->
-<section id="s10" data-title="Hands on">
-  <div class="kicker"><span class="n">10</span> <span class="act">Hands on</span></div>
-  <h2>Lo stesso giro che avete visto fare a me: <span class="em">importa, e cambia stile</span></h2>
-  <p class="lead">La demo di un attimo fa era il <b>ciclo dell'import</b> fatto dal vivo: la skill <code>brand-guidelines</code> scaricata dal repo ufficiale, letta, installata — e un'infografica prodotta con uno stile, quello Anthropic, che Claude da solo si sarebbe <b>inventato</b>: palette, font e regole vivevano nella cartella, non nel modello. Ora il giro lo fate voi, con un'altra skill dello stesso catalogo: <b>theme-factory</b>, una collezione di temi grafici professionali pronti da applicare agli artifact.</p>
+<!-- 10 · demo -->
+<section id="s10" data-title="Demo: brand-guidelines">
+  <div class="kicker"><span class="n">10</span> <span class="act">Demo</span></div>
+  <h2>Prima io: un pezzo <span class="em">con lo stile di qualcun altro</span></h2>
+  <p class="lead">Adesso il ciclo dell'import lo faccio davanti a voi, dall'inizio alla fine: prendo una skill dal catalogo, la installo, e produco un'infografica in uno stile che non è il mio e non è di Claude — è quello di <b>Anthropic</b>, impacchettato nella skill <code>brand-guidelines</code>. Mentre lo faccio, guardate tre cose.</p>
 
-  <div class="steps">
-    <div class="stp"><div><h4>Scarica theme-factory</h4><p>ZIP già pronto su <a href="../downloads/theme-factory.zip"><code>summerschool26.vercel.app/downloads/theme-factory.zip</code></a> — l'originale sta su <code>github.com/anthropics/skills</code>, cartella <code>theme-factory</code>. È una cartella di testo: puoi già leggerla tutta prima di darla a Claude.</p></div></div>
-    <div class="stp"><div><h4>Leggila prima di installarla</h4><p>SKILL.md: cosa promette la <code>description</code>? Quando dice di attivarsi? E dove vivono i temi? È l'abitudine di sicurezza della sezione 09 — e l'anatomia della sezione 08 vista su una skill vera: i temi sono i <b>materiali</b>, know-how che non state scrivendo voi.</p></div></div>
-    <div class="stp"><div><h4>Installa e crea l'artifact</h4><p>ZIP <b>con la cartella come radice</b>, upload da Personalizza → Skill. Poi chiedete un artifact <b>sullo stesso topic dell'infografica appena vista</b> — la richiesta scritta com'è naturale scriverla, senza nominare la skill.</p></div></div>
-    <div class="stp"><div><h4>Varia il tema</h4><p>Chiedete l'elenco dei temi disponibili e fatevi riproporre lo stesso artifact in due o tre temi diversi. Stesso contenuto, stile ogni volta coerente — perché lo stile Claude non lo sta improvvisando: lo sta <b>prendendo dalla cartella</b>.</p></div></div>
-    <div class="stp"><div><h4>La controprova</h4><p>Chat nuova, skill disattivata: stesso artifact, stesso tema chiesto a parole. Confrontate i risultati: il delta di coerenza — palette, tipografia, gerarchie — è esattamente <b>il contesto che avete importato</b>.</p></div></div>
+  <div class="rule3">
+    <div class="pill"><div class="pk">1 · Da dove viene</div><h4>Il catalogo, dentro Claude Code</h4><p>Sotto <b>Skill</b> ci sono le skill di Anthropic: pronte, ma non installate. <code>brand-guidelines</code> la installo da lì, senza uscire dal terminale.</p></div>
+    <div class="pill"><div class="pk">2 · Cosa chiedo</div><h4>Una richiesta normale</h4><p>Chiedo l'infografica come la chiedereste voi: descrivo il contenuto. La skill non la nomino mai — si attiva da sola, perché la richiesta matcha la sua description.</p></div>
+    <div class="pill"><div class="pk">3 · Da dove esce lo stile</div><h4>Dalla cartella, non dal modello</h4><p>Palette, font, regole tipografiche: stanno nei materiali della skill. Senza, Claude uno «stile Anthropic» se lo sarebbe <b>inventato</b> — plausibile, e sbagliato.</p></div>
   </div>
 </section>
 
-<!-- 11 · takeaway -->
-<section id="s11" data-title="Da portare a casa">
-  <div class="kicker"><span class="n">11</span> <span class="act">Da portare a casa</span></div>
+<!-- 11 · hands on -->
+<section id="s11" data-title="Hands on">
+  <div class="kicker"><span class="n">11</span> <span class="act">Hands on</span></div>
+  <h2>Ora voi: <span class="em">importa, e cambia stile</span></h2>
+  <p class="lead">Stesso giro che avete appena visto, altra skill dello stesso catalogo: <b>theme-factory</b> — dieci temi grafici professionali pronti da applicare a qualunque pagina. L'obiettivo non è la pagina: è toccare con mano <b>quanto stile vi portate a casa senza averlo scritto</b>.</p>
+
+  <div class="steps">
+    <div class="stp"><div><h4>Trovala nel catalogo</h4><p>In Claude Code, sotto <b>Skill</b>: le skill di Anthropic sono elencate, pronte ma non installate. Individuate <code>theme-factory</code> e installatela da lì.</p></div></div>
+    <div class="stp"><div><h4>Guarda cosa hai importato</h4><p>Aprite la cartella della skill: <code>SKILL.md</code> con la description, e dieci temi in <code>themes/</code> — palette, font e gerarchie già decisi. È l'anatomia della sezione 08, dal vivo. <b>Nota:</b> qui la fonte è Anthropic; con una skill presa da un marketplace di terzi questa lettura si fa <b>prima</b> di installare.</p></div></div>
+    <div class="stp"><div><h4>Crea il pezzo</h4><p>Chiedete un'infografica <b>sullo stesso topic di quella che vi ho appena mostrato</b> — richiesta scritta com'è naturale scriverla, senza nominare la skill. Aprite il file nel browser.</p></div></div>
+    <div class="stp"><div><h4>Varia il tema</h4><p>Chiedete l'elenco dei temi disponibili e fatevi rifare la stessa pagina in due o tre temi diversi. Stesso contenuto, stile ogni volta coerente — perché Claude non lo sta improvvisando: lo sta <b>leggendo dalla cartella</b>.</p></div></div>
+    <div class="stp"><div><h4>La controprova</h4><p>Disattivate la skill e rifate la richiesta descrivendo il tema a parole. Confrontate: il delta di coerenza — palette, tipografia, gerarchie — è esattamente <b>il contesto che avevate importato</b>.</p></div></div>
+  </div>
+</section>
+
+<!-- 12 · takeaway -->
+<section id="s12" data-title="Da portare a casa">
+  <div class="kicker"><span class="n">12</span> <span class="act">Da portare a casa</span></div>
   <h2>Quattro idee da portare a casa</h2>
   <div class="takes">
     <div class="take"><div class="tn">01</div><h4>Il prodotto è l'harness</h4><p>Chat, Cowork e Code condividono il modello. Quando scegli tra loro non scegli un'intelligenza, scegli gli strumenti e i permessi che le dai.</p></div>
