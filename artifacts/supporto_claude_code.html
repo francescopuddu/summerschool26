@@ -500,7 +500,7 @@
 <section id="s3"><div class="wrap reveal">
   <div class="kicker"><span class="n">03</span> L'architettura, già decisa</div>
   <h2>Un'app è fatta di pezzi: <span class="em">questi cinque</span></h2>
-  <p class="lead">Sceglierli — quale database, quale linguaggio, come si parlano — è l'unico punto dove servirebbe davvero un ingegnere. Quel lavoro è <b>già fatto</b>: un file di testo con le scelte architetturali, da mettere nella cartella del progetto. Claude Code lo legge da solo e ci si attiene. A voi basta sapere <b>cosa fa ogni pezzo</b>, per seguire cosa succede dove.</p>
+  <p class="lead">Sceglierli — quale database, quale linguaggio, come si parlano — è l'unico punto dove servirebbe davvero un ingegnere. Quel lavoro è <b>già fatto</b>: le scelte sono fissate una volta e finiscono in un file di testo che Claude Code legge da solo e a cui si attiene. Quel file lo vediamo nascere <b>fra due capitoli</b>. Qui basta sapere <b>cosa fa ogni pezzo</b>, per seguire cosa succede dove.</p>
 
   <div class="panel star">
     <div class="badge">I pezzi di un'app</div>
@@ -770,6 +770,7 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   const btnCommit=document.getElementById('btnCommit');
   const btnPush=document.getElementById('btnPush');
   const status=document.getElementById('gitStatus');
+  const statusIntro=status.textContent;
   const chipsL=document.getElementById('chipsLocal');
   const chipsR=document.getElementById('chipsRemote');
   const folderL=document.getElementById('gfLocal');
@@ -815,7 +816,7 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
       setTimeout(()=>{folderR.classList.remove('flash');sync.classList.remove('hot');},700);
     },350);
     setSync('ok','✓ sincronizzati');
-    status.textContent='git push: la v'+v+' è copiata su GitHub. Cartella e cloud di nuovo identici — la storia è al sicuro anche fuori dal tuo PC. Si riparte dal primo gesto.';
+    status.textContent=statusIntro;
     setPhase(0);
   });
   setPhase(0);
