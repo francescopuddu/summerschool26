@@ -132,8 +132,13 @@
   @keyframes gpu{from{height:18%}to{height:100%}}
   .gpucap{font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center;margin-top:4px}
   .phases{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-  .ph{font-family:var(--mono);font-size:11px;border:1px solid var(--line);border-radius:999px;padding:4px 11px;color:var(--ink-2);background:var(--card-2);transition:all .2s}
+  .ph{font-family:var(--mono);font-size:11px;border:1px solid var(--line);border-radius:999px;padding:4px 11px;color:var(--ink-2);background:var(--card-2);transition:all .2s;cursor:pointer}
+  .ph:hover{border-color:var(--accent);color:var(--accent)}
   .ph.on{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);font-weight:700}
+  .ph.play{margin-left:auto;border-color:var(--accent-soft2);color:var(--accent);font-weight:700}
+  .ph.play.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  @media(prefers-reduced-motion:reduce){.pkt{transition:none}
+    .srv.busy .gpu i,.srv.busy .rackrow .led,.inp.typing::after{animation:none}}
   .phasecap{margin-top:10px;font-size:14.5px;color:var(--ink-2);min-height:44px}
   .phasecap b{color:var(--ink)}
 
@@ -247,10 +252,11 @@
       </div>
     </div>
     <div class="phases" id="tripPhases">
-      <span class="ph">1 · scrivi</span>
-      <span class="ph">2 · invio</span>
-      <span class="ph">3 · calcolo</span>
-      <span class="ph">4 · risposta</span>
+      <button class="ph" data-k="0">1 · scrivi</button>
+      <button class="ph" data-k="1">2 · invio</button>
+      <button class="ph" data-k="2">3 · calcolo</button>
+      <button class="ph" data-k="3">4 · risposta</button>
+      <button class="ph play" id="tripPlay">▶ riproduci tutto</button>
     </div>
     <div class="phasecap" id="tripCap"></div>
   </div>
@@ -430,55 +436,77 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 let _t=false;const _p=document.getElementById('prog');
 addEventListener('scroll',()=>{if(_t)return;_t=true;requestAnimationFrame(()=>{_t=false;
   const h=document.documentElement;_p.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});});
-/* il giro di un messaggio: timeline in loop */
+/* il giro di un messaggio: timeline in loop + bottoni per fase */
 (function(){
  const cap=document.getElementById('tripCap');
- const chips=[...document.querySelectorAll('#tripPhases .ph')];
+ const chips=[...document.querySelectorAll('#tripPhases .ph[data-k]')];
+ const play=document.getElementById('tripPlay');
  const inp=document.getElementById('tripInp'), msgs=document.getElementById('tripMsgs');
  const pkt=document.getElementById('tripPkt'), srv=document.getElementById('tripSrv');
  const UMSG='Riassumi i punti chiave del contratto';
  const AMSG='Fatto: durata 24 mesi, rinnovo tacito, recesso con 60 giorni di preavviso.';
  const CAPS=[
-  '<b>1 · Scrivi.</b> Il messaggio — e il contesto che ci alleghi: documenti, istruzioni — è ancora solo sul tuo computer.',
-  '<b>2 · L\'invio.</b> Messaggio e contesto viaggiano cifrati (TLS) fino al datacenter dove gira il modello.',
-  '<b>3 · Il calcolo.</b> Il modello legge tutto e genera la risposta token per token, sulle GPU del datacenter.',
-  '<b>4 · La risposta torna</b> sul tuo schermo. Cosa resta sul server, e in che Paese? Dipende da dove sta il server — le mappe qui sotto.'];
+  '<b>1 \u00b7 Scrivi.</b> Il messaggio \u2014 e il contesto che ci alleghi: documenti, istruzioni \u2014 \u00e8 ancora solo sul tuo computer.',
+  '<b>2 \u00b7 L\'invio.</b> Messaggio e contesto viaggiano cifrati (TLS) fino al datacenter dove gira il modello.',
+  '<b>3 \u00b7 Il calcolo.</b> Il modello legge tutto e genera la risposta token per token, sulle GPU del datacenter.',
+  '<b>4 \u00b7 La risposta torna</b> sul tuo schermo. Cosa resta sul server, e in che Paese? Dipende da dove sta il server \u2014 le mappe qui sotto.'];
  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
- let vis=false,tk=0;
+ let vis=false,tk=0,auto=true;
  const wait=ms=>new Promise(r=>setTimeout(r,ms));
+ const raf2=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
  function setPhase(i){chips.forEach((c,k)=>c.classList.toggle('on',k===i));cap.innerHTML=CAPS[i];}
  function bubble(cls,txt){const b=document.createElement('div');b.className='bub '+cls;b.textContent=txt;msgs.appendChild(b);return b;}
- async function typeInto(el,txt,ms,tok){for(let i=1;i<=txt.length;i++){if(tok!==tk)return;el.textContent=txt.slice(0,i);await wait(ms);}}
- async function run(){
-  const tok=++tk;
-  msgs.innerHTML='';inp.textContent='';inp.classList.add('typing');
-  pkt.className='pkt';srv.classList.remove('busy');
-  setPhase(0);await typeInto(inp,UMSG,32,tok);if(tok!==tk)return;await wait(450);if(tok!==tk)return;
-  setPhase(1);inp.textContent='';inp.classList.remove('typing');bubble('user',UMSG);
-  pkt.classList.add('show');
-  requestAnimationFrame(()=>requestAnimationFrame(()=>pkt.classList.add('at-srv')));
-  await wait(1300);if(tok!==tk)return;
-  pkt.classList.remove('show');
-  setPhase(2);srv.classList.add('busy');
-  const th=bubble('ai think','· · ·');
-  await wait(2100);if(tok!==tk)return;
-  srv.classList.remove('busy');
-  setPhase(3);pkt.classList.add('back','show');
-  requestAnimationFrame(()=>requestAnimationFrame(()=>pkt.classList.remove('at-srv')));
+ async function typeInto(el,txt,ms,tok){if(ms<=0){el.textContent=txt;return;}
+  for(let i=1;i<=txt.length;i++){if(tok!==tk)return;el.textContent=txt.slice(0,i);await wait(ms);}}
+ function reset(){msgs.innerHTML='';inp.textContent='';inp.classList.remove('typing');
+  pkt.className='pkt';pkt.style.transition='';srv.classList.remove('busy');}
+ /* le 4 fasi: ognuna assume lo stato lasciato dalla precedente (jump() lo prepara) */
+ async function p0(tok){setPhase(0);inp.classList.add('typing');
+  await typeInto(inp,UMSG,reduce?0:32,tok);}
+ async function p1(tok){setPhase(1);inp.textContent='';inp.classList.remove('typing');
+  if(!msgs.querySelector('.bub.user'))bubble('user',UMSG);
+  pkt.classList.add('show');await raf2();if(tok!==tk)return;
+  pkt.classList.add('at-srv');await wait(1300);if(tok!==tk)return;
+  pkt.classList.remove('show');}
+ async function p2(tok){setPhase(2);srv.classList.add('busy');
+  if(!msgs.querySelector('.bub.think'))bubble('ai think','\u00b7 \u00b7 \u00b7');
+  await wait(2100);}
+ async function p3(tok){setPhase(3);srv.classList.remove('busy');
+  pkt.style.transition='none';pkt.classList.add('back','at-srv');   // si posiziona al server senza animare
+  await raf2();if(tok!==tk)return;
+  pkt.style.transition='';pkt.classList.add('show');
+  await raf2();if(tok!==tk)return;
+  pkt.classList.remove('at-srv');
   await wait(1300);if(tok!==tk)return;
   pkt.classList.remove('show','back');
+  let th=msgs.querySelector('.bub.think');if(!th)th=bubble('ai think','');
   th.classList.remove('think');th.textContent='';
-  await typeInto(th,AMSG,17,tok);if(tok!==tk)return;
+  await typeInto(th,AMSG,reduce?0:17,tok);}
+ function setAuto(v){auto=v;play.classList.toggle('on',v);}
+ async function run(){const tok=++tk;setAuto(true);reset();
+  await p0(tok);if(tok!==tk)return;await wait(450);if(tok!==tk)return;
+  await p1(tok);if(tok!==tk)return;
+  await p2(tok);if(tok!==tk)return;
+  await p3(tok);if(tok!==tk)return;
   await wait(2600);if(tok!==tk)return;
-  if(vis&&!reduce)run();
- }
+  if(vis&&auto)run();}
+ /* click su uno step: prepara lo stato precedente, riproduce solo quella fase e si ferma */
+ async function jump(k){const tok=++tk;setAuto(false);reset();
+  if(k>=1)bubble('user',UMSG);
+  if(k>=3)bubble('ai think','\u00b7 \u00b7 \u00b7');
+  if(k===0)await p0(tok);
+  else if(k===1)await p1(tok);
+  else if(k===2)await p2(tok);
+  else await p3(tok);}
+ chips.forEach((c,k)=>c.addEventListener('click',()=>jump(k)));
+ play.addEventListener('click',()=>run());
  if(reduce){
-  bubble('user',UMSG);bubble('ai',AMSG);setPhase(3);
-  cap.innerHTML='Scrivi sul tuo computer → messaggio e contesto viaggiano cifrati al datacenter → il modello calcola la risposta sulle GPU → la risposta torna sul tuo schermo.';
+  bubble('user',UMSG);bubble('ai',AMSG);setPhase(3);setAuto(false);
+  cap.innerHTML='Scrivi sul tuo computer \u2192 messaggio e contesto viaggiano cifrati al datacenter \u2192 il modello calcola la risposta sulle GPU \u2192 la risposta torna sul tuo schermo. Usa i bottoni per vedere una fase.';
  }else{
   vis=true;run();   // parte subito; l'observer pausa/riavvia quando esce/rientra nel viewport
   const ob=new IntersectionObserver(e=>{const nv=e[0].isIntersecting;
-   if(nv&&!vis){vis=true;run();}else if(!nv&&vis){vis=false;tk++;}},{threshold:.3});
+   if(nv&&!vis){vis=true;if(auto)run();}else if(!nv&&vis){vis=false;tk++;}},{threshold:.3});
   ob.observe(document.getElementById('tripWrap'));
  }
 })();
