@@ -415,7 +415,7 @@
 <section id="s1"><div class="wrap reveal">
   <div class="kicker"><span class="n">01</span> Git essenziale</div>
   <h2>Prima di tutto: i <span class="em">checkpoint</span> del lavoro</h2>
-  <p class="lead">Con Claude Code si lavora per iterazioni veloci: si prova, si cambia, a volte si sbaglia. Git è il modo per avere <b>checkpoint del proprio lavoro</b> e poter tornare indietro quando una vibata va male — e, come vedrete nel pomeriggio, è ciò che abilita Claude Code in cloud.</p>
+  <p class="lead">Con Claude Code si lavora per iterazioni veloci: si prova, si cambia, a volte si sbaglia. Git è il modo per avere <b>checkpoint del proprio lavoro</b> e poter tornare indietro quando una vibata va male.</p>
 
   <div class="why">
     <div class="wbox a">
@@ -425,7 +425,7 @@
     </div>
     <div class="wbox b">
       <h4>GitHub</h4>
-      <p>Il posto <b>nel cloud</b> dove le istantanee vengono conservate: backup del progetto e — dal pomeriggio — la porta d'ingresso di Claude Code in cloud.</p>
+      <p>Il posto <b>nel cloud</b> dove le istantanee vengono conservate: backup del progetto.</p>
     </div>
   </div>
 
@@ -1024,8 +1024,20 @@ progetto/
 
   <div class="panel star">
     <div class="badge you">Hands-on · ~2 ore</div>
-    <h3 style="margin-top:0">La consegna</h3>
-    <p>Il revisore, dopo il giro sui mezzi, produce un <b>documento destrutturato</b>: appunti sparsi su treni visti e interventi da fare. Costruite la pagina in cui quel documento si carica e diventa una <b>lista di interventi</b> strutturata, collegata alle revisioni di quel revisore, pronta per chi li prenderà in carico.</p>
+    <div class="boss brief" style="margin-top:0">
+      <span class="who">🧑‍💼</span>
+      <div class="bcol">
+        <div class="bhead">
+          <div class="lb">La consegna</div>
+          <button class="fbtn" id="revCopy">📋 Copia</button>
+        </div>
+        <div class="qbody" id="revSrc">
+          <q>Restiamo sulla stessa app di stamattina — vi chiedo una pagina in più. Quando un revisore torna dal giro sui mezzi, mi consegna i suoi appunti: un foglio scritto a mano, un po' alla rinfusa. «Sull'ETR-350-04 le pastiglie sono quasi da cambiare, il pantografo è a posto; il diesel del 07 perde un filo d'olio.» Roba utile, ma così com'è, buttata lì, non ci faccio granché.</q>
+          <q>Vorrei una pagina dove carico quel documento — lo trascino e basta — e l'app me lo trasforma in una <b>lista di interventi</b> ordinata: un intervento per riga, agganciato al mezzo giusto e alla revisione a cui si riferisce. I dati dei mezzi e delle revisioni sono già quelli della dashboard di prima, quindi il collegamento lo potete fare da lì.</q>
+          <q>A mettere ordine negli appunti ci pensa l'intelligenza artificiale, dentro l'app: prende il testo com'è e ne ricava la lista. Ma poi quella lista voglio poterla <b>rivedere io</b> prima di salvarla — magari l'AI si perde una riga, o aggancia un intervento al mezzo sbagliato — e solo quando confermo diventa definitiva, pronta per chi la prenderà in carico.</q>
+        </div>
+      </div>
+    </div>
     <h3>Gli step</h3>
     <div class="steps you">
       <div class="st"><p><b>La pagina di caricamento.</b> Una box in cui trascinare il documento del revisore (fornito già pronto insieme alla consegna).</p></div>
@@ -1045,18 +1057,12 @@ progetto/
   <div class="kicker"><span class="n">✓</span> Da portare a casa</div>
   <h2>Cosa resta di <span class="em">stamattina</span></h2>
   <div class="takes">
-    <div class="take"><h4>Commit e push, sempre</h4><p>Due gesti: istantanea locale, copia nel cloud. Checkpoint per voi, prerequisito per il pomeriggio.</p></div>
+    <div class="take"><h4>Commit e push, sempre</h4><p>Due gesti: istantanea locale, copia nel cloud. Checkpoint per voi.</p></div>
     <div class="take"><h4>L'architettura si eredita</h4><p>Le scelte tecniche stanno in un file (CLAUDE.md) dettato una volta con <span class="mono">/init</span>; poi Claude ci si attiene da solo e voi descrivete la consegna. DB/BE/FE/API restano solo il vocabolario per seguire.</p></div>
     <div class="take"><h4>Descrivere, non digitare</h4><p>Con Claude Code il software si costruisce raccontandolo. Il vostro mestiere è la consegna, non la sintassi.</p></div>
     <div class="take"><h4>AI nel software</h4><p>Non solo AI che scrive il codice: app che, una volta costruite, usano un modello per lavorare (la mail, l'estrazione).</p></div>
   </div>
-  <p class="hint" style="margin-top:24px">Nel pomeriggio il codice esce dal vostro computer: Claude Code in cloud, deploy su Fly.io, e il database che migra su Supabase.</p>
 </div></section>
-
-<footer><div class="wrap">
-  <b>Summer School 2026 — Giornata 3</b> · Claude Code: Introduzione al vibe coding &amp; La mia prima automazione.<br>
-  Reference: <a href="guida_comandi_claude_code.html" style="color:var(--accent)">guida base</a>.
-</div></footer>
 
 <script>
 /* ---------- reveal + progress + dots ---------- */
