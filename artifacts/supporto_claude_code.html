@@ -160,6 +160,21 @@
   .linkbox .t{font-weight:800;font-size:16px;color:var(--accent)}
   .linkbox .d{font-size:14px;color:var(--ink-2);margin-top:3px}
 
+  /* card del file CLAUDE.md */
+  .filecard{border:1.5px solid var(--line-strong);border-radius:14px;overflow:hidden;margin-top:26px;background:var(--card);
+    box-shadow:0 1px 0 var(--line),0 18px 40px -32px rgba(0,0,0,.35)}
+  .filebar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--card-2);border-bottom:1px solid var(--line)}
+  .filebar .fname{font-family:var(--mono);font-size:13px;font-weight:700}
+  .filebar .fdesc{font-size:11.5px;color:var(--muted)}
+  .filebar .fbtns{margin-left:auto;display:flex;gap:8px;flex-shrink:0}
+  .fbtn{font-family:var(--sans);font-size:12.5px;font-weight:700;border:1px solid var(--line-strong);background:var(--card);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;transition:all .15s}
+  .fbtn:hover{border-color:var(--ink)}
+  .fbtn.dark{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .fbtn.dark:hover{background:#000}
+  .filecard pre{margin:0;padding:16px 18px;font-family:var(--mono);font-size:12px;line-height:1.55;color:var(--ink);
+    max-height:340px;overflow:auto;white-space:pre-wrap;background:linear-gradient(180deg,#fff,#fdfcfa)}
+  @media(max-width:640px){.filebar{flex-wrap:wrap}.filebar .fdesc{display:none}}
+
   .takes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
   @media(max-width:720px){.takes{grid-template-columns:1fr}}
   .take{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:16px 18px}
@@ -193,7 +208,7 @@
   <div class="arc">
     <span class="step"><b>1</b> · Git essenziale</span>
     <span class="step"><b>2</b> · Perché un'app</span>
-    <span class="step"><b>3</b> · DB / BE / FE / API</span>
+    <span class="step"><b>3</b> · L'architettura in un file</span>
     <span class="step"><b>4</b> · Onboarding Claude Code</span>
     <span class="step"><b>5</b> · Demo: dashboard treni</span>
     <span class="step"><b>6</b> · Hands-on: il revisore</span>
@@ -289,42 +304,89 @@
     </div>
   </div>
 
-  <div class="callout"><b>Il salto di oggi è tutto qui:</b> quando l'idea è più grande di un singolo file, si smette di chiedere un artifact e si costruisce un'app. E un'app non è un blocco unico — è fatta di <b>pezzi con mestieri diversi</b>. Quei pezzi sono la prossima sezione.</div>
+  <div class="callout"><b>Il salto di oggi è tutto qui:</b> quando l'idea è più grande di un singolo file, si smette di chiedere un artifact e si costruisce un'app. E un'app non è un blocco unico — è fatta di <b>pezzi con mestieri diversi</b>. La buona notizia: quei pezzi non dovete sceglierli voi. Ve li consegniamo già decisi, scritti in un file — è la prossima sezione.</div>
 </div></section>
 
-<!-- ============ 03 BASICS SW ============ -->
+<!-- ============ 03 ARCHITETTURA IN UN FILE ============ -->
 <section id="s3"><div class="wrap reveal">
-  <div class="kicker"><span class="n">03</span> La struttura di un'app</div>
-  <h2>Database, back-end, front-end, <span class="em">API</span></h2>
-  <p class="lead">L'app è fatta di tre pezzi che si parlano: è la struttura con cui tra poco la costruiremo. Le quattro parole non servono per programmare — servono per <b>seguire cosa sta succedendo dove</b> mentre Claude lavora. Ecco l'architettura dell'app dei treni: clicca sui blocchi.</p>
+  <div class="kicker"><span class="n">03</span> L'architettura, già decisa</div>
+  <h2>Le scelte tecniche ve le diamo noi: <span class="em">in un file</span></h2>
+  <p class="lead">Un'app è fatta di pezzi, e sceglierli — quale database, quale linguaggio, come si parlano — è l'unico punto dove servirebbe davvero un ingegnere. Quel lavoro è <b>già fatto</b>: un file di testo con le scelte architetturali, da mettere nella cartella del progetto. Claude Code lo legge da solo e ci si attiene. A voi resta solo la consegna.</p>
 
   <div class="panel star">
-    <div class="badge">Architettura dell'app dei treni</div>
+    <div class="badge">Le scelte scritte nel file — clicca sui blocchi</div>
     <div class="arch" id="arch">
       <div class="abox" data-i="0">
         <div class="icn">🗄️</div>
         <div class="nm">Database</div>
-        <div class="tech">Postgres, sul tuo PC</div>
+        <div class="tech">Postgres · in Docker</div>
         <ul><li>mezzi</li><li>manutentori</li><li>revisioni</li></ul>
       </div>
       <div class="aarr">⇄<small>API</small></div>
       <div class="abox" data-i="1">
         <div class="icn">⚙️</div>
         <div class="nm">Back-end</div>
-        <div class="tech">la logica</div>
-        <ul><li>espone le API</li><li>regole &amp; calcoli</li><li>parla con l'ERP</li></ul>
+        <div class="tech">Python · FastAPI</div>
+        <ul><li>espone le API</li><li>regole &amp; calcoli</li><li>parla con ERP e AI</li></ul>
       </div>
       <div class="aarr">⇄<small>API</small></div>
       <div class="abox" data-i="2">
         <div class="icn">🖥️</div>
         <div class="nm">Front-end</div>
-        <div class="tech">quello che vedi</div>
+        <div class="tech">React · Vite</div>
         <ul><li>pagine &amp; bottoni</li><li>tabelle e stati</li><li>l'interazione</li></ul>
       </div>
     </div>
-    <p class="archdesc" id="archDesc">Tre pezzi, ognuno col suo mestiere. Le <b>API</b> sono il linguaggio con cui si parlano: richieste e risposte con un formato concordato.</p>
+    <p class="archdesc" id="archDesc">Tre pezzi, ognuno col suo mestiere, che si parlano tramite <b>API</b>. Non dovete progettarli né saperli configurare: sono le scelte già scritte nel file qui sotto. Le quattro parole servono solo a <b>seguire cosa succede dove</b>.</p>
   </div>
 
+  <div class="filecard">
+    <div class="filebar">
+      <span class="fname">📄 CLAUDE.md</span>
+      <span class="fdesc">il file delle scelte architetturali — Claude Code lo legge da solo</span>
+      <span class="fbtns">
+        <button class="fbtn" id="cmCopy">📋 Copia</button>
+        <button class="fbtn dark" id="cmDl">↓ Scarica CLAUDE.md</button>
+      </span>
+    </div>
+<pre id="claudemdSrc"># CLAUDE.md — Gestionale manutenzione treni (Summer School)
+
+Sei il builder di questo progetto. Le scelte di architettura sono già state fatte e **non sono in discussione**: qualunque funzionalità ti venga chiesta, va costruita dentro questi binari. Se una richiesta sembra richiedere di uscirne, fermati e spiega il problema invece di improvvisare.
+
+## Le scelte (fisse)
+
+| Pezzo | Scelta |
+|---|---|
+| Database | PostgreSQL 16 in Docker (`docker compose up -d`), porta 5432, dati in un volume |
+| Back-end | Python 3.12 + FastAPI, avviato con uvicorn sulla porta 8000 |
+| Front-end | React + Vite, JavaScript semplice (niente TypeScript), dev server sulla porta 5173 |
+| API | REST in JSON tra front-end e back-end; il front-end parla **solo** col back-end |
+| AI | chiamate al modello **solo dal back-end**, con la libreria `anthropic`; chiave e nome del modello letti da `.env` |
+
+## Struttura del progetto
+
+```
+progetto/
+├── docker-compose.yml      # solo il database
+├── CLAUDE.md               # questo file
+├── README.md               # i comandi per avviare tutto (tienilo aggiornato)
+├── .env / .env.example     # configurazione e segreti (.env NON si committa)
+├── backend/                # FastAPI: API, logica, accesso al DB, chiamate AI
+└── frontend/               # React + Vite: pagine e componenti
+```
+
+## Regole
+
+- **Semplicità prima di tutto.** Chi guida questo progetto non è uno sviluppatore. Niente autenticazione, niente TypeScript, niente ORM/framework/librerie oltre a quelli indicati — se qualcosa in più ti sembra davvero necessario, proponilo prima e spiega perché.
+- **Database.** Schema creato da uno script rilanciabile (SQL o SQLAlchemy `create_all`) + script di seed. Niente sistemi di migrazione.
+- **Segreti.** `ANTHROPIC_API_KEY` e ogni credenziale vivono solo in `.env`: mai committati, mai nel front-end. Tieni aggiornato `.env.example` con le variabili richieste.
+- **Avvio in 3 comandi.** `docker compose up -d`, avvio del back-end, avvio del front-end. Il README li riporta sempre, aggiornati e copia-incollabili.
+- **Git.** A ogni iterazione che funziona, proponi commit + push (messaggi brevi, in italiano).
+- **Spiega mentre lavori.** Chi legge non conosce il codice: quando finisci una modifica, di' in una riga *dove* hai toccato — database, back-end o front-end.</pre>
+  </div>
+  <p class="hint">Va messo, con il nome esatto <span class="mono">CLAUDE.md</span>, nella cartella del progetto <b>prima del primo prompt</b>: Claude Code lo legge automaticamente all'avvio, non serve nemmeno dirglielo.</p>
+
+  <div class="callout"><b>Perché il file:</b> senza vincoli, dieci gruppi otterrebbero dieci stack diversi — e problemi non confrontabili. Col file le app di tutta l'aula si somigliano, gli errori pure, e l'aiuto tra i banchi funziona. Non serve capire ogni riga: serve sapere che c'è — e che per i vostri progetti potete farvene scrivere uno simile da chi sa, o da Claude stesso.</div>
 </div></section>
 
 <!-- ============ 04 ONBOARDING ============ -->
@@ -348,6 +410,7 @@
   <div class="panel star">
     <div class="badge doer">Demo · dashboard treni</div>
     <div class="steps">
+      <div class="st"><p><b>Il punto di partenza.</b> Una cartella con dentro solo il <span class="mono">CLAUDE.md</span> dell'architettura. Il primo prompt è la consegna del gestionale: Claude legge il file e tira su i tre pezzi da solo — nessuna scelta tecnica da fare dal vivo.</p></div>
       <div class="st"><p><b>La fonte dati: un ERP mockato.</b> Un componente preparato in anticipo che, ricevute le chiamate, risponde con dati presi da un JSON prefatto — mezzi, manutentori con le loro disponibilità, revisioni con le scadenze. "Mockare" è a sua volta un concetto da fissare: per costruire l'app non serve il sistema vero.</p></div>
       <div class="st"><p><b>La dashboard.</b> Visione d'insieme dei mezzi con lo stato delle revisioni e dei controlli obbligatori a scadenza: otto mezzi di categoria tre, tre con revisione fatta, cinque da fare.</p></div>
       <div class="st"><p><b>Il bottone "Organizza revisione".</b> Crea l'agenda del giorno o della settimana dei manutentori, incrociando revisioni da fare e disponibilità.</p></div>
@@ -364,7 +427,7 @@
 <section id="s6"><div class="wrap reveal">
   <div class="kicker"><span class="n">06</span> Da fare</div>
   <h2>Hands-on: il documento <span class="em">del revisore</span></h2>
-  <p class="lead">Esercitazione su consegna assegnata. Non un'app nuova: <b>una pagina in più della stessa app</b> appena vista — così si riusa tutto il contesto della demo.</p>
+  <p class="lead">Esercitazione su consegna assegnata. Non un'app nuova: <b>una pagina in più della stessa app</b> appena vista — così si riusa tutto il contesto della demo. E niente scelte tecniche neanche qui: il <span class="mono">CLAUDE.md</span> è già nella cartella, a voi serve solo descrivere bene la consegna.</p>
 
   <div class="panel star">
     <div class="badge you">Hands-on · ~2 ore</div>
@@ -389,7 +452,7 @@
   <h2>Cosa resta di <span class="em">stamattina</span></h2>
   <div class="takes">
     <div class="take"><h4>Commit e push, sempre</h4><p>Due gesti: istantanea locale, copia nel cloud. Checkpoint per voi, prerequisito per il pomeriggio.</p></div>
-    <div class="take"><h4>DB / BE / FE / API</h4><p>Il vocabolario per capire cosa succede dove. Lo stesso schema tornerà nel pomeriggio, quando andrà in cloud.</p></div>
+    <div class="take"><h4>L'architettura si eredita</h4><p>Le scelte tecniche stanno in un file (CLAUDE.md) scritto una volta da chi sa; Claude ci si attiene, voi descrivete la consegna. DB/BE/FE/API restano solo il vocabolario per seguire.</p></div>
     <div class="take"><h4>Descrivere, non digitare</h4><p>Con Claude Code il software si costruisce raccontandolo. Il vostro mestiere è la consegna, non la sintassi.</p></div>
     <div class="take"><h4>AI nel software</h4><p>Non solo AI che scrive il codice: app che, una volta costruite, usano un modello per lavorare (la mail, l'estrazione).</p></div>
   </div>
@@ -408,7 +471,7 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 let _scrTick=false;const _prog=document.getElementById('prog');
 addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimationFrame(()=>{_scrTick=false;
   const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight);_prog.style.width=(p*100)+'%';});});
-(function(){const labels={s0:'Intro',s1:'Git essenziale',s2:"Perché un'app",s3:'DB/BE/FE/API',s4:'Onboarding',s5:'Demo: dashboard treni',s6:'Hands-on: il revisore',s7:'Da portare a casa'};
+(function(){const labels={s0:'Intro',s1:'Git essenziale',s2:"Perché un'app",s3:'Architettura in un file',s4:'Onboarding',s5:'Demo: dashboard treni',s6:'Hands-on: il revisore',s7:'Da portare a casa'};
  const nav=document.getElementById('dots');const secs=[...document.querySelectorAll('section')];
  secs.forEach(s=>{const a=document.createElement('a');a.href='#'+s.id;a.innerHTML='<span>'+(labels[s.id]||s.id)+'</span>';a.dataset.id=s.id;nav.appendChild(a);});
  const links=[...nav.querySelectorAll('a')];
@@ -471,17 +534,33 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   const boxes=[...document.querySelectorAll('#arch .abox')];
   const desc=document.getElementById('archDesc');
   const texts=[
-    '<b>Il database</b> è la memoria: tabelle con i mezzi, i manutentori e le revisioni. Qui è un Postgres che gira sul vostro computer — nel pomeriggio migrerà in cloud.',
-    '<b>Il back-end</b> è la logica: espone le API, applica le regole (chi è disponibile? cosa scade?), e va a chiedere i dati all\'ERP mockato.',
-    '<b>Il front-end</b> è quello che vedete e toccate: le pagine, le tabelle, il bottone "Organizza revisione". Parla col back-end tramite le API.'
+    '<b>Il database</b> è la memoria: tabelle con i mezzi, i manutentori e le revisioni. Il file fissa Postgres, acceso con un comando via Docker — nel pomeriggio migrerà in cloud.',
+    '<b>Il back-end</b> è la logica: espone le API, applica le regole (chi è disponibile? cosa scade?), chiama l\'ERP mockato e il modello AI. Il file fissa Python con FastAPI.',
+    '<b>Il front-end</b> è quello che vedete e toccate: le pagine, le tabelle, il bottone "Organizza revisione". Il file fissa React con Vite; parla col back-end tramite le API.'
   ];
-  const def='Tre pezzi, ognuno col suo mestiere. Le <b>API</b> sono il linguaggio con cui si parlano: richieste e risposte con un formato concordato.';
+  const def='Tre pezzi, ognuno col suo mestiere, che si parlano tramite <b>API</b>: richieste e risposte con un formato concordato. Tutto già deciso nel file qui sotto.';
   boxes.forEach((b,i)=>b.addEventListener('click',()=>{
     const was=b.classList.contains('on');
     boxes.forEach(x=>x.classList.remove('on'));
     if(was){desc.innerHTML=def;return;}
     b.classList.add('on');desc.innerHTML=texts[i];
   }));
+})();
+
+/* ---------- CLAUDE.md: copia + download ---------- */
+(function(){
+  const src=document.getElementById('claudemdSrc');
+  const copy=document.getElementById('cmCopy');
+  copy.addEventListener('click',function(){
+    navigator.clipboard.writeText(src.textContent).then(()=>{
+      copy.textContent='✓ Copiato';setTimeout(()=>{copy.textContent='📋 Copia';},1600);
+    });
+  });
+  document.getElementById('cmDl').addEventListener('click',()=>{
+    const b=new Blob([src.textContent],{type:'text/markdown'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='CLAUDE.md';
+    document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(a.href);
+  });
 })();
 </script>
 </body>
