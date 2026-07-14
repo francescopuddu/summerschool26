@@ -250,6 +250,7 @@
   .steps .st:last-child{border-bottom:0}
   .steps .st::before{content:counter(st,decimal-leading-zero);font-family:var(--mono);font-weight:800;font-size:13px;color:#fff;background:var(--accent);border-radius:8px;width:34px;height:26px;display:flex;align-items:center;justify-content:center;margin-top:2px}
   .steps .st p{margin:0;font-size:15.5px}
+  .steps .st .cmdbox,.steps .st .callout,.steps .st .qawrap{grid-column:2;min-width:0}
   .steps .st p b{color:var(--ink)}
   .steps.you .st::before{background:var(--amber)}
 
@@ -259,6 +260,16 @@
   .linkbox:hover{border-color:var(--accent);transform:translateY(-2px)}
   .linkbox .t{font-weight:800;font-size:16px;color:var(--accent)}
   .linkbox .d{font-size:14px;color:var(--ink-2);margin-top:3px}
+
+  /* la richiesta del capo */
+  .brief{display:flex;gap:16px;align-items:flex-start;border:1px solid var(--line);border-left:4px solid var(--accent);
+    background:var(--card);border-radius:0 14px 14px 0;padding:18px 22px;margin-top:24px;
+    box-shadow:0 1px 0 var(--line),0 14px 34px -30px rgba(0,0,0,.35)}
+  .brief .who{font-size:26px;line-height:1.1;flex-shrink:0}
+  .brief .lb{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:800;margin-bottom:6px}
+  .brief q{font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.55;color:var(--ink);display:block}
+  .brief .after{margin:10px 0 0;font-size:14.5px;color:var(--ink-2)}
+  @media(max-width:640px){.brief{padding:16px}.brief q{font-size:17px}}
 
   /* card del file CLAUDE.md */
   .filecard{border:1.5px solid var(--line-strong);border-radius:14px;overflow:hidden;margin-top:26px;background:var(--card);
@@ -274,6 +285,24 @@
   .filecard pre{margin:0;padding:16px 18px;font-family:var(--mono);font-size:12px;line-height:1.55;color:var(--ink);
     max-height:340px;overflow:auto;white-space:pre-wrap;background:linear-gradient(180deg,#fff,#fdfcfa)}
   @media(max-width:640px){.filebar{flex-wrap:wrap}.filebar .fdesc{display:none}}
+
+  /* la consegna del cliente: stessa scatola, ma è parlato — non codice */
+  .briefcard pre{font-family:var(--sans);font-size:14.5px;line-height:1.62;padding:18px 20px;max-height:none;
+    background:linear-gradient(180deg,#fff,#fdfcfa)}
+  .briefcard .fname{font-family:var(--sans)}
+
+  /* descrizione dei dati, apribile sotto il bottone di download */
+  .dataexp{margin-top:12px;border:1px solid var(--line-strong);border-radius:12px;background:var(--card);overflow:hidden}
+  .dataexp>summary{cursor:pointer;list-style:none;padding:11px 15px;font-size:13.5px;font-weight:700;
+    background:var(--card-2);display:flex;align-items:center;gap:9px;transition:color .15s}
+  .dataexp>summary::-webkit-details-marker{display:none}
+  .dataexp>summary::before{content:"▸";font-size:12px;color:var(--muted);transition:transform .18s}
+  .dataexp[open]>summary::before{transform:rotate(90deg)}
+  .dataexp>summary:hover{color:#000}
+  .dxbody{padding:14px 18px 16px;border-top:1px solid var(--line)}
+  .dxbody p{font-size:13.5px;line-height:1.6;color:var(--ink-2);margin:0 0 10px}
+  .dxbody p:last-child{margin-bottom:0}
+  .dxnote{margin-top:14px !important;padding:11px 13px;border-left:3px solid var(--ink);background:var(--card-2);border-radius:0 8px 8px 0}
 
   /* scena degli step: la finestra di Claude Code, tutto in chat */
   .scene{margin-top:8px}
@@ -917,18 +946,55 @@ progetto/
   <h2>Demo: la dashboard <span class="em">dei treni</span></h2>
   <p class="lead">Un gestionale per la <b>manutenzione ordinaria dei mezzi</b>, costruito dal vivo: dallo schema di prima all'app funzionante. Ogni passo usa il vocabolario appena introdotto.</p>
 
+  <div class="filecard briefcard">
+    <div class="filebar">
+      <span class="fname">🗣️ La consegna</span>
+      <span class="fdesc">il cliente parla — è questo il primo prompt della demo</span>
+      <span class="fbtns">
+        <button class="fbtn dark" id="brCopy">📋 Copia la consegna</button>
+      </span>
+    </div>
+<pre id="briefSrc">Noi lavoriamo nella mobilità: gestiamo una flotta di treni, e ogni mezzo ha delle revisioni obbligatorie da fare a scadenze fisse. Non è manutenzione a guasto: è manutenzione ordinaria programmata, cioè controlli che vanno fatti a prescindere, a scadenza fissa — a chilometraggio percorso o a tempo, dipende dal tipo di controllo. Dal nostro gestionale, comunque, la scadenza esce già calcolata come data: a voi serve solo quella.
+
+Qualche esempio di cosa intendo. C'è la verifica dell'usura di cerchioni e sale montate — le ruote del treno — cioè un controllo dimensionale per capire quanto sono consumate. C'è il controllo dell'impianto frenante: pastiglie, dischi, pressione dell'aria compressa. C'è l'ispezione del pantografo, il braccio che prende corrente dalla linea aerea. C'è il controllo del sistema di sicurezza SCMT, che però richiede un tecnico abilitato: quello non lo può fare chiunque. Sui mezzi diesel ci sono il motore e la trasmissione. E poi la climatizzazione e le porte automatiche.
+
+Quindi noi sappiamo già cosa va controllato — lo scope è noto — quello che non sappiamo è se salterà fuori un problema o no. E ogni voce ha la sua scadenza: non scadono tutte insieme, per questo serve tenerne traccia mezzo per mezzo.
+
+Oggi questa roba la teniamo un po' a mente noi, o su un foglio Excel. Vorrei una schermata unica che mi faccia vedere la situazione e mi aiuti a organizzare il lavoro dei manutentori.
+
+Cosa deve mostrarmi questa schermata principale. Voglio vedere i miei mezzi raggruppati per categoria — che ne so, "otto mezzi di categoria 3" — e per ciascun gruppo voglio capire subito quanti sono in regola e quanti no: un mezzo è da sistemare se ha almeno una revisione scaduta o in scadenza, non mi importa quale. Non mi serve il dettaglio tecnico di ogni singola voce di controllo: dev'essere una vista d'insieme, un colpo d'occhio. Le revisioni già scadute, però, voglio vederle subito e distinguerle da quelle che scadono a breve — quelle scadute sono un problema.
+
+Poi su questa schermata mi serve un bottone, "Organizza revisione", che quando lo premo mi prepara l'agenda dei manutentori: chi va dove, la mattina e il pomeriggio, in modo da incastrare bene i giri in base a chi è disponibile. Tenete conto che ogni manutentore è assegnato a un deposito e ha le sue specializzazioni — l'SCMT, il diesel — quindi non tutti possono fare tutto. Non deve essere chissà quale algoritmo di ottimizzazione, i mezzi non sono migliaia: basta che il giro venga fuori organizzato in modo sensato, mattina e pomeriggio.
+
+E poi, cosa importante: quando ho organizzato l'agenda, non deve partire tutto in automatico. Prima l'agenda me la fa vedere, io la controllo, e solo quando confermo io parte l'invio delle email ai manutentori — ognuno riceve la sua mail, con scritto il proprio giro della giornata: "oggi devi fare questo, in questo ordine". Alla mail va allegata anche la scheda del mezzo, la documentazione che il manutentore si porta dietro. Il testo della mail vorrei che fosse scritto con un aiutino di intelligenza artificiale, non buttato lì in modo meccanico. L'invio vero e proprio invece può restare una cosa semplice: lì non serve intelligenza.
+
+Ultima cosa, da dove arrivano i dati. Internamente esiste l'ERP aziendale, da cui prendere lo stato dei mezzi e le scadenze delle revisioni. Per ora possiamo anche solo simulare questa fonte dati — l'importante è che il resto dell'app la chiami come se fosse vera, così poi la colleghiamo a quella reale in un secondo momento.</pre>
+  </div>
+
   <div class="panel star">
     <div class="badge doer">Demo · dashboard treni</div>
     <div class="steps">
       <div class="st"><p><b>Il punto di partenza.</b> I cinque step appena visti, già fatti: la cartella è aperta e agganciata alla repo, e dentro c'è solo il <span class="mono">CLAUDE.md</span> uscito da <span class="cmd">/init</span>. Il primo prompt è la consegna del gestionale: Claude legge il file e tira su i pezzi dell'app da solo — nessuna scelta tecnica da fare dal vivo.</p></div>
       <div class="st"><p><b>La fonte dati: un ERP mockato.</b> Un componente preparato in anticipo che, ricevute le chiamate, risponde con dati presi da un JSON prefatto — mezzi, manutentori con le loro disponibilità, revisioni con le scadenze. "Mockare" è a sua volta un concetto da fissare: per costruire l'app non serve il sistema vero.</p></div>
-      <div class="st"><p><b>La dashboard.</b> Visione d'insieme dei mezzi con lo stato delle revisioni e dei controlli obbligatori a scadenza: otto mezzi di categoria tre, tre con revisione fatta, cinque da fare.</p></div>
+      <div class="st"><p><b>La dashboard.</b> Visione d'insieme dei mezzi con lo stato delle revisioni e dei controlli obbligatori a scadenza: otto mezzi di categoria tre, due in regola, sei da sistemare. E un mezzo, l'ETR-350-04, con due controlli già <b>scaduti</b>: è il caso che nessuno aveva visto.</p></div>
       <div class="st"><p><b>Il bottone "Organizza revisione".</b> Crea l'agenda del giorno o della settimana dei manutentori, incrociando revisioni da fare e disponibilità.</p></div>
       <div class="st"><p><b>Human in the loop.</b> L'agenda proposta si rivede: solo quando l'utente <b>conferma</b>, parte la mail ai manutentori con il programma ("il tuo tragitto del giorno è questo").</p></div>
       <div class="st"><p><b>L'AI dentro il software.</b> La composizione della mail la scrive un modello, chiamato via API dall'app stessa. La mail allega anche la <b>scheda treno</b> del mezzo, la documentazione da portare con sé.</p></div>
     </div>
-    <p style="margin-top:14px"><a class="dlbtn" href="https://drive.google.com/uc?export=download&amp;id=1Fx_j2mXsTkoVkEVvMDj27_1n1ruNoFoa" target="_blank" rel="noopener">↓ Scarica il JSON dell'ERP mockato <span>json · 24 KB</span></a></p>
-    <p class="hint">È il file da cui l'ERP mockato pesca i dati: mezzi, manutentori con le disponibilità, revisioni con le scadenze, schede treno.</p>
+    <p style="margin-top:14px"><a class="dlbtn" href="https://drive.google.com/uc?export=download&amp;id=1Fx_j2mXsTkoVkEVvMDj27_1n1ruNoFoa" target="_blank" rel="noopener">↓ Scarica il JSON dell'ERP mockato <span>json · 22 KB</span></a></p>
+
+    <details class="dataexp">
+      <summary>Cosa c'è dentro questo file</summary>
+      <div class="dxbody">
+        <p>È l'estrazione del 13 luglio 2026 dall'ERP di <b>Movia S.p.A.</b>, un'azienda di trasporto ferroviario regionale. Cinque elenchi, uno dentro l'altro come le pagine di un raccoglitore.</p>
+        <p><b>I depositi</b> — tre: Bologna San Donato, Ferrara Interporto, Rimessa Ravenna Scalo. Di ciascuno si sa quanti binari di manutenzione ha e se ha la <i>fossa di ispezione</i>, cioè lo scavo sotto il binario che serve per lavorare sotto al treno. Ravenna non ce l'ha: le cose "sotto cassa" lì non si possono fare.</p>
+        <p><b>I mezzi</b> — quattordici, dagli elettrotreni nuovi alle automotrici diesel storiche. Ognuno ha matricola, modello, chilometri percorsi, deposito di appartenenza, linea su cui gira, e due campi che contano per la dashboard: la <b>categoria</b> (1, 2 o 3 — è il raggruppamento che il cliente chiede: otto mezzi sono di categoria 3) e lo <b>stato</b> (in servizio, fermo programmato, accantonato).</p>
+        <p><b>I manutentori</b> — sei, con nome, email, deposito, specializzazioni (chi fa il diesel, chi è abilitato all'SCMT) e la <b>disponibilità</b>: per ogni giorno della settimana, la fascia in cui lavorano — <span class="mono">06:00-14:00</span> o <span class="mono">14:00-22:00</span>. Sono la mattina e il pomeriggio su cui si costruisce l'agenda.</p>
+        <p><b>Le revisioni</b> — ventidue, il cuore del file. Ognuna lega un mezzo a un tipo di controllo (la revisione ordinaria, oppure un controllo obbligatorio: freni, climatizzazione, porte, SCMT, motore diesel) e porta con sé la <b>scadenza</b>, lo <b>stato</b> (<span class="mono">fatta</span> o <span class="mono">da_fare</span>) e, se è già stata fatta, chi l'ha eseguita, quando e com'è andata. Otto sono fatte, quattordici da fare — e <b>due sono già scadute</b>, tutt'e due sull'ETR-350-04.</p>
+        <p><b>Le schede treno</b> — una per mezzo: la lista dei controlli previsti, i documenti da portare a bordo e le avvertenze aperte. È l'allegato che finisce nella mail al manutentore.</p>
+        <p class="dxnote">Da guardare con attenzione: <b>ETR-350-04</b> ha due controlli scaduti da giugno (il fermo è stato rinviato) ed è il mezzo messo peggio. <b>ALn-668-3145</b>, invece, non ha nessuna revisione aperta — ma è <i>accantonato</i>, cioè fuori servizio: contarlo tra i mezzi "in regola" sarebbe una lettura ingenua del dato.</p>
+      </div>
+    </details>
   </div>
 
 </div></section>
@@ -1157,6 +1223,17 @@ document.querySelectorAll('.cmdbox .cmdcopy').forEach(b=>{
     const b=new Blob([src.textContent],{type:'text/markdown'});
     const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='CLAUDE.md';
     document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(a.href);
+  });
+})();
+
+/* ---------- la consegna della demo: copia ---------- */
+(function(){
+  const src=document.getElementById('briefSrc');
+  const copy=document.getElementById('brCopy');
+  copy.addEventListener('click',function(){
+    navigator.clipboard.writeText(src.textContent).then(()=>{
+      copy.textContent='✓ Copiata';setTimeout(()=>{copy.textContent='📋 Copia la consegna';},1600);
+    });
   });
 })();
 </script>
