@@ -94,6 +94,49 @@
   @keyframes flow{to{stroke-dashoffset:-13}}
   @media(prefers-reduced-motion:reduce){.flow{animation:none}}
 
+  /* il giro di un messaggio */
+  .trip{display:grid;grid-template-columns:1fr 110px 1fr;gap:0;align-items:stretch;margin-top:14px}
+  @media(max-width:760px){.trip{grid-template-columns:1fr 54px 1fr}}
+  .devbox{border:1.5px solid var(--line-strong);border-radius:14px;background:#fff;padding:12px;min-height:200px;display:flex;flex-direction:column}
+  .devbox .dlab{font-family:var(--mono);font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);margin-bottom:8px;display:flex;gap:6px;align-items:center}
+  .chatm{flex:1;display:flex;flex-direction:column;gap:6px;overflow:hidden;justify-content:flex-end}
+  .bub{max-width:88%;padding:6px 10px;border-radius:10px;font-size:12.5px;line-height:1.35}
+  .bub.user{align-self:flex-end;background:var(--accent-soft);border:1px solid var(--accent-soft2)}
+  .bub.ai{align-self:flex-start;background:var(--card-2);border:1px solid var(--line)}
+  .bub.think{color:var(--muted);letter-spacing:2px}
+  .inp{border-top:1px solid var(--line);margin-top:8px;padding-top:8px;font-family:var(--mono);font-size:12px;min-height:28px;color:var(--ink)}
+  .inp.typing::after{content:"";display:inline-block;width:7px;height:13px;background:var(--accent);margin-left:2px;vertical-align:-2px;animation:caret 1s steps(1) infinite}
+  @keyframes caret{50%{opacity:0}}
+  .wirebox{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:0 6px}
+  .wire{position:relative;height:2px;background:var(--line-strong);width:100%;border-radius:2px}
+  .wirecap{font-family:var(--mono);font-size:10px;color:var(--muted)}
+  .pkt{position:absolute;top:50%;left:0;width:14px;height:14px;border-radius:50%;background:var(--accent);
+    border:2.5px solid #fff;box-shadow:0 0 0 1.5px var(--accent);transform:translate(-50%,-50%);opacity:0;transition:left 1.15s ease}
+  .pkt.show{opacity:1}
+  .pkt.at-srv{left:100%}
+  .pkt.back{background:var(--green);box-shadow:0 0 0 1.5px var(--green)}
+  .rackrow{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:8px;padding:7px 10px;margin-bottom:6px;background:var(--card-2)}
+  .rackrow .led{width:8px;height:8px;border-radius:50%;background:var(--line-strong);flex:none}
+  .srv.busy .rackrow .led{background:var(--green);animation:led .5s steps(1) infinite}
+  .srv.busy .rackrow:nth-child(3) .led{animation-delay:.17s}
+  .srv.busy .rackrow:nth-child(4) .led{animation-delay:.33s}
+  @keyframes led{50%{background:var(--amber)}}
+  .rackrow .rl{font-family:var(--mono);font-size:10.5px;color:var(--ink-2)}
+  .gpu{display:flex;gap:5px;align-items:flex-end;height:46px;margin-top:auto;padding:0 4px}
+  .gpu i{flex:1;background:var(--accent-soft2);border-radius:3px;height:22%;transition:height .4s}
+  .srv.busy .gpu i{background:var(--accent);animation:gpu .65s ease-in-out infinite alternate}
+  .srv.busy .gpu i:nth-child(2){animation-delay:.12s}
+  .srv.busy .gpu i:nth-child(3){animation-delay:.24s}
+  .srv.busy .gpu i:nth-child(4){animation-delay:.36s}
+  .srv.busy .gpu i:nth-child(5){animation-delay:.48s}
+  @keyframes gpu{from{height:18%}to{height:100%}}
+  .gpucap{font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center;margin-top:4px}
+  .phases{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .ph{font-family:var(--mono);font-size:11px;border:1px solid var(--line);border-radius:999px;padding:4px 11px;color:var(--ink-2);background:var(--card-2);transition:all .2s}
+  .ph.on{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);font-weight:700}
+  .phasecap{margin-top:10px;font-size:14.5px;color:var(--ink-2);min-height:44px}
+  .phasecap b{color:var(--ink)}
+
   /* diagramma "dove abita il modello" */
   .homes{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
   @media(max-width:760px){.homes{grid-template-columns:1fr}}
@@ -180,6 +223,37 @@
   <div class="kicker"><span class="n">02</span> Governance del dato</div>
   <h2>I dati <span class="em">non si muovono</span></h2>
   <p class="lead">La domanda giusta non è "il modello è bravo?" — quella risposta l'avete vista oggi. È: <b>chi vede i dati, dove transitano, cosa ne resta</b>.</p>
+
+  <div class="panel" id="tripWrap">
+    <div class="badge">Il giro di un messaggio</div>
+    <p style="margin:4px 0 0;font-size:15px;color:var(--ink-2)">Prima di chiedersi <em>dove</em>, vale la pena vedere <em>cosa</em> succede. Ogni messaggio fa sempre lo stesso viaggio — quattro passaggi, avanti e indietro.</p>
+    <div class="trip">
+      <div class="devbox">
+        <div class="dlab">💻 il tuo computer</div>
+        <div class="chatm" id="tripMsgs"></div>
+        <div class="inp" id="tripInp"></div>
+      </div>
+      <div class="wirebox">
+        <div class="wire"><div class="pkt" id="tripPkt"></div></div>
+        <div class="wirecap">cifrato · TLS</div>
+      </div>
+      <div class="devbox srv" id="tripSrv">
+        <div class="dlab">🗄️ datacenter · il modello</div>
+        <div class="rackrow"><span class="led"></span><span class="rl">ingresso richieste</span></div>
+        <div class="rackrow"><span class="led"></span><span class="rl">contesto → modello</span></div>
+        <div class="rackrow"><span class="led"></span><span class="rl">generazione token</span></div>
+        <div class="gpu"><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="gpucap">GPU</div>
+      </div>
+    </div>
+    <div class="phases" id="tripPhases">
+      <span class="ph">1 · scrivi</span>
+      <span class="ph">2 · invio</span>
+      <span class="ph">3 · calcolo</span>
+      <span class="ph">4 · risposta</span>
+    </div>
+    <div class="phasecap" id="tripCap"></div>
+  </div>
 
   <div class="panel">
     <div class="badge">Dove viaggia il dato</div>
@@ -356,6 +430,58 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 let _t=false;const _p=document.getElementById('prog');
 addEventListener('scroll',()=>{if(_t)return;_t=true;requestAnimationFrame(()=>{_t=false;
   const h=document.documentElement;_p.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});});
+/* il giro di un messaggio: timeline in loop */
+(function(){
+ const cap=document.getElementById('tripCap');
+ const chips=[...document.querySelectorAll('#tripPhases .ph')];
+ const inp=document.getElementById('tripInp'), msgs=document.getElementById('tripMsgs');
+ const pkt=document.getElementById('tripPkt'), srv=document.getElementById('tripSrv');
+ const UMSG='Riassumi i punti chiave del contratto';
+ const AMSG='Fatto: durata 24 mesi, rinnovo tacito, recesso con 60 giorni di preavviso.';
+ const CAPS=[
+  '<b>1 · Scrivi.</b> Il messaggio — e il contesto che ci alleghi: documenti, istruzioni — è ancora solo sul tuo computer.',
+  '<b>2 · L\'invio.</b> Messaggio e contesto viaggiano cifrati (TLS) fino al datacenter dove gira il modello.',
+  '<b>3 · Il calcolo.</b> Il modello legge tutto e genera la risposta token per token, sulle GPU del datacenter.',
+  '<b>4 · La risposta torna</b> sul tuo schermo. Cosa resta sul server, e in che Paese? Dipende da dove sta il server — le mappe qui sotto.'];
+ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ let vis=false,tk=0;
+ const wait=ms=>new Promise(r=>setTimeout(r,ms));
+ function setPhase(i){chips.forEach((c,k)=>c.classList.toggle('on',k===i));cap.innerHTML=CAPS[i];}
+ function bubble(cls,txt){const b=document.createElement('div');b.className='bub '+cls;b.textContent=txt;msgs.appendChild(b);return b;}
+ async function typeInto(el,txt,ms,tok){for(let i=1;i<=txt.length;i++){if(tok!==tk)return;el.textContent=txt.slice(0,i);await wait(ms);}}
+ async function run(){
+  const tok=++tk;
+  msgs.innerHTML='';inp.textContent='';inp.classList.add('typing');
+  pkt.className='pkt';srv.classList.remove('busy');
+  setPhase(0);await typeInto(inp,UMSG,32,tok);if(tok!==tk)return;await wait(450);if(tok!==tk)return;
+  setPhase(1);inp.textContent='';inp.classList.remove('typing');bubble('user',UMSG);
+  pkt.classList.add('show');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>pkt.classList.add('at-srv')));
+  await wait(1300);if(tok!==tk)return;
+  pkt.classList.remove('show');
+  setPhase(2);srv.classList.add('busy');
+  const th=bubble('ai think','· · ·');
+  await wait(2100);if(tok!==tk)return;
+  srv.classList.remove('busy');
+  setPhase(3);pkt.classList.add('back','show');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>pkt.classList.remove('at-srv')));
+  await wait(1300);if(tok!==tk)return;
+  pkt.classList.remove('show','back');
+  th.classList.remove('think');th.textContent='';
+  await typeInto(th,AMSG,17,tok);if(tok!==tk)return;
+  await wait(2600);if(tok!==tk)return;
+  if(vis&&!reduce)run();
+ }
+ if(reduce){
+  bubble('user',UMSG);bubble('ai',AMSG);setPhase(3);
+  cap.innerHTML='Scrivi sul tuo computer → messaggio e contesto viaggiano cifrati al datacenter → il modello calcola la risposta sulle GPU → la risposta torna sul tuo schermo.';
+ }else{
+  vis=true;run();   // parte subito; l'observer pausa/riavvia quando esce/rientra nel viewport
+  const ob=new IntersectionObserver(e=>{const nv=e[0].isIntersecting;
+   if(nv&&!vis){vis=true;run();}else if(!nv&&vis){vis=false;tk++;}},{threshold:.3});
+  ob.observe(document.getElementById('tripWrap'));
+ }
+})();
 (function(){const labels={s0:'Intro',s1:'Cos\'è 3P',s2:'Governance',s3:'Norme europee',s4:'Vs Copilot',s5:'Takeaway'};
  const nav=document.getElementById('dots');const secs=[...document.querySelectorAll('section')];
  secs.forEach(s=>{const a=document.createElement('a');a.href='#'+s.id;a.innerHTML='<span>'+(labels[s.id]||s.id)+'</span>';a.dataset.id=s.id;nav.appendChild(a);});
