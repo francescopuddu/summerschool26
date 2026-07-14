@@ -877,7 +877,7 @@
           <div class="ccrow act" data-step="1"><span class="ok">✓</span> cartella collegata alla repository</div>
           <div class="ccrow cl" data-step="1">Fatto: la cartella adesso è un progetto Git agganciato al cloud. Dentro ci sono solo i vostri documenti — il codice non esiste ancora — ma da qui posso salvare le versioni e mandarle su GitHub.</div>
 
-          <div class="ccrow you" data-step="2">Nella cartella trovi il foglio con gli ordini di gennaio e le specifiche. /init — «un gestionale degli ordini dei clienti: le mail si incollano e l'AI le trasforma in ordini. Postgres in Docker, back-end FastAPI, front-end React, l'AI solo dal back-end. Commit a ogni pezzo che funziona.»</div>
+          <div class="ccrow you" data-step="2">Nella cartella trovi il foglio con gli ordini di gennaio e le specifiche. /init — «un gestionale degli ordini dei clienti: le mail si incollano e l'AI le trasforma in ordini. I dati in un database, un motore che elabora, le pagine da vedere; l'AI si chiama solo dal motore. Commit a ogni pezzo che funziona.»</div>
           <div class="ccrow act" data-step="2"><span class="run">⏺</span> Leggo <b>ordini_gennaio.xlsx</b> e <b>specifiche.md</b>, guardo la cartella e scrivo le regole del progetto…</div>
           <div class="ccrow act" data-step="2"><span class="ok">✓</span> <b>CLAUDE.md</b> creato</div>
           <div class="ccrow cl" data-step="2">Le vostre scelte sono nel <b>CLAUDE.md</b>, e i vostri documenti sono qui nella cartella: li rileggo da solo a ogni avvio. L'architettura non me la dovete più ripetere.</div>
@@ -929,11 +929,11 @@ Gli ordini dei clienti arrivano per mail, scritti a mano libera. L'app li raccog
 
 ## Le scelte (fisse)
 
-| Pezzo | Scelta |
+| Pezzo | A cosa serve |
 |---|---|
-| Dove stanno i dati | PostgreSQL, dentro Docker |
-| Il motore che elabora | Python con FastAPI |
-| Le pagine che si vedono | React con Vite (niente TypeScript) |
+| Dove stanno i dati | un archivio ordinato, in una scatola isolata sul computer |
+| Il motore che elabora | riceve le mail, applica le regole, chiama l'AI |
+| Le pagine che si vedono | il sito che apri per guardare gli ordini |
 | AI | si chiama **solo** dal motore; la chiave sta nel file `.env` |
 
 ## Regole
