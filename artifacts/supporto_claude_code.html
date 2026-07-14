@@ -167,20 +167,64 @@
   .gitsteps{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;align-items:center}
   .gitsteps .gsep{color:var(--line-strong);font-size:16px}
 
-  /* architettura DB / BE / FE */
-  .arch{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:stretch;margin-top:24px}
-  @media(max-width:760px){.arch{grid-template-columns:1fr;gap:6px}.arch .aarr{transform:rotate(90deg);justify-self:center;padding:6px 0}}
-  .abox{border:1.5px solid var(--line);border-radius:14px;padding:22px 18px;background:var(--card-2);text-align:center;transition:all .25s;cursor:pointer}
+  /* architettura: i pezzi di un'app */
+  .appwrap{position:relative;border:1.5px dashed var(--accent-soft2);border-radius:16px;padding:28px 14px 16px;margin-top:30px}
+  .applab{position:absolute;top:-8px;left:16px;background:#fffdfd;padding:0 8px;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-2)}
+  .arch{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:stretch}
+  .arch2{display:grid;grid-template-columns:1fr 150px 1fr;gap:10px;align-items:stretch}
+  .abox{border:1.5px solid var(--line);border-radius:14px;padding:18px 16px;background:var(--card-2);text-align:center;transition:all .25s;cursor:pointer}
   .abox.on{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 10px 30px -20px rgba(220,38,38,.6);transform:translateY(-3px)}
-  .abox .icn{font-size:26px;line-height:1}
-  .abox .nm{font-weight:800;font-size:15px;margin-top:10px}
-  .abox .tech{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);margin-top:3px}
-  .abox ul{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+  .abox .icn{height:54px;display:flex;align-items:center;justify-content:center}
+  .abox .icn svg{width:72px;height:54px;overflow:visible}
+  .abox .nm{font-weight:800;font-size:15px;margin-top:8px}
+  .abox .role{font-size:12.5px;color:var(--ink-2);margin-top:3px;line-height:1.35}
+  .abox .tech{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:7px}
+  .abox ul{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
   .abox li{font-family:var(--mono);font-size:11.5px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
-  .aarr{display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--line-strong);font-size:20px;padding:0 14px;gap:4px}
-  .aarr small{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.05em}
-  .archdesc{margin-top:22px;font-size:15px;color:var(--ink-2);min-height:44px}
+  .aarr{display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--line-strong);font-size:20px;padding:0 12px;gap:4px}
+  .aarr small{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.05em;white-space:nowrap}
+  /* la forcella: dal motore giù verso servizi esterni e AI */
+  .afork{display:grid;grid-template-columns:1fr 150px 1fr;gap:10px;height:60px}
+  .afork .fk{position:relative}
+  .afork .hl{position:absolute;top:24px;height:1.5px;background:var(--line-strong);opacity:.8}
+  .afork .fk.l .hl{left:50%;right:-10px}
+  .afork .fk.mid .hl{left:0;right:0}
+  .afork .fk.r .hl{left:-10px;right:50%}
+  .afork .vl{position:absolute;left:50%;width:1.5px;background:var(--line-strong);opacity:.8;transform:translateX(-50%)}
+  .afork .fk.l .vl,.afork .fk.r .vl{top:24px;bottom:8px}
+  .afork .fk.mid .vl{top:8px;height:16px}
+  .afork .fk.l::after,.afork .fk.r::after{content:'';position:absolute;left:50%;bottom:0;transform:translateX(-50%);border-left:4.5px solid transparent;border-right:4.5px solid transparent;border-top:8px solid var(--line-strong);opacity:.8}
+  .afork .fk.mid::before{content:'';position:absolute;left:50%;top:0;transform:translateX(-50%);border-left:4.5px solid transparent;border-right:4.5px solid transparent;border-bottom:8px solid var(--line-strong);opacity:.8}
+  .afork small{position:absolute;left:calc(50% + 10px);bottom:5px;font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.05em;white-space:nowrap}
+  .afork .fk.mid small{display:none}
+  /* l'agente raggiunge i servizi da solo */
+  .aarr.dash{min-width:150px;padding:0 4px}
+  .aarr.dash .dl{width:100%;border-top:1.5px dashed var(--accent);opacity:.55;position:relative;margin-bottom:9px}
+  .aarr.dash .dl::before{content:'⇠';position:absolute;left:-2px;top:-12px;font-size:13px;color:var(--accent);opacity:.9}
+  .aarr.dash .dl::after{content:'⇢';position:absolute;right:-2px;top:-12px;font-size:13px;color:var(--accent);opacity:.9}
+  .aarr.dash small{font-family:var(--sans);font-size:11px;color:var(--accent-2);text-align:center;line-height:1.35;white-space:normal}
+  @media(max-width:760px){
+    .arch{grid-template-columns:1fr;gap:6px}
+    .arch .aarr{flex-direction:row;gap:8px;padding:8px 0}
+    .arch .aarr .g{display:inline-block;transform:rotate(90deg)}
+    .arch2{grid-template-columns:1fr;gap:6px}
+    .aarr.dash{min-width:0;padding:12px 0}
+    .afork{grid-template-columns:1fr;height:48px}
+    .afork .fk.l,.afork .fk.r{display:none}
+    .afork .fk.mid .hl{display:none}
+    .afork .fk.mid .vl{top:8px;bottom:8px;height:auto}
+    .afork .fk.mid::after{content:'';position:absolute;left:50%;bottom:0;transform:translateX(-50%);border-left:4.5px solid transparent;border-right:4.5px solid transparent;border-top:8px solid var(--line-strong);opacity:.8}
+    .afork .fk.mid small{display:block}
+  }
+  .archdesc{margin-top:22px;font-size:15px;color:var(--ink-2);min-height:66px}
   .archdesc b{color:var(--ink)}
+  /* tutto viaggia in JSON */
+  .jsonbar{margin-top:18px;border:1px solid var(--line);border-radius:12px;background:var(--card-2);padding:13px 15px}
+  .jbcode{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);overflow-x:auto;white-space:nowrap;padding-bottom:3px}
+  .jbcode .k{color:var(--accent-2);font-weight:700}
+  .jbcode .s{color:var(--green)}
+  .jbnote{margin:9px 0 0;font-size:13.5px;color:var(--ink-2)}
+  .jbnote b{color:var(--ink)}
 
   /* steps numerati */
   .steps{counter-reset:st;display:flex;flex-direction:column;gap:0;margin-top:8px}
@@ -472,34 +516,146 @@
 <!-- ============ 03 ARCHITETTURA IN UN FILE ============ -->
 <section id="s3"><div class="wrap reveal">
   <div class="kicker"><span class="n">03</span> L'architettura, già decisa</div>
-  <h2>Le scelte tecniche ve le diamo noi: <span class="em">in un file</span></h2>
-  <p class="lead">Un'app è fatta di pezzi, e sceglierli — quale database, quale linguaggio, come si parlano — è l'unico punto dove servirebbe davvero un ingegnere. Quel lavoro è <b>già fatto</b>: un file di testo con le scelte architetturali, da mettere nella cartella del progetto. Claude Code lo legge da solo e ci si attiene. A voi resta solo la consegna.</p>
+  <h2>Un'app è fatta di pezzi: <span class="em">questi cinque</span></h2>
+  <p class="lead">Sceglierli — quale database, quale linguaggio, come si parlano — è l'unico punto dove servirebbe davvero un ingegnere. Quel lavoro è <b>già fatto</b>: un file di testo con le scelte architetturali, da mettere nella cartella del progetto. Claude Code lo legge da solo e ci si attiene. A voi basta sapere <b>cosa fa ogni pezzo</b>, per seguire cosa succede dove.</p>
 
   <div class="panel star">
-    <div class="badge">Le scelte scritte nel file — clicca sui blocchi</div>
-    <div class="arch" id="arch">
-      <div class="abox" data-i="0">
-        <div class="icn">🗄️</div>
-        <div class="nm">Database</div>
-        <div class="tech">Postgres · in Docker</div>
-        <ul><li>mezzi</li><li>manutentori</li><li>revisioni</li></ul>
-      </div>
-      <div class="aarr">⇄<small>API</small></div>
-      <div class="abox" data-i="1">
-        <div class="icn">⚙️</div>
-        <div class="nm">Back-end</div>
-        <div class="tech">Python · FastAPI</div>
-        <ul><li>espone le API</li><li>regole &amp; calcoli</li><li>parla con ERP e AI</li></ul>
-      </div>
-      <div class="aarr">⇄<small>API</small></div>
-      <div class="abox" data-i="2">
-        <div class="icn">🖥️</div>
-        <div class="nm">Front-end</div>
-        <div class="tech">React · Vite</div>
-        <ul><li>pagine &amp; bottoni</li><li>tabelle e stati</li><li>l'interazione</li></ul>
+    <div class="badge">I pezzi di un'app — clicca sui blocchi</div>
+
+    <div class="appwrap">
+      <span class="applab">la vostra app</span>
+      <div class="arch">
+        <div class="abox" data-i="0">
+          <div class="icn">
+            <svg viewBox="0 0 56 44" role="img" aria-label="Finestra di un browser con una tabella e un bottone">
+              <rect x="4" y="6" width="48" height="33" rx="4" class="sv-panel"/>
+              <path d="M4 10a4 4 0 0 1 4-4h40a4 4 0 0 1 4 4v3H4z" fill="#f0eee8"/>
+              <line x1="4" y1="13" x2="52" y2="13" stroke="var(--line)"/>
+              <circle cx="9" cy="9.5" r="1.4" fill="var(--accent)" opacity=".7"/>
+              <circle cx="14" cy="9.5" r="1.4" fill="var(--line-strong)" opacity=".6"/>
+              <circle cx="19" cy="9.5" r="1.4" fill="var(--line-strong)" opacity=".6"/>
+              <rect x="9" y="18" width="22" height="3.2" rx="1.6" fill="var(--line-strong)"/>
+              <rect x="9" y="24.5" width="38" height="2.4" rx="1.2" fill="var(--line)"/>
+              <rect x="9" y="29.5" width="38" height="2.4" rx="1.2" fill="var(--line)"/>
+              <rect x="31" y="33.5" width="16" height="5" rx="2.5" fill="var(--accent)" opacity=".85"/>
+            </svg>
+          </div>
+          <div class="nm">Interfaccia</div>
+          <div class="role">il sito web: quello che si vede e si clicca</div>
+          <div class="tech">React · Vite</div>
+          <ul><li>pagine e bottoni</li><li>tabelle e stati</li></ul>
+        </div>
+
+        <div class="aarr"><span class="g">⇄</span><small>API · JSON</small></div>
+
+        <div class="abox" data-i="1">
+          <div class="icn">
+            <svg viewBox="0 0 56 44" role="img" aria-label="Un motore con un ingranaggio e i condotti che entrano ed escono">
+              <path d="M2 15h8M2 29h8M46 15h8M46 29h8M28 38v5" fill="none" stroke="var(--line-strong)" stroke-width="1.5" stroke-linecap="round"/>
+              <rect x="10" y="6" width="36" height="32" rx="6" class="sv-panel"/>
+              <g transform="translate(28,22)">
+                <g class="spin" stroke="var(--accent)" fill="none" stroke-linecap="round">
+                  <circle r="8" stroke-width="2.2"/>
+                  <circle r="2.8" stroke-width="1.5" opacity=".55"/>
+                  <g stroke-width="2.2">
+                    <path d="M0-8v-3"/><path d="M0 8v3"/><path d="M-8 0h-3"/><path d="M8 0h3"/>
+                    <path d="M-5.7-5.7l-2.1-2.1"/><path d="M5.7 5.7l2.1 2.1"/><path d="M5.7-5.7l2.1-2.1"/><path d="M-5.7 5.7l-2.1 2.1"/>
+                  </g>
+                </g>
+              </g>
+            </svg>
+          </div>
+          <div class="nm">Back-end</div>
+          <div class="role"><b>il motore</b>: le regole di funzionamento</div>
+          <div class="tech">Python · FastAPI</div>
+          <ul><li>decide cosa succede</li><li>controlli e calcoli</li><li>coordina tutto</li></ul>
+        </div>
+
+        <div class="aarr"><span class="g">⇄</span><small>API · JSON</small></div>
+
+        <div class="abox" data-i="2">
+          <div class="icn">
+            <svg viewBox="0 0 56 44" role="img" aria-label="Un database a cilindri con i dati archiviati">
+              <g fill="var(--card)" stroke="var(--line-strong)" stroke-width="1.4">
+                <path d="M13 21v9c0 2.8 6.7 5 15 5s15-2.2 15-5v-9z"/>
+                <path d="M13 11v10c0 2.8 6.7 5 15 5s15-2.2 15-5V11z"/>
+                <ellipse cx="28" cy="11" rx="15" ry="5"/>
+              </g>
+              <ellipse cx="28" cy="21" rx="15" ry="5" fill="none" stroke="var(--line)" stroke-width="1.2"/>
+              <rect class="cell" x="19" y="28" width="18" height="3.4" rx="1.7" fill="var(--accent)" opacity="0"/>
+              <rect class="cell c2" x="19" y="17.5" width="18" height="3.4" rx="1.7" fill="var(--accent)" opacity="0"/>
+            </svg>
+          </div>
+          <div class="nm">Database</div>
+          <div class="role">la memoria: i dati che restano</div>
+          <div class="tech">Postgres · Docker</div>
+          <ul><li>mezzi</li><li>manutentori</li><li>revisioni</li></ul>
+        </div>
       </div>
     </div>
-    <p class="archdesc" id="archDesc">Tre pezzi, ognuno col suo mestiere, che si parlano tramite <b>API</b>. Non dovete progettarli né saperli configurare: sono le scelte già scritte nel file qui sotto. Le quattro parole servono solo a <b>seguire cosa succede dove</b>.</p>
+
+    <div class="afork">
+      <div class="fk l"><span class="hl"></span><span class="vl"></span><small>API · JSON</small></div>
+      <div class="fk mid"><span class="hl"></span><span class="vl"></span><small>API · JSON</small></div>
+      <div class="fk r"><span class="hl"></span><span class="vl"></span><small>API · JSON</small></div>
+    </div>
+
+    <div class="arch2">
+      <div class="abox ext" data-i="3">
+        <div class="icn">
+          <svg viewBox="0 0 56 44" role="img" aria-label="Tre sistemi esterni collegati: ERP, CRM e la posta">
+            <path d="M14 21v4h28v-4M28 25v3" fill="none" stroke="var(--line-strong)" stroke-width="1.2" stroke-dasharray="2.5 2.5" opacity=".8"/>
+            <rect x="3" y="7" width="22" height="14" rx="3" class="sv-panel"/>
+            <text x="8" y="16.6" class="sv-lab" style="font-size:7px;fill:var(--ink-2)">ERP</text>
+            <rect x="31" y="7" width="22" height="14" rx="3" class="sv-panel"/>
+            <text x="35.5" y="16.6" class="sv-lab" style="font-size:7px;fill:var(--ink-2)">CRM</text>
+            <rect x="17" y="27" width="22" height="14" rx="3" class="sv-panel"/>
+            <path d="M21.5 30.5h13v7h-13z" fill="none" stroke="var(--accent)" stroke-width="1.2" opacity=".85"/>
+            <path d="M21.5 30.5L28 35l6.5-4.5" fill="none" stroke="var(--accent)" stroke-width="1.2" opacity=".85"/>
+          </svg>
+        </div>
+        <div class="nm">Servizi esterni</div>
+        <div class="role">i sistemi che avete già in azienda</div>
+        <div class="tech">ERP · CRM · gestionale · Gmail</div>
+        <ul><li>non si riscrivono</li><li>si collegano via API</li></ul>
+      </div>
+
+      <div class="aarr dash">
+        <span class="dl"></span>
+        <small>anche l'agente<br>usa i servizi</small>
+      </div>
+
+      <div class="abox ai" data-i="4">
+        <div class="icn">
+          <svg viewBox="0 0 56 44" role="img" aria-label="Un agente AI collegato ai suoi strumenti">
+            <path d="M28 21v4M12 29v-4h32v4" fill="none" stroke="var(--line-strong)" stroke-width="1.2"/>
+            <g class="beat">
+              <circle cx="28" cy="12" r="8.5" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+              <path d="M28 7v10M23 12h10M24.5 8.5l7 7M31.5 8.5l-7 7" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" opacity=".85"/>
+            </g>
+            <rect x="6" y="29" width="12" height="10" rx="2.5" class="sv-panel"/>
+            <rect x="22" y="29" width="12" height="10" rx="2.5" class="sv-panel"/>
+            <rect x="38" y="29" width="12" height="10" rx="2.5" class="sv-panel"/>
+            <g fill="var(--line-strong)">
+              <rect x="9" y="33" width="6" height="2.2" rx="1.1"/>
+              <rect x="25" y="33" width="6" height="2.2" rx="1.1"/>
+              <rect x="41" y="33" width="6" height="2.2" rx="1.1"/>
+            </g>
+          </svg>
+        </div>
+        <div class="nm">Moduli AI</div>
+        <div class="role">l'agente: capisce, decide, usa gli strumenti</div>
+        <div class="tech">Claude · API</div>
+        <ul><li>legge e riassume</li><li>ha i suoi tool</li></ul>
+      </div>
+    </div>
+
+    <p class="archdesc" id="archDesc">Cinque pezzi, ognuno col suo mestiere. Si parlano tutti allo stesso modo — via <b>API</b>: uno chiede, l'altro risponde con un pacchetto di dati in <b>JSON</b>. Non dovete progettarli né configurarli: sono le scelte già scritte nel file qui sotto.</p>
+
+    <div class="jsonbar">
+      <div class="jbcode"><span class="k">POST</span> /api/revisioni &nbsp;→&nbsp; { <span class="s">"mezzo"</span>: <span class="s">"ETR-500"</span>, <span class="s">"stato"</span>: <span class="s">"da revisionare"</span>, <span class="s">"scadenza"</span>: <span class="s">"2026-09-01"</span> }</div>
+      <p class="jbnote">È sempre questo il formato, tra qualunque coppia di blocchi: che l'interfaccia chieda al motore, che il motore interroghi l'ERP o il modello AI, viaggia una <b>richiesta</b> e torna una <b>risposta in JSON</b> — testo strutturato, con nomi e valori, che tutti i pezzi sanno leggere. Per questo si incastrano.</p>
+    </div>
   </div>
 
   <div class="filecard">
@@ -572,7 +728,7 @@ progetto/
   <div class="panel star">
     <div class="badge doer">Demo · dashboard treni</div>
     <div class="steps">
-      <div class="st"><p><b>Il punto di partenza.</b> Una cartella con dentro solo il <span class="mono">CLAUDE.md</span> dell'architettura. Il primo prompt è la consegna del gestionale: Claude legge il file e tira su i tre pezzi da solo — nessuna scelta tecnica da fare dal vivo.</p></div>
+      <div class="st"><p><b>Il punto di partenza.</b> Una cartella con dentro solo il <span class="mono">CLAUDE.md</span> dell'architettura. Il primo prompt è la consegna del gestionale: Claude legge il file e tira su i pezzi dell'app da solo — nessuna scelta tecnica da fare dal vivo.</p></div>
       <div class="st"><p><b>La fonte dati: un ERP mockato.</b> Un componente preparato in anticipo che, ricevute le chiamate, risponde con dati presi da un JSON prefatto — mezzi, manutentori con le loro disponibilità, revisioni con le scadenze. "Mockare" è a sua volta un concetto da fissare: per costruire l'app non serve il sistema vero.</p></div>
       <div class="st"><p><b>La dashboard.</b> Visione d'insieme dei mezzi con lo stato delle revisioni e dei controlli obbligatori a scadenza: otto mezzi di categoria tre, tre con revisione fatta, cinque da fare.</p></div>
       <div class="st"><p><b>Il bottone "Organizza revisione".</b> Crea l'agenda del giorno o della settimana dei manutentori, incrociando revisioni da fare e disponibilità.</p></div>
@@ -700,19 +856,21 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
 
 /* ---------- architettura: click sui blocchi ---------- */
 (function(){
-  const boxes=[...document.querySelectorAll('#arch .abox')];
+  const boxes=[...document.querySelectorAll('#s3 .abox')];
   const desc=document.getElementById('archDesc');
+  const def=desc.innerHTML;
   const texts=[
-    '<b>Il database</b> è la memoria: tabelle con i mezzi, i manutentori e le revisioni. Il file fissa Postgres, acceso con un comando via Docker — nel pomeriggio migrerà in cloud.',
-    '<b>Il back-end</b> è la logica: espone le API, applica le regole (chi è disponibile? cosa scade?), chiama l\'ERP mockato e il modello AI. Il file fissa Python con FastAPI.',
-    '<b>Il front-end</b> è quello che vedete e toccate: le pagine, le tabelle, il bottone "Organizza revisione". Il file fissa React con Vite; parla col back-end tramite le API.'
+    '<b>L\'interfaccia</b> è il sito web: le pagine, le tabelle, il bottone "Organizza revisione". Non contiene né i dati né le regole — li chiede al motore e mostra quello che torna. Il file fissa React con Vite.',
+    '<b>Il back-end è il motore</b>: il pezzo che non si vede e fa funzionare tutto. Applica le regole (chi è disponibile? cosa scade?), fa i calcoli, salva sul database, interroga l\'ERP, chiama l\'AI. Ogni bottone che premete arriva qui. Il file fissa Python con FastAPI.',
+    '<b>Il database</b> è la memoria: le tabelle con i mezzi, i manutentori, le revisioni. I dati restano lì anche a browser chiuso, e li vedono tutti quelli che usano l\'app. Il file fissa Postgres, acceso con un comando via Docker.',
+    '<b>I servizi esterni</b> sono i sistemi che avete già: l\'ERP, il CRM, il gestionale, la posta. Non si riscrivono — si <b>collegano</b>: l\'app chiede, loro rispondono. In demo l\'ERP è mockato, ma il meccanismo è quello vero.',
+    '<b>I moduli AI</b> sono il modello che legge, riassume, decide — chiamato via API come ogni altro servizio. E un <b>agente</b> non risponde soltanto: gli si danno gli <b>strumenti</b> (i tool) e può usarli da solo — leggere l\'ERP, aggiornare una revisione, mandare la mail al manutentore.'
   ];
-  const def='Tre pezzi, ognuno col suo mestiere, che si parlano tramite <b>API</b>: richieste e risposte con un formato concordato. Tutto già deciso nel file qui sotto.';
-  boxes.forEach((b,i)=>b.addEventListener('click',()=>{
+  boxes.forEach(b=>b.addEventListener('click',()=>{
     const was=b.classList.contains('on');
     boxes.forEach(x=>x.classList.remove('on'));
     if(was){desc.innerHTML=def;return;}
-    b.classList.add('on');desc.innerHTML=texts[i];
+    b.classList.add('on');desc.innerHTML=texts[+b.dataset.i];
   }));
 })();
 
