@@ -262,14 +262,14 @@
   .linkbox .d{font-size:14px;color:var(--ink-2);margin-top:3px}
 
   /* la richiesta del capo */
-  .brief{display:flex;gap:16px;align-items:flex-start;border:1px solid var(--line);border-left:4px solid var(--accent);
+  .boss{display:flex;gap:16px;align-items:flex-start;border:1px solid var(--line);border-left:4px solid var(--accent);
     background:var(--card);border-radius:0 14px 14px 0;padding:18px 22px;margin-top:24px;
     box-shadow:0 1px 0 var(--line),0 14px 34px -30px rgba(0,0,0,.35)}
-  .brief .who{font-size:26px;line-height:1.1;flex-shrink:0}
-  .brief .lb{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:800;margin-bottom:6px}
-  .brief q{font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.55;color:var(--ink);display:block}
-  .brief .after{margin:10px 0 0;font-size:14.5px;color:var(--ink-2)}
-  @media(max-width:640px){.brief{padding:16px}.brief q{font-size:17px}}
+  .boss .who{font-size:26px;line-height:1.1;flex-shrink:0}
+  .boss .lb{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:800;margin-bottom:6px}
+  .boss q{font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.55;color:var(--ink);display:block}
+  .boss .after{margin:10px 0 0;font-size:14.5px;color:var(--ink-2)}
+  @media(max-width:640px){.boss{padding:16px}.boss q{font-size:17px}}
 
   /* card del file CLAUDE.md */
   .filecard{border:1.5px solid var(--line-strong);border-radius:14px;overflow:hidden;margin-top:26px;background:var(--card);
@@ -832,7 +832,16 @@
 <section id="s5"><div class="wrap reveal">
   <div class="kicker"><span class="n">06</span> Il metodo</div>
   <h2>Da zero a "sto lavorando": <span class="em">cinque step</span></h2>
-  <p class="lead">Un progetto non comincia con un prompt: comincia con <b>una cartella</b>. La si apre, e da lì in poi si parla — la repository, il file delle regole, il primo pezzo di software: <b>tutto si chiede a Claude in italiano</b>, dentro la stessa finestra. Gli strumenti del capitolo 02 sono già installati e da qui in avanti lavorano per voi, sotto il cofano.</p>
+  <p class="lead">Un progetto non comincia con un prompt: comincia con <b>una cartella</b>. La si apre, e da lì in poi si parla — la repository, il file delle regole, il primo pezzo di software: <b>tutto si chiede a Claude in italiano</b>, dentro la stessa finestra. Gli strumenti del capitolo 02 sono già installati e da qui in avanti lavorano per voi, sotto il cofano. Qui sotto i cinque step si vedono su un <b>progetto piccolo di esempio</b>, diverso da quello della demo.</p>
+
+  <div class="boss">
+    <span class="who">🧑‍💼</span>
+    <div>
+      <div class="lb">La richiesta</div>
+      <q>Gli ordini dei clienti ci arrivano per mail, ognuno scritto a modo suo, e qualcuno li ricopia a mano su un Excel. Mi serve una pagina dove incollo la mail e l'ordine si scrive da solo, e dove vedo a colpo d'occhio cosa è partito e cosa no.</q>
+      <p class="after">Questo è tutto quello che si sa del progetto: nessuna scelta tecnica, nessun documento. Nei cinque step qui sotto diventa software.</p>
+    </div>
+  </div>
 
   <div class="panel star">
     <div class="badge doer">La sequenza di avvio</div>
@@ -852,25 +861,25 @@
             <button class="ccopen pulse" id="ccOpenBtn">Apri una cartella…</button>
           </div>
 
-          <div class="ccrow you" data-step="1">Crea una repository su GitHub per questo progetto — chiamala <b>manutenzione-treni</b>, privata — e collegala a questa cartella.</div>
+          <div class="ccrow you" data-step="1">Crea una repository su GitHub per questo progetto — chiamala <b>gestionale-ordini</b>, privata — e collegala a questa cartella.</div>
           <div class="ccrow act" data-step="1"><span class="run">⏺</span> Creo la repository e la collego alla cartella…</div>
-          <div class="ccrow act" data-step="1"><span class="ok">✓</span> repository creata: <b>tuonome/manutenzione-treni</b> · privata</div>
+          <div class="ccrow act" data-step="1"><span class="ok">✓</span> repository creata: <b>tuonome/gestionale-ordini</b> · privata</div>
           <div class="ccrow act" data-step="1"><span class="ok">✓</span> cartella collegata alla repository</div>
           <div class="ccrow cl" data-step="1">Fatto: la cartella adesso è un progetto Git agganciato al cloud. È vuota — il codice non esiste ancora — ma da qui posso salvare le versioni e mandarle su GitHub.</div>
 
-          <div class="ccrow you" data-step="2">/init — «un gestionale per la manutenzione dei treni: Postgres in Docker, back-end FastAPI, front-end React, l'AI solo dal back-end. Commit a ogni pezzo che funziona.»</div>
+          <div class="ccrow you" data-step="2">/init — «un gestionale degli ordini dei clienti: le mail si incollano e l'AI le trasforma in ordini. Postgres in Docker, back-end FastAPI, front-end React, l'AI solo dal back-end. Commit a ogni pezzo che funziona.»</div>
           <div class="ccrow act" data-step="2"><span class="run">⏺</span> Guardo la cartella e scrivo le regole del progetto…</div>
           <div class="ccrow act" data-step="2"><span class="ok">✓</span> <b>CLAUDE.md</b> creato</div>
           <div class="ccrow cl" data-step="2">Le vostre scelte sono nel <b>CLAUDE.md</b>. Lo rileggo da solo a ogni avvio: l'architettura non me la dovete più ripetere.</div>
 
-          <div class="ccrow you" data-step="3">Iniziamo: creiamo la dashboard dei mezzi con lo stato delle revisioni.</div>
+          <div class="ccrow you" data-step="3">Iniziamo: la pagina con l'elenco degli ordini e lo stato di ognuno.</div>
           <div class="ccrow act" data-step="3"><span class="run">⏺</span> Database, back-end, front-end…</div>
-          <div class="ccrow act" data-step="3"><span class="ok">✓</span> 14 file creati · la dashboard gira su <b>localhost:5173</b></div>
-          <div class="ccrow cl" data-step="3">La dashboard c'è e funziona. Prima di andare avanti conviene salvare questo pezzo.</div>
+          <div class="ccrow act" data-step="3"><span class="ok">✓</span> 14 file creati · la pagina gira su <b>localhost:5173</b></div>
+          <div class="ccrow cl" data-step="3">L'elenco degli ordini c'è e funziona. Prima di andare avanti conviene salvare questo pezzo.</div>
 
           <div class="ccrow you" data-step="4">Ok: salva e manda su GitHub.</div>
-          <div class="ccrow act" data-step="4"><span class="ok">✓</span> commit — <b>"dashboard mezzi con stato revisioni"</b></div>
-          <div class="ccrow act" data-step="4"><span class="ok">✓</span> push su <b>tuonome/manutenzione-treni</b></div>
+          <div class="ccrow act" data-step="4"><span class="ok">✓</span> commit — <b>"elenco ordini con stato"</b></div>
+          <div class="ccrow act" data-step="4"><span class="ok">✓</span> push su <b>tuonome/gestionale-ordini</b></div>
           <div class="ccrow cl" data-step="4">Checkpoint salvato, in locale e nel cloud. Se la prossima vibata va male, si torna qui.</div>
 
           <div class="ccinput off" id="ccInput"><span class="cr">&gt;</span> <span class="ph">scrivi a Claude</span></div>
@@ -895,48 +904,49 @@
   <div class="filecard">
     <div class="filebar">
       <span class="fname">📄 CLAUDE.md</span>
-      <span class="fdesc">il risultato dello step 03 — Claude Code lo rilegge a ogni avvio</span>
+      <span class="fdesc">il risultato dello step 03, sul progetto degli ordini — Claude Code lo rilegge a ogni avvio</span>
       <span class="fbtns">
         <button class="fbtn" id="cmCopy">📋 Copia</button>
-        <button class="fbtn dark" id="cmDl">↓ Scarica CLAUDE.md</button>
       </span>
     </div>
-<pre id="claudemdSrc"># CLAUDE.md — Gestionale manutenzione treni (Summer School)
+<pre id="claudemdSrc"># CLAUDE.md — Gestionale ordini (Summer School)
 
-Sei il builder di questo progetto. Le scelte di architettura sono già state fatte e **non sono in discussione**: qualunque funzionalità ti venga chiesta, va costruita dentro questi binari. Se una richiesta sembra richiedere di uscirne, fermati e spiega il problema invece di improvvisare.
+Costruisci questo progetto per una persona che non è uno sviluppatore. Le scelte qui sotto sono già state fatte: non cambiarle. Se una richiesta sembra costringerti a uscirne, fermati e spiegami il problema invece di inventare.
+
+## Cosa stiamo costruendo
+
+Gli ordini dei clienti arrivano per mail, scritti a mano libera. L'app li raccoglie, l'AI li trasforma in ordini ordinati (cliente, articoli, quantità, data) e una pagina mostra lo stato di ognuno fino alla consegna.
 
 ## Le scelte (fisse)
 
 | Pezzo | Scelta |
 |---|---|
-| Database | PostgreSQL 16 in Docker (`docker compose up -d`), porta 5432, dati in un volume |
-| Back-end | Python 3.12 + FastAPI, avviato con uvicorn sulla porta 8000 |
-| Front-end | React + Vite, JavaScript semplice (niente TypeScript), dev server sulla porta 5173 |
-| API | REST in JSON tra front-end e back-end; il front-end parla **solo** col back-end |
-| AI | chiamate al modello **solo dal back-end**, con la libreria `anthropic`; chiave e nome del modello letti da `.env` |
+| Database | PostgreSQL, dentro Docker |
+| Back-end | Python con FastAPI |
+| Front-end | React con Vite, JavaScript semplice (niente TypeScript) |
+| AI | si chiama **solo** dal back-end; la chiave sta nel file `.env` |
 
 ## Struttura del progetto
 
 ```
 progetto/
-├── docker-compose.yml      # solo il database
-├── CLAUDE.md               # questo file
-├── README.md               # i comandi per avviare tutto (tienilo aggiornato)
-├── .env / .env.example     # configurazione e segreti (.env NON si committa)
-├── backend/                # FastAPI: API, logica, accesso al DB, chiamate AI
-└── frontend/               # React + Vite: pagine e componenti
+├── docker-compose.yml   # il database
+├── CLAUDE.md            # questo file
+├── README.md            # come si avvia tutto
+├── .env                 # chiavi e password — non finisce mai su GitHub
+├── backend/             # dati, regole, chiamate all'AI
+└── frontend/            # le pagine che si vedono
 ```
 
 ## Regole
 
-- **Semplicità prima di tutto.** Chi guida questo progetto non è uno sviluppatore. Niente autenticazione, niente TypeScript, niente ORM/framework/librerie oltre a quelli indicati — se qualcosa in più ti sembra davvero necessario, proponilo prima e spiega perché.
-- **Database.** Schema creato da uno script rilanciabile (SQL o SQLAlchemy `create_all`) + script di seed. Niente sistemi di migrazione.
-- **Segreti.** `ANTHROPIC_API_KEY` e ogni credenziale vivono solo in `.env`: mai committati, mai nel front-end. Tieni aggiornato `.env.example` con le variabili richieste.
-- **Avvio in 3 comandi.** `docker compose up -d`, avvio del back-end, avvio del front-end. Il README li riporta sempre, aggiornati e copia-incollabili.
-- **Git.** A ogni iterazione che funziona, proponi commit + push (messaggi brevi, in italiano).
-- **Spiega mentre lavori.** Chi legge non conosce il codice: quando finisci una modifica, di' in una riga *dove* hai toccato — database, back-end o front-end.</pre>
+- **Semplice.** Niente pezzi in più oltre a quelli qui sopra: se te ne serve uno, chiedimelo prima e spiegami perché.
+- **Segreti.** Chiavi e password solo nel `.env`. Mai nel codice, mai su GitHub.
+- **Si avvia in tre comandi.** Tienili scritti nel README, sempre aggiornati.
+- **Checkpoint.** A ogni pezzo che funziona: commit e push, messaggi brevi in italiano.
+- **Parlami da non tecnico.** Quando hai finito, dimmi in una riga dove hai messo le mani: database, back-end o front-end.</pre>
   </div>
-  <p class="hint">Questo è il file che <span class="mono">/init</span> vi restituisce: le scelte fisse dell'architettura del capitolo 04, più le regole di lavoro. Se il vostro viene diverso, sovrascrivetelo con questo — per la demo e per l'esercitazione partiamo tutti dalla stessa architettura.</p>
+  <p class="hint">Questo è il file che <span class="mono">/init</span> vi restituisce: la richiesta del capo diventata scelte fisse, più le regole di lavoro. L'esempio è sul progetto degli ordini; per la demo e per l'esercitazione di oggi il <span class="mono">CLAUDE.md</span> — stesso schema, sul gestionale dei treni — ce l'avete già nella cartella.</p>
 
 </div></section>
 
@@ -974,7 +984,7 @@ Ultima cosa, da dove arrivano i dati. Internamente esiste l'ERP aziendale, da cu
   <div class="panel star">
     <div class="badge doer">Demo · dashboard treni</div>
     <div class="steps">
-      <div class="st"><p><b>Il punto di partenza.</b> I cinque step appena visti, già fatti: la cartella è aperta e agganciata alla repo, e dentro c'è solo il <span class="mono">CLAUDE.md</span> uscito da <span class="cmd">/init</span>. Il primo prompt è la consegna del gestionale: Claude legge il file e tira su i pezzi dell'app da solo — nessuna scelta tecnica da fare dal vivo.</p></div>
+      <div class="st"><p><b>Il punto di partenza.</b> Gli stessi cinque step del capitolo 06, stavolta sul gestionale dei treni e già fatti: la cartella è aperta e agganciata alla repo, e dentro c'è solo il <span class="mono">CLAUDE.md</span> uscito da <span class="cmd">/init</span>. Il primo prompt è la consegna del gestionale: Claude legge il file e tira su i pezzi dell'app da solo — nessuna scelta tecnica da fare dal vivo.</p></div>
       <div class="st"><p><b>La fonte dati: un ERP mockato.</b> Un componente preparato in anticipo che, ricevute le chiamate, risponde con dati presi da un JSON prefatto — mezzi, manutentori con le loro disponibilità, revisioni con le scadenze. "Mockare" è a sua volta un concetto da fissare: per costruire l'app non serve il sistema vero.</p></div>
       <div class="st"><p><b>La dashboard.</b> Visione d'insieme dei mezzi con lo stato delle revisioni e dei controlli obbligatori a scadenza: otto mezzi di categoria tre, due in regola, sei da sistemare. E un mezzo, l'ETR-350-04, con due controlli già <b>scaduti</b>: è il caso che nessuno aveva visto.</p></div>
       <div class="st"><p><b>Il bottone "Organizza revisione".</b> Crea l'agenda del giorno o della settimana dei manutentori, incrociando revisioni da fare e disponibilità.</p></div>
@@ -1003,7 +1013,7 @@ Ultima cosa, da dove arrivano i dati. Internamente esiste l'ERP aziendale, da cu
 <section id="s7"><div class="wrap reveal">
   <div class="kicker"><span class="n">08</span> Da fare</div>
   <h2>Hands-on: il documento <span class="em">del revisore</span></h2>
-  <p class="lead">Esercitazione su consegna assegnata. Non un'app nuova: <b>una pagina in più della stessa app</b> appena vista — così si riusa tutto il contesto della demo. E niente scelte tecniche neanche qui: il <span class="mono">CLAUDE.md</span> del capitolo 06 è già nella cartella, a voi serve solo descrivere bene la consegna.</p>
+  <p class="lead">Esercitazione su consegna assegnata. Non un'app nuova: <b>una pagina in più della stessa app</b> appena vista — così si riusa tutto il contesto della demo. E niente scelte tecniche neanche qui: il <span class="mono">CLAUDE.md</span> del progetto è già nella cartella, a voi serve solo descrivere bene la consegna.</p>
 
   <div class="panel star">
     <div class="badge you">Hands-on · ~2 ore</div>
@@ -1129,7 +1139,7 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   let phase=0,busy=false,timers=[];
 
   // phase 0: si apre la cartella · 1..4: la conversazione · 5: fine
-  const LABEL=['','▶ «Crea una repository e collegala…»','▶ /init — «il gestionale dei treni…»','▶ «Creiamo la dashboard dei mezzi»','▶ «Salva e manda su GitHub»','↺ Ricomincia'];
+  const LABEL=['','▶ «Crea una repository e collegala…»','▶ /init — «il gestionale degli ordini…»','▶ «La pagina con l\'elenco degli ordini»','▶ «Salva e manda su GitHub»','↺ Ricomincia'];
   const HINT=[
     'Si comincia da qui: clicca <b>Apri una cartella…</b>.',
     'Claude ora vede la cartella, ed è vuota. La repository non si va a creare a mano: <b>gliela si chiede</b>.',
@@ -1185,7 +1195,7 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
     if(phase!==0)return;
     openBtn.classList.remove('pulse');
     empty.hidden=true;
-    fold.textContent='📁 ~/manutenzione-treni';fold.classList.add('on');
+    fold.textContent='📁 ~/gestionale-ordini';fold.classList.add('on');
     win.classList.add('live');input.classList.remove('off');
     steps[0].classList.add('on');
     phase=1;setBtn();say();
@@ -1210,7 +1220,7 @@ document.querySelectorAll('.cmdbox .cmdcopy').forEach(b=>{
   });
 });
 
-/* ---------- CLAUDE.md: copia + download ---------- */
+/* ---------- CLAUDE.md: copia ---------- */
 (function(){
   const src=document.getElementById('claudemdSrc');
   const copy=document.getElementById('cmCopy');
@@ -1218,11 +1228,6 @@ document.querySelectorAll('.cmdbox .cmdcopy').forEach(b=>{
     navigator.clipboard.writeText(src.textContent).then(()=>{
       copy.textContent='✓ Copiato';setTimeout(()=>{copy.textContent='📋 Copia';},1600);
     });
-  });
-  document.getElementById('cmDl').addEventListener('click',()=>{
-    const b=new Blob([src.textContent],{type:'text/markdown'});
-    const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='CLAUDE.md';
-    document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(a.href);
   });
 })();
 
