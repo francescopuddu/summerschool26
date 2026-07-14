@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Claude di terze parti — extra Giornata 2</title>
+<style>
+  :root{
+    --paper:#f1efe8; --paper-2:#e9e6dd;
+    --card:#ffffff; --card-2:#faf8f6;
+    --ink:#1a1a1a; --ink-2:#5f5e5a; --muted:#8a887f;
+    --line:#d9d6cc; --line-strong:#b4b2a9;
+    --accent:#1f5fa8; --accent-2:#2f7ec9; --accent-soft:#e7f0fa; --accent-soft2:#d3e4f5;
+    --green:#1D9E75; --green-soft:#e4f4ee;
+    --amber:#B45309; --amber-soft:#fbeedd;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(var(--paper-2) 0.5px, transparent 0.5px);background-size:22px 22px;}
+
+  #prog{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:60;transition:width .1s linear}
+  #dots{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:55;display:flex;flex-direction:column;gap:9px}
+  #dots a{width:9px;height:9px;border-radius:50%;background:var(--line-strong);opacity:.55;transition:all .2s;position:relative}
+  #dots a.on{background:var(--accent);opacity:1;transform:scale(1.35)}
+  #dots a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:11px;
+    color:var(--ink-2);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:2px 7px;opacity:0;pointer-events:none;transition:opacity .15s}
+  #dots a:hover span{opacity:1}
+  @media(max-width:900px){#dots{display:none}}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:0 28px}
+  section{padding:58px 0;border-top:1px solid var(--line)}
+  section:first-of-type{border-top:0}
+
+  .kicker{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+    display:flex;align-items:center;gap:10px;margin:0 0 14px}
+  .kicker .n{font-family:var(--mono);background:var(--accent);color:#fff;border-radius:5px;padding:1px 7px;font-size:11px;letter-spacing:.05em}
+  h1{font-size:clamp(38px,7vw,78px);line-height:.98;letter-spacing:-.02em;font-weight:850;margin:0 0 18px}
+  h2{font-size:clamp(26px,4.2vw,44px);line-height:1.03;letter-spacing:-.015em;font-weight:850;margin:0 0 16px}
+  h3{font-size:19px;margin:26px 0 8px;letter-spacing:-.01em}
+  .lead{font-size:clamp(17px,2vw,21px);color:var(--ink-2);margin:0 0 8px}
+  p{font-size:16.5px}
+  .em{color:var(--accent);font-weight:600}
+  .mut{color:var(--muted)}
+  .eq{font-family:var(--mono);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:2px 8px;display:inline-block;font-size:.9em}
+
+  .hero{padding-top:80px}
+  .hero .tag{font-family:var(--mono);font-size:12px;color:var(--ink-2);border:1px solid var(--line-strong);
+    border-radius:999px;padding:5px 13px;display:inline-flex;gap:8px;align-items:center;margin-bottom:24px;background:var(--card-2)}
+  .hero .tag b{color:var(--accent)}
+  .hero h1 span{color:var(--accent)}
+  .hero .sub{font-size:clamp(18px,2.4vw,25px);font-weight:600;color:var(--ink);margin:0 0 8px}
+  .arc{display:flex;gap:8px;flex-wrap:wrap;margin-top:28px}
+  .arc .step{font-family:var(--mono);font-size:11px;color:var(--ink-2);border:1px solid var(--line);border-radius:20px;padding:6px 11px;white-space:nowrap;background:var(--card-2)}
+  .arc .step b{color:var(--accent)}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:24px;
+    box-shadow:0 1px 0 var(--line),0 18px 40px -32px rgba(0,0,0,.35)}
+  .badge{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);
+    display:inline-flex;align-items:center;gap:7px;margin-bottom:12px}
+
+  .why{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0}
+  @media(max-width:760px){.why{grid-template-columns:1fr}}
+  .wbox{border-radius:14px;padding:18px 20px;border:1px solid var(--line);background:var(--card)}
+  .wbox h4{margin:0 0 8px;font-size:15px;display:flex;align-items:center;gap:9px}
+  .wbox h4::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--accent);flex:none}
+  .wbox p{margin:0 0 6px;font-size:15px}
+  .wbox p:last-child{margin:0}
+  .wbox.b{background:var(--accent-soft);border-color:var(--accent-soft2)}
+  .wbox.b h4{color:var(--accent)}
+  .wbox.g{background:var(--green-soft);border-color:#c6e5dd}
+  .wbox.g h4{color:var(--green)} .wbox.g h4::before{background:var(--green)}
+  .wbox.a{background:var(--amber-soft);border-color:#f2ddc2}
+  .wbox.a h4{color:var(--amber)} .wbox.a h4::before{background:var(--amber)}
+
+  .callout{border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;
+    padding:14px 18px;margin:22px 0;font-size:15.5px}
+  .callout b{color:var(--accent)}
+
+  /* diagramma "dove abita il modello" */
+  .homes{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+  @media(max-width:760px){.homes{grid-template-columns:1fr}}
+  .home{border:1.5px solid var(--line-strong);border-radius:14px;padding:16px;background:var(--card-2)}
+  .home.hl{border-color:var(--accent);background:var(--accent-soft)}
+  .home .who{font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);margin-bottom:10px}
+  .home.hl .who{color:var(--accent)}
+  .home .box{border:1px dashed var(--line-strong);border-radius:10px;padding:10px 12px;font-family:var(--mono);font-size:12.5px;background:#fff;margin-top:8px}
+  .home .box b{color:var(--accent)}
+  .home .box.inner{margin-left:16px}
+
+  /* griglia argomenti switch */
+  .args{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+  @media(max-width:760px){.args{grid-template-columns:1fr}}
+  .arg{border:1px solid var(--line);border-radius:14px;padding:18px 20px;background:var(--card)}
+  .arg .kn{font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+  .arg h4{margin:0 0 8px;font-size:16px}
+  .arg p{margin:0;font-size:14.5px;color:var(--ink-2)}
+
+  table{border-collapse:collapse;width:100%;margin-top:14px;font-size:14.5px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+  td:first-child{font-weight:700;white-space:nowrap}
+
+  .takes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:22px}
+  @media(max-width:860px){.takes{grid-template-columns:1fr}}
+  .take{border:1px solid var(--line);border-radius:14px;padding:18px 20px;background:var(--card)}
+  .take .kn{font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+  .take h4{margin:0 0 8px;font-size:16px}
+  .take p{margin:0;font-size:14.5px;color:var(--ink-2)}
+
+  .hint{font-size:13px;color:var(--muted);margin-top:12px}
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  footer{padding:50px 0 90px;color:var(--ink-2);font-size:13.5px;border-top:1px solid var(--line)}
+  footer .mono{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:10px}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<nav id="dots"></nav>
+
+<!-- HERO -->
+<section id="s0" class="hero"><div class="wrap reveal">
+  <div class="tag"><b>●</b> Extra · Giornata 2 · dopo Cowork</div>
+  <h1>Claude <span>di terze parti</span>.</h1>
+  <div class="sub">Lo stesso modello che avete usato oggi — servito dentro il cloud che la vostra azienda già governa.</div>
+  <p class="lead">Dieci minuti per rispondere alla domanda che l'IT e il legale faranno per prime: <em>dove vanno i nostri dati?</em></p>
+  <div class="arc">
+    <span class="step"><b>01</b> Cos'è "3P"</span>
+    <span class="step"><b>02</b> Governance del dato</span>
+    <span class="step"><b>03</b> Norme europee</span>
+    <span class="step"><b>04</b> Perché non "il copilot che c'è già"</span>
+  </div>
+</div></section>
+
+<!-- 01 COS'È 3P -->
+<section id="s1"><div class="wrap reveal">
+  <div class="kicker"><span class="n">01</span> Cos'è "3P"</div>
+  <h2>Stesso modello, <span class="em">casa diversa</span></h2>
+  <p class="lead">"First party" (1P) è Claude servito da Anthropic: claude.ai, l'app, l'API diretta. "Third party" (3P) è lo <b>stesso identico modello</b> servito dai grandi cloud provider — e per un'azienda cambia tutto ciò che sta <em>intorno</em> al modello.</p>
+
+  <div class="homes">
+    <div class="home">
+      <div class="who">1P — servito da Anthropic</div>
+      <div class="box">🌐 claude.ai · app · <b>API Anthropic</b></div>
+      <div class="box">contratto e infrastruttura: <b>Anthropic</b></div>
+      <p class="hint" style="margin-top:10px">La via più rapida: zero setup, prodotto completo (Projects, Cowork, Claude Code).</p>
+    </div>
+    <div class="home hl">
+      <div class="who">3P — servito dal tuo cloud</div>
+      <div class="box">☁️ <b>Amazon Bedrock</b> (AWS) · <b>Vertex AI</b> (Google Cloud)</div>
+      <div class="box inner">dentro: il tuo account, la tua region, le tue chiavi</div>
+      <div class="box">contratto e infrastruttura: <b>quelle che hai già</b></div>
+      <p class="hint" style="margin-top:10px">Il modello entra nel perimetro che l'azienda già presidia — non è l'azienda a uscire dal suo.</p>
+    </div>
+  </div>
+
+  <div class="callout"><b>Il punto.</b> Con il 3P non state comprando "un altro fornitore AI": state <b>accendendo un servizio in più</b> dentro un contratto cloud che l'azienda ha già negoziato, firmato e fatto validare dal legale.</div>
+</div></section>
+
+<!-- 02 GOVERNANCE -->
+<section id="s2"><div class="wrap reveal">
+  <div class="kicker"><span class="n">02</span> Governance del dato</div>
+  <h2>I dati <span class="em">non si muovono</span></h2>
+  <p class="lead">La domanda giusta non è "il modello è bravo?" — quella risposta l'avete vista oggi. È: <b>chi vede i dati, dove transitano, cosa ne resta</b>.</p>
+
+  <div class="why">
+    <div class="wbox b">
+      <h4>Residenza del dato</h4>
+      <p>Il modello gira nella <b>region che scegli tu</b> — incluse le region europee di AWS e Google Cloud. Prompt e documenti vengono processati lì: la residenza del dato è una scelta di configurazione, non una trattativa.</p>
+    </div>
+    <div class="wbox b">
+      <h4>Nessun training sui vostri dati</h4>
+      <p>I dati aziendali che passano da Bedrock e Vertex <b>non vengono usati per addestrare i modelli</b> — né da Anthropic né dal cloud provider. È il default contrattuale, non un'opzione da attivare.</p>
+    </div>
+    <div class="wbox b">
+      <h4>Le chiavi restano tue</h4>
+      <p>IAM, VPC, cifratura con le <b>tue chiavi</b> (KMS), logging e audit nel <b>tuo</b> tenant: il servizio eredita gli stessi controlli di accesso e monitoraggio di tutto il resto del tuo cloud.</p>
+    </div>
+    <div class="wbox b">
+      <h4>Retention sotto controllo</h4>
+      <p>Niente conversazioni che restano su server di qualcun altro: la persistenza è quella che configuri tu, con opzioni di <b>zero data retention</b> per i carichi più sensibili.</p>
+    </div>
+  </div>
+
+  <div class="callout"><b>La frase da portare in direzione:</b> è il modello che viene dai dati — non i dati che vanno dal modello.</div>
+</div></section>
+
+<!-- 03 NORME EUROPEE -->
+<section id="s3"><div class="wrap reveal">
+  <div class="kicker"><span class="n">03</span> Norme europee</div>
+  <h2>Compliance: cosa dire <span class="em">al legale</span></h2>
+  <p class="lead">Tre livelli, tre risposte pronte.</p>
+
+  <table>
+    <tr><th>Livello</th><th>La domanda</th><th>La risposta</th></tr>
+    <tr>
+      <td>GDPR</td>
+      <td>Trasferimento e trattamento dei dati personali?</td>
+      <td>Con il 3P il trattamento avviene nel perimetro del cloud provider su cui l'azienda ha <b>già</b> DPA e clausole contrattuali standard. Region UE disponibili: il dato personale può non lasciare l'Europa.</td>
+    </tr>
+    <tr>
+      <td>EU AI Act</td>
+      <td>Che obblighi abbiamo come azienda che <em>usa</em> l'AI?</td>
+      <td>Per i deployer conta usare modelli <b>documentati e tracciabili</b>: Anthropic pubblica system card, usage policy e documentazione dei modelli — il materiale che serve per l'accountability richiesta dalla norma.</td>
+    </tr>
+    <tr>
+      <td>Certificazioni</td>
+      <td>Chi lo garantisce?</td>
+      <td>Anthropic: <b>ISO/IEC 42001</b> (gestione dell'AI — tra i primi al mondo), ISO 27001, SOC 2 Type II. Più tutto lo stack di compliance del cloud provider (incluse le certificazioni richieste nei settori regolati europei), che copre anche questo servizio.</td>
+    </tr>
+  </table>
+
+  <p class="hint">Nota di onestà per il pubblico tecnico: la compliance non è mai "del fornitore" e basta — la responsabilità d'uso resta dell'azienda. Il punto è che il 3P <em>riduce le domande nuove</em>: quasi tutte hanno già una risposta firmata nel contratto cloud esistente.</p>
+</div></section>
+
+<!-- 04 VS COPILOT -->
+<section id="s4"><div class="wrap reveal">
+  <div class="kicker"><span class="n">04</span> Perché non "il copilot che c'è già"</div>
+  <h2>L'argomento per <span class="em">lo switch</span></h2>
+  <p class="lead">L'obiezione tipica: "abbiamo già Microsoft Copilot incluso nella licenza". Non si vince dicendo che Copilot è insicuro — non lo è. Si vince mostrando che <b>giocano due partite diverse</b>.</p>
+
+  <div class="args">
+    <div class="arg">
+      <div class="kn">01 · profondità</div>
+      <h4>Assistente vs agente</h4>
+      <p>Copilot suggerisce <em>dentro</em> Office: una mail, uno slide, una formula. Quello che avete visto oggi — Cowork su una cartella intera, i Project, gli artifact — è un <b>agente che svolge il lavoro</b>, non un completamento che lo accompagna. È un'altra categoria di valore.</p>
+    </div>
+    <div class="arg">
+      <div class="kn">02 · il modello</div>
+      <h4>Scegli il migliore, quando serve</h4>
+      <p>Copilot = i modelli che Microsoft decide di metterci. Col 3P scegliete il modello per il lavoro profondo — documenti lunghi, ragionamento, codice, agenti — e potete <b>cambiarlo</b> quando il mercato cambia, senza rifare l'infrastruttura.</p>
+    </div>
+    <div class="arg">
+      <div class="kn">03 · perimetro</div>
+      <h4>Nessun nuovo confine di fiducia</h4>
+      <p>Copilot vive nel tenant Microsoft 365 e nel suo grafo. Claude 3P vive <b>nel cloud dove già girano i vostri sistemi</b>: stesse chiavi, stesso IAM, stessi audit — e la spesa scala sui committed spend AWS/GCP già negoziati, non su una licenza per seat in più.</p>
+    </div>
+    <div class="arg">
+      <div class="kn">04 · trasparenza</div>
+      <h4>Governance AI dimostrabile</h4>
+      <p>System card pubbliche, usage policy esplicite, ISO 42001: quando l'AI Act (o un cliente enterprise) chiede "come governate l'AI?", la documentazione <b>esiste già</b> — e non è un allegato commerciale, è materiale tecnico verificabile.</p>
+    </div>
+  </div>
+
+  <div class="callout"><b>In una frase:</b> Copilot rende un po' più veloce l'ufficio; Claude nel vostro cloud rende <b>delegabile il lavoro</b> — con i dati che non escono dal perimetro che già governate.</div>
+</div></section>
+
+<!-- 05 TAKEAWAY -->
+<section id="s5"><div class="wrap reveal">
+  <div class="kicker"><span class="n">05</span> Da portare a casa</div>
+  <h2>Tre risposte pronte</h2>
+  <div class="takes">
+    <div class="take">
+      <div class="kn">dove vanno i dati?</div>
+      <h4>Da nessuna parte</h4>
+      <p>Il modello arriva nella vostra region, dentro il vostro contratto cloud. Nessun training sui dati aziendali, retention che decidete voi.</p>
+    </div>
+    <div class="take">
+      <div class="kn">e le norme europee?</div>
+      <h4>Risposte già firmate</h4>
+      <p>GDPR coperto dai DPA cloud esistenti, region UE, ISO 42001 + system card per l'accountability dell'AI Act.</p>
+    </div>
+    <div class="take">
+      <div class="kn">perché non Copilot?</div>
+      <h4>Partite diverse</h4>
+      <p>Un assistente dentro Office contro un agente sul lavoro vero — con libertà di modello e senza un nuovo perimetro di fiducia da far approvare.</p>
+    </div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="mono">Extra · Giornata 2 · Claude di terze parti (Bedrock / Vertex AI).</div>
+</div></footer>
+
+<script>
+"use strict";
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+let _t=false;const _p=document.getElementById('prog');
+addEventListener('scroll',()=>{if(_t)return;_t=true;requestAnimationFrame(()=>{_t=false;
+  const h=document.documentElement;_p.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});});
+(function(){const labels={s0:'Intro',s1:'Cos\'è 3P',s2:'Governance',s3:'Norme europee',s4:'Vs Copilot',s5:'Takeaway'};
+ const nav=document.getElementById('dots');const secs=[...document.querySelectorAll('section')];
+ secs.forEach(s=>{const a=document.createElement('a');a.href='#'+s.id;a.innerHTML='<span>'+(labels[s.id]||s.id)+'</span>';a.dataset.id=s.id;nav.appendChild(a);});
+ const links=[...nav.querySelectorAll('a')];
+ const ob=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.dataset.id===e.target.id));}});},{rootMargin:'-45% 0px -45% 0px'});
+ secs.forEach(s=>ob.observe(s));
+})();
+</script>
+</body>
+</html>
