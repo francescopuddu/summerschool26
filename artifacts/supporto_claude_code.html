@@ -1245,10 +1245,11 @@ document.querySelectorAll('.cmdbox .cmdcopy').forEach(b=>{
   });
 })();
 
-/* ---------- la consegna della demo: copia ---------- */
-(function(){
-  const src=document.getElementById('briefSrc');
-  const copy=document.getElementById('brCopy');
+/* ---------- consegna discorsiva (demo + hands-on): copia ---------- */
+[['briefSrc','brCopy'],['revSrc','revCopy']].forEach(([srcId,btnId])=>{
+  const src=document.getElementById(srcId);
+  const copy=document.getElementById(btnId);
+  if(!src||!copy)return;
   copy.addEventListener('click',function(){
     // un capoverso per <q>, riga vuota tra l'uno e l'altro: si incolla gia' impaginato
     const txt=[...src.querySelectorAll('q')].map(q=>q.textContent.trim()).join('\n\n');
@@ -1256,7 +1257,7 @@ document.querySelectorAll('.cmdbox .cmdcopy').forEach(b=>{
       copy.textContent='✓ Copiata';setTimeout(()=>{copy.textContent='📋 Copia';},1600);
     });
   });
-})();
+});
 </script>
 </body>
 </html>
