@@ -172,15 +172,11 @@
   .applab{position:absolute;top:-8px;left:16px;background:#fffdfd;padding:0 8px;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-2)}
   .arch{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:stretch}
   .arch2{display:grid;grid-template-columns:1fr 150px 1fr;gap:10px;align-items:stretch}
-  .abox{border:1.5px solid var(--line);border-radius:14px;padding:18px 16px;background:var(--card-2);text-align:center;transition:all .25s;cursor:pointer}
-  .abox.on{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 10px 30px -20px rgba(220,38,38,.6);transform:translateY(-3px)}
-  .abox .icn{height:54px;display:flex;align-items:center;justify-content:center}
-  .abox .icn svg{width:72px;height:54px;overflow:visible}
-  .abox .nm{font-weight:800;font-size:15px;margin-top:8px}
-  .abox .role{font-size:12.5px;color:var(--ink-2);margin-top:3px;line-height:1.35}
-  .abox .tech{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:7px}
-  .abox ul{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
-  .abox li{font-family:var(--mono);font-size:11.5px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+  .abox{border:1.5px solid var(--line);border-radius:14px;padding:16px 14px;background:var(--card-2);text-align:center}
+  .abox .icn{height:48px;display:flex;align-items:center;justify-content:center}
+  .abox .icn svg{width:64px;height:48px;overflow:visible}
+  .abox .nm{font-weight:800;font-size:15px;margin-top:7px}
+  .abox .role{font-size:12.5px;color:var(--ink-2);margin-top:4px;line-height:1.4}
   .aarr{display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--line-strong);font-size:20px;padding:0 12px;gap:4px}
   .aarr small{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.05em;white-space:nowrap}
   /* la forcella: dal motore giù verso servizi esterni e AI */
@@ -197,18 +193,11 @@
   .afork .fk.mid::before{content:'';position:absolute;left:50%;top:0;transform:translateX(-50%);border-left:4.5px solid transparent;border-right:4.5px solid transparent;border-bottom:8px solid var(--line-strong);opacity:.8}
   .afork small{position:absolute;left:calc(50% + 10px);bottom:5px;font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.05em;white-space:nowrap}
   .afork .fk.mid small{display:none}
-  /* l'agente raggiunge i servizi da solo */
-  .aarr.dash{min-width:150px;padding:0 4px}
-  .aarr.dash .dl{width:100%;border-top:1.5px dashed var(--accent);opacity:.55;position:relative;margin-bottom:9px}
-  .aarr.dash .dl::before{content:'⇠';position:absolute;left:-2px;top:-12px;font-size:13px;color:var(--accent);opacity:.9}
-  .aarr.dash .dl::after{content:'⇢';position:absolute;right:-2px;top:-12px;font-size:13px;color:var(--accent);opacity:.9}
-  .aarr.dash small{font-family:var(--sans);font-size:11px;color:var(--accent-2);text-align:center;line-height:1.35;white-space:normal}
   @media(max-width:760px){
     .arch{grid-template-columns:1fr;gap:6px}
-    .arch .aarr{flex-direction:row;gap:8px;padding:8px 0}
-    .arch .aarr .g{display:inline-block;transform:rotate(90deg)}
+    .arch .aarr,.arch2 .aarr{flex-direction:row;gap:8px;padding:8px 0}
+    .arch .aarr .g,.arch2 .aarr .g{display:inline-block;transform:rotate(90deg)}
     .arch2{grid-template-columns:1fr;gap:6px}
-    .aarr.dash{min-width:0;padding:12px 0}
     .afork{grid-template-columns:1fr;height:48px}
     .afork .fk.l,.afork .fk.r{display:none}
     .afork .fk.mid .hl{display:none}
@@ -216,10 +205,8 @@
     .afork .fk.mid::after{content:'';position:absolute;left:50%;bottom:0;transform:translateX(-50%);border-left:4.5px solid transparent;border-right:4.5px solid transparent;border-top:8px solid var(--line-strong);opacity:.8}
     .afork .fk.mid small{display:block}
   }
-  .archdesc{margin-top:22px;font-size:15px;color:var(--ink-2);min-height:66px}
-  .archdesc b{color:var(--ink)}
   /* tutto viaggia in JSON */
-  .jsonbar{margin-top:18px;border:1px solid var(--line);border-radius:12px;background:var(--card-2);padding:13px 15px}
+  .jsonbar{margin-top:22px;border:1px solid var(--line);border-radius:12px;background:var(--card-2);padding:13px 15px}
   .jbcode{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);overflow-x:auto;white-space:nowrap;padding-bottom:3px}
   .jbcode .k{color:var(--accent-2);font-weight:700}
   .jbcode .s{color:var(--green)}
@@ -465,7 +452,6 @@
             <circle cx="103" cy="186" r="4.6"/><path d="M95 199a8 8 0 0 1 16 0z"/>
             <circle cx="128" cy="186" r="4.6"/><path d="M120 199a8 8 0 0 1 16 0z"/>
           </g>
-          <text x="145" y="195" class="sv-lab">più persone, insieme</text>
 
           <!-- server -->
           <g transform="translate(296,20)">
@@ -477,8 +463,7 @@
             <g fill="var(--blue)">
               <circle class="led d1" cx="35" cy="15.5" r="1.7"/><circle class="led d3" cx="35" cy="24.5" r="1.7"/><circle class="led d2" cx="35" cy="33" r="1.7"/>
             </g>
-            <text x="51" y="23" style="font-family:var(--mono);font-size:9.5px;fill:var(--ink);font-weight:700">server</text>
-            <text x="51" y="35" class="sv-lab">API · regole</text>
+            <text x="51" y="29" style="font-family:var(--mono);font-size:10.5px;fill:var(--ink);font-weight:700">server</text>
           </g>
 
           <!-- database / disco -->
@@ -488,8 +473,7 @@
             <ellipse cx="26" cy="13" rx="14" ry="5" fill="#fff" stroke="var(--line-strong)"/>
             <g class="spin"><circle cx="26" cy="13" r="4.6" fill="none" stroke="var(--amber)" stroke-width="1.3" opacity=".8"/><path d="M26 13 L30 12" stroke="var(--amber)" stroke-width="1.5" stroke-linecap="round"/></g>
             <circle class="led d2" cx="26" cy="30" r="2" fill="var(--amber)"/>
-            <text x="51" y="23" style="font-family:var(--mono);font-size:9.5px;fill:var(--ink);font-weight:700">database</text>
-            <text x="51" y="35" class="sv-lab">i dati restano</text>
+            <text x="51" y="29" style="font-family:var(--mono);font-size:10.5px;fill:var(--ink);font-weight:700">database</text>
           </g>
 
           <!-- claude -->
@@ -499,8 +483,7 @@
             <g class="beat" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round">
               <path d="M26 14 V34"/><path d="M16 24 H36"/><path d="M19 17 L33 31"/><path d="M33 17 L19 31"/>
             </g>
-            <text x="51" y="23" style="font-family:var(--mono);font-size:9.5px;fill:var(--ink);font-weight:700">Claude</text>
-            <text x="51" y="35" class="sv-lab">chiamato via API</text>
+            <text x="51" y="29" style="font-family:var(--mono);font-size:10.5px;fill:var(--ink);font-weight:700">Claude</text>
           </g>
         </svg>
         <p class="wcap">dati che restano, servizi che girano, l'AI a chiamata</p>
@@ -520,7 +503,7 @@
   <p class="lead">Sceglierli — quale database, quale linguaggio, come si parlano — è l'unico punto dove servirebbe davvero un ingegnere. Quel lavoro è <b>già fatto</b>: un file di testo con le scelte architetturali, da mettere nella cartella del progetto. Claude Code lo legge da solo e ci si attiene. A voi basta sapere <b>cosa fa ogni pezzo</b>, per seguire cosa succede dove.</p>
 
   <div class="panel star">
-    <div class="badge">I pezzi di un'app — clicca sui blocchi</div>
+    <div class="badge">I pezzi di un'app</div>
 
     <div class="appwrap">
       <span class="applab">la vostra app</span>
@@ -541,9 +524,7 @@
             </svg>
           </div>
           <div class="nm">Interfaccia</div>
-          <div class="role">il sito web: quello che si vede e si clicca</div>
-          <div class="tech">React · Vite</div>
-          <ul><li>pagine e bottoni</li><li>tabelle e stati</li></ul>
+          <div class="role">il sito web: le pagine, le tabelle, i bottoni che si cliccano.</div>
         </div>
 
         <div class="aarr"><span class="g">⇄</span><small>API · JSON</small></div>
@@ -565,10 +546,8 @@
               </g>
             </svg>
           </div>
-          <div class="nm">Back-end</div>
-          <div class="role"><b>il motore</b>: le regole di funzionamento</div>
-          <div class="tech">Python · FastAPI</div>
-          <ul><li>decide cosa succede</li><li>controlli e calcoli</li><li>coordina tutto</li></ul>
+          <div class="nm">Motore</div>
+          <div class="role">le regole di funzionamento: decide cosa succede quando clicchi, e coordina tutto il resto.</div>
         </div>
 
         <div class="aarr"><span class="g">⇄</span><small>API · JSON</small></div>
@@ -587,9 +566,7 @@
             </svg>
           </div>
           <div class="nm">Database</div>
-          <div class="role">la memoria: i dati che restano</div>
-          <div class="tech">Postgres · Docker</div>
-          <ul><li>mezzi</li><li>manutentori</li><li>revisioni</li></ul>
+          <div class="role">la memoria: i dati restano lì e li vedono tutti — mezzi, manutentori, revisioni.</div>
         </div>
       </div>
     </div>
@@ -615,15 +592,10 @@
           </svg>
         </div>
         <div class="nm">Servizi esterni</div>
-        <div class="role">i sistemi che avete già in azienda</div>
-        <div class="tech">ERP · CRM · gestionale · Gmail</div>
-        <ul><li>non si riscrivono</li><li>si collegano via API</li></ul>
+        <div class="role">i sistemi che avete già: ERP, CRM, gestionale, Gmail. Non si riscrivono, si collegano.</div>
       </div>
 
-      <div class="aarr dash">
-        <span class="dl"></span>
-        <small>anche l'agente<br>usa i servizi</small>
-      </div>
+      <div class="aarr"><span class="g">⇄</span><small>API · JSON</small></div>
 
       <div class="abox ai" data-i="4">
         <div class="icn">
@@ -644,17 +616,13 @@
           </svg>
         </div>
         <div class="nm">Moduli AI</div>
-        <div class="role">l'agente: capisce, decide, usa gli strumenti</div>
-        <div class="tech">Claude · API</div>
-        <ul><li>legge e riassume</li><li>ha i suoi tool</li></ul>
+        <div class="role">l'agente: capisce, decide e usa gli strumenti — anche i servizi esterni, da solo.</div>
       </div>
     </div>
 
-    <p class="archdesc" id="archDesc">Cinque pezzi, ognuno col suo mestiere. Si parlano tutti allo stesso modo — via <b>API</b>: uno chiede, l'altro risponde con un pacchetto di dati in <b>JSON</b>. Non dovete progettarli né configurarli: sono le scelte già scritte nel file qui sotto.</p>
-
     <div class="jsonbar">
       <div class="jbcode"><span class="k">POST</span> /api/revisioni &nbsp;→&nbsp; { <span class="s">"mezzo"</span>: <span class="s">"ETR-500"</span>, <span class="s">"stato"</span>: <span class="s">"da revisionare"</span>, <span class="s">"scadenza"</span>: <span class="s">"2026-09-01"</span> }</div>
-      <p class="jbnote">È sempre questo il formato, tra qualunque coppia di blocchi: che l'interfaccia chieda al motore, che il motore interroghi l'ERP o il modello AI, viaggia una <b>richiesta</b> e torna una <b>risposta in JSON</b> — testo strutturato, con nomi e valori, che tutti i pezzi sanno leggere. Per questo si incastrano.</p>
+      <p class="jbnote">Tra qualunque coppia di blocchi viaggia sempre la stessa cosa: una <b>richiesta</b> e una <b>risposta in JSON</b> — testo strutturato, con nomi e valori, che tutti i pezzi sanno leggere. È così che si incastrano.</p>
     </div>
   </div>
 
@@ -704,7 +672,6 @@ progetto/
   </div>
   <p class="hint">Va messo, con il nome esatto <span class="mono">CLAUDE.md</span>, nella cartella del progetto <b>prima del primo prompt</b>: Claude Code lo legge automaticamente all'avvio, non serve nemmeno dirglielo.</p>
 
-  <div class="callout"><b>Perché il file:</b> senza vincoli, dieci gruppi otterrebbero dieci stack diversi — e problemi non confrontabili. Col file le app di tutta l'aula si somigliano, gli errori pure, e l'aiuto tra i banchi funziona. Non serve capire ogni riga: serve sapere che c'è — e che per i vostri progetti potete farvene scrivere uno simile da chi sa, o da Claude stesso.</div>
 </div></section>
 
 <!-- ============ 04 ONBOARDING ============ -->
@@ -852,26 +819,6 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
     setPhase(0);
   });
   setPhase(0);
-})();
-
-/* ---------- architettura: click sui blocchi ---------- */
-(function(){
-  const boxes=[...document.querySelectorAll('#s3 .abox')];
-  const desc=document.getElementById('archDesc');
-  const def=desc.innerHTML;
-  const texts=[
-    '<b>L\'interfaccia</b> è il sito web: le pagine, le tabelle, il bottone "Organizza revisione". Non contiene né i dati né le regole — li chiede al motore e mostra quello che torna. Il file fissa React con Vite.',
-    '<b>Il back-end è il motore</b>: il pezzo che non si vede e fa funzionare tutto. Applica le regole (chi è disponibile? cosa scade?), fa i calcoli, salva sul database, interroga l\'ERP, chiama l\'AI. Ogni bottone che premete arriva qui. Il file fissa Python con FastAPI.',
-    '<b>Il database</b> è la memoria: le tabelle con i mezzi, i manutentori, le revisioni. I dati restano lì anche a browser chiuso, e li vedono tutti quelli che usano l\'app. Il file fissa Postgres, acceso con un comando via Docker.',
-    '<b>I servizi esterni</b> sono i sistemi che avete già: l\'ERP, il CRM, il gestionale, la posta. Non si riscrivono — si <b>collegano</b>: l\'app chiede, loro rispondono. In demo l\'ERP è mockato, ma il meccanismo è quello vero.',
-    '<b>I moduli AI</b> sono il modello che legge, riassume, decide — chiamato via API come ogni altro servizio. E un <b>agente</b> non risponde soltanto: gli si danno gli <b>strumenti</b> (i tool) e può usarli da solo — leggere l\'ERP, aggiornare una revisione, mandare la mail al manutentore.'
-  ];
-  boxes.forEach(b=>b.addEventListener('click',()=>{
-    const was=b.classList.contains('on');
-    boxes.forEach(x=>x.classList.remove('on'));
-    if(was){desc.innerHTML=def;return;}
-    b.classList.add('on');desc.innerHTML=texts[+b.dataset.i];
-  }));
 })();
 
 /* ---------- CLAUDE.md: copia + download ---------- */
