@@ -286,10 +286,20 @@
     max-height:340px;overflow:auto;white-space:pre-wrap;background:linear-gradient(180deg,#fff,#fdfcfa)}
   @media(max-width:640px){.filebar{flex-wrap:wrap}.filebar .fdesc{display:none}}
 
-  /* la consegna del cliente: stessa scatola, ma è parlato — non codice */
-  .briefcard pre{font-family:var(--sans);font-size:14.5px;line-height:1.62;padding:18px 20px;max-height:none;
-    background:linear-gradient(180deg,#fff,#fdfcfa)}
-  .briefcard .fname{font-family:var(--sans)}
+  /* la consegna della demo: stessa voce del capo, ma parla piu' a lungo */
+  .boss.brief{margin-top:26px}
+  .boss .bcol{flex:1;min-width:0}
+  .boss .bhead{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .boss .bhead .lb{margin-bottom:0}
+  .boss .bhead .fbtn{margin-left:auto;flex-shrink:0}
+  .boss .qbody q{margin-bottom:12px}
+  .boss .qbody q:last-child{margin-bottom:0}
+  /* virgolette una volta sola: aperte sul primo capoverso, chiuse sull'ultimo */
+  .boss .qbody q::before,.boss .qbody q::after{content:none}
+  .boss .qbody q:first-child::before{content:open-quote}
+  .boss .qbody q:last-child::after{content:close-quote}
+  .boss.brief q{font-size:17px;line-height:1.6}
+  @media(max-width:640px){.boss.brief q{font-size:15.5px}}
 
   /* descrizione dei dati, apribile sotto il bottone di download */
   .dataexp{margin-top:12px;border:1px solid var(--line-strong);border-radius:12px;background:var(--card);overflow:hidden}
@@ -956,29 +966,25 @@ progetto/
   <h2>Demo: la dashboard <span class="em">dei treni</span></h2>
   <p class="lead">Un gestionale per la <b>manutenzione ordinaria dei mezzi</b>, costruito dal vivo: dallo schema di prima all'app funzionante. Ogni passo usa il vocabolario appena introdotto.</p>
 
-  <div class="filecard briefcard">
-    <div class="filebar">
-      <span class="fname">🗣️ La consegna</span>
-      <span class="fdesc">il cliente parla — è questo il primo prompt della demo</span>
-      <span class="fbtns">
-        <button class="fbtn dark" id="brCopy">📋 Copia la consegna</button>
-      </span>
+  <div class="boss brief">
+    <span class="who">🧑‍💼</span>
+    <div class="bcol">
+      <div class="bhead">
+        <div class="lb">La consegna</div>
+        <button class="fbtn" id="brCopy">📋 Copia</button>
+      </div>
+      <div class="qbody" id="briefSrc">
+        <q>Noi lavoriamo nella mobilità: gestiamo una flotta di treni, e ogni mezzo ha delle revisioni obbligatorie da fare a scadenze fisse. Non è manutenzione a guasto: è manutenzione ordinaria programmata, cioè controlli che vanno fatti a prescindere, a scadenza fissa — a chilometraggio percorso o a tempo, dipende dal tipo di controllo. Dal nostro gestionale, comunque, la scadenza esce già calcolata come data: a voi serve solo quella.</q>
+        <q>Qualche esempio di cosa intendo. C'è la verifica dell'usura di cerchioni e sale montate — le ruote del treno — cioè un controllo dimensionale per capire quanto sono consumate. C'è il controllo dell'impianto frenante: pastiglie, dischi, pressione dell'aria compressa. C'è l'ispezione del pantografo, il braccio che prende corrente dalla linea aerea. C'è il controllo del sistema di sicurezza SCMT, che però richiede un tecnico abilitato: quello non lo può fare chiunque. Sui mezzi diesel ci sono il motore e la trasmissione. E poi la climatizzazione e le porte automatiche.</q>
+        <q>Quindi noi sappiamo già cosa va controllato — lo scope è noto — quello che non sappiamo è se salterà fuori un problema o no. E ogni voce ha la sua scadenza: non scadono tutte insieme, per questo serve tenerne traccia mezzo per mezzo.</q>
+        <q>Oggi questa roba la teniamo un po' a mente noi, o su un foglio Excel. Vorrei una schermata unica che mi faccia vedere la situazione e mi aiuti a organizzare il lavoro dei manutentori.</q>
+        <q>Cosa deve mostrarmi questa schermata principale. Voglio vedere i miei mezzi raggruppati per categoria — che ne so, "otto mezzi di categoria 3" — e per ciascun gruppo voglio capire subito quanti sono in regola e quanti no: un mezzo è da sistemare se ha almeno una revisione scaduta o in scadenza, non mi importa quale. Non mi serve il dettaglio tecnico di ogni singola voce di controllo: dev'essere una vista d'insieme, un colpo d'occhio. Le revisioni già scadute, però, voglio vederle subito e distinguerle da quelle che scadono a breve — quelle scadute sono un problema.</q>
+        <q>Poi su questa schermata mi serve un bottone, "Organizza revisione", che quando lo premo mi prepara l'agenda dei manutentori: chi va dove, la mattina e il pomeriggio, in modo da incastrare bene i giri in base a chi è disponibile. Tenete conto che ogni manutentore è assegnato a un deposito e ha le sue specializzazioni — l'SCMT, il diesel — quindi non tutti possono fare tutto. Non deve essere chissà quale algoritmo di ottimizzazione, i mezzi non sono migliaia: basta che il giro venga fuori organizzato in modo sensato, mattina e pomeriggio.</q>
+        <q>E poi, cosa importante: quando ho organizzato l'agenda, non deve partire tutto in automatico. Prima l'agenda me la fa vedere, io la controllo, e solo quando confermo io parte l'invio delle email ai manutentori — ognuno riceve la sua mail, con scritto il proprio giro della giornata: "oggi devi fare questo, in questo ordine". Alla mail va allegata anche la scheda del mezzo, la documentazione che il manutentore si porta dietro. Il testo della mail vorrei che fosse scritto con un aiutino di intelligenza artificiale, non buttato lì in modo meccanico. L'invio vero e proprio invece può restare una cosa semplice: lì non serve intelligenza.</q>
+        <q>Ultima cosa, da dove arrivano i dati. Internamente esiste l'ERP aziendale, da cui prendere lo stato dei mezzi e le scadenze delle revisioni. Per ora possiamo anche solo simulare questa fonte dati — l'importante è che il resto dell'app la chiami come se fosse vera, così poi la colleghiamo a quella reale in un secondo momento.</q>
+      </div>
+      <p class="after">Questo è tutto quello che il cliente sa dirci. È il <b>primo prompt della demo</b>: si incolla così com'è, nella cartella dove <span class="cmd">/init</span> ha già scritto il <span class="mono">CLAUDE.md</span> del gestionale treni.</p>
     </div>
-<pre id="briefSrc">Noi lavoriamo nella mobilità: gestiamo una flotta di treni, e ogni mezzo ha delle revisioni obbligatorie da fare a scadenze fisse. Non è manutenzione a guasto: è manutenzione ordinaria programmata, cioè controlli che vanno fatti a prescindere, a scadenza fissa — a chilometraggio percorso o a tempo, dipende dal tipo di controllo. Dal nostro gestionale, comunque, la scadenza esce già calcolata come data: a voi serve solo quella.
-
-Qualche esempio di cosa intendo. C'è la verifica dell'usura di cerchioni e sale montate — le ruote del treno — cioè un controllo dimensionale per capire quanto sono consumate. C'è il controllo dell'impianto frenante: pastiglie, dischi, pressione dell'aria compressa. C'è l'ispezione del pantografo, il braccio che prende corrente dalla linea aerea. C'è il controllo del sistema di sicurezza SCMT, che però richiede un tecnico abilitato: quello non lo può fare chiunque. Sui mezzi diesel ci sono il motore e la trasmissione. E poi la climatizzazione e le porte automatiche.
-
-Quindi noi sappiamo già cosa va controllato — lo scope è noto — quello che non sappiamo è se salterà fuori un problema o no. E ogni voce ha la sua scadenza: non scadono tutte insieme, per questo serve tenerne traccia mezzo per mezzo.
-
-Oggi questa roba la teniamo un po' a mente noi, o su un foglio Excel. Vorrei una schermata unica che mi faccia vedere la situazione e mi aiuti a organizzare il lavoro dei manutentori.
-
-Cosa deve mostrarmi questa schermata principale. Voglio vedere i miei mezzi raggruppati per categoria — che ne so, "otto mezzi di categoria 3" — e per ciascun gruppo voglio capire subito quanti sono in regola e quanti no: un mezzo è da sistemare se ha almeno una revisione scaduta o in scadenza, non mi importa quale. Non mi serve il dettaglio tecnico di ogni singola voce di controllo: dev'essere una vista d'insieme, un colpo d'occhio. Le revisioni già scadute, però, voglio vederle subito e distinguerle da quelle che scadono a breve — quelle scadute sono un problema.
-
-Poi su questa schermata mi serve un bottone, "Organizza revisione", che quando lo premo mi prepara l'agenda dei manutentori: chi va dove, la mattina e il pomeriggio, in modo da incastrare bene i giri in base a chi è disponibile. Tenete conto che ogni manutentore è assegnato a un deposito e ha le sue specializzazioni — l'SCMT, il diesel — quindi non tutti possono fare tutto. Non deve essere chissà quale algoritmo di ottimizzazione, i mezzi non sono migliaia: basta che il giro venga fuori organizzato in modo sensato, mattina e pomeriggio.
-
-E poi, cosa importante: quando ho organizzato l'agenda, non deve partire tutto in automatico. Prima l'agenda me la fa vedere, io la controllo, e solo quando confermo io parte l'invio delle email ai manutentori — ognuno riceve la sua mail, con scritto il proprio giro della giornata: "oggi devi fare questo, in questo ordine". Alla mail va allegata anche la scheda del mezzo, la documentazione che il manutentore si porta dietro. Il testo della mail vorrei che fosse scritto con un aiutino di intelligenza artificiale, non buttato lì in modo meccanico. L'invio vero e proprio invece può restare una cosa semplice: lì non serve intelligenza.
-
-Ultima cosa, da dove arrivano i dati. Internamente esiste l'ERP aziendale, da cui prendere lo stato dei mezzi e le scadenze delle revisioni. Per ora possiamo anche solo simulare questa fonte dati — l'importante è che il resto dell'app la chiami come se fosse vera, così poi la colleghiamo a quella reale in un secondo momento.</pre>
   </div>
 
   <div class="panel star">
@@ -1236,8 +1242,10 @@ document.querySelectorAll('.cmdbox .cmdcopy').forEach(b=>{
   const src=document.getElementById('briefSrc');
   const copy=document.getElementById('brCopy');
   copy.addEventListener('click',function(){
-    navigator.clipboard.writeText(src.textContent).then(()=>{
-      copy.textContent='✓ Copiata';setTimeout(()=>{copy.textContent='📋 Copia la consegna';},1600);
+    // un capoverso per <q>, riga vuota tra l'uno e l'altro: si incolla gia' impaginato
+    const txt=[...src.querySelectorAll('q')].map(q=>q.textContent.trim()).join('\n\n');
+    navigator.clipboard.writeText(txt).then(()=>{
+      copy.textContent='✓ Copiata';setTimeout(()=>{copy.textContent='📋 Copia';},1600);
     });
   });
 })();
