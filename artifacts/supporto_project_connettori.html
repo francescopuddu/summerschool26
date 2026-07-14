@@ -239,7 +239,11 @@
   .ftree button .fb{display:block;font-family:var(--sans);font-size:11px;color:var(--muted);font-weight:400;margin-top:1px}
   .ftree button.on .fb{color:var(--accent-2)}
 
-  /* s7 · progressive disclosure */
+  /* s7 · regola del pollice */
+  .rule3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+  @media(max-width:720px){.rule3{grid-template-columns:1fr}}
+
+  /* s9 · progressive disclosure */
   .blk.meta{background:var(--paper-2);border:1px dashed var(--line-strong);color:var(--ink-2)}
   .tok{display:flex;align-items:center;gap:10px;margin-top:14px;font-family:var(--mono);font-size:12px;color:var(--ink-2)}
   .tok .bar{flex:1;height:8px;background:var(--paper-2);border:1px solid var(--line);border-radius:99px;overflow:hidden}
@@ -284,7 +288,7 @@
   <div class="tag"><b>●</b> Supporto alla lezione · <b>Hands on: Project, Connettori &amp; Skill</b></div>
   <h1><span>Project</span>, <span>Connettori</span> &amp; <span>Skill</span></h1>
   <div class="sub">Stamattina abbiamo visto come funziona il contesto. Ora lo mettiamo dentro il prodotto.</div>
-  <p class="lead">Il Progetto è il posto dove il contesto smette di essere una teoria e diventa qualcosa che riusi ogni giorno — e quando il lavoro vive in una cartella, quello stesso contesto prende la forma di un file: il <b>CLAUDE.md</b>. I connettori sono il modo in cui il contesto arriva dal mondo esterno. In mezzo c'è un protocollo, MCP, che vale la pena capire una volta per tutte. E quando quello che vuoi riusare non è un documento ma un <b>modo di fare</b>, c'è un ultimo pezzo: le skill.</p>
+  <p class="lead">Il Progetto è il posto dove il contesto smette di essere una teoria e diventa qualcosa che riusi ogni giorno — e quando il lavoro vive in una cartella, quello stesso contesto prende la forma di un file: il <b>CLAUDE.md</b>. I connettori sono il modo in cui il contesto arriva dal mondo esterno. In mezzo c'è un protocollo, MCP, che vale la pena capire una volta per tutte. E quando il contesto che ti serve non l'hai scritto tu ma <b>qualcun altro</b> — un mestiere già impacchettato, pronto da importare — c'è un ultimo pezzo: le skill.</p>
   <div class="scrollcue"><span class="a">↓</span> Scorri, oppure usa le frecce ← →</div>
 </section>
 
@@ -554,8 +558,63 @@
 <!-- 6 · skill -->
 <section id="s6" data-title="Le Skill">
   <div class="kicker"><span class="n">06</span> <span class="act">Skill</span></div>
-  <h2>La skill: <span class="em">know-how</span> in una cartella</h2>
-  <p class="lead">Il Progetto impacchetta la conoscenza, il connettore impacchetta gli strumenti. Resta fuori una cosa: il <b>modo di fare</b>. Un documento di riferimento risponde a «cos'è X»; il lavoro vero però è fatto di procedure — «come si fa X, in che ordine, con quali controlli». Una <b>skill</b> impacchetta esattamente questo: una cartella con un file di istruzioni, i materiali di supporto e, quando serve, piccoli <b>script eseguibili</b>.</p>
+  <h2>La skill: contesto <span class="em">fatto da qualcun altro</span></h2>
+  <p class="lead">Fermiamoci a guardare da dove è arrivato, finora, tutto il contesto. Il prompt lo scrivi tu. Le Istruzioni del Progetto le scrivi tu. Il CLAUDE.md lo scrivi tu. I connettori portano dentro dati dai tuoi software — ma le porte le apri tu. Una skill rompe lo schema: è <b>contesto scritto da qualcun altro</b> — istruzioni, materiali, piccoli script — impacchettato in una cartella che <b>importi</b> in Claude. E nota la differenza con quello che abbiamo appena visto: non collega nessun software esterno. Aggiunge una <b>capacità</b>.</p>
+
+  <div class="quote">Il connettore dà a Claude un <em>accesso</em>. La skill gli dà un <em>mestiere</em>.</div>
+
+  <div class="panel">
+    <span class="badge">Due modi diversi di estendere Claude</span>
+    <table class="cmp">
+      <tr><th>&nbsp;</th><th>MCP / Connettore</th><th>Skill</th></tr>
+      <tr><td>Cosa aggiunge</td><td>Un <b>accesso</b>: Claude raggiunge un software esterno — Gmail, Drive, il gestionale</td><td>Una <b>capacità</b>: Claude impara un modo di fare — le slide aziendali, il controllo di una nota spese</td></tr>
+      <tr><td>Cosa c'è dietro</td><td>Un server che gira da qualche parte, davanti a un software vivo</td><td>Una cartella: testo, materiali, script. <b>Nessun software esterno</b></td></tr>
+      <tr><td>Cosa entra in finestra</td><td>Le descrizioni degli strumenti, e i risultati delle chiamate</td><td>Know-how: istruzioni e procedure — <b>contesto</b>, della stessa pasta di quello che scrivi tu</td></tr>
+      <tr><td>Chi lo fa</td><td>Chi possiede il software</td><td><b>Chiunque abbia il know-how</b> — e tu lo importi</td></tr>
+    </table>
+    <p class="hint">L'ultima riga è quella nuova. Fin qui il contesto era artigianato: lo scrivevi tu, per te. Con le skill diventa una cosa che <b>circola</b>: qualcuno la scrive una volta, la impacchetta, la usano tutti.</p>
+  </div>
+</section>
+
+<!-- 7 · prompt vs CLAUDE.md vs skill -->
+<section id="s7" data-title="Prompt, CLAUDE.md o skill?">
+  <div class="kicker"><span class="n">07</span> <span class="act">La domanda giusta</span></div>
+  <h2>«Ma questo non potevo scriverlo <span class="em">nel CLAUDE.md</span>?»</h2>
+  <p class="lead">Obiezione legittima. Se una skill è contesto, e il CLAUDE.md è contesto, perché due strumenti? Il CLAUDE.md l'avete appena imparato: sembra il posto naturale per tutto. La differenza non è <i>cosa</i> ci scrivi — è <b>quando lo paghi</b>. Il CLAUDE.md entra in finestra a ogni sessione, tutto intero, sempre. Una skill no. E siccome la finestra è scarsa — l'abbiamo visto smontandola pezzo per pezzo — questa differenza decide tutto.</p>
+
+  <div class="panel">
+    <span class="badge">Lo stesso know-how, tre posti — guardalo in due chat diverse</span>
+    <div class="ctrls" style="margin-bottom:16px">
+      <button class="b acc" id="whP">📋 Nel prompt</button>
+      <button class="b ghost" id="whC">📄 Nel CLAUDE.md</button>
+      <button class="b ghost" id="whS">🧩 In una skill</button>
+    </div>
+    <div class="grid2">
+      <div class="mapex" id="whEx"></div>
+      <div>
+        <div class="ctxhd">Chat A — «Fammi le slide del lancio»</div>
+        <div class="ctxwin" id="whWinA"></div>
+        <div class="tok"><span>in finestra</span><span class="bar"><span class="fill" id="whFillA"></span></span><span id="whTokA"></span></div>
+        <div class="ctxhd" style="margin-top:18px">Chat B — «Riassumimi questo contratto»</div>
+        <div class="ctxwin" id="whWinB"></div>
+        <div class="tok"><span>in finestra</span><span class="bar"><span class="fill" id="whFillB"></span></span><span id="whTokB"></span></div>
+      </div>
+    </div>
+    <p class="hint">Il know-how è identico nei tre casi: la procedura per le slide aziendali, ~2.000 token. Quello che cambia è <b>chi la paga, e quando</b>.</p>
+  </div>
+
+  <div class="rule3">
+    <div class="pill"><div class="pk">Serve una volta</div><h4>Nel prompt</h4><p>Lo scrivi, lo usi, sparisce. Nessuna infrastruttura per un'esigenza che non torna.</p></div>
+    <div class="pill"><div class="pk">Serve sempre</div><h4>Nel CLAUDE.md</h4><p>Le regole della casa: chi sei, cosa non si tocca, come parlarmi. Poche righe, valide in ogni sessione.</p></div>
+    <div class="pill"><div class="pk">Serve a volte</div><h4>In una skill</h4><p>Un mestiere intero, on demand. In finestra una riga; il resto solo quando lavora.</p></div>
+  </div>
+</section>
+
+<!-- 8 · anatomia -->
+<section id="s8" data-title="Anatomia di una skill">
+  <div class="kicker"><span class="n">08</span> <span class="act">Anatomia</span></div>
+  <h2>Dentro la cartella: <span class="em">istruzioni, materiali, script</span></h2>
+  <p class="lead">Com'è fatto, questo contesto impacchettato? Una cartella con un file d'ingresso obbligatorio — <b>SKILL.md</b> — più i materiali che nessun prompt può sostituire e, quando serve, piccoli <b>script eseguibili</b>. Un documento di riferimento risponde a «cos'è X»; una skill risponde a «come si fa X, in che ordine, con quali controlli».</p>
 
   <div class="quote">La documentazione dice <em>che cos'è</em>. Una skill dice <em>come si fa</em>.</div>
 
@@ -579,11 +638,11 @@
 
 </section>
 
-<!-- 7 · progressive disclosure -->
-<section id="s7" data-title="Progressive disclosure">
-  <div class="kicker"><span class="n">07</span> <span class="act">Il meccanismo</span></div>
+<!-- 9 · progressive disclosure -->
+<section id="s9" data-title="Progressive disclosure">
+  <div class="kicker"><span class="n">09</span> <span class="act">Il meccanismo</span></div>
   <h2>Progressive disclosure: <span class="em">tutto disponibile</span>, quasi niente in finestra</h2>
-  <p class="lead">L'obiezione, a questo punto, è legittima: stamattina abbiamo detto che il contesto è scarso, e adesso vogliamo caricarci dentro cartelle intere? No. Una skill entra in finestra <b>a strati</b> — ed è per questo che puoi tenerne installate venti senza pagarle tutte a ogni messaggio.</p>
+  <p class="lead">Nel confronto di prima l'abbiamo dato per buono: «finché non serve, la skill costa una riga». Adesso vediamo il meccanismo che lo rende vero. Una skill entra in finestra <b>a strati</b> — ed è per questo che puoi tenerne installate venti senza pagarle tutte a ogni messaggio.</p>
 
   <div class="panel">
     <span class="badge">Tre livelli — attraversali cliccando</span>
@@ -604,51 +663,64 @@
 
 </section>
 
-<!-- 8 · creare una skill -->
-<section id="s8" data-title="Creare una skill">
-  <div class="kicker"><span class="n">08</span> <span class="act">In pratica</span></div>
-  <h2>Creare una skill, <span class="em">senza uscire dalla chat</span></h2>
-  <p class="lead">Prerequisito unico: in <b>Impostazioni → Funzionalità</b> deve essere attivo <b>«Esecuzione di codice e creazione di file»</b> — è la sandbox in cui girano gli script. Le skill si gestiscono poi da <b>Personalizza → Skill</b>: quelle di Anthropic (Excel, Word, PowerPoint, PDF) sono già lì e lavorano da sole; le tue le carichi. E per crearle ci sono due strade.</p>
+<!-- 10 · marketplace -->
+<section id="s10" data-title="Importare dai marketplace">
+  <div class="kicker"><span class="n">10</span> <span class="act">L'ecosistema</span></div>
+  <h2>Se è una cartella, <span class="em">si importa</span></h2>
+  <p class="lead">Una skill è una cartella di testo: si zippa, si manda, si pubblica. Ed è qui che cambia la scala. Il CLAUDE.md è artigianato — lo scrivi tu, per te. La skill è un <b>formato di distribuzione</b>: il know-how di qualcun altro, già distillato, che installi in trenta secondi. Sapere dove trovarle vale quanto saperle scrivere.</p>
 
-  <div class="grid2">
-    <div class="pill"><div class="pk">Strada 1 · Conversazionale</div><h4>Chiedila a Claude</h4><p>«Creami una skill che…». Claude attiva una skill ufficiale, <b>skill-creator</b>, che fa il lavoro per te: ti fa domande («quando la useresti? com'è fatto un buon output?»), scrive SKILL.md, prepara materiali e script, impacchetta tutto. Una skill che costruisce skill.</p></div>
-    <div class="pill"><div class="pk">Strada 2 · Manuale</div><h4>Cartella → ZIP → upload</h4><p>Scrivi i file a mano, comprimi <b>con la cartella come radice</b> (<code>slide-aziendali.zip → slide-aziendali/ → SKILL.md</code>) e carica lo ZIP da <b>Personalizza → Skill</b>. È la strada che ti serve quando vuoi ritoccare una skill esistente.</p></div>
+  <div class="lay">
+    <div class="lrow l1">
+      <div class="lt"><span class="idx">01</span> Le skill di Anthropic — <b>già installate</b></div>
+      <p>Su claude.ai le trovi in <b>Personalizza → Skill</b>: Excel, Word, PowerPoint, PDF. Se ti sei mai chiesto perché Claude produce un .xlsx ben formattato: non è il modello, è una skill. Quel know-how l'ha scritto qualcuno — e lo stai già usando senza saperlo.</p>
+    </div>
+    <div class="lrow l2">
+      <div class="lt"><span class="idx">02</span> Il repository ufficiale — <b>github.com/anthropics/skills</b></div>
+      <p>Le skill di Anthropic in versione open source, più una collezione di esempi: da scaricare, leggere, adattare. È anche il posto giusto per imparare come si scrive una skill fatta bene — copiando dagli originali.</p>
+    </div>
+    <div class="lrow l3">
+      <div class="lt"><span class="idx">03</span> Le directory di community — <b>il marketplace</b></div>
+      <p>Cataloghi di skill pubblicate da altri utenti e aziende: liste curate su GitHub, directory dedicate — e in Claude Code interi marketplace di plugin che si installano con un comando. Qualità variabile, ed è per questo che prima di installare <b>si legge</b> (sotto).</p>
+    </div>
   </div>
 
-  <p class="hint" style="margin-top:14px">Le due strade si incontrano: quello che skill-creator produce è una normale cartella zippata, che puoi scaricare, aprire, modificare e ricaricare. Nell'esercizio faremo esattamente questo. Nota: le skill custom caricate su claude.ai restano <b>private del tuo account</b>.</p>
+  <div class="callout">Il valore dell'import: dentro una skill ben fatta ci sono <b>ore di tentativi di qualcun altro</b> — i formati che rompono i file Office, i casi limite di una nota spese, l'ordine giusto dei passaggi. Tu la importi in trenta secondi. È il modo più veloce che esista di dare a Claude una competenza che non hai — o che non hai il tempo di scrivere.</div>
 
-  <div class="warn"><b>Una skill è software che dai in mano all'agente.</b> Può orientare quello che Claude fa ed esegue: installa solo skill di fonti di cui ti fidi, leggi SKILL.md <b>e gli script</b> prima di abilitarle, diffida di skill che scaricano contenuti da URL esterni, e non scriverci dentro segreti — API key, password — da nessuna parte.</div>
+  <h3>E se la skill che ti serve non esiste ancora?</h3>
+  <div class="grid2">
+    <div class="pill"><div class="pk">Strada 1 · Conversazionale</div><h4>Chiedila a Claude</h4><p>«Creami una skill che…». Claude attiva <b>skill-creator</b> — una skill che costruisce skill: ti fa domande, scrive SKILL.md, prepara materiali e script, impacchetta tutto in uno ZIP.</p></div>
+    <div class="pill"><div class="pk">Strada 2 · Manuale</div><h4>Cartella → ZIP → upload</h4><p>Scrivi i file a mano, comprimi <b>con la cartella come radice</b> (<code>slide-aziendali.zip → slide-aziendali/ → SKILL.md</code>) e carica da <b>Personalizza → Skill</b>. È la stessa strada con cui ritocchi una skill importata.</p></div>
+  </div>
+
+  <p class="hint" style="margin-top:14px">Prerequisito per gli script: in <b>Impostazioni → Funzionalità</b> deve essere attivo <b>«Esecuzione di codice e creazione di file»</b> — è la sandbox in cui girano. Le skill custom caricate su claude.ai restano <b>private del tuo account</b>.</p>
+
+  <div class="warn"><b>Una skill è software che dai in mano all'agente</b> — e nel momento in cui la importi da un estraneo, questo conta doppio. Può orientare quello che Claude fa ed esegue: installa solo da fonti di cui ti fidi, leggi SKILL.md <b>e gli script</b> prima di abilitarla, diffida di skill che scaricano contenuti da URL esterni, e non scriverci dentro segreti — API key, password — da nessuna parte.</div>
 </section>
 
-<!-- 9 · hands on -->
-<section id="s9" data-title="Hands on">
-  <div class="kicker"><span class="n">09</span> <span class="act">Hands on</span></div>
-  <h2>La tua prima <span class="em">skill</span></h2>
-  <p class="lead">Adesso tocca a voi, su un caso nuovo: il <b>controllo delle note spese</b>. È il caso perfetto da skill, non da istruzioni: regole aziendali stabili e una serie di conti che devono venire giusti sempre. Come organizzarla — cosa mettere nelle istruzioni, cosa nei materiali, quanti script — è la parte interessante, e <b>non ve lo diciamo prima</b>.</p>
-
-  <div class="brief">
-    <div class="bl">La consegna — come te la racconta l'ufficio contabilità</div>
-    <p>«Le note spese mi arrivano in tutti i modi: un Excel, le foto degli scontrini, le righe in fondo a una mail. Si rimborsano solo: pranzo, cena, hotel, taxi, mezzi pubblici, parcheggi e pedaggi, e i chilometri con l'auto propria — il resto no, e va segnalato. I conti: i chilometri si pagano 0,45 € l'uno; pranzo massimo 35 €, cena massimo 50 €, ma pranzo e cena insieme non più di 75 € al giorno; hotel massimo 140 € a notte. E alla fine voglio i totali: per categoria, per giornata, e il totale della trasferta. Se manca una ricevuta, una data o un importo, non tirate a indovinare: ditemelo.»</p>
-  </div>
+<!-- 11 · hands on -->
+<section id="s11" data-title="Hands on">
+  <div class="kicker"><span class="n">11</span> <span class="act">Hands on</span></div>
+  <h2>Adotta una skill <span class="em">scritta da qualcun altro</span></h2>
+  <p class="lead">Stavolta non c'è niente da costruire: l'esercizio è il <b>ciclo dell'import</b> — trovare, leggere, installare, verificare, adattare. È il ciclo che rifarete ogni volta che qualcuno vi passa una skill. E la parte interessante è misurare <b>quanto contesto vi siete portati a casa gratis</b>.</p>
 
   <div class="steps">
-    <div class="stp"><div><h4>Genera i dati di prova</h4><p>Chiedi a Claude una nota spese fittizia di una trasferta di tre giorni, <b>in un formato volutamente disordinato</b>: un Excel, o le righe di una finta mail. Dentro: voci valide, sforamenti di regole <b>diverse</b> (una cena sopra i 50 €, un giorno che sfora il tetto pasti, un hotel troppo caro), e una voce non rimborsabile (un regalo, un minibar).</p></div></div>
-    <div class="stp"><div><h4>Chiedi la skill</h4><p>Passa a Claude la consegna della contabilità qui sopra, parola per parola, con un vincolo in più: <b>ogni calcolo deve farlo uno script dedicato — un calcolo, uno script</b>. Guarda il ragionamento mentre lavora: vedrai <code>skill-creator</code> entrare in scena.</p></div></div>
-    <div class="stp"><div><h4>Apri lo ZIP e guarda le scelte</h4><p>Scarica il pacchetto e confronta con l'anatomia della sezione 06: dove ha messo le regole? Quanti script ha fatto, e per quali calcoli? Cosa ha scritto nella <code>description</code>? Non c'è una soluzione unica: quello che vedi sono scelte di design.</p></div></div>
-    <div class="stp"><div><h4>Ritocca a mano e ricarica</h4><p>Cambia una cosa piccola ma vera: un massimale, o la <code>description</code> (per esempio: attivati anche quando l'utente dice «rimborso spese»). Rizippa <b>con la cartella come radice</b> e ricarica da Personalizza → Skill.</p></div></div>
-    <div class="stp"><div><h4>Test e controprova</h4><p>Nuova chat: carica la nota spese disordinata e chiedi «controllami questa prima che la mandi» → la skill si attiva, gli script girano nella sandbox, e devono saltare fuori <b>tutti</b> gli sforamenti che avevi nascosto, più la voce non rimborsabile. Poi fai una domanda che non c'entra nulla → la skill resta al livello 1: progressive disclosure dal vivo.</p></div></div>
+    <div class="stp"><div><h4>Scegli dal catalogo</h4><p>Apri <code>github.com/anthropics/skills</code> (o una directory di community) e scegli una skill vicina al tuo lavoro vero — documenti, dati, presentazioni. Scaricala: è una cartella, e la puoi già leggere tutta.</p></div></div>
+    <div class="stp"><div><h4>Leggila prima di installarla</h4><p>Prima SKILL.md: cosa promette la <code>description</code>? Quando dice di attivarsi? Poi materiali e script: <b>cosa esegue, esattamente?</b> È l'abitudine di sicurezza della sezione 10 — e intanto è l'anatomia della sezione 08, vista dal vivo su una skill vera.</p></div></div>
+    <div class="stp"><div><h4>Installa e prova il trigger</h4><p>ZIP <b>con la cartella come radice</b>, upload da Personalizza → Skill. Poi due richieste: una che matcha la description → la skill si attiva e vedi il corpo entrare in finestra; una che non c'entra nulla → resta al livello 1. Progressive disclosure dal vivo (sezione 09).</p></div></div>
+    <div class="stp"><div><h4>Misura il valore dell'import</h4><p>Apri una chat <b>senza</b> la skill e prova a ottenere lo stesso risultato solo col prompt. Confronta gli output — e soprattutto chiediti: quanto di quel know-how avresti saputo scriverlo tu? <b>Quel delta è il contesto che hai importato.</b></p></div></div>
+    <div class="stp"><div><h4>Falla tua</h4><p>Il contesto importato resta testo. Cambia una cosa piccola ma vera: traduci la <code>description</code> perché si attivi anche su richieste in italiano, o aggiungi una regola della tua azienda. Rizippa, ricarica, riprova. Ogni skill importata è la bozza della tua versione.</p></div></div>
   </div>
 </section>
 
-<!-- 10 · takeaway -->
-<section id="s10" data-title="Da portare a casa">
-  <div class="kicker"><span class="n">10</span> <span class="act">Da portare a casa</span></div>
+<!-- 12 · takeaway -->
+<section id="s12" data-title="Da portare a casa">
+  <div class="kicker"><span class="n">12</span> <span class="act">Da portare a casa</span></div>
   <h2>Quattro idee da portare a casa</h2>
   <div class="takes">
     <div class="take"><div class="tn">01</div><h4>Il prodotto è l'harness</h4><p>Chat, Cowork e Code condividono il modello. Quando scegli tra loro non scegli un'intelligenza, scegli gli strumenti e i permessi che le dai.</p></div>
-    <div class="take"><div class="tn">02</div><h4>Il Progetto è contesto riusabile</h4><p>Istruzioni, Contesto, Memoria: gli stessi blocchi di stamattina, con un'interfaccia sopra. Nella cartella lo stesso ruolo lo fa il CLAUDE.md. Scrivilo una volta, riusalo ogni giorno.</p></div>
-    <div class="take"><div class="tn">03</div><h4>MCP è descrivere, non programmare</h4><p>Il server dice a parole cosa sa fare e scambia testo. Il connettore è quel server con il login già fatto. Sotto, il protocollo è lo stesso.</p></div>
-    <div class="take"><div class="tn">04</div><h4>La skill è know-how on-demand</h4><p>Una cartella con istruzioni, materiali e script. In finestra vive solo la description; il resto si carica quando serve. E il codice non entra mai: solo il suo output.</p></div>
+    <div class="take"><div class="tn">02</div><h4>Il Progetto è contesto riusabile</h4><p>Istruzioni, Contesto, Memoria: gli stessi blocchi della context window, con un'interfaccia sopra. Nella cartella lo stesso ruolo lo fa il CLAUDE.md. Scrivilo una volta, riusalo ogni giorno.</p></div>
+    <div class="take"><div class="tn">03</div><h4>MCP è un accesso</h4><p>Il server si descrive a parole e scambia testo; il connettore è quel server col login già fatto. Ti collega a un software esterno — ma non insegna niente a Claude.</p></div>
+    <div class="take"><div class="tn">04</div><h4>La skill è contesto importato</h4><p>Il know-how di qualcun altro, in una cartella: in finestra vive solo la description, il corpo entra quando serve. Una volta → prompt. Sempre → CLAUDE.md. A volte → skill.</p></div>
   </div>
 </section>
 
@@ -837,7 +909,57 @@
     br.addEventListener("click",reset);
   })();
 
-  /* ---------- s6 · anatomia della skill ---------- */
+  /* ---------- s7 · prompt vs CLAUDE.md vs skill ---------- */
+  (function(){
+    var sysB='<div class="blk sys"><div class="bh">System</div>Sei Claude. Rispondi in italiano.</div>';
+    var uA='<div class="blk u"><div class="bh">Utente</div>Fammi cinque slide sul lancio di NovaCRM.</div>';
+    var uB='<div class="blk u"><div class="bh">Utente</div>Riassumimi questo contratto in dieci righe.</div>';
+    var M={
+      p:{
+        ex:{t:"Nel prompt — la incolli quando serve",
+          p:"Quando serve la incolli, quando non serve non c'è: in token è perfino efficiente. Il costo è <b>fuori</b> dalla finestra: la procedura vive in un file sul tuo desktop, la incolli se ti ricordi, e in azienda ognuno ha la sua versione — quella giusta ce l'ha chi l'ha aggiornata per ultimo.",
+          l:"Va bene per il know-how che serve <b>una volta</b>. Per un mestiere che ricorre, no."},
+        wa:sysB+'<div class="blk u"><div class="bh">Utente</div>Fammi cinque slide sul lancio di NovaCRM.<br><i>…e sotto, incollata a mano, tutta la procedura: scaletta, template, esportazione</i></div>',
+        wb:sysB+uB,
+        ta:["~2.000 token",30], tb:["~50 token",3]
+      },
+      c:{
+        ex:{t:"Nel CLAUDE.md — sempre in finestra",
+          p:"In Chat A funziona uguale. Ma guarda Chat B: la procedura è lì <b>anche dove non c'entra niente</b>. La paghi in token a ogni sessione, e la paghi in attenzione — più riempi la finestra, più diluisci. Una procedura la reggi; con dieci, il CLAUDE.md diventa il file da 8.000 token che nessuno osa più toccare.",
+          l:"Il CLAUDE.md è per le regole che servono <b>sempre</b> — è il suo mestiere. Il know-how occasionale lo intasa."},
+        wa:sysB+'<div class="blk instr"><div class="bh">CLAUDE.md — a ogni sessione, tutto</div>Le regole del progetto <b>+ tutta la procedura slide</b>: scaletta, template, esportazione.</div>'+uA,
+        wb:sysB+'<div class="blk instr"><div class="bh">CLAUDE.md — anche qui, per intero</div>Le regole del progetto <b>+ tutta la procedura slide</b> — che oggi non serve a niente.</div>'+uB,
+        ta:["~2.000 token",30], tb:["~2.000 token",30]
+      },
+      s:{
+        ex:{t:"In una skill — una riga finché dorme",
+          p:"In Chat A la skill si sveglia e costa quanto il CLAUDE.md — giusto così: sta lavorando. In Chat B costa una riga: la description. Disponibile sempre, pagata solo quando serve. E siccome è una cartella e non un file tuo, non è più artigianato: si versiona, si passa a un collega, <b>si importa</b>.",
+          l:"È il posto del know-how che serve <b>a volte</b> — cioè di quasi tutto il know-how."},
+        wa:sysB+'<div class="blk meta"><div class="bh">Skill installate — solo i metadati</div><code>slide-aziendali</code> — Crea presentazioni sul template aziendale. Usala quando…</div>'+uA+'<div class="blk instr"><div class="bh">SKILL.md — letto adesso, perché serve</div>La procedura, per intero: scaletta, template, esportazione.</div>',
+        wb:sysB+'<div class="blk meta"><div class="bh">Skill installate — solo i metadati</div><code>slide-aziendali</code> — Crea presentazioni sul template aziendale. Usala quando…</div>'+uB,
+        ta:["~2.100 token",32], tb:["~150 token",5]
+      }
+    };
+    var bp=$("#whP"), bc=$("#whC"), bs=$("#whS");
+    var ex=$("#whEx"), wa=$("#whWinA"), wb=$("#whWinB");
+    var fa=$("#whFillA"), fb=$("#whFillB"), tka=$("#whTokA"), tkb=$("#whTokB");
+    function show(k){
+      var m=M[k];
+      ex.innerHTML='<h4>'+m.ex.t+'</h4><p>'+m.ex.p+'</p><div class="lnk">'+m.ex.l+'</div>';
+      wa.innerHTML=m.wa; wb.innerHTML=m.wb;
+      tka.textContent=m.ta[0]; fa.style.width=m.ta[1]+"%";
+      tkb.textContent=m.tb[0]; fb.style.width=m.tb[1]+"%";
+      bp.className="b "+(k==="p"?"acc":"ghost");
+      bc.className="b "+(k==="c"?"acc":"ghost");
+      bs.className="b "+(k==="s"?"acc":"ghost");
+    }
+    bp.addEventListener("click",function(){show("p");});
+    bc.addEventListener("click",function(){show("c");});
+    bs.addEventListener("click",function(){show("s");});
+    show("p");
+  })();
+
+  /* ---------- s8 · anatomia della skill ---------- */
   (function(){
     var F={
       skill:{
@@ -865,7 +987,7 @@
     show("skill");
   })();
 
-  /* ---------- s7 · progressive disclosure ---------- */
+  /* ---------- s9 · progressive disclosure ---------- */
   (function(){
     var b1=$("#pdS1"), b2=$("#pdS2"), br=$("#pdR");
     var ex=$("#pdEx"), win=$("#pdWin"), fill=$("#pdFill"), tok=$("#pdTok");
