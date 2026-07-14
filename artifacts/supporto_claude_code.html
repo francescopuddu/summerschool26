@@ -92,20 +92,40 @@
   .wbox.b{background:var(--green-soft);border-color:#c6e5dd}
   .wbox.b h4{color:var(--green)} .wbox.b h4::before{background:var(--green)}
 
-  /* GIT pipeline (riciclata dalla guida comandi) */
-  .gitflow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:stretch;gap:0;margin-top:20px}
-  @media(max-width:720px){.gitflow{grid-template-columns:1fr;gap:14px}.gitflow .arrow{transform:rotate(90deg);justify-self:center;margin:2px 0}}
-  .stage{background:var(--card-2);border:1.5px solid var(--line);border-radius:14px;padding:16px;text-align:center;transition:all .35s}
-  .stage.hot{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 10px 30px -20px rgba(220,38,38,.6);transform:translateY(-3px)}
-  .stage .icn{font-size:26px;line-height:1}
-  .stage .nm{font-weight:800;font-size:15px;margin-top:8px}
-  .stage .sub{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);margin-top:2px}
-  .stage .file{margin-top:12px;height:26px;display:flex;align-items:center;justify-content:center;gap:6px}
-  .dot{width:12px;height:12px;border-radius:3px;background:var(--line-strong);transition:all .35s;transform:scale(.6);opacity:.35}
-  .stage.hot .dot{background:var(--accent);transform:scale(1);opacity:1}
-  .stage.done .dot{background:var(--green);transform:scale(1);opacity:1}
-  .arrow{display:flex;align-items:center;justify-content:center;color:var(--line-strong);font-size:22px;padding:0 6px}
-  .gitcmd{font-family:var(--mono);font-size:12px;color:var(--accent-2);margin-top:8px;font-weight:700}
+  /* GIT: la cartella, le sue versioni, la copia nel cloud */
+  .gitviz{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;margin-top:18px}
+  @media(max-width:760px){.gitviz{grid-template-columns:1fr}.gsync{flex-direction:row !important;padding:12px 0 !important}.gsarr{transform:rotate(90deg)}}
+  .gzone{display:flex;flex-direction:column;gap:10px}
+  .gzhead{font-weight:800;font-size:14px;display:flex;align-items:center;gap:8px}
+  .gzhead .gzicn{font-size:18px}
+  .gfolder{border:1.5px solid var(--line-strong);border-radius:14px;background:var(--card-2);padding:12px 14px;transition:all .3s}
+  .gfolder.dirty{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 10px 30px -20px rgba(220,38,38,.5)}
+  .gfolder.flash{border-color:var(--green);background:var(--green-soft)}
+  .gzone.remote .gfolder{border-style:dashed}
+  .gzone.remote .gfiles{opacity:.65}
+  .gftop{display:flex;align-items:baseline;gap:8px;font-family:var(--mono);font-size:13px;font-weight:700}
+  .gftop .gfnote{font-family:var(--sans);font-weight:400;font-size:11.5px;color:var(--muted);margin-left:auto;text-align:right}
+  .gfiles{list-style:none;margin:10px 0 2px;padding:0 0 0 14px;display:flex;flex-direction:column;gap:5px;border-left:1px dashed var(--line-strong)}
+  .gfiles li{font-family:var(--mono);font-size:12px;background:var(--card);border:1px solid var(--line);border-radius:7px;padding:4px 9px;display:flex;justify-content:space-between;align-items:center;gap:8px;transition:all .3s}
+  .gfiles li.mod{border-color:var(--accent)}
+  .gfiles .fmod{font-style:normal;font-family:var(--sans);font-size:10.5px;font-weight:700;color:var(--accent);opacity:0;transition:opacity .3s}
+  .gfiles li.mod .fmod{opacity:1}
+  .ghist{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:10px 12px;flex:1}
+  .ghlab{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);margin-bottom:8px}
+  .ghlab .mono{text-transform:none;letter-spacing:0;color:var(--accent-2)}
+  .gchips{display:flex;flex-wrap:wrap;gap:6px;min-height:30px;align-items:center}
+  .gchip{font-family:var(--mono);font-size:12px;font-weight:700;border-radius:8px;padding:4px 10px;border:1.5px solid;animation:chipin .35s ease}
+  .gchip.pushed{color:var(--green);border-color:#c6e5dd;background:var(--green-soft)}
+  .gchip.onlylocal{color:var(--accent-2);border-color:var(--accent-soft2);background:var(--accent-soft);animation:chipin .35s ease,chippulse 1.6s ease-in-out infinite}
+  @keyframes chipin{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes chippulse{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,0)}50%{box-shadow:0 0 0 5px rgba(220,38,38,.14)}}
+  .gsync{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:0 18px}
+  .gsarr{font-size:24px;color:var(--line-strong);transition:all .3s}
+  .gsync.hot .gsarr{color:var(--accent);transform:scale(1.3)}
+  .gscmd{font-family:var(--mono);font-size:11.5px;font-weight:700;color:var(--accent-2)}
+  .gsstate{font-size:11px;font-weight:700;border-radius:20px;padding:3px 10px;white-space:nowrap;transition:all .3s}
+  .gsstate.ok{color:var(--green);background:var(--green-soft)}
+  .gsstate.behind{color:var(--amber);background:var(--amber-soft)}
   .cycbtn{font-family:var(--sans);font-size:14px;font-weight:700;background:var(--ink);color:#fff;border:0;border-radius:10px;padding:11px 18px;cursor:pointer;transition:transform .05s,background .15s;display:inline-flex;align-items:center;gap:10px}
   .cycbtn:hover{background:#000}.cycbtn:active{transform:translateY(1px)}
 
@@ -198,37 +218,53 @@
     </div>
   </div>
 
-  <p>Di Git vi servono <b>due gesti soli</b>: committare e pushare. Niente branch, niente mondo infinito di Git.</p>
+  <p>Il punto di partenza è banale: il progetto è <b>una cartella sul vostro computer</b> — file dentro una directory, niente di più. Git le aggiunge due cose: una <b>memoria</b> (ogni commit salva una nuova versione della cartella) e una <b>copia nel cloud</b> (il push la sincronizza su GitHub). Due gesti soli: niente branch, niente mondo infinito di Git.</p>
   <div class="panel star">
-    <div class="gitflow" id="gitflow">
-      <div class="stage" data-s="0">
-        <div class="icn">✏️</div>
-        <div class="nm">Working directory</div>
-        <div class="sub">i file che stai modificando</div>
-        <div class="file"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
-        <div class="gitcmd">&nbsp;</div>
+    <div class="badge">Una cartella · le sue versioni · la copia nel cloud</div>
+    <div class="gitviz">
+      <!-- il tuo computer -->
+      <div class="gzone local">
+        <div class="gzhead"><span class="gzicn">💻</span> Il tuo computer</div>
+        <div class="gfolder" id="gfLocal">
+          <div class="gftop">📁 <span>progetto-treni/</span><span class="gfnote">una cartella normale</span></div>
+          <ul class="gfiles">
+            <li><span>📄 index.html</span><em class="fmod">● modificato</em></li>
+            <li><span>⚙️ app.py</span><em class="fmod">● modificato</em></li>
+            <li><span>🗄️ schema.sql</span><em class="fmod">● modificato</em></li>
+          </ul>
+        </div>
+        <div class="ghist">
+          <div class="ghlab">📸 Versioni salvate <span class="mono">(commit)</span></div>
+          <div class="gchips" id="chipsLocal"></div>
+        </div>
       </div>
-      <div class="arrow">→</div>
-      <div class="stage" data-s="1">
-        <div class="icn">📸</div>
-        <div class="nm">Commit</div>
-        <div class="sub">istantanea, sul tuo PC</div>
-        <div class="file"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
-        <div class="gitcmd">git commit -m "…"</div>
+      <!-- push -->
+      <div class="gsync" id="gsync">
+        <div class="gsarr">→</div>
+        <div class="gscmd">git push</div>
+        <div class="gsstate ok" id="gsState">✓ sincronizzati</div>
       </div>
-      <div class="arrow">→</div>
-      <div class="stage" data-s="2">
-        <div class="icn">☁️</div>
-        <div class="nm">Push</div>
-        <div class="sub">online, su GitHub</div>
-        <div class="file"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
-        <div class="gitcmd">git push</div>
+      <!-- github -->
+      <div class="gzone remote">
+        <div class="gzhead"><span class="gzicn">☁️</span> GitHub — il cloud del codice</div>
+        <div class="gfolder" id="gfRemote">
+          <div class="gftop">📁 <span>progetto-treni/</span><span class="gfnote">la copia sincronizzata</span></div>
+          <ul class="gfiles">
+            <li><span>📄 index.html</span></li>
+            <li><span>⚙️ app.py</span></li>
+            <li><span>🗄️ schema.sql</span></li>
+          </ul>
+        </div>
+        <div class="ghist">
+          <div class="ghlab">📸 Versioni ricevute</div>
+          <div class="gchips" id="chipsRemote"></div>
+        </div>
       </div>
     </div>
     <div style="text-align:center;margin-top:18px">
-      <button class="cycbtn" id="gitPlay">▶ Fai partire una modifica</button>
+      <button class="cycbtn" id="gitBtn">✏️ Modifica un file</button>
     </div>
-    <p class="cap" id="gitStatus" style="text-align:center">Premi il pulsante per seguire una modifica lungo i tre stati.</p>
+    <p class="cap" id="gitStatus" style="text-align:center">Fai il giro completo — modifica, commit, push — e poi rifallo: le versioni si accumulano.</p>
   </div>
 
 </div></section>
@@ -370,33 +406,54 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
  secs.forEach(s=>ob.observe(s));
 })();
 
-/* ---------- GIT pipeline animation ---------- */
+/* ---------- GIT: cartella / versioni / cloud ---------- */
 (function(){
-  const stages=[...document.querySelectorAll('#gitflow .stage')];
+  const btn=document.getElementById('gitBtn');
   const status=document.getElementById('gitStatus');
-  const btn=document.getElementById('gitPlay');
-  const msgs=[
-    'Stai modificando i file nella cartella di lavoro…',
-    'git commit — istantanea salvata sul tuo computer 📸',
-    'git push — istantanea inviata su GitHub, ora è al sicuro ☁️'
-  ];
-  let running=false;
-  function reset(){stages.forEach(s=>{s.classList.remove('hot','done');});}
-  function play(){
-    if(running)return;running=true;reset();btn.disabled=true;btn.style.opacity=.6;
-    let i=0;
-    function stepTo(){
-      stages.forEach((s,k)=>{s.classList.toggle('hot',k===i);s.classList.toggle('done',k<i);});
-      status.textContent=msgs[i];
-      i++;
-      if(i<=2){setTimeout(stepTo,1150);}
-      else{setTimeout(()=>{stages.forEach((s)=>{s.classList.remove('hot');s.classList.add('done');});
-        status.textContent='Fatto: la modifica è passata da locale a online. ✅';
-        running=false;btn.disabled=false;btn.style.opacity=1;},1000);}
+  const chipsL=document.getElementById('chipsLocal');
+  const chipsR=document.getElementById('chipsRemote');
+  const folderL=document.getElementById('gfLocal');
+  const folderR=document.getElementById('gfRemote');
+  const files=[...folderL.querySelectorAll('.gfiles li')];
+  const sync=document.getElementById('gsync');
+  const sstate=document.getElementById('gsState');
+  function chip(n,cls){const c=document.createElement('span');c.className='gchip '+cls;c.textContent='v'+n;return c;}
+  chipsL.appendChild(chip(1,'pushed'));
+  chipsR.appendChild(chip(1,'pushed'));
+  function setSync(cls,txt){sstate.className='gsstate '+cls;sstate.textContent=txt;}
+  const labels=['✏️ Modifica un file','📸 git commit — salva la versione','☁️ git push — sincronizza col cloud'];
+  let v=1, phase=0; // 0: pulito e sincronizzato · 1: file modificati · 2: commit non pushato
+  btn.addEventListener('click',()=>{
+    if(phase===0){
+      files[v%files.length].classList.add('mod');
+      files[(v+1)%files.length].classList.add('mod');
+      folderL.classList.add('dirty');
+      setSync('behind','● modifiche non salvate');
+      status.textContent='Hai lavorato nei file della cartella. Per ora la modifica vive solo sul tuo disco: nessuna versione salvata, il cloud non ne sa nulla.';
+      phase=1;
+    }else if(phase===1){
+      v++;
+      files.forEach(f=>f.classList.remove('mod'));
+      folderL.classList.remove('dirty');
+      chipsL.appendChild(chip(v,'onlylocal'));
+      setSync('behind','⚠ il cloud è indietro');
+      status.textContent='git commit: istantanea v'+v+' aggiunta alla storia della cartella. Esiste solo sul tuo computer — GitHub è fermo a prima.';
+      phase=2;
+    }else{
+      sync.classList.add('hot');
+      const last=chipsL.lastElementChild;
+      setTimeout(()=>{
+        chipsR.appendChild(chip(v,'pushed'));
+        last.className='gchip pushed';
+        folderR.classList.add('flash');
+        setTimeout(()=>{folderR.classList.remove('flash');sync.classList.remove('hot');},700);
+      },350);
+      setSync('ok','✓ sincronizzati');
+      status.textContent='git push: la v'+v+' è copiata su GitHub. Cartella e cloud di nuovo identici — la storia è al sicuro anche fuori dal tuo PC.';
+      phase=0;
     }
-    stepTo();
-  }
-  btn.addEventListener('click',play);
+    btn.innerHTML=labels[phase];
+  });
 })();
 
 /* ---------- architettura: click sui blocchi ---------- */
