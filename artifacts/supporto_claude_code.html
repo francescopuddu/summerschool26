@@ -921,40 +921,28 @@
     </div>
 <pre id="claudemdSrc"># CLAUDE.md — Gestionale ordini
 
-Costruisci questo progetto per una persona che non è uno sviluppatore. Le scelte qui sotto sono già state fatte: non cambiarle. Se una richiesta sembra costringerti a uscirne, fermati e spiegami il problema invece di inventare.
+Costruisci questo progetto per una persona che non programma. Le scelte qui sotto sono già fatte: non cambiarle. Se una richiesta ti costringe a uscirne, fermati e spiegami il problema.
 
-## Cosa stiamo costruendo
+## Cosa fa
 
-Gli ordini dei clienti arrivano per mail, scritti a mano libera. L'app li raccoglie, l'AI li trasforma in ordini ordinati (cliente, articoli, quantità, data) e una pagina mostra lo stato di ognuno fino alla consegna.
+Gli ordini dei clienti arrivano per mail, scritti a mano libera. L'app li raccoglie, l'AI li trasforma in ordini ordinati (cliente, articoli, quantità, data) e una pagina ne mostra lo stato fino alla consegna.
 
 ## Le scelte (fisse)
 
 | Pezzo | Scelta |
 |---|---|
-| Database | PostgreSQL, dentro Docker |
-| Back-end | Python con FastAPI |
-| Front-end | React con Vite, JavaScript semplice (niente TypeScript) |
-| AI | si chiama **solo** dal back-end; la chiave sta nel file `.env` |
-
-## Struttura del progetto
-
-```
-progetto/
-├── docker-compose.yml   # il database
-├── CLAUDE.md            # questo file
-├── README.md            # come si avvia tutto
-├── .env                 # chiavi e password — non finisce mai su GitHub
-├── backend/             # dati, regole, chiamate all'AI
-└── frontend/            # le pagine che si vedono
-```
+| Dove stanno i dati | PostgreSQL, dentro Docker |
+| Il motore che elabora | Python con FastAPI |
+| Le pagine che si vedono | React con Vite (niente TypeScript) |
+| AI | si chiama **solo** dal motore; la chiave sta nel file `.env` |
 
 ## Regole
 
-- **Semplice.** Niente pezzi in più oltre a quelli qui sopra: se te ne serve uno, chiedimelo prima e spiegami perché.
+- **Semplice.** Nessun pezzo in più: se ne serve uno, chiedimelo prima.
 - **Segreti.** Chiavi e password solo nel `.env`. Mai nel codice, mai su GitHub.
-- **Si avvia in tre comandi.** Tienili scritti nel README, sempre aggiornati.
+- **Si avvia in tre comandi.** Scritti nel README, sempre aggiornati.
 - **Checkpoint.** A ogni pezzo che funziona: commit e push, messaggi brevi in italiano.
-- **Parlami da non tecnico.** Quando hai finito, dimmi in una riga dove hai messo le mani: database, back-end o front-end.</pre>
+- **Parlami da non tecnico.** A fine lavoro, dimmi in una riga cosa hai toccato.</pre>
   </div>
   <p class="hint">Questo è il file che <span class="mono">/init</span> vi restituisce: la richiesta del capo diventata scelte fisse, più le regole di lavoro. L'esempio è sul progetto degli ordini; per la demo e per l'esercitazione di oggi il <span class="mono">CLAUDE.md</span> — stesso schema, sul gestionale dei treni — ce l'avete già nella cartella.</p>
 
