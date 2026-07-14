@@ -1052,18 +1052,6 @@ progetto/
 
 </div></section>
 
-<!-- ============ TAKEAWAYS ============ -->
-<section id="s8"><div class="wrap reveal">
-  <div class="kicker"><span class="n">✓</span> Da portare a casa</div>
-  <h2>Cosa resta di <span class="em">stamattina</span></h2>
-  <div class="takes">
-    <div class="take"><h4>Commit e push, sempre</h4><p>Due gesti: istantanea locale, copia nel cloud. Checkpoint per voi.</p></div>
-    <div class="take"><h4>L'architettura si eredita</h4><p>Le scelte tecniche stanno in un file (CLAUDE.md) dettato una volta con <span class="mono">/init</span>; poi Claude ci si attiene da solo e voi descrivete la consegna. DB/BE/FE/API restano solo il vocabolario per seguire.</p></div>
-    <div class="take"><h4>Descrivere, non digitare</h4><p>Con Claude Code il software si costruisce raccontandolo. Il vostro mestiere è la consegna, non la sintassi.</p></div>
-    <div class="take"><h4>AI nel software</h4><p>Non solo AI che scrive il codice: app che, una volta costruite, usano un modello per lavorare (la mail, l'estrazione).</p></div>
-  </div>
-</div></section>
-
 <script>
 /* ---------- reveal + progress + dots ---------- */
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.12});
@@ -1071,7 +1059,7 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 let _scrTick=false;const _prog=document.getElementById('prog');
 addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimationFrame(()=>{_scrTick=false;
   const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight);_prog.style.width=(p*100)+'%';});});
-(function(){const labels={s0:'Intro',s1:'Git essenziale',s1b:'Installare Git e gh',s2:"Perché un'app",s3:'I pezzi di un\'app',s4:'Onboarding',s5:'Gli step di lavoro',s6:'Demo: dashboard treni',s7:'Hands-on: il revisore',s8:'Da portare a casa'};
+(function(){const labels={s0:'Intro',s1:'Git essenziale',s1b:'Installare Git e gh',s2:"Perché un'app",s3:'I pezzi di un\'app',s4:'Onboarding',s5:'Gli step di lavoro',s6:'Demo: dashboard treni',s7:'Hands-on: il revisore'};
  const nav=document.getElementById('dots');const secs=[...document.querySelectorAll('section')];
  secs.forEach(s=>{const a=document.createElement('a');a.href='#'+s.id;a.innerHTML='<span>'+(labels[s.id]||s.id)+'</span>';a.dataset.id=s.id;nav.appendChild(a);});
  const links=[...nav.querySelectorAll('a')];
