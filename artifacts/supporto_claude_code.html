@@ -848,8 +848,8 @@
     <span class="who">🧑‍💼</span>
     <div>
       <div class="lb">La richiesta</div>
-      <q>Gli ordini dei clienti ci arrivano per mail, ognuno scritto a modo suo, e qualcuno li ricopia a mano su un Excel. Mi serve una pagina dove incollo la mail e l'ordine si scrive da solo, e dove vedo a colpo d'occhio cosa è partito e cosa no.</q>
-      <p class="after">Questo è tutto quello che si sa del progetto: nessuna scelta tecnica, nessun documento. Nei cinque step qui sotto diventa software.</p>
+      <q>Gli ordini dei clienti ci arrivano per mail, ognuno scritto a modo suo, e qualcuno li ricopia a mano su un Excel. Mi serve una pagina dove incollo la mail e l'ordine si scrive da solo, e dove vedo a colpo d'occhio cosa è partito e cosa no. Ti giro l'Excel degli ordini di gennaio e le due paginette di specifica.</q>
+      <p class="after">Ecco tutto quello che c'è: una richiesta a voce e due documenti. Nei cinque step qui sotto diventa software — e quei documenti sono la prima cosa da <b>copiare nella cartella del progetto</b>.</p>
     </div>
   </div>
 
@@ -867,7 +867,7 @@
 
           <div class="ccempty" id="ccEmpty">
             <div class="ic">📁</div>
-            <p>Claude lavora <b>dentro una cartella</b>: quella del progetto, e vede solo quella. Prima si sceglie lei, poi si parla.</p>
+            <p>Claude lavora <b>dentro una cartella</b>: quella del progetto, e vede solo quella. Prima si sceglie lei, poi si parla — e <b>i documenti che contano si copiano lì dentro subito</b>: le specifiche, l'Excel con cui lavorate, i file che l'app dovrà usare.</p>
             <button class="ccopen pulse" id="ccOpenBtn">Apri una cartella…</button>
           </div>
 
@@ -875,12 +875,12 @@
           <div class="ccrow act" data-step="1"><span class="run">⏺</span> Creo la repository e la collego alla cartella…</div>
           <div class="ccrow act" data-step="1"><span class="ok">✓</span> repository creata: <b>tuonome/gestionale-ordini</b> · privata</div>
           <div class="ccrow act" data-step="1"><span class="ok">✓</span> cartella collegata alla repository</div>
-          <div class="ccrow cl" data-step="1">Fatto: la cartella adesso è un progetto Git agganciato al cloud. È vuota — il codice non esiste ancora — ma da qui posso salvare le versioni e mandarle su GitHub.</div>
+          <div class="ccrow cl" data-step="1">Fatto: la cartella adesso è un progetto Git agganciato al cloud. Dentro ci sono solo i vostri documenti — il codice non esiste ancora — ma da qui posso salvare le versioni e mandarle su GitHub.</div>
 
-          <div class="ccrow you" data-step="2">/init — «un gestionale degli ordini dei clienti: le mail si incollano e l'AI le trasforma in ordini. Postgres in Docker, back-end FastAPI, front-end React, l'AI solo dal back-end. Commit a ogni pezzo che funziona.»</div>
-          <div class="ccrow act" data-step="2"><span class="run">⏺</span> Guardo la cartella e scrivo le regole del progetto…</div>
+          <div class="ccrow you" data-step="2">Nella cartella trovi il foglio con gli ordini di gennaio e le specifiche. /init — «un gestionale degli ordini dei clienti: le mail si incollano e l'AI le trasforma in ordini. Postgres in Docker, back-end FastAPI, front-end React, l'AI solo dal back-end. Commit a ogni pezzo che funziona.»</div>
+          <div class="ccrow act" data-step="2"><span class="run">⏺</span> Leggo <b>ordini_gennaio.xlsx</b> e <b>specifiche.md</b>, guardo la cartella e scrivo le regole del progetto…</div>
           <div class="ccrow act" data-step="2"><span class="ok">✓</span> <b>CLAUDE.md</b> creato</div>
-          <div class="ccrow cl" data-step="2">Le vostre scelte sono nel <b>CLAUDE.md</b>. Lo rileggo da solo a ogni avvio: l'architettura non me la dovete più ripetere.</div>
+          <div class="ccrow cl" data-step="2">Le vostre scelte sono nel <b>CLAUDE.md</b>, e i vostri documenti sono qui nella cartella: li rileggo da solo a ogni avvio. L'architettura non me la dovete più ripetere.</div>
 
           <div class="ccrow you" data-step="3">Iniziamo: la pagina con l'elenco degli ordini e lo stato di ognuno.</div>
           <div class="ccrow act" data-step="3"><span class="run">⏺</span> Database, back-end, front-end…</div>
@@ -903,9 +903,9 @@
     </div>
 
     <div class="steps" id="stepList" style="margin-top:18px">
-      <div class="st"><p><b>Si apre la cartella di lavoro.</b> Claude Code non è un posto dove si caricano dei file: <b>vive dentro una cartella</b> del vostro computer e vede solo quella. Sceglierla è il primo gesto — e da quel momento tutto ciò che chiedete succede lì dentro.</p></div>
+      <div class="st"><p><b>Si apre la cartella di lavoro — con dentro i documenti.</b> Claude Code non è un posto dove si caricano dei file: <b>vive dentro una cartella</b> del vostro computer e vede solo quella. Sceglierla è il primo gesto — e prima di parlargli <b>ci si copiano dentro i documenti che contano</b>: il foglio di specifica, l'Excel con i dati veri, tutto ciò su cui il progetto si basa. Quello che non è nella cartella, per Claude non esiste.</p></div>
       <div class="st"><p><b>Si chiede la repository — a parole.</b> Il contenitore nel cloud del capitolo 01, quello verso cui farete push. Non serve andare su GitHub a crearlo a mano: lo si <b>chiede in italiano</b>, e Claude lo crea e lo aggancia alla cartella. Da qui i vostri checkpoint hanno dove andare.</p></div>
-      <div class="st"><p><b>Il comando <span class="cmd">/init</span>: si detta il software e come si vuole lavorare.</b> Il file delle regole non si scrive a mano. A <span class="cmd">/init</span> si racconta cosa deve diventare il progetto e con quali vincoli — e lui scrive il <span class="mono">CLAUDE.md</span>, che rileggerà da solo a ogni avvio successivo.</p></div>
+      <div class="st"><p><b>Il comando <span class="cmd">/init</span>: si detta il software e come si vuole lavorare.</b> Il file delle regole non si scrive a mano. A <span class="cmd">/init</span> si racconta cosa deve diventare il progetto e con quali vincoli — e lui, <b>dopo aver letto i documenti che avete messo nella cartella</b>, scrive il <span class="mono">CLAUDE.md</span>, che rileggerà da solo a ogni avvio successivo. Per questo i file vanno messi lì <b>prima</b>: <span class="cmd">/init</span> guarda la cartella com'è in quel momento.</p></div>
       <div class="st"><p><b>Da qui si inizia a lavorare.</b> Solo consegne, in italiano, una per volta. L'architettura non va più ripetuta: è nel file.</p></div>
       <div class="st"><p><b>A ogni pezzo che funziona, il checkpoint.</b> Si torna al ciclo del capitolo 01 — <b>commit</b> e <b>push</b> — ma non si digita nulla: si chiede. I gesti sono quelli, la mano è di Claude.</p></div>
     </div>
@@ -990,7 +990,7 @@ progetto/
   <div class="panel star">
     <div class="badge doer">Demo · dashboard treni</div>
     <div class="steps">
-      <div class="st"><p><b>Il punto di partenza.</b> Gli stessi cinque step del capitolo 06, stavolta sul gestionale dei treni e già fatti: la cartella è aperta e agganciata alla repo, e dentro c'è solo il <span class="mono">CLAUDE.md</span> uscito da <span class="cmd">/init</span>. Il primo prompt è la consegna del gestionale: Claude legge il file e tira su i pezzi dell'app da solo — nessuna scelta tecnica da fare dal vivo.</p></div>
+      <div class="st"><p><b>Il punto di partenza.</b> Gli stessi cinque step del capitolo 06, stavolta sul gestionale dei treni e già fatti: nella cartella, <b>prima di <span class="cmd">/init</span></b>, è stato copiato il documento di lavoro di questo progetto — il <b>JSON dell'ERP</b> qui sotto — e accanto c'è il <span class="mono">CLAUDE.md</span> uscito da <span class="cmd">/init</span>. Il primo prompt è la consegna del gestionale: Claude legge i due file e tira su i pezzi dell'app da solo — nessuna scelta tecnica da fare dal vivo.</p></div>
       <div class="st"><p><b>La fonte dati: un ERP mockato.</b> Un componente preparato in anticipo che, ricevute le chiamate, risponde con dati presi da un JSON prefatto — mezzi, manutentori con le loro disponibilità, revisioni con le scadenze. "Mockare" è a sua volta un concetto da fissare: per costruire l'app non serve il sistema vero.</p></div>
       <div class="st"><p><b>La dashboard.</b> Visione d'insieme dei mezzi con lo stato delle revisioni e dei controlli obbligatori a scadenza: otto mezzi di categoria tre, due in regola, sei da sistemare. E un mezzo, l'ETR-350-04, con due controlli già <b>scaduti</b>: è il caso che nessuno aveva visto.</p></div>
       <div class="st"><p><b>Il bottone "Organizza revisione".</b> Crea l'agenda del giorno o della settimana dei manutentori, incrociando revisioni da fare e disponibilità.</p></div>
@@ -998,6 +998,7 @@ progetto/
       <div class="st"><p><b>L'AI dentro il software.</b> La composizione della mail la scrive un modello, chiamato via API dall'app stessa. La mail allega anche la <b>scheda treno</b> del mezzo, la documentazione da portare con sé.</p></div>
     </div>
     <p style="margin-top:14px"><a class="dlbtn" href="https://drive.google.com/uc?export=download&amp;id=1Fx_j2mXsTkoVkEVvMDj27_1n1ruNoFoa" target="_blank" rel="noopener">↓ Scarica il JSON dell'ERP mockato <span>json · 22 KB</span></a></p>
+    <p class="hint" style="margin-top:8px">Scaricatelo e <b>copiatelo nella cartella del progetto prima di lanciare <span class="cmd">/init</span></b>: come i documenti del capitolo 06, va messo lì all'inizio, così Claude lo legge e ne tiene conto nelle regole del progetto. Quello che non è nella cartella, per lui non esiste.</p>
 
     <details class="dataexp">
       <summary>Cosa c'è dentro questo file</summary>
@@ -1148,8 +1149,8 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   const LABEL=['','▶ «Crea una repository e collegala…»','▶ /init — «il gestionale degli ordini…»','▶ «La pagina con l\'elenco degli ordini»','▶ «Salva e manda su GitHub»','↺ Ricomincia'];
   const HINT=[
     'Si comincia da qui: clicca <b>Apri una cartella…</b>.',
-    'Claude ora vede la cartella, ed è vuota. La repository non si va a creare a mano: <b>gliela si chiede</b>.',
-    'La cartella è agganciata al cloud. Ora le regole del progetto: si dettano a <span class="mono">/init</span>, una volta sola.',
+    'Claude ora vede la cartella e i documenti che ci avete copiato dentro. La repository non si va a creare a mano: <b>gliela si chiede</b>.',
+    'La cartella è agganciata al cloud. Ora le regole del progetto: si dettano a <span class="mono">/init</span>, che intanto legge i vostri documenti.',
     'Le scelte sono nel <span class="mono">CLAUDE.md</span>. Da adesso solo consegne: l\'architettura non va più ripetuta.',
     'Il primo pezzo funziona: è il momento del checkpoint del capitolo 01 — <b>commit</b> e <b>push</b>, chiesti a parole.',
     'Fine. Da qui è sempre lo stesso giro: una consegna, un pezzo che funziona, <b>commit</b> e <b>push</b>.'
