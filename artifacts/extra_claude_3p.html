@@ -80,6 +80,20 @@
     padding:14px 18px;margin:22px 0;font-size:15.5px}
   .callout b{color:var(--accent)}
 
+  /* mini-mappe: dove viaggia il dato */
+  .maps{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+  @media(max-width:760px){.maps{grid-template-columns:1fr}}
+  .mapbox{border:1px solid var(--line);border-radius:14px;background:var(--card-2);padding:14px 14px 10px}
+  .mapbox h4{margin:0 0 4px;font-size:14.5px;display:flex;align-items:center;gap:8px}
+  .mapbox h4 .dotk{width:9px;height:9px;border-radius:50%;flex:none}
+  .mapbox.p1 h4{color:var(--amber)} .mapbox.p1 .dotk{background:var(--amber)}
+  .mapbox.p3 h4{color:var(--accent)} .mapbox.p3 .dotk{background:var(--accent)}
+  .mapbox .sub2{font-size:12.5px;color:var(--ink-2);margin:0 0 8px}
+  .mapbox svg{display:block;width:100%;height:auto}
+  .flow{fill:none;stroke-width:2.6;stroke-linecap:round;stroke-dasharray:7 6;animation:flow 1.1s linear infinite}
+  @keyframes flow{to{stroke-dashoffset:-13}}
+  @media(prefers-reduced-motion:reduce){.flow{animation:none}}
+
   /* diagramma "dove abita il modello" */
   .homes{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
   @media(max-width:760px){.homes{grid-template-columns:1fr}}
@@ -166,6 +180,65 @@
   <div class="kicker"><span class="n">02</span> Governance del dato</div>
   <h2>I dati <span class="em">non si muovono</span></h2>
   <p class="lead">La domanda giusta non è "il modello è bravo?" — quella risposta l'avete vista oggi. È: <b>chi vede i dati, dove transitano, cosa ne resta</b>.</p>
+
+  <div class="panel">
+    <div class="badge">Dove viaggia il dato</div>
+    <div class="maps">
+
+      <div class="mapbox p1">
+        <h4><span class="dotk"></span>1P — API Anthropic</h4>
+        <p class="sub2">Il dato parte dalla sede e viene processato <b>negli Stati Uniti</b>: trasferimento extra-UE.</p>
+        <svg viewBox="0 0 460 260" role="img" aria-label="Mappa: con l'API Anthropic il dato attraversa l'Atlantico verso gli Stati Uniti">
+          <defs><marker id="ah1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10Z" fill="#B45309"/></marker></defs>
+          <!-- continenti stilizzati -->
+          <path d="M38,60 Q60,38 95,42 Q140,40 150,62 Q158,84 138,96 Q150,104 142,122 Q130,150 108,158 Q96,176 82,168 Q70,160 74,142 Q56,130 50,108 Q34,86 38,60 Z" fill="#e9e6dd" stroke="#b4b2a9" stroke-width="1.2"/>
+          <path d="M118,168 Q136,162 140,180 Q142,206 128,224 Q116,238 108,220 Q102,196 108,182 Q110,172 118,168 Z" fill="#e9e6dd" stroke="#b4b2a9" stroke-width="1.2"/>
+          <path d="M170,32 Q188,24 198,36 Q202,50 188,56 Q172,58 168,46 Z" fill="#e9e6dd" stroke="#b4b2a9" stroke-width="1.2"/>
+          <path d="M272,64 Q284,50 300,54 Q318,48 330,58 Q344,66 338,82 Q334,96 320,100 Q326,112 314,118 Q298,124 290,114 Q276,116 270,102 Q262,80 272,64 Z" fill="#e9e6dd" stroke="#b4b2a9" stroke-width="1.2"/>
+          <path d="M282,128 Q300,120 320,128 Q338,134 332,156 Q326,182 310,200 Q296,214 286,196 Q276,172 276,150 Q276,136 282,128 Z" fill="#e9e6dd" stroke="#b4b2a9" stroke-width="1.2"/>
+          <!-- zona di arrivo: USA evidenziati -->
+          <circle cx="108" cy="110" r="26" fill="rgba(180,83,9,.12)" stroke="#B45309" stroke-width="1.4" stroke-dasharray="4 4"/>
+          <!-- rotta transatlantica -->
+          <path class="flow" d="M300,110 C 262,152 178,152 116,116" stroke="#B45309" marker-end="url(#ah1)"/>
+          <!-- pin sede -->
+          <circle cx="303" cy="108" r="6" fill="#1f5fa8" stroke="#fff" stroke-width="2"/>
+          <text x="311" y="104" font-family="ui-monospace,Menlo,monospace" font-size="11" font-weight="700" fill="#45443f">la tua sede</text>
+          <!-- pin datacenter US -->
+          <circle cx="108" cy="110" r="6" fill="#B45309" stroke="#fff" stroke-width="2"/>
+          <text x="104" y="90" font-family="ui-monospace,Menlo,monospace" font-size="11" font-weight="700" fill="#8a5108" text-anchor="middle">server Anthropic · USA</text>
+          <text x="230" y="246" font-family="ui-monospace,Menlo,monospace" font-size="11.5" fill="#8a5108" text-anchor="middle">il dato attraversa l'Atlantico: trasferimento da documentare</text>
+        </svg>
+      </div>
+
+      <div class="mapbox p3">
+        <h4><span class="dotk"></span>3P — Bedrock / Vertex, region UE</h4>
+        <p class="sub2">Il dato va al datacenter <b>nella region europea</b> del tuo cloud — e si ferma lì.</p>
+        <svg viewBox="0 0 460 260" role="img" aria-label="Mappa: con Bedrock o Vertex in region europea il dato resta dentro l'Unione Europea">
+          <defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10Z" fill="#1f5fa8"/></marker></defs>
+          <!-- continenti stilizzati (USA sbiaditi: non toccati dal flusso) -->
+          <path d="M38,60 Q60,38 95,42 Q140,40 150,62 Q158,84 138,96 Q150,104 142,122 Q130,150 108,158 Q96,176 82,168 Q70,160 74,142 Q56,130 50,108 Q34,86 38,60 Z" fill="#efece3" stroke="#cfccc2" stroke-width="1.2"/>
+          <path d="M118,168 Q136,162 140,180 Q142,206 128,224 Q116,238 108,220 Q102,196 108,182 Q110,172 118,168 Z" fill="#efece3" stroke="#cfccc2" stroke-width="1.2"/>
+          <path d="M170,32 Q188,24 198,36 Q202,50 188,56 Q172,58 168,46 Z" fill="#efece3" stroke="#cfccc2" stroke-width="1.2"/>
+          <path d="M272,64 Q284,50 300,54 Q318,48 330,58 Q344,66 338,82 Q334,96 320,100 Q326,112 314,118 Q298,124 290,114 Q276,116 270,102 Q262,80 272,64 Z" fill="#d3e4f5" stroke="#1f5fa8" stroke-width="1.2"/>
+          <path d="M282,128 Q300,120 320,128 Q338,134 332,156 Q326,182 310,200 Q296,214 286,196 Q276,172 276,150 Q276,136 282,128 Z" fill="#efece3" stroke="#cfccc2" stroke-width="1.2"/>
+          <!-- perimetro UE -->
+          <ellipse cx="300" cy="86" rx="62" ry="54" fill="rgba(31,95,168,.06)" stroke="#1f5fa8" stroke-width="1.6" stroke-dasharray="5 5"/>
+          <text x="300" y="22" font-family="ui-monospace,Menlo,monospace" font-size="11" font-weight="800" fill="#1f5fa8" text-anchor="middle">PERIMETRO UE</text>
+          <!-- rotta corta: sede -> region europea -->
+          <path class="flow" d="M303,108 C 296,100 296,92 300,84" stroke="#1f5fa8" marker-end="url(#ah2)"/>
+          <!-- pin sede -->
+          <circle cx="303" cy="108" r="6" fill="#1f5fa8" stroke="#fff" stroke-width="2"/>
+          <text x="311" y="116" font-family="ui-monospace,Menlo,monospace" font-size="11" font-weight="700" fill="#45443f">la tua sede</text>
+          <!-- pin datacenter EU -->
+          <circle cx="300" cy="78" r="6" fill="#1D9E75" stroke="#fff" stroke-width="2"/>
+          <text x="290" y="70" font-family="ui-monospace,Menlo,monospace" font-size="11" font-weight="700" fill="#157a5a" text-anchor="end">region UE del tuo cloud</text>
+          <text x="230" y="246" font-family="ui-monospace,Menlo,monospace" font-size="11.5" fill="#1f5fa8" text-anchor="middle">il dato resta in Europa: nessun trasferimento da documentare</text>
+        </svg>
+      </div>
+
+    </div>
+    <p class="hint">Anche l'1P è pienamente coperto (DPA, clausole contrattuali standard) — ma il trasferimento extra-UE <em>esiste</em> e va messo a registro. Col 3P in region europea, la voce sparisce dal registro prima ancora di entrarci.</p>
+  </div>
 
   <div class="why">
     <div class="wbox b">
