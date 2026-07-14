@@ -227,7 +227,7 @@
   .brief .bl{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);margin-bottom:8px}
   .brief p{margin:0;font-family:var(--serif);font-size:16.5px;line-height:1.5;color:var(--ink-2);font-style:italic}
 
-  /* s6 · skill: albero dei file */
+  /* s8 · skill: albero dei file */
   .skillx{display:grid;grid-template-columns:290px 1fr;gap:16px;margin-top:6px}
   @media(max-width:820px){.skillx{grid-template-columns:1fr}}
   .ftree{border:1px solid var(--line);border-radius:12px;background:var(--card-2);padding:10px;align-self:start}
@@ -243,13 +243,13 @@
   .rule3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
   @media(max-width:720px){.rule3{grid-template-columns:1fr}}
 
-  /* s9 · progressive disclosure */
+  /* s7 · blocco metadati skill + contatore token */
   .blk.meta{background:var(--paper-2);border:1px dashed var(--line-strong);color:var(--ink-2)}
   .tok{display:flex;align-items:center;gap:10px;margin-top:14px;font-family:var(--mono);font-size:12px;color:var(--ink-2)}
   .tok .bar{flex:1;height:8px;background:var(--paper-2);border:1px solid var(--line);border-radius:99px;overflow:hidden}
   .tok .fill{display:block;height:100%;background:var(--accent);width:3%;transition:width .45s ease}
 
-  /* s9 · hands on */
+  /* s10 · hands on */
   .steps{counter-reset:st;display:flex;flex-direction:column;gap:10px;margin-top:20px}
   .stp{counter-increment:st;display:grid;grid-template-columns:36px 1fr;gap:14px;align-items:start;
     border:1px solid var(--line);border-radius:12px;padding:13px 15px;background:var(--card)}
@@ -638,34 +638,9 @@
 
 </section>
 
-<!-- 9 · progressive disclosure -->
-<section id="s9" data-title="Progressive disclosure">
-  <div class="kicker"><span class="n">09</span> <span class="act">Il meccanismo</span></div>
-  <h2>Progressive disclosure: <span class="em">tutto disponibile</span>, quasi niente in finestra</h2>
-  <p class="lead">Nel confronto di prima l'abbiamo dato per buono: «finché non serve, la skill costa una riga». Adesso vediamo il meccanismo che lo rende vero. Una skill entra in finestra <b>a strati</b> — ed è per questo che puoi tenerne installate venti senza pagarle tutte a ogni messaggio.</p>
-
-  <div class="panel">
-    <span class="badge">Tre livelli — attraversali cliccando</span>
-    <div class="ctrls" style="margin-bottom:16px">
-      <button class="b acc" id="pdS1">1 · «Fammi cinque slide sul lancio di NovaCRM»</button>
-      <button class="b" id="pdS2" disabled>2 · Si compone il file</button>
-      <button class="b ghost" id="pdR">Ricomincia</button>
-    </div>
-    <div class="grid2">
-      <div class="mapex" id="pdEx"></div>
-      <div>
-        <div class="ctxhd">La context window</div>
-        <div class="ctxwin" id="pdWin"></div>
-        <div class="tok"><span>in finestra</span><span class="bar"><span class="fill" id="pdFill"></span></span><span id="pdTok"></span></div>
-      </div>
-    </div>
-  </div>
-
-</section>
-
-<!-- 10 · marketplace -->
-<section id="s10" data-title="Importare dai marketplace">
-  <div class="kicker"><span class="n">10</span> <span class="act">L'ecosistema</span></div>
+<!-- 9 · marketplace -->
+<section id="s9" data-title="Importare dai marketplace">
+  <div class="kicker"><span class="n">09</span> <span class="act">L'ecosistema</span></div>
   <h2>Se è una cartella, <span class="em">si importa</span></h2>
   <p class="lead">Una skill è una cartella di testo: si zippa, si manda, si pubblica. Ed è qui che cambia la scala. Il CLAUDE.md è artigianato — lo scrivi tu, per te. La skill è un <b>formato di distribuzione</b>: il know-how di qualcun altro, già distillato, che installi in trenta secondi. Sapere dove trovarle vale quanto saperle scrivere.</p>
 
@@ -676,7 +651,7 @@
     </div>
     <div class="lrow l2">
       <div class="lt"><span class="idx">02</span> Il repository ufficiale — <b>github.com/anthropics/skills</b></div>
-      <p>Le skill di Anthropic in versione open source, più una collezione di esempi: da scaricare, leggere, adattare. È anche il posto giusto per imparare come si scrive una skill fatta bene — copiando dagli originali.</p>
+      <p>Le skill di Anthropic in versione open source, più una collezione di esempi: da scaricare, leggere, adattare. È il catalogo da cui vengono le due skill di oggi — <code>brand-guidelines</code> e <code>theme-factory</code> — ed è anche il posto giusto per imparare come si scrive una skill fatta bene: copiando dagli originali.</p>
     </div>
     <div class="lrow l3">
       <div class="lt"><span class="idx">03</span> Le directory di community — <b>il marketplace</b></div>
@@ -697,24 +672,24 @@
   <div class="warn"><b>Una skill è software che dai in mano all'agente</b> — e nel momento in cui la importi da un estraneo, questo conta doppio. Può orientare quello che Claude fa ed esegue: installa solo da fonti di cui ti fidi, leggi SKILL.md <b>e gli script</b> prima di abilitarla, diffida di skill che scaricano contenuti da URL esterni, e non scriverci dentro segreti — API key, password — da nessuna parte.</div>
 </section>
 
-<!-- 11 · hands on -->
-<section id="s11" data-title="Hands on">
-  <div class="kicker"><span class="n">11</span> <span class="act">Hands on</span></div>
-  <h2>Adotta una skill <span class="em">scritta da qualcun altro</span></h2>
-  <p class="lead">Stavolta non c'è niente da costruire: l'esercizio è il <b>ciclo dell'import</b> — trovare, leggere, installare, verificare, adattare. È il ciclo che rifarete ogni volta che qualcuno vi passa una skill. E la parte interessante è misurare <b>quanto contesto vi siete portati a casa gratis</b>.</p>
+<!-- 10 · hands on -->
+<section id="s10" data-title="Hands on">
+  <div class="kicker"><span class="n">10</span> <span class="act">Hands on</span></div>
+  <h2>Lo stesso giro che avete visto fare a me: <span class="em">importa, e cambia stile</span></h2>
+  <p class="lead">La demo di un attimo fa era il <b>ciclo dell'import</b> fatto dal vivo: la skill <code>brand-guidelines</code> scaricata dal repo ufficiale, letta, installata — e un'infografica prodotta con uno stile, quello Anthropic, che Claude da solo si sarebbe <b>inventato</b>: palette, font e regole vivevano nella cartella, non nel modello. Ora il giro lo fate voi, con un'altra skill dello stesso catalogo: <b>theme-factory</b>, una collezione di temi grafici professionali pronti da applicare agli artifact.</p>
 
   <div class="steps">
-    <div class="stp"><div><h4>Scegli dal catalogo</h4><p>Apri <code>github.com/anthropics/skills</code> (o una directory di community) e scegli una skill vicina al tuo lavoro vero — documenti, dati, presentazioni. Scaricala: è una cartella, e la puoi già leggere tutta.</p></div></div>
-    <div class="stp"><div><h4>Leggila prima di installarla</h4><p>Prima SKILL.md: cosa promette la <code>description</code>? Quando dice di attivarsi? Poi materiali e script: <b>cosa esegue, esattamente?</b> È l'abitudine di sicurezza della sezione 10 — e intanto è l'anatomia della sezione 08, vista dal vivo su una skill vera.</p></div></div>
-    <div class="stp"><div><h4>Installa e prova il trigger</h4><p>ZIP <b>con la cartella come radice</b>, upload da Personalizza → Skill. Poi due richieste: una che matcha la description → la skill si attiva e vedi il corpo entrare in finestra; una che non c'entra nulla → resta al livello 1. Progressive disclosure dal vivo (sezione 09).</p></div></div>
-    <div class="stp"><div><h4>Misura il valore dell'import</h4><p>Apri una chat <b>senza</b> la skill e prova a ottenere lo stesso risultato solo col prompt. Confronta gli output — e soprattutto chiediti: quanto di quel know-how avresti saputo scriverlo tu? <b>Quel delta è il contesto che hai importato.</b></p></div></div>
-    <div class="stp"><div><h4>Falla tua</h4><p>Il contesto importato resta testo. Cambia una cosa piccola ma vera: traduci la <code>description</code> perché si attivi anche su richieste in italiano, o aggiungi una regola della tua azienda. Rizippa, ricarica, riprova. Ogni skill importata è la bozza della tua versione.</p></div></div>
+    <div class="stp"><div><h4>Scarica theme-factory</h4><p>Da <code>github.com/anthropics/skills</code>, cartella <code>theme-factory</code> — o dal link pronto sul sito della summer school. È una cartella di testo: puoi già leggerla tutta prima di darla a Claude.</p></div></div>
+    <div class="stp"><div><h4>Leggila prima di installarla</h4><p>SKILL.md: cosa promette la <code>description</code>? Quando dice di attivarsi? E dove vivono i temi? È l'abitudine di sicurezza della sezione 09 — e l'anatomia della sezione 08 vista su una skill vera: i temi sono i <b>materiali</b>, know-how che non state scrivendo voi.</p></div></div>
+    <div class="stp"><div><h4>Installa e crea l'artifact</h4><p>ZIP <b>con la cartella come radice</b>, upload da Personalizza → Skill. Poi chiedete un artifact <b>sullo stesso topic dell'infografica appena vista</b> — la richiesta scritta com'è naturale scriverla, senza nominare la skill.</p></div></div>
+    <div class="stp"><div><h4>Varia il tema</h4><p>Chiedete l'elenco dei temi disponibili e fatevi riproporre lo stesso artifact in due o tre temi diversi. Stesso contenuto, stile ogni volta coerente — perché lo stile Claude non lo sta improvvisando: lo sta <b>prendendo dalla cartella</b>.</p></div></div>
+    <div class="stp"><div><h4>La controprova</h4><p>Chat nuova, skill disattivata: stesso artifact, stesso tema chiesto a parole. Confrontate i risultati: il delta di coerenza — palette, tipografia, gerarchie — è esattamente <b>il contesto che avete importato</b>.</p></div></div>
   </div>
 </section>
 
-<!-- 12 · takeaway -->
-<section id="s12" data-title="Da portare a casa">
-  <div class="kicker"><span class="n">12</span> <span class="act">Da portare a casa</span></div>
+<!-- 11 · takeaway -->
+<section id="s11" data-title="Da portare a casa">
+  <div class="kicker"><span class="n">11</span> <span class="act">Da portare a casa</span></div>
   <h2>Quattro idee da portare a casa</h2>
   <div class="takes">
     <div class="take"><div class="tn">01</div><h4>Il prodotto è l'harness</h4><p>Chat, Cowork e Code condividono il modello. Quando scegli tra loro non scegli un'intelligenza, scegli gli strumenti e i permessi che le dai.</p></div>
@@ -987,43 +962,6 @@
     show("skill");
   })();
 
-  /* ---------- s9 · progressive disclosure ---------- */
-  (function(){
-    var b1=$("#pdS1"), b2=$("#pdS2"), br=$("#pdR");
-    var ex=$("#pdEx"), win=$("#pdWin"), fill=$("#pdFill"), tok=$("#pdTok");
-    var sysBlk='<div class="blk sys"><div class="bh">System</div>Sei Claude. Rispondi in italiano.</div>';
-    var metaBlk='<div class="blk meta"><div class="bh">Skill installate — solo i metadati</div><code>slide-aziendali</code> — Crea presentazioni in PDF sul template aziendale a partire da una descrizione. Usala quando…<br><code>verbale-riunione</code> — Redige il verbale di una riunione a partire dagli appunti. Usala quando…</div>';
-    var uBlk='<div class="blk u"><div class="bh">Utente</div>Fammi cinque slide sul lancio di NovaCRM, taglio commerciale.</div>';
-    var bodyBlk='<div class="blk instr"><div class="bh">SKILL.md — il corpo, appena letto</div># Slide aziendali — 1. Scaletta: una idea per slide, titoli corti · 2. Costruisci da <code>template.pptx</code>, mai da zero · 3. Esegui <code>scripts/esporta_pdf.py</code> · 4. Consegna il PDF.</div>';
-    var toolBlk='<div class="blk tool"><div class="bh">Sandbox — compone sul template ed esegue</div>template.pptx → slide_novacrm.pptx<br>$ python scripts/esporta_pdf.py slide_novacrm.pptx</div>';
-    var outBlk='<div class="blk a"><div class="bh">Risultato — né template né codice, solo l\'esito</div>creato slide_novacrm.pdf · 5 slide · layout e palette del template aziendale</div>';
-    var EX=[
-      {t:"Livello 1 — I metadati, sempre",
-       p:"All'avvio di ogni chat entra solo il frontmatter di ciascuna skill installata: <b>name</b> + <b>description</b>. Un centinaio di token a skill: il costo fisso di sapere che esiste.",
-       l:"Tutto il resto della cartella, per ora, per il modello <b>non esiste</b>."},
-      {t:"Livello 2 — Il corpo, al trigger",
-       p:"La richiesta matcha la description: Claude va a leggere SKILL.md e il corpo entra in finestra — di norma qualche migliaio di token. Solo in questa chat, solo perché serve.",
-       l:"Nelle altre skill installate non è successo niente: restano al livello 1."},
-      {t:"Livello 3 — File e script, solo se servono",
-       p:"SKILL.md dice di partire dal template e di esportare con lo script: Claude compone il file nella sandbox usando <code>template.pptx</code> e lancia <code>esporta_pdf.py</code>. In finestra entrano la chiamata e l'esito — <b>mai i 2,4 MB del template, mai il codice</b>.",
-       l:"Il risultato rispetta il template per costruzione. E in token è costato poche righe."}
-    ];
-    function state(n){
-      ex.innerHTML='<h4>'+EX[n].t+'</h4><p>'+EX[n].p+'</p><div class="lnk">'+EX[n].l+'</div>';
-      var html=sysBlk+metaBlk;
-      if(n>=1)html+=uBlk+bodyBlk;
-      if(n>=2)html+=toolBlk+outBlk;
-      win.innerHTML=html;
-      var toks=["~200 token","~2.000 token","~2.300 token"], w=[4,30,36];
-      tok.textContent=toks[n]; fill.style.width=w[n]+"%";
-      b1.disabled=n>=1; b2.disabled=n!==1;
-      b2.classList.toggle("acc",n===1);
-    }
-    b1.addEventListener("click",function(){state(1)});
-    b2.addEventListener("click",function(){state(2)});
-    br.addEventListener("click",function(){state(0)});
-    state(0);
-  })();
 })();
 </script>
 </body>
