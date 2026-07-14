@@ -222,6 +222,28 @@
   .jbnote{margin:9px 0 0;font-size:13.5px;color:var(--ink-2)}
   .jbnote b{color:var(--ink)}
 
+  /* blocco di comandi copiabile (setup) — i prompt PS> sono decorativi, il Copia prende solo i comandi */
+  .cmdbox{border-radius:12px;overflow:hidden;background:var(--ink);border:1px solid #2c2b28;margin-top:10px;
+    box-shadow:0 18px 40px -34px rgba(0,0,0,.7)}
+  .cmdhead{display:flex;align-items:center;gap:8px;padding:7px 9px 7px 13px;background:#26251f;border-bottom:1px solid #35342e}
+  .cmdhead .ct{font-family:var(--mono);font-size:10.5px;color:#8d8b81;letter-spacing:.06em;text-transform:uppercase}
+  .cmdhead .fbtn{margin-left:auto;padding:4px 10px;font-size:11.5px;background:transparent;color:#e8e6df;border-color:#4a4941}
+  .cmdhead .fbtn:hover{border-color:#e8e6df;background:#35342e}
+  .cmdbox pre{margin:0;padding:12px 14px;font-family:var(--mono);font-size:12.5px;line-height:1.8;color:#e8e6df;
+    overflow-x:auto;white-space:pre}
+  .cmdbox .c{display:block}
+  .cmdbox .c::before{content:'PS> ';color:var(--accent);font-weight:700}
+
+  /* tabella: le risposte da dare a gh auth login */
+  .qawrap{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:12px;background:var(--card)}
+  .qa{width:100%;border-collapse:collapse;font-size:14.5px}
+  .qa th{text-align:left;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);
+    background:var(--card-2);padding:9px 14px;border-bottom:1px solid var(--line)}
+  .qa td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  .qa tr:last-child td{border-bottom:0}
+  .qa td.a{font-family:var(--mono);font-weight:700;color:var(--accent-2)}
+  @media(max-width:640px){.qa{font-size:13px}.qa th,.qa td{padding:8px 10px}}
+
   /* steps numerati */
   .steps{counter-reset:st;display:flex;flex-direction:column;gap:0;margin-top:8px}
   .steps .st{counter-increment:st;display:grid;grid-template-columns:34px 1fr;gap:14px;padding:14px 0;border-bottom:1px dashed var(--line);align-items:start}
@@ -253,73 +275,54 @@
     max-height:340px;overflow:auto;white-space:pre-wrap;background:linear-gradient(180deg,#fff,#fdfcfa)}
   @media(max-width:640px){.filebar{flex-wrap:wrap}.filebar .fdesc{display:none}}
 
-  /* scena degli step: mini-GitHub + terminale */
-  .scene{display:grid;grid-template-columns:1.05fr 1fr;gap:16px;align-items:stretch;margin-top:8px}
-  @media(max-width:860px){.scene{grid-template-columns:1fr}}
-
-  /* pannello sinistro: il browser su GitHub */
-  .ghw{position:relative;display:flex;flex-direction:column;border-radius:14px;overflow:hidden;background:var(--card);
+  /* scena degli step: la finestra di Claude Code, tutto in chat */
+  .scene{margin-top:8px}
+  .ccwin{display:flex;flex-direction:column;border-radius:14px;overflow:hidden;background:var(--card);
     border:1px solid var(--line-strong);box-shadow:0 20px 44px -34px rgba(0,0,0,.55);
-    transition:filter .55s ease,opacity .55s ease}
-  .ghw.off{filter:grayscale(1);opacity:.4;pointer-events:none}
-  .ghw.off::after{content:'GitHub non serve più: da qui si lavora nel terminale';position:absolute;inset:auto 0 0 0;
-    background:var(--ink);color:#e8e6df;font-family:var(--mono);font-size:10.5px;letter-spacing:.03em;
-    padding:7px 10px;text-align:center}
-  .ghbar{display:flex;align-items:center;gap:7px;padding:9px 12px;background:var(--card-2);border-bottom:1px solid var(--line)}
-  .ghbar i{width:9px;height:9px;border-radius:50%;background:var(--line-strong);opacity:.55;display:block}
-  .ghurl{margin-left:6px;flex:1;background:#fff;border:1px solid var(--line);border-radius:20px;
-    font-family:var(--mono);font-size:10.5px;color:var(--muted);padding:4px 10px;overflow:hidden;white-space:nowrap}
-  .ghbody{flex:1;padding:16px 18px;display:flex;flex-direction:column}
-  .ghscreen{display:none;flex:1;flex-direction:column}
-  .ghscreen.on{display:flex}
-  .ghlogo{display:flex;align-items:center;gap:8px;padding-bottom:11px;border-bottom:1px solid var(--line)}
-  .ghlogo svg{width:22px;height:22px;fill:var(--ink)}
-  .ghlogo b{font-size:13px}
-  .ghh{font-size:15px;font-weight:800;margin:13px 0 3px}
-  .ghsub{font-size:11.5px;color:var(--muted);margin:0 0 13px}
-  .ghfield{margin-bottom:11px}
-  .ghfield label{display:block;font-size:11px;font-weight:700;color:var(--ink-2);margin-bottom:4px}
-  .ghinput{font-family:var(--mono);font-size:12px;border:1px solid var(--line-strong);border-radius:7px;
-    padding:7px 10px;background:var(--card-2);color:var(--ink)}
-  .ghinput.name{border-color:#1f883f;background:#fff;font-weight:700}
-  .ghrow{display:flex;align-items:center;gap:7px}
-  .ghrow .ghinput{flex:1}
-  .ghrow .sl{color:var(--muted);font-family:var(--mono)}
-  .ghpriv{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--ink-2);margin:2px 0 14px}
-  .ghpriv .rad{width:12px;height:12px;border-radius:50%;border:4px solid var(--ink);background:#fff;flex-shrink:0}
-  .ghbtn{margin-top:auto;align-self:flex-start;font-family:var(--sans);font-size:13.5px;font-weight:700;color:#fff;
-    background:#1f883f;border:1px solid #1a7f37;border-radius:8px;padding:9px 15px;cursor:pointer;
-    transition:background .15s,transform .05s,box-shadow .2s}
-  .ghbtn:hover{background:#1a7f37}
-  .ghbtn:active{transform:translateY(1px)}
-  .ghbtn.pulse{animation:ghpulse 1.6s ease-in-out infinite}
-  @keyframes ghpulse{0%,100%{box-shadow:0 0 0 0 rgba(31,136,63,.45)}50%{box-shadow:0 0 0 9px rgba(31,136,63,0)}}
-  .ghdone{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:#1a7f37;margin:13px 0 6px}
-  .ghempty{font-size:12.5px;color:var(--ink-2);margin:0 0 10px}
-  .ghclone{border:1px solid var(--line-strong);border-radius:8px;padding:9px 11px;background:var(--card-2);
-    font-family:var(--mono);font-size:11px;color:var(--ink-2);overflow-x:auto;white-space:nowrap}
-  .ghclone b{color:var(--accent);font-weight:700}
+    transition:box-shadow .4s ease,border-color .4s ease}
+  .ccwin.live{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft2),0 20px 44px -34px rgba(0,0,0,.55)}
+  .ccbar{display:flex;align-items:center;gap:7px;padding:9px 13px;background:var(--card-2);border-bottom:1px solid var(--line)}
+  .ccbar i{width:9px;height:9px;border-radius:50%;background:var(--line-strong);opacity:.55;display:block}
+  .ccbar .tt{margin-left:8px;font-size:12.5px;font-weight:800}
+  .ccfold{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted);background:var(--card);
+    border:1px solid var(--line);border-radius:20px;padding:3px 11px;white-space:nowrap;transition:all .35s ease}
+  .ccfold.on{color:var(--accent-2);border-color:var(--accent-soft2);background:var(--accent-soft);font-weight:700}
+  .ccbody{flex:1;padding:16px 18px;display:flex;flex-direction:column;gap:8px;min-height:360px}
+  @media(max-width:860px){.ccbody{min-height:300px}}
 
-  /* pannello destro: il terminale */
-  .term{display:flex;flex-direction:column;border-radius:14px;overflow:hidden;background:var(--ink);
-    border:1px solid #2c2b28;box-shadow:0 20px 44px -30px rgba(0,0,0,.7);transition:box-shadow .4s ease,border-color .4s ease}
-  .term.live{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft2),0 20px 44px -30px rgba(0,0,0,.7)}
-  .termbar{display:flex;align-items:center;gap:7px;padding:9px 13px;background:#26251f;border-bottom:1px solid #35342e}
-  .termbar i{width:9px;height:9px;border-radius:50%;background:#4a4941;display:block}
-  .termbar i:first-child{background:var(--accent)}
-  .termbar .tt{margin-left:8px;font-family:var(--mono);font-size:11px;color:#8d8b81;letter-spacing:.04em}
-  .termbody{flex:1;padding:15px 16px;font-family:var(--mono);font-size:12.5px;line-height:1.8;color:#e8e6df;
-    min-height:290px}
-  @media(max-width:860px){.termbody{min-height:210px}}
-  .term .ln{display:none;white-space:pre-wrap;padding-left:18px;text-indent:-18px}
-  .term .ln.in{display:block}
-  .term .pr{color:var(--accent);font-weight:700;margin-right:7px}
-  .term .pr.claude{color:#e6a33c}
-  .term .ok{color:#5fbf9a}
-  .term .cmt{color:#8d8b81}
-  .term .ln.typing::after,.term .idle::after{content:'▋';color:var(--accent);animation:tblink .9s step-end infinite;margin-left:1px}
-  .term .idle{color:#8d8b81}
+  /* stato iniziale: nessuna cartella aperta */
+  .ccempty{margin:auto;display:flex;flex-direction:column;align-items:center;text-align:center}
+  .ccempty .ic{font-size:34px;line-height:1}
+  .ccempty p{margin:10px 0 16px;font-size:14px;color:var(--ink-2);max-width:360px}
+  .ccopen{font-family:var(--sans);font-size:13.5px;font-weight:700;color:#fff;background:var(--accent);border:0;
+    border-radius:9px;padding:10px 17px;cursor:pointer;transition:background .15s,transform .05s,box-shadow .2s}
+  .ccopen:hover{background:var(--accent-2)}
+  .ccopen:active{transform:translateY(1px)}
+  .ccopen.pulse{animation:nextpulse 1.6s ease-in-out infinite}
+
+  /* le righe della conversazione */
+  .ccrow{display:none}
+  .ccrow.you{align-self:flex-end;max-width:84%;background:var(--accent-soft);border:1px solid var(--accent-soft2);
+    border-radius:14px 14px 4px 14px;padding:9px 13px;font-size:14.5px;color:#7c1d1d}
+  .ccrow.you.in{display:block}
+  .ccrow.cl{align-items:flex-start;gap:9px;font-size:14.5px;color:var(--ink);max-width:92%}
+  .ccrow.cl.in{display:flex}
+  .ccrow.cl::before{content:'✻';color:var(--accent);font-weight:700}
+  .ccrow.act{padding-left:23px;font-family:var(--mono);font-size:12.5px;color:var(--ink-2)}
+  .ccrow.act.in{display:block}
+  .ccrow.act b{color:var(--ink)}
+  .ccrow.act .run{color:var(--amber);font-weight:700;margin-right:6px}
+  .ccrow.act .ok{color:var(--green);font-weight:700;margin-right:6px}
+  .ccrow.typing::after{content:'▋';color:var(--accent);animation:tblink .9s step-end infinite;margin-left:2px}
   @keyframes tblink{50%{opacity:0}}
+
+  /* la barra in cui si scrive */
+  .ccinput{display:flex;align-items:center;gap:7px;margin-top:auto;border:1px solid var(--line-strong);border-radius:10px;
+    padding:9px 12px;background:var(--card-2);font-family:var(--mono);font-size:12.5px;color:var(--muted);transition:opacity .4s ease}
+  .ccinput .cr{color:var(--accent);font-weight:700}
+  .ccinput.off{opacity:.4}
+  .ccinput .ph::after{content:'▋';color:var(--accent);animation:tblink .9s step-end infinite;margin-left:2px}
+  .ccinput.off .ph::after{display:none}
 
   .termrun{margin-top:16px;display:flex;align-items:center;gap:13px;flex-wrap:wrap}
   .termrun .th{font-size:13px;color:var(--muted);flex:1;min-width:200px}
@@ -359,11 +362,12 @@
   <p class="subm">Quattro ore. Nessuna esperienza di programmazione richiesta: l'obiettivo è che impariate a costruirvi i vostri tool interni.</p>
   <div class="arc">
     <span class="step"><b>1</b> · Git essenziale</span>
-    <span class="step"><b>2</b> · Perché un'app</span>
-    <span class="step"><b>3</b> · L'architettura in un file</span>
-    <span class="step"><b>4</b> · Onboarding Claude Code</span>
-    <span class="step"><b>5</b> · Demo: dashboard treni</span>
-    <span class="step"><b>6</b> · Hands-on: il revisore</span>
+    <span class="step"><b>2</b> · Installare Git e gh</span>
+    <span class="step"><b>3</b> · Perché un'app</span>
+    <span class="step"><b>4</b> · L'architettura in un file</span>
+    <span class="step"><b>5</b> · Onboarding Claude Code</span>
+    <span class="step"><b>6</b> · Demo: dashboard treni</span>
+    <span class="step"><b>7</b> · Hands-on: il revisore</span>
   </div>
   <div class="scrollcue"><span class="a">↓</span> scorri per iniziare</div>
 </div></section>
@@ -441,9 +445,80 @@
 
 </div></section>
 
-<!-- ============ 02 PERCHÉ UN'APP ============ -->
+<!-- ============ 02 SETUP GIT + GH ============ -->
+<section id="s1b"><div class="wrap reveal">
+  <div class="kicker"><span class="n">02</span> Setup</div>
+  <h2>Prima di poterlo usare: <span class="em">installare gli strumenti</span></h2>
+  <p class="lead">Commit e push sono gesti che <b>qualcuno deve saper eseguire sul vostro computer</b>: quel qualcuno è <span class="mono">git</span>, più <span class="mono">gh</span> per parlare con GitHub. Si installano una volta sola, adesso, e non ci si torna più sopra. Questa è la procedura su <b>Windows</b>: si apre <b>PowerShell</b> — cercatelo nel menu Start — e da lì in poi si copia e incolla.</p>
+
+  <div class="panel">
+    <div class="badge doer">Sei passi · una volta sola</div>
+    <div class="steps">
+
+      <div class="st"><p><b>Installate Git e GitHub CLI.</b> Due comandi, uno dopo l'altro. <span class="mono">winget</span> è l'installatore già presente in Windows: scarica e installa da solo.</p>
+        <div class="cmdbox">
+          <div class="cmdhead"><span class="ct">PowerShell</span><button class="fbtn cmdcopy">📋 Copia</button></div>
+<pre><span class="c">winget install --id Git.Git -e</span><span class="c">winget install --id GitHub.cli -e</span></pre>
+        </div>
+      </div>
+
+      <div class="st"><p><b>Chiudete e riaprite PowerShell.</b> Poi controllate che i due programmi rispondano: ognuno deve stampare il proprio numero di versione.</p>
+        <div class="callout" style="margin:12px 0 0"><b>Non saltate questo passaggio.</b> È il punto in cui si blocca quasi tutti: una finestra di PowerShell già aperta <b>non vede</b> i programmi appena installati. Se <span class="mono">git</span> o <span class="mono">gh</span> vi rispondono <span class="mono">non riconosciuto</span>, quasi sempre è solo questo — chiudete la finestra e riapritela.</div>
+        <div class="cmdbox">
+          <div class="cmdhead"><span class="ct">PowerShell · finestra nuova</span><button class="fbtn cmdcopy">📋 Copia</button></div>
+<pre><span class="c">git --version</span><span class="c">gh --version</span></pre>
+        </div>
+      </div>
+
+      <div class="st"><p><b>Dite a Git chi siete.</b> Nome ed email finiscono dentro ogni commit: è la firma delle vostre istantanee. Sostituite i valori con i vostri (l'email è quella dell'account GitHub). La terza riga dice a Git di chiamare <span class="mono">main</span> il ramo principale — è la convenzione di GitHub.</p>
+        <div class="cmdbox">
+          <div class="cmdhead"><span class="ct">PowerShell</span><button class="fbtn cmdcopy">📋 Copia</button></div>
+<pre><span class="c">git config --global user.name "Nome Cognome"</span><span class="c">git config --global user.email "tua@email.it"</span><span class="c">git config --global init.defaultBranch main</span></pre>
+        </div>
+      </div>
+
+      <div class="st"><p><b>Accedete a GitHub.</b> Il comando fa quattro domande: rispondete come qui sotto muovendovi con le frecce e confermando con <span class="kbd">Invio</span>. Alla fine si apre il browser: incollate il codice che vedete a schermo e autorizzate.</p>
+        <div class="cmdbox">
+          <div class="cmdhead"><span class="ct">PowerShell</span><button class="fbtn cmdcopy">📋 Copia</button></div>
+<pre><span class="c">gh auth login</span></pre>
+        </div>
+        <div class="qawrap">
+          <table class="qa">
+            <thead><tr><th>La domanda</th><th>La risposta</th></tr></thead>
+            <tbody>
+              <tr><td>What account do you want to log into?</td><td class="a">GitHub.com</td></tr>
+              <tr><td>What is your preferred protocol?</td><td class="a">HTTPS</td></tr>
+              <tr><td>Authenticate Git with your GitHub credentials?</td><td class="a">Yes</td></tr>
+              <tr><td>How would you like to authenticate?</td><td class="a">Login with a web browser</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="st"><p><b>Collegate Git a GitHub.</b> Questo passaggio consegna a Git le credenziali appena ottenute: da qui in avanti <span class="cmd">git push</span> non vi chiederà <b>mai</b> una password.</p>
+        <div class="cmdbox">
+          <div class="cmdhead"><span class="ct">PowerShell</span><button class="fbtn cmdcopy">📋 Copia</button></div>
+<pre><span class="c">gh auth setup-git</span></pre>
+        </div>
+      </div>
+
+      <div class="st"><p><b>Verificate.</b> Il primo comando deve dirvi che siete loggati. Il secondo <b>deve stampare una riga</b>: è la prova che le credenziali sono state consegnate a Git. Se non stampa nulla, il passo 5 non ha attecchito — rifatelo.</p>
+        <div class="cmdbox">
+          <div class="cmdhead"><span class="ct">PowerShell</span><button class="fbtn cmdcopy">📋 Copia</button></div>
+<pre><span class="c">gh auth status</span><span class="c">git config --global --get-regexp credential</span></pre>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <p class="hint">Fatto questo, PowerShell potete anche chiuderlo: da qui in avanti non vi servirà più. Il lavoro vero — creare la repo, agganciarla, costruire — si fa parlando con Claude, come vedrete al capitolo 06.</p>
+
+</div></section>
+
+<!-- ============ 03 PERCHÉ UN'APP ============ -->
 <section id="s2"><div class="wrap reveal">
-  <div class="kicker"><span class="n">02</span> Perché un'app</div>
+  <div class="kicker"><span class="n">03</span> Perché un'app</div>
   <h2>Oggi non chiediamo un artifact: <span class="em">costruiamo un'app</span></h2>
   <p class="lead">Ieri con Cowork e gli artifact avete già costruito piccoli strumenti — la matrice, un singolo file HTML autocontenuto. Oggi l'obiettivo è un <b>gestionale per la manutenzione dei treni</b>: dati che devono restare e aggiornarsi, regole che girano da sole, un ERP da interrogare, l'AI dentro. Un singolo file non basta più.</p>
 
@@ -579,9 +654,9 @@
 
 </div></section>
 
-<!-- ============ 03 ARCHITETTURA IN UN FILE ============ -->
+<!-- ============ 04 ARCHITETTURA IN UN FILE ============ -->
 <section id="s3"><div class="wrap reveal">
-  <div class="kicker"><span class="n">03</span> L'architettura, già decisa</div>
+  <div class="kicker"><span class="n">04</span> L'architettura, già decisa</div>
   <h2>Un'app è fatta di pezzi: <span class="em">questi cinque</span></h2>
   <p class="lead">Sceglierli — quale database, quale linguaggio, come si parlano — è l'unico punto dove servirebbe davvero un ingegnere. Quel lavoro è <b>già fatto</b>: le scelte sono fissate una volta e finiscono in un file di testo che Claude Code legge da solo e a cui si attiene. Quel file lo vediamo nascere <b>fra due capitoli</b>. Qui basta sapere <b>cosa fa ogni pezzo</b>, per seguire cosa succede dove.</p>
 
@@ -712,11 +787,11 @@
 
 </div></section>
 
-<!-- ============ 04 ONBOARDING ============ -->
+<!-- ============ 05 ONBOARDING ============ -->
 <section id="s4"><div class="wrap reveal">
-  <div class="kicker"><span class="n">04</span> Onboarding</div>
+  <div class="kicker"><span class="n">05</span> Onboarding</div>
   <h2>Il giro base di <span class="em">Claude Code</span></h2>
-  <p class="lead">L'app appena descritta la costruisce Claude Code: Claude nel terminale, dentro la cartella del progetto — legge i file, scrive codice, esegue comandi. Ieri con Cowork l'agente lavorava sulla cartella dei documenti; qui lavora sulla cartella del codice (quella di Git), e può fare molto di più.</p>
+  <p class="lead">L'app appena descritta la costruisce Claude Code: un Claude che vive <b>dentro la cartella del progetto</b> — legge i file, scrive codice, esegue comandi al posto vostro. Ieri con Cowork l'agente lavorava sulla cartella dei documenti; qui lavora sulla cartella del codice (quella di Git), e può fare molto di più.</p>
 
   <a class="linkbox" href="guida_comandi_claude_code.html">
     <div class="t">→ Guida base di Claude Code</div>
@@ -724,90 +799,74 @@
   </a>
 </div></section>
 
-<!-- ============ 05 GLI STEP DI LAVORO ============ -->
+<!-- ============ 06 GLI STEP DI LAVORO ============ -->
 <section id="s5"><div class="wrap reveal">
-  <div class="kicker"><span class="n">05</span> Il metodo</div>
+  <div class="kicker"><span class="n">06</span> Il metodo</div>
   <h2>Da zero a "sto lavorando": <span class="em">cinque step</span></h2>
-  <p class="lead">Un progetto non comincia con un prompt: comincia con una repo vuota e una cartella. Sono sempre gli stessi cinque gesti, in quest'ordine — e il quinto è quello in cui, finalmente, si costruisce.</p>
+  <p class="lead">Un progetto non comincia con un prompt: comincia con <b>una cartella</b>. La si apre, e da lì in poi si parla — la repository, il file delle regole, il primo pezzo di software: <b>tutto si chiede a Claude in italiano</b>, dentro la stessa finestra. Gli strumenti del capitolo 02 sono già installati e da qui in avanti lavorano per voi, sotto il cofano.</p>
 
   <div class="panel star">
     <div class="badge doer">La sequenza di avvio</div>
 
     <div class="scene">
+      <div class="ccwin" id="ccwin">
+        <div class="ccbar">
+          <i></i><i></i><i></i>
+          <span class="tt">Claude Code</span>
+          <span class="ccfold" id="ccFold">nessuna cartella aperta</span>
+        </div>
+        <div class="ccbody" id="ccBody">
 
-      <!-- il browser su GitHub -->
-      <div class="ghw" id="ghw">
-        <div class="ghbar"><i></i><i></i><i></i><span class="ghurl">github.com/new</span></div>
-        <div class="ghbody">
-
-          <div class="ghscreen on" id="ghNew">
-            <div class="ghlogo">
-              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-              <b>GitHub</b>
-            </div>
-            <div class="ghh">Create a new repository</div>
-            <p class="ghsub">Una repo è il contenitore del progetto nel cloud.</p>
-            <div class="ghfield">
-              <label>Owner / Repository name</label>
-              <div class="ghrow">
-                <span class="ghinput">tuonome</span><span class="sl">/</span>
-                <span class="ghinput name">manutenzione-treni</span>
-              </div>
-            </div>
-            <div class="ghpriv"><span class="rad"></span> <b>Private</b> — la vede solo chi invitate voi</div>
-            <button class="ghbtn pulse" id="ghBtn">Create repository</button>
+          <div class="ccempty" id="ccEmpty">
+            <div class="ic">📁</div>
+            <p>Claude lavora <b>dentro una cartella</b>: quella del progetto, e vede solo quella. Prima si sceglie lei, poi si parla.</p>
+            <button class="ccopen pulse" id="ccOpenBtn">Apri una cartella…</button>
           </div>
 
-          <div class="ghscreen" id="ghDone">
-            <div class="ghlogo">
-              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-              <b>tuonome / manutenzione-treni</b>
-            </div>
-            <div class="ghdone">✓ Repository creata</div>
-            <div class="ghh" style="font-size:14px;margin-top:0">Quick setup</div>
-            <p class="ghempty">La repo è <b>vuota</b>: il codice non esiste ancora, lo scriverete adesso. Questo è l'indirizzo con cui agganciarla al computer.</p>
-            <div class="ghclone">https://github.com/tuonome/manutenzione-treni<b>.git</b></div>
-          </div>
+          <div class="ccrow you" data-step="1">Crea una repository su GitHub per questo progetto — chiamala <b>manutenzione-treni</b>, privata — e collegala a questa cartella.</div>
+          <div class="ccrow act" data-step="1"><span class="run">⏺</span> Creo la repository e la collego alla cartella…</div>
+          <div class="ccrow act" data-step="1"><span class="ok">✓</span> repository creata: <b>tuonome/manutenzione-treni</b> · privata</div>
+          <div class="ccrow act" data-step="1"><span class="ok">✓</span> cartella collegata alla repository</div>
+          <div class="ccrow cl" data-step="1">Fatto: la cartella adesso è un progetto Git agganciato al cloud. È vuota — il codice non esiste ancora — ma da qui posso salvare le versioni e mandarle su GitHub.</div>
 
+          <div class="ccrow you" data-step="2">/init — «un gestionale per la manutenzione dei treni: Postgres in Docker, back-end FastAPI, front-end React, l'AI solo dal back-end. Commit a ogni pezzo che funziona.»</div>
+          <div class="ccrow act" data-step="2"><span class="run">⏺</span> Guardo la cartella e scrivo le regole del progetto…</div>
+          <div class="ccrow act" data-step="2"><span class="ok">✓</span> <b>CLAUDE.md</b> creato</div>
+          <div class="ccrow cl" data-step="2">Le vostre scelte sono nel <b>CLAUDE.md</b>. Lo rileggo da solo a ogni avvio: l'architettura non me la dovete più ripetere.</div>
+
+          <div class="ccrow you" data-step="3">Iniziamo: creiamo la dashboard dei mezzi con lo stato delle revisioni.</div>
+          <div class="ccrow act" data-step="3"><span class="run">⏺</span> Database, back-end, front-end…</div>
+          <div class="ccrow act" data-step="3"><span class="ok">✓</span> 14 file creati · la dashboard gira su <b>localhost:5173</b></div>
+          <div class="ccrow cl" data-step="3">La dashboard c'è e funziona. Prima di andare avanti conviene salvare questo pezzo.</div>
+
+          <div class="ccrow you" data-step="4">Ok: salva e manda su GitHub.</div>
+          <div class="ccrow act" data-step="4"><span class="ok">✓</span> commit — <b>"dashboard mezzi con stato revisioni"</b></div>
+          <div class="ccrow act" data-step="4"><span class="ok">✓</span> push su <b>tuonome/manutenzione-treni</b></div>
+          <div class="ccrow cl" data-step="4">Checkpoint salvato, in locale e nel cloud. Se la prossima vibata va male, si torna qui.</div>
+
+          <div class="ccinput off" id="ccInput"><span class="cr">&gt;</span> <span class="ph">scrivi a Claude</span></div>
         </div>
       </div>
-
-      <!-- il terminale -->
-      <div class="term" id="term">
-        <div class="termbar"><i></i><i></i><i></i><span class="tt">terminale — la vostra cartella</span></div>
-        <div class="termbody" id="termBody">
-          <div class="idle" id="termIdle">$ </div>
-          <div class="ln" data-step="1"><span class="pr">$</span>git clone https://github.com/tuonome/manutenzione-treni.git</div>
-          <div class="ln" data-step="1"><span class="cmt">  Cloning into 'manutenzione-treni'… done.</span></div>
-          <div class="ln" data-step="2"><span class="pr">$</span>cd manutenzione-treni</div>
-          <div class="ln" data-step="2"><span class="pr">$</span>claude</div>
-          <div class="ln" data-step="2"><span class="cmt">  ✻ Claude Code — cartella: ~/manutenzione-treni</span></div>
-          <div class="ln" data-step="3"><span class="pr claude">&gt;</span>/init — «un gestionale per la manutenzione dei treni: Postgres in Docker, back-end FastAPI, front-end React, l'AI solo dal back-end. Commit a ogni pezzo che funziona.»</div>
-          <div class="ln" data-step="3"><span class="ok">  ✓ CLAUDE.md creato</span></div>
-          <div class="ln" data-step="4"><span class="pr claude">&gt;</span>«Iniziamo, partiamo con il creare la dashboard dei mezzi con lo stato delle revisioni.»</div>
-        </div>
-      </div>
-
     </div>
 
     <div class="termrun">
-      <button class="cycbtn mono" id="termBtn" disabled>▶ git clone …</button>
-      <span class="th" id="termHint">Si parte dal browser: clicca il bottone verde <b>Create repository</b>.</span>
+      <button class="cycbtn mono" id="chatBtn" disabled>▶ «Crea una repository e collegala…»</button>
+      <span class="th" id="chatHint">Si comincia da qui: clicca <b>Apri una cartella…</b>.</span>
     </div>
 
     <div class="steps" id="stepList" style="margin-top:18px">
-      <div class="st"><p><b>Si crea la repo su GitHub, vuota.</b> Prima ancora del codice: il contenitore nel cloud, quello del capitolo 01. È il <b>remoto</b> verso cui farete push — se non esiste adesso, i vostri checkpoint non hanno dove andare.</p></div>
-      <div class="st"><p><b>Si crea la cartella sul computer, collegata alla repo.</b> Un <span class="cmd">git clone</span> e la cartella locale nasce già agganciata al remoto: da qui in poi commit e push funzionano senza configurare nient'altro. La cartella è vuota, ma è "una cartella Git".</p></div>
-      <div class="st"><p><b>Si avvia Claude <i>dentro</i> quella cartella.</b> <span class="cmd">cd</span> per entrarci, poi <span class="cmd">claude</span>. Claude Code non è un'app a parte a cui si caricano dei file: vive nella cartella in cui l'avete lanciato, e vede solo quella.</p></div>
-      <div class="st"><p><b>Il comando <span class="cmd">/init</span>: si descrive il software e come si vuole lavorare.</b> Non si scrive a mano il file delle regole: lo si <b>detta</b>. A <span class="cmd">/init</span> si racconta cosa deve diventare il progetto e con quali vincoli — e lui scrive il <span class="mono">CLAUDE.md</span>, che rileggerà da solo a ogni avvio successivo.</p></div>
-      <div class="st"><p><b>Da qui si inizia a lavorare.</b> Solo consegne, in italiano, una per volta. L'architettura non va più ripetuta: è nel file. E a ogni pezzo che funziona si torna al ciclo del capitolo 01 — <b>commit</b>, <b>push</b>.</p></div>
+      <div class="st"><p><b>Si apre la cartella di lavoro.</b> Claude Code non è un posto dove si caricano dei file: <b>vive dentro una cartella</b> del vostro computer e vede solo quella. Sceglierla è il primo gesto — e da quel momento tutto ciò che chiedete succede lì dentro.</p></div>
+      <div class="st"><p><b>Si chiede la repository — a parole.</b> Il contenitore nel cloud del capitolo 01, quello verso cui farete push. Non serve andare su GitHub a crearlo a mano: lo si <b>chiede in italiano</b>, e Claude lo crea e lo aggancia alla cartella. Da qui i vostri checkpoint hanno dove andare.</p></div>
+      <div class="st"><p><b>Il comando <span class="cmd">/init</span>: si detta il software e come si vuole lavorare.</b> Il file delle regole non si scrive a mano. A <span class="cmd">/init</span> si racconta cosa deve diventare il progetto e con quali vincoli — e lui scrive il <span class="mono">CLAUDE.md</span>, che rileggerà da solo a ogni avvio successivo.</p></div>
+      <div class="st"><p><b>Da qui si inizia a lavorare.</b> Solo consegne, in italiano, una per volta. L'architettura non va più ripetuta: è nel file.</p></div>
+      <div class="st"><p><b>A ogni pezzo che funziona, il checkpoint.</b> Si torna al ciclo del capitolo 01 — <b>commit</b> e <b>push</b> — ma non si digita nulla: si chiede. I gesti sono quelli, la mano è di Claude.</p></div>
     </div>
   </div>
 
   <div class="filecard">
     <div class="filebar">
       <span class="fname">📄 CLAUDE.md</span>
-      <span class="fdesc">il risultato dello step 04 — Claude Code lo rilegge a ogni avvio</span>
+      <span class="fdesc">il risultato dello step 03 — Claude Code lo rilegge a ogni avvio</span>
       <span class="fbtns">
         <button class="fbtn" id="cmCopy">📋 Copia</button>
         <button class="fbtn dark" id="cmDl">↓ Scarica CLAUDE.md</button>
@@ -848,20 +907,20 @@ progetto/
 - **Git.** A ogni iterazione che funziona, proponi commit + push (messaggi brevi, in italiano).
 - **Spiega mentre lavori.** Chi legge non conosce il codice: quando finisci una modifica, di' in una riga *dove* hai toccato — database, back-end o front-end.</pre>
   </div>
-  <p class="hint">Questo è il file che <span class="mono">/init</span> vi restituisce: le scelte fisse dell'architettura del capitolo 03, più le regole di lavoro. Se il vostro viene diverso, sovrascrivetelo con questo — per la demo e per l'esercitazione partiamo tutti dalla stessa architettura.</p>
+  <p class="hint">Questo è il file che <span class="mono">/init</span> vi restituisce: le scelte fisse dell'architettura del capitolo 04, più le regole di lavoro. Se il vostro viene diverso, sovrascrivetelo con questo — per la demo e per l'esercitazione partiamo tutti dalla stessa architettura.</p>
 
 </div></section>
 
-<!-- ============ 06 DEMO DASHBOARD TRENI ============ -->
+<!-- ============ 07 DEMO DASHBOARD TRENI ============ -->
 <section id="s6"><div class="wrap reveal">
-  <div class="kicker"><span class="n">06</span> Da vedere</div>
+  <div class="kicker"><span class="n">07</span> Da vedere</div>
   <h2>Demo: la dashboard <span class="em">dei treni</span></h2>
   <p class="lead">Un gestionale per la <b>manutenzione ordinaria dei mezzi</b>, costruito dal vivo: dallo schema di prima all'app funzionante. Ogni passo usa il vocabolario appena introdotto.</p>
 
   <div class="panel star">
     <div class="badge doer">Demo · dashboard treni</div>
     <div class="steps">
-      <div class="st"><p><b>Il punto di partenza.</b> I cinque step appena visti, già fatti: la cartella è clonata dalla repo e dentro c'è solo il <span class="mono">CLAUDE.md</span> uscito da <span class="cmd">/init</span>. Il primo prompt è la consegna del gestionale: Claude legge il file e tira su i pezzi dell'app da solo — nessuna scelta tecnica da fare dal vivo.</p></div>
+      <div class="st"><p><b>Il punto di partenza.</b> I cinque step appena visti, già fatti: la cartella è aperta e agganciata alla repo, e dentro c'è solo il <span class="mono">CLAUDE.md</span> uscito da <span class="cmd">/init</span>. Il primo prompt è la consegna del gestionale: Claude legge il file e tira su i pezzi dell'app da solo — nessuna scelta tecnica da fare dal vivo.</p></div>
       <div class="st"><p><b>La fonte dati: un ERP mockato.</b> Un componente preparato in anticipo che, ricevute le chiamate, risponde con dati presi da un JSON prefatto — mezzi, manutentori con le loro disponibilità, revisioni con le scadenze. "Mockare" è a sua volta un concetto da fissare: per costruire l'app non serve il sistema vero.</p></div>
       <div class="st"><p><b>La dashboard.</b> Visione d'insieme dei mezzi con lo stato delle revisioni e dei controlli obbligatori a scadenza: otto mezzi di categoria tre, tre con revisione fatta, cinque da fare.</p></div>
       <div class="st"><p><b>Il bottone "Organizza revisione".</b> Crea l'agenda del giorno o della settimana dei manutentori, incrociando revisioni da fare e disponibilità.</p></div>
@@ -874,11 +933,11 @@ progetto/
 
 </div></section>
 
-<!-- ============ 07 ESERCIZIO REVISORE ============ -->
+<!-- ============ 08 ESERCIZIO REVISORE ============ -->
 <section id="s7"><div class="wrap reveal">
-  <div class="kicker"><span class="n">07</span> Da fare</div>
+  <div class="kicker"><span class="n">08</span> Da fare</div>
   <h2>Hands-on: il documento <span class="em">del revisore</span></h2>
-  <p class="lead">Esercitazione su consegna assegnata. Non un'app nuova: <b>una pagina in più della stessa app</b> appena vista — così si riusa tutto il contesto della demo. E niente scelte tecniche neanche qui: il <span class="mono">CLAUDE.md</span> del capitolo 05 è già nella cartella, a voi serve solo descrivere bene la consegna.</p>
+  <p class="lead">Esercitazione su consegna assegnata. Non un'app nuova: <b>una pagina in più della stessa app</b> appena vista — così si riusa tutto il contesto della demo. E niente scelte tecniche neanche qui: il <span class="mono">CLAUDE.md</span> del capitolo 06 è già nella cartella, a voi serve solo descrivere bene la consegna.</p>
 
   <div class="panel star">
     <div class="badge you">Hands-on · ~2 ore</div>
@@ -922,7 +981,7 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 let _scrTick=false;const _prog=document.getElementById('prog');
 addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimationFrame(()=>{_scrTick=false;
   const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight);_prog.style.width=(p*100)+'%';});});
-(function(){const labels={s0:'Intro',s1:'Git essenziale',s2:"Perché un'app",s3:'I pezzi di un\'app',s4:'Onboarding',s5:'Gli step di lavoro',s6:'Demo: dashboard treni',s7:'Hands-on: il revisore',s8:'Da portare a casa'};
+(function(){const labels={s0:'Intro',s1:'Git essenziale',s1b:'Installare Git e gh',s2:"Perché un'app",s3:'I pezzi di un\'app',s4:'Onboarding',s5:'Gli step di lavoro',s6:'Demo: dashboard treni',s7:'Hands-on: il revisore',s8:'Da portare a casa'};
  const nav=document.getElementById('dots');const secs=[...document.querySelectorAll('section')];
  secs.forEach(s=>{const a=document.createElement('a');a.href='#'+s.id;a.innerHTML='<span>'+(labels[s.id]||s.id)+'</span>';a.dataset.id=s.id;nav.appendChild(a);});
  const links=[...nav.querySelectorAll('a')];
@@ -988,31 +1047,30 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   setPhase(0);
 })();
 
-/* ---------- STEP DI LAVORO: browser + terminale, un click per step ---------- */
+/* ---------- STEP DI LAVORO: tutto in chat, un click per step ---------- */
 (function(){
-  const ghw=document.getElementById('ghw');
-  const ghBtn=document.getElementById('ghBtn');
-  const ghNew=document.getElementById('ghNew');
-  const ghDone=document.getElementById('ghDone');
-  const term=document.getElementById('term');
-  const body=document.getElementById('termBody');
-  const idle=document.getElementById('termIdle');
-  const btn=document.getElementById('termBtn');
-  const hint=document.getElementById('termHint');
+  const win=document.getElementById('ccwin');
+  const body=document.getElementById('ccBody');
+  const empty=document.getElementById('ccEmpty');
+  const openBtn=document.getElementById('ccOpenBtn');
+  const fold=document.getElementById('ccFold');
+  const input=document.getElementById('ccInput');
+  const btn=document.getElementById('chatBtn');
+  const hint=document.getElementById('chatHint');
   const steps=[...document.querySelectorAll('#stepList .st')];
-  const lines=[...body.querySelectorAll('.ln')];
+  const rows=[...body.querySelectorAll('.ccrow')];
   const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
   let phase=0,busy=false,timers=[];
 
-  // phase 0: browser · 1..4: terminale · 5: fine
-  const LABEL=['','▶ git clone …','▶ cd + claude','▶ /init','▶ «Iniziamo, partiamo con il creare…»','↺ Ricomincia'];
+  // phase 0: si apre la cartella · 1..4: la conversazione · 5: fine
+  const LABEL=['','▶ «Crea una repository e collegala…»','▶ /init — «il gestionale dei treni…»','▶ «Creiamo la dashboard dei mezzi»','▶ «Salva e manda su GitHub»','↺ Ricomincia'];
   const HINT=[
-    'Si parte dal browser: clicca il bottone verde <b>Create repository</b>.',
-    'La repo esiste ma è vuota e sta nel cloud. Ora serve la copia sul vostro computer, già agganciata a lei.',
-    'Da qui GitHub non serve più. Si entra nella cartella e ci si avvia Claude <b>dentro</b>: vedrà solo questa.',
-    'Il file delle regole non si scrive a mano: lo si detta a <span class="mono">/init</span>, una volta sola.',
-    'Da adesso solo consegne. L\'architettura è nel <span class="mono">CLAUDE.md</span>, non va più ripetuta.',
-    'Fine: da qui in poi è tutto un ciclo di consegne, <b>commit</b> e <b>push</b>.'
+    'Si comincia da qui: clicca <b>Apri una cartella…</b>.',
+    'Claude ora vede la cartella, ed è vuota. La repository non si va a creare a mano: <b>gliela si chiede</b>.',
+    'La cartella è agganciata al cloud. Ora le regole del progetto: si dettano a <span class="mono">/init</span>, una volta sola.',
+    'Le scelte sono nel <span class="mono">CLAUDE.md</span>. Da adesso solo consegne: l\'architettura non va più ripetuta.',
+    'Il primo pezzo funziona: è il momento del checkpoint del capitolo 01 — <b>commit</b> e <b>push</b>, chiesti a parole.',
+    'Fine. Da qui è sempre lo stesso giro: una consegna, un pezzo che funziona, <b>commit</b> e <b>push</b>.'
   ];
 
   function setBtn(){
@@ -1022,15 +1080,15 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   }
   function say(){hint.innerHTML=HINT[Math.min(phase,5)];}
 
-  function typeLines(step,done){
-    const group=lines.filter(l=>+l.dataset.step===step);
-    if(still){group.forEach(l=>l.classList.add('in'));done();return;}
+  function typeRows(step,done){
+    const group=rows.filter(r=>+r.dataset.step===step);
+    if(still){group.forEach(r=>r.classList.add('in'));done();return;}
     let t=120;
-    group.forEach(ln=>{
-      timers.push(setTimeout(()=>{ln.classList.add('in','typing');},t));
-      const dur=Math.min(1400,260+ln.textContent.length*14);
-      timers.push(setTimeout(()=>ln.classList.remove('typing'),t+dur));
-      t+=dur+260;
+    group.forEach(r=>{
+      timers.push(setTimeout(()=>{r.classList.add('in','typing');},t));
+      const dur=Math.min(1400,260+r.textContent.length*11);
+      timers.push(setTimeout(()=>r.classList.remove('typing'),t+dur));
+      t+=dur+220;
     });
     timers.push(setTimeout(done,t));
   }
@@ -1038,10 +1096,8 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   function run(step){
     if(busy)return;
     busy=true;setBtn();
-    idle.hidden=true;
     steps.forEach((s,k)=>s.classList.toggle('on',k===step));
-    if(step===1){ghw.classList.add('off');term.classList.add('live');}
-    typeLines(step,()=>{
+    typeRows(step,()=>{
       busy=false;phase=step+1;setBtn();say();
       if(phase===5){steps.forEach(s=>s.classList.add('on'));}
     });
@@ -1050,19 +1106,21 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   function reset(){
     timers.forEach(clearTimeout);timers=[];
     busy=false;phase=0;
-    lines.forEach(l=>l.classList.remove('in','typing'));
+    rows.forEach(r=>r.classList.remove('in','typing'));
     steps.forEach(s=>s.classList.remove('on'));
-    ghw.classList.remove('off');term.classList.remove('live');
-    ghNew.classList.add('on');ghDone.classList.remove('on');
-    ghBtn.classList.add('pulse');
-    idle.hidden=false;
+    win.classList.remove('live');
+    fold.classList.remove('on');fold.textContent='nessuna cartella aperta';
+    input.classList.add('off');
+    empty.hidden=false;openBtn.classList.add('pulse');
     setBtn();say();
   }
 
-  ghBtn.addEventListener('click',()=>{
+  openBtn.addEventListener('click',()=>{
     if(phase!==0)return;
-    ghBtn.classList.remove('pulse');
-    ghNew.classList.remove('on');ghDone.classList.add('on');
+    openBtn.classList.remove('pulse');
+    empty.hidden=true;
+    fold.textContent='📁 ~/manutenzione-treni';fold.classList.add('on');
+    win.classList.add('live');input.classList.remove('off');
     steps[0].classList.add('on');
     phase=1;setBtn();say();
   });
@@ -1075,6 +1133,16 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
 
   reset();
 })();
+
+/* ---------- SETUP: copia dei blocchi di comandi (i prompt PS> sono decorativi) ---------- */
+document.querySelectorAll('.cmdbox .cmdcopy').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const pre=b.closest('.cmdbox').querySelector('pre');
+    navigator.clipboard.writeText([...pre.querySelectorAll('.c')].map(c=>c.textContent).join('\n')).then(()=>{
+      b.textContent='✓ Copiato';setTimeout(()=>{b.textContent='📋 Copia';},1600);
+    });
+  });
+});
 
 /* ---------- CLAUDE.md: copia + download ---------- */
 (function(){
