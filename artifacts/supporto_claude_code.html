@@ -168,41 +168,49 @@
   .gitsteps .gsep{color:var(--line-strong);font-size:16px}
 
   /* architettura: i pezzi di un'app */
-  .appwrap{position:relative;border:1.5px dashed var(--accent-soft2);border-radius:16px;padding:28px 14px 16px;margin-top:30px}
-  .applab{position:absolute;top:-8px;left:16px;background:#fffdfd;padding:0 8px;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-2)}
+  .appwrap{position:relative;border:3px dashed var(--accent);border-radius:16px;padding:30px 16px 18px;margin-top:32px}
+  .applab{position:absolute;top:-9px;left:16px;background:#fffdfd;padding:0 8px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-2)}
   .arch{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:stretch}
   .arch2{display:grid;grid-template-columns:1fr 150px 1fr;gap:10px;align-items:stretch}
-  .abox{border:1.5px solid var(--line);border-radius:14px;padding:16px 14px;background:var(--card-2);text-align:center}
+  .abox{border:2px solid var(--ink-2);border-radius:14px;padding:16px 14px;background:var(--card);text-align:center}
   .abox .icn{height:48px;display:flex;align-items:center;justify-content:center}
   .abox .icn svg{width:64px;height:48px;overflow:visible}
   .abox .nm{font-weight:800;font-size:15px;margin-top:7px}
   .abox .role{font-size:12.5px;color:var(--ink-2);margin-top:4px;line-height:1.4}
-  .aarr{display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--line-strong);font-size:20px;padding:0 12px;gap:4px}
-  .aarr small{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.05em;white-space:nowrap}
+  /* le frecce API · JSON: sempre lo stesso tratto, orizzontali e verticali */
+  .aarr{position:relative;min-width:120px;padding:0 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px}
+  .aarr .ln{position:relative;width:100%;height:2px;background:var(--ink-2)}
+  .aarr .ln::before,.aarr .ln::after{content:'';position:absolute;top:50%;transform:translateY(-50%);border-top:5px solid transparent;border-bottom:5px solid transparent}
+  .aarr .ln::before{left:0;border-right:8px solid var(--ink-2)}
+  .aarr .ln::after{right:0;border-left:8px solid var(--ink-2)}
+  .aarr small{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--accent-2);letter-spacing:.05em;white-space:nowrap}
   /* la forcella: dal motore giù verso servizi esterni e AI */
-  .afork{display:grid;grid-template-columns:1fr 150px 1fr;gap:10px;height:60px}
+  .afork{display:grid;grid-template-columns:1fr 150px 1fr;gap:10px;height:62px}
   .afork .fk{position:relative}
-  .afork .hl{position:absolute;top:24px;height:1.5px;background:var(--line-strong);opacity:.8}
+  .afork .hl{position:absolute;top:26px;height:2px;background:var(--ink-2)}
   .afork .fk.l .hl{left:50%;right:-10px}
   .afork .fk.mid .hl{left:0;right:0}
   .afork .fk.r .hl{left:-10px;right:50%}
-  .afork .vl{position:absolute;left:50%;width:1.5px;background:var(--line-strong);opacity:.8;transform:translateX(-50%)}
-  .afork .fk.l .vl,.afork .fk.r .vl{top:24px;bottom:8px}
-  .afork .fk.mid .vl{top:8px;height:16px}
-  .afork .fk.l::after,.afork .fk.r::after{content:'';position:absolute;left:50%;bottom:0;transform:translateX(-50%);border-left:4.5px solid transparent;border-right:4.5px solid transparent;border-top:8px solid var(--line-strong);opacity:.8}
-  .afork .fk.mid::before{content:'';position:absolute;left:50%;top:0;transform:translateX(-50%);border-left:4.5px solid transparent;border-right:4.5px solid transparent;border-bottom:8px solid var(--line-strong);opacity:.8}
-  .afork small{position:absolute;left:calc(50% + 10px);bottom:5px;font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.05em;white-space:nowrap}
+  .afork .vl{position:absolute;left:50%;width:2px;background:var(--ink-2);transform:translateX(-50%)}
+  .afork .fk.l .vl,.afork .fk.r .vl{top:26px;bottom:8px}
+  .afork .fk.mid .vl{top:8px;height:18px}
+  .afork .fk.l::after,.afork .fk.r::after{content:'';position:absolute;left:50%;bottom:0;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:8px solid var(--ink-2)}
+  .afork .fk.mid::before{content:'';position:absolute;left:50%;top:0;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:8px solid var(--ink-2)}
+  .afork small{position:absolute;left:calc(50% + 10px);bottom:4px;font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--accent-2);letter-spacing:.05em;white-space:nowrap}
   .afork .fk.mid small{display:none}
   @media(max-width:760px){
     .arch{grid-template-columns:1fr;gap:6px}
-    .arch .aarr,.arch2 .aarr{flex-direction:row;gap:8px;padding:8px 0}
-    .arch .aarr .g,.arch2 .aarr .g{display:inline-block;transform:rotate(90deg)}
     .arch2{grid-template-columns:1fr;gap:6px}
-    .afork{grid-template-columns:1fr;height:48px}
+    .arch .aarr,.arch2 .aarr{min-width:0;padding:10px 0;height:52px}
+    .arch .aarr .ln,.arch2 .aarr .ln{width:2px;height:100%}
+    .arch .aarr .ln::before,.arch2 .aarr .ln::before{top:0;left:50%;transform:translateX(-50%);border:0;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:8px solid var(--ink-2)}
+    .arch .aarr .ln::after,.arch2 .aarr .ln::after{top:auto;bottom:0;left:50%;right:auto;transform:translateX(-50%);border:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:8px solid var(--ink-2)}
+    .arch .aarr small,.arch2 .aarr small{position:absolute;left:calc(50% + 10px)}
+    .afork{grid-template-columns:1fr;height:52px}
     .afork .fk.l,.afork .fk.r{display:none}
     .afork .fk.mid .hl{display:none}
     .afork .fk.mid .vl{top:8px;bottom:8px;height:auto}
-    .afork .fk.mid::after{content:'';position:absolute;left:50%;bottom:0;transform:translateX(-50%);border-left:4.5px solid transparent;border-right:4.5px solid transparent;border-top:8px solid var(--line-strong);opacity:.8}
+    .afork .fk.mid::after{content:'';position:absolute;left:50%;bottom:0;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:8px solid var(--ink-2)}
     .afork .fk.mid small{display:block}
   }
   /* tutto viaggia in JSON */
@@ -243,6 +251,29 @@
   .filecard pre{margin:0;padding:16px 18px;font-family:var(--mono);font-size:12px;line-height:1.55;color:var(--ink);
     max-height:340px;overflow:auto;white-space:pre-wrap;background:linear-gradient(180deg,#fff,#fdfcfa)}
   @media(max-width:640px){.filebar{flex-wrap:wrap}.filebar .fdesc{display:none}}
+
+  /* mini-terminale animato degli step */
+  .term{border-radius:14px;overflow:hidden;background:var(--ink);border:1px solid #2c2b28;margin-top:6px;
+    box-shadow:0 20px 44px -30px rgba(0,0,0,.7)}
+  .termbar{display:flex;align-items:center;gap:7px;padding:9px 13px;background:#26251f;border-bottom:1px solid #35342e}
+  .termbar i{width:9px;height:9px;border-radius:50%;background:#4a4941;display:block}
+  .termbar i:first-child{background:var(--accent)}
+  .termbar .tt{margin-left:8px;font-family:var(--mono);font-size:11px;color:#8d8b81;letter-spacing:.04em}
+  .termbody{padding:15px 16px;font-family:var(--mono);font-size:13px;line-height:1.85;color:#e8e6df;
+    min-height:206px;overflow-x:auto}
+  @media(max-width:640px){.termbody{font-size:11.5px;min-height:180px}}
+  .term .ln{white-space:pre;display:none}
+  .term .ln.in{display:block}
+  .term .pr{color:var(--accent);font-weight:700;margin-right:7px}
+  .term .pr.claude{color:#e6a33c}
+  .term .ok{color:#5fbf9a}
+  .term .cmt{color:#8d8b81}
+  .term .ln.typing::after{content:'▋';color:var(--accent);animation:tblink .9s step-end infinite;margin-left:1px}
+  @keyframes tblink{50%{opacity:0}}
+  .termrun{margin-top:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .termrun .th{font-size:13px;color:var(--muted)}
+  .steps .st{border-radius:10px;padding-left:8px;padding-right:8px;transition:background .35s ease}
+  .steps .st.on{background:var(--accent-soft)}
 
   .takes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
   @media(max-width:720px){.takes{grid-template-columns:1fr}}
@@ -508,37 +539,37 @@
     <div class="appwrap">
       <span class="applab">la vostra app</span>
       <div class="arch">
-        <div class="abox" data-i="0">
+        <div class="abox">
           <div class="icn">
             <svg viewBox="0 0 56 44" role="img" aria-label="Finestra di un browser con una tabella e un bottone">
               <rect x="4" y="6" width="48" height="33" rx="4" class="sv-panel"/>
-              <path d="M4 10a4 4 0 0 1 4-4h40a4 4 0 0 1 4 4v3H4z" fill="#f0eee8"/>
-              <line x1="4" y1="13" x2="52" y2="13" stroke="var(--line)"/>
-              <circle cx="9" cy="9.5" r="1.4" fill="var(--accent)" opacity=".7"/>
-              <circle cx="14" cy="9.5" r="1.4" fill="var(--line-strong)" opacity=".6"/>
-              <circle cx="19" cy="9.5" r="1.4" fill="var(--line-strong)" opacity=".6"/>
-              <rect x="9" y="18" width="22" height="3.2" rx="1.6" fill="var(--line-strong)"/>
-              <rect x="9" y="24.5" width="38" height="2.4" rx="1.2" fill="var(--line)"/>
-              <rect x="9" y="29.5" width="38" height="2.4" rx="1.2" fill="var(--line)"/>
-              <rect x="31" y="33.5" width="16" height="5" rx="2.5" fill="var(--accent)" opacity=".85"/>
+              <path d="M4 10a4 4 0 0 1 4-4h40a4 4 0 0 1 4 4v3H4z" fill="var(--paper-2)"/>
+              <line x1="4" y1="13" x2="52" y2="13" stroke="var(--ink-2)" stroke-width="1.2"/>
+              <circle cx="9" cy="9.5" r="1.5" fill="var(--accent)"/>
+              <circle cx="14" cy="9.5" r="1.5" fill="var(--ink-2)"/>
+              <circle cx="19" cy="9.5" r="1.5" fill="var(--ink-2)"/>
+              <rect x="9" y="18" width="22" height="3.4" rx="1.7" fill="var(--ink)"/>
+              <rect x="9" y="24.5" width="38" height="2.6" rx="1.3" fill="var(--ink-2)"/>
+              <rect x="9" y="29.5" width="38" height="2.6" rx="1.3" fill="var(--ink-2)"/>
+              <rect x="31" y="33.5" width="16" height="5" rx="2.5" fill="var(--accent)"/>
             </svg>
           </div>
           <div class="nm">Interfaccia</div>
           <div class="role">il sito web: le pagine, le tabelle, i bottoni che si cliccano.</div>
         </div>
 
-        <div class="aarr"><span class="g">⇄</span><small>API · JSON</small></div>
+        <div class="aarr"><span class="ln"></span><small>API · JSON</small></div>
 
-        <div class="abox" data-i="1">
+        <div class="abox">
           <div class="icn">
             <svg viewBox="0 0 56 44" role="img" aria-label="Un motore con un ingranaggio e i condotti che entrano ed escono">
-              <path d="M2 15h8M2 29h8M46 15h8M46 29h8M28 38v5" fill="none" stroke="var(--line-strong)" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 15h8M2 29h8M46 15h8M46 29h8M28 38v5" fill="none" stroke="var(--ink-2)" stroke-width="1.8" stroke-linecap="round"/>
               <rect x="10" y="6" width="36" height="32" rx="6" class="sv-panel"/>
               <g transform="translate(28,22)">
                 <g class="spin" stroke="var(--accent)" fill="none" stroke-linecap="round">
-                  <circle r="8" stroke-width="2.2"/>
-                  <circle r="2.8" stroke-width="1.5" opacity=".55"/>
-                  <g stroke-width="2.2">
+                  <circle r="8" stroke-width="2.4"/>
+                  <circle r="2.8" stroke-width="1.8"/>
+                  <g stroke-width="2.4">
                     <path d="M0-8v-3"/><path d="M0 8v3"/><path d="M-8 0h-3"/><path d="M8 0h3"/>
                     <path d="M-5.7-5.7l-2.1-2.1"/><path d="M5.7 5.7l2.1 2.1"/><path d="M5.7-5.7l2.1-2.1"/><path d="M-5.7 5.7l-2.1 2.1"/>
                   </g>
@@ -550,17 +581,17 @@
           <div class="role">le regole di funzionamento: decide cosa succede quando clicchi, e coordina tutto il resto.</div>
         </div>
 
-        <div class="aarr"><span class="g">⇄</span><small>API · JSON</small></div>
+        <div class="aarr"><span class="ln"></span><small>API · JSON</small></div>
 
-        <div class="abox" data-i="2">
+        <div class="abox">
           <div class="icn">
             <svg viewBox="0 0 56 44" role="img" aria-label="Un database a cilindri con i dati archiviati">
-              <g fill="var(--card)" stroke="var(--line-strong)" stroke-width="1.4">
+              <g fill="var(--card)" stroke="var(--ink-2)" stroke-width="1.6">
                 <path d="M13 21v9c0 2.8 6.7 5 15 5s15-2.2 15-5v-9z"/>
                 <path d="M13 11v10c0 2.8 6.7 5 15 5s15-2.2 15-5V11z"/>
                 <ellipse cx="28" cy="11" rx="15" ry="5"/>
               </g>
-              <ellipse cx="28" cy="21" rx="15" ry="5" fill="none" stroke="var(--line)" stroke-width="1.2"/>
+              <ellipse cx="28" cy="21" rx="15" ry="5" fill="none" stroke="var(--ink-2)" stroke-width="1.4"/>
               <rect class="cell" x="19" y="28" width="18" height="3.4" rx="1.7" fill="var(--accent)" opacity="0"/>
               <rect class="cell c2" x="19" y="17.5" width="18" height="3.4" rx="1.7" fill="var(--accent)" opacity="0"/>
             </svg>
@@ -578,40 +609,40 @@
     </div>
 
     <div class="arch2">
-      <div class="abox ext" data-i="3">
+      <div class="abox">
         <div class="icn">
           <svg viewBox="0 0 56 44" role="img" aria-label="Tre sistemi esterni collegati: ERP, CRM e la posta">
-            <path d="M14 21v4h28v-4M28 25v3" fill="none" stroke="var(--line-strong)" stroke-width="1.2" stroke-dasharray="2.5 2.5" opacity=".8"/>
+            <path d="M14 21v4h28v-4M28 25v3" fill="none" stroke="var(--ink-2)" stroke-width="1.5" stroke-dasharray="2.5 2.5"/>
             <rect x="3" y="7" width="22" height="14" rx="3" class="sv-panel"/>
-            <text x="8" y="16.6" class="sv-lab" style="font-size:7px;fill:var(--ink-2)">ERP</text>
+            <text x="8" y="16.8" class="sv-lab" style="font-size:7.5px;font-weight:700;fill:var(--ink)">ERP</text>
             <rect x="31" y="7" width="22" height="14" rx="3" class="sv-panel"/>
-            <text x="35.5" y="16.6" class="sv-lab" style="font-size:7px;fill:var(--ink-2)">CRM</text>
+            <text x="35.5" y="16.8" class="sv-lab" style="font-size:7.5px;font-weight:700;fill:var(--ink)">CRM</text>
             <rect x="17" y="27" width="22" height="14" rx="3" class="sv-panel"/>
-            <path d="M21.5 30.5h13v7h-13z" fill="none" stroke="var(--accent)" stroke-width="1.2" opacity=".85"/>
-            <path d="M21.5 30.5L28 35l6.5-4.5" fill="none" stroke="var(--accent)" stroke-width="1.2" opacity=".85"/>
+            <path d="M21.5 30.5h13v7h-13z" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+            <path d="M21.5 30.5L28 35l6.5-4.5" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
           </svg>
         </div>
         <div class="nm">Servizi esterni</div>
         <div class="role">i sistemi che avete già: ERP, CRM, gestionale, Gmail. Non si riscrivono, si collegano.</div>
       </div>
 
-      <div class="aarr"><span class="g">⇄</span><small>API · JSON</small></div>
+      <div class="aarr"><span class="ln"></span><small>API · JSON</small></div>
 
-      <div class="abox ai" data-i="4">
+      <div class="abox">
         <div class="icn">
           <svg viewBox="0 0 56 44" role="img" aria-label="Un agente AI collegato ai suoi strumenti">
-            <path d="M28 21v4M12 29v-4h32v4" fill="none" stroke="var(--line-strong)" stroke-width="1.2"/>
+            <path d="M28 21v4M12 29v-4h32v4" fill="none" stroke="var(--ink-2)" stroke-width="1.5"/>
             <g class="beat">
-              <circle cx="28" cy="12" r="8.5" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
-              <path d="M28 7v10M23 12h10M24.5 8.5l7 7M31.5 8.5l-7 7" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" opacity=".85"/>
+              <circle cx="28" cy="12" r="8.5" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.8"/>
+              <path d="M28 7v10M23 12h10M24.5 8.5l7 7M31.5 8.5l-7 7" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round"/>
             </g>
             <rect x="6" y="29" width="12" height="10" rx="2.5" class="sv-panel"/>
             <rect x="22" y="29" width="12" height="10" rx="2.5" class="sv-panel"/>
             <rect x="38" y="29" width="12" height="10" rx="2.5" class="sv-panel"/>
-            <g fill="var(--line-strong)">
-              <rect x="9" y="33" width="6" height="2.2" rx="1.1"/>
-              <rect x="25" y="33" width="6" height="2.2" rx="1.1"/>
-              <rect x="41" y="33" width="6" height="2.2" rx="1.1"/>
+            <g fill="var(--ink-2)">
+              <rect x="9" y="33" width="6" height="2.4" rx="1.2"/>
+              <rect x="25" y="33" width="6" height="2.4" rx="1.2"/>
+              <rect x="41" y="33" width="6" height="2.4" rx="1.2"/>
             </g>
           </svg>
         </div>
@@ -626,10 +657,61 @@
     </div>
   </div>
 
+
+</div></section>
+
+<!-- ============ 04 ONBOARDING ============ -->
+<section id="s4"><div class="wrap reveal">
+  <div class="kicker"><span class="n">04</span> Onboarding</div>
+  <h2>Il giro base di <span class="em">Claude Code</span></h2>
+  <p class="lead">L'app appena descritta la costruisce Claude Code: Claude nel terminale, dentro la cartella del progetto — legge i file, scrive codice, esegue comandi. Ieri con Cowork l'agente lavorava sulla cartella dei documenti; qui lavora sulla cartella del codice (quella di Git), e può fare molto di più.</p>
+
+  <a class="linkbox" href="guida_comandi_claude_code.html">
+    <div class="t">→ Guida base di Claude Code</div>
+    <div class="d">Comandi <span class="mono">/</span>, gestione del contesto, modalità, scorciatoie. Tienila aperta di fianco per tutta la mattina.</div>
+  </a>
+</div></section>
+
+<!-- ============ 05 GLI STEP DI LAVORO ============ -->
+<section id="s5"><div class="wrap reveal">
+  <div class="kicker"><span class="n">05</span> Il metodo</div>
+  <h2>Da zero a "sto lavorando": <span class="em">cinque step</span></h2>
+  <p class="lead">Un progetto non comincia con un prompt: comincia con una repo vuota e una cartella. Sono sempre gli stessi cinque gesti, in quest'ordine — e il quinto è quello in cui, finalmente, si costruisce.</p>
+
+  <div class="panel star">
+    <div class="badge doer">La sequenza di avvio</div>
+
+    <div class="term">
+      <div class="termbar"><i></i><i></i><i></i><span class="tt">terminale — manutenzione-treni</span></div>
+      <div class="termbody" id="termBody">
+        <div class="ln" data-step="0"><span class="cmt"># su github.com: New repository → manutenzione-treni → Create</span></div>
+        <div class="ln" data-step="1"><span class="pr">$</span>git clone https://github.com/tuonome/manutenzione-treni.git</div>
+        <div class="ln" data-step="2"><span class="pr">$</span>cd manutenzione-treni</div>
+        <div class="ln" data-step="2"><span class="pr">$</span>claude</div>
+        <div class="ln" data-step="3"><span class="pr claude">&gt;</span>/init — «un gestionale per la manutenzione dei treni: Postgres in Docker, back-end FastAPI, front-end React…»</div>
+        <div class="ln" data-step="3"><span class="ok">  ✓ CLAUDE.md creato</span></div>
+        <div class="ln" data-step="4"><span class="pr claude">&gt;</span>«Costruisci la dashboard dei mezzi con lo stato delle revisioni.»</div>
+      </div>
+    </div>
+
+    <div class="termrun">
+      <button class="cycbtn next" id="termBtn">▶ Esegui la sequenza</button>
+      <span class="th" id="termHint">Sette righe, cinque step. Guarda quale step si accende qui sotto.</span>
+    </div>
+
+    <div class="steps" id="stepList" style="margin-top:18px">
+      <div class="st"><p><b>Si crea la repo su GitHub, vuota.</b> Prima ancora del codice: il contenitore nel cloud, quello del capitolo 01. È il <b>remoto</b> verso cui farete push — se non esiste adesso, i vostri checkpoint non hanno dove andare.</p></div>
+      <div class="st"><p><b>Si crea la cartella sul computer, collegata alla repo.</b> Un <span class="cmd">git clone</span> e la cartella locale nasce già agganciata al remoto: da qui in poi commit e push funzionano senza configurare nient'altro. La cartella è vuota, ma è "una cartella Git".</p></div>
+      <div class="st"><p><b>Si avvia Claude <i>dentro</i> quella cartella.</b> <span class="cmd">cd</span> per entrarci, poi <span class="cmd">claude</span>. Claude Code non è un'app a parte a cui si caricano dei file: vive nella cartella in cui l'avete lanciato, e vede solo quella.</p></div>
+      <div class="st"><p><b>Il comando <span class="cmd">/init</span>: si descrive il software e come si vuole lavorare.</b> Non si scrive a mano il file delle regole: lo si <b>detta</b>. A <span class="cmd">/init</span> si racconta cosa deve diventare il progetto e con quali vincoli — e lui scrive il <span class="mono">CLAUDE.md</span>, che rileggerà da solo a ogni avvio successivo.</p></div>
+      <div class="st"><p><b>Da qui si inizia a lavorare.</b> Solo consegne, in italiano, una per volta. L'architettura non va più ripetuta: è nel file. E a ogni pezzo che funziona si torna al ciclo del capitolo 01 — <b>commit</b>, <b>push</b>.</p></div>
+    </div>
+  </div>
+
   <div class="filecard">
     <div class="filebar">
       <span class="fname">📄 CLAUDE.md</span>
-      <span class="fdesc">il file delle scelte architetturali — Claude Code lo legge da solo</span>
+      <span class="fdesc">il risultato dello step 04 — Claude Code lo rilegge a ogni avvio</span>
       <span class="fbtns">
         <button class="fbtn" id="cmCopy">📋 Copia</button>
         <button class="fbtn dark" id="cmDl">↓ Scarica CLAUDE.md</button>
@@ -670,32 +752,20 @@ progetto/
 - **Git.** A ogni iterazione che funziona, proponi commit + push (messaggi brevi, in italiano).
 - **Spiega mentre lavori.** Chi legge non conosce il codice: quando finisci una modifica, di' in una riga *dove* hai toccato — database, back-end o front-end.</pre>
   </div>
-  <p class="hint">Va messo, con il nome esatto <span class="mono">CLAUDE.md</span>, nella cartella del progetto <b>prima del primo prompt</b>: Claude Code lo legge automaticamente all'avvio, non serve nemmeno dirglielo.</p>
+  <p class="hint">Questo è il file che <span class="mono">/init</span> vi restituisce: le scelte fisse dell'architettura del capitolo 03, più le regole di lavoro. Se il vostro viene diverso, sovrascrivetelo con questo — per la demo e per l'esercitazione partiamo tutti dalla stessa architettura.</p>
 
 </div></section>
 
-<!-- ============ 04 ONBOARDING ============ -->
-<section id="s4"><div class="wrap reveal">
-  <div class="kicker"><span class="n">04</span> Onboarding</div>
-  <h2>Il giro base di <span class="em">Claude Code</span></h2>
-  <p class="lead">L'app appena descritta la costruisce Claude Code: Claude nel terminale, dentro la cartella del progetto — legge i file, scrive codice, esegue comandi. Ieri con Cowork l'agente lavorava sulla cartella dei documenti; qui lavora sulla cartella del codice (quella di Git), e può fare molto di più.</p>
-
-  <a class="linkbox" href="guida_comandi_claude_code.html">
-    <div class="t">→ Guida base di Claude Code</div>
-    <div class="d">Comandi <span class="mono">/</span>, gestione del contesto, modalità, scorciatoie. Tienila aperta di fianco per tutta la mattina.</div>
-  </a>
-</div></section>
-
-<!-- ============ 05 DEMO DASHBOARD TRENI ============ -->
-<section id="s5"><div class="wrap reveal">
-  <div class="kicker"><span class="n">05</span> Da vedere</div>
+<!-- ============ 06 DEMO DASHBOARD TRENI ============ -->
+<section id="s6"><div class="wrap reveal">
+  <div class="kicker"><span class="n">06</span> Da vedere</div>
   <h2>Demo: la dashboard <span class="em">dei treni</span></h2>
   <p class="lead">Un gestionale per la <b>manutenzione ordinaria dei mezzi</b>, costruito dal vivo: dallo schema di prima all'app funzionante. Ogni passo usa il vocabolario appena introdotto.</p>
 
   <div class="panel star">
     <div class="badge doer">Demo · dashboard treni</div>
     <div class="steps">
-      <div class="st"><p><b>Il punto di partenza.</b> Una cartella con dentro solo il <span class="mono">CLAUDE.md</span> dell'architettura. Il primo prompt è la consegna del gestionale: Claude legge il file e tira su i pezzi dell'app da solo — nessuna scelta tecnica da fare dal vivo.</p></div>
+      <div class="st"><p><b>Il punto di partenza.</b> I cinque step appena visti, già fatti: la cartella è clonata dalla repo e dentro c'è solo il <span class="mono">CLAUDE.md</span> uscito da <span class="cmd">/init</span>. Il primo prompt è la consegna del gestionale: Claude legge il file e tira su i pezzi dell'app da solo — nessuna scelta tecnica da fare dal vivo.</p></div>
       <div class="st"><p><b>La fonte dati: un ERP mockato.</b> Un componente preparato in anticipo che, ricevute le chiamate, risponde con dati presi da un JSON prefatto — mezzi, manutentori con le loro disponibilità, revisioni con le scadenze. "Mockare" è a sua volta un concetto da fissare: per costruire l'app non serve il sistema vero.</p></div>
       <div class="st"><p><b>La dashboard.</b> Visione d'insieme dei mezzi con lo stato delle revisioni e dei controlli obbligatori a scadenza: otto mezzi di categoria tre, tre con revisione fatta, cinque da fare.</p></div>
       <div class="st"><p><b>Il bottone "Organizza revisione".</b> Crea l'agenda del giorno o della settimana dei manutentori, incrociando revisioni da fare e disponibilità.</p></div>
@@ -708,11 +778,11 @@ progetto/
 
 </div></section>
 
-<!-- ============ 06 ESERCIZIO REVISORE ============ -->
-<section id="s6"><div class="wrap reveal">
-  <div class="kicker"><span class="n">06</span> Da fare</div>
+<!-- ============ 07 ESERCIZIO REVISORE ============ -->
+<section id="s7"><div class="wrap reveal">
+  <div class="kicker"><span class="n">07</span> Da fare</div>
   <h2>Hands-on: il documento <span class="em">del revisore</span></h2>
-  <p class="lead">Esercitazione su consegna assegnata. Non un'app nuova: <b>una pagina in più della stessa app</b> appena vista — così si riusa tutto il contesto della demo. E niente scelte tecniche neanche qui: il <span class="mono">CLAUDE.md</span> è già nella cartella, a voi serve solo descrivere bene la consegna.</p>
+  <p class="lead">Esercitazione su consegna assegnata. Non un'app nuova: <b>una pagina in più della stessa app</b> appena vista — così si riusa tutto il contesto della demo. E niente scelte tecniche neanche qui: il <span class="mono">CLAUDE.md</span> del capitolo 05 è già nella cartella, a voi serve solo descrivere bene la consegna.</p>
 
   <div class="panel star">
     <div class="badge you">Hands-on · ~2 ore</div>
@@ -732,12 +802,12 @@ progetto/
 </div></section>
 
 <!-- ============ TAKEAWAYS ============ -->
-<section id="s7"><div class="wrap reveal">
+<section id="s8"><div class="wrap reveal">
   <div class="kicker"><span class="n">✓</span> Da portare a casa</div>
   <h2>Cosa resta di <span class="em">stamattina</span></h2>
   <div class="takes">
     <div class="take"><h4>Commit e push, sempre</h4><p>Due gesti: istantanea locale, copia nel cloud. Checkpoint per voi, prerequisito per il pomeriggio.</p></div>
-    <div class="take"><h4>L'architettura si eredita</h4><p>Le scelte tecniche stanno in un file (CLAUDE.md) scritto una volta da chi sa; Claude ci si attiene, voi descrivete la consegna. DB/BE/FE/API restano solo il vocabolario per seguire.</p></div>
+    <div class="take"><h4>L'architettura si eredita</h4><p>Le scelte tecniche stanno in un file (CLAUDE.md) dettato una volta con <span class="mono">/init</span>; poi Claude ci si attiene da solo e voi descrivete la consegna. DB/BE/FE/API restano solo il vocabolario per seguire.</p></div>
     <div class="take"><h4>Descrivere, non digitare</h4><p>Con Claude Code il software si costruisce raccontandolo. Il vostro mestiere è la consegna, non la sintassi.</p></div>
     <div class="take"><h4>AI nel software</h4><p>Non solo AI che scrive il codice: app che, una volta costruite, usano un modello per lavorare (la mail, l'estrazione).</p></div>
   </div>
@@ -756,7 +826,7 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 let _scrTick=false;const _prog=document.getElementById('prog');
 addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimationFrame(()=>{_scrTick=false;
   const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight);_prog.style.width=(p*100)+'%';});});
-(function(){const labels={s0:'Intro',s1:'Git essenziale',s2:"Perché un'app",s3:'Architettura in un file',s4:'Onboarding',s5:'Demo: dashboard treni',s6:'Hands-on: il revisore',s7:'Da portare a casa'};
+(function(){const labels={s0:'Intro',s1:'Git essenziale',s2:"Perché un'app",s3:'I pezzi di un\'app',s4:'Onboarding',s5:'Gli step di lavoro',s6:'Demo: dashboard treni',s7:'Hands-on: il revisore',s8:'Da portare a casa'};
  const nav=document.getElementById('dots');const secs=[...document.querySelectorAll('section')];
  secs.forEach(s=>{const a=document.createElement('a');a.href='#'+s.id;a.innerHTML='<span>'+(labels[s.id]||s.id)+'</span>';a.dataset.id=s.id;nav.appendChild(a);});
  const links=[...nav.querySelectorAll('a')];
@@ -820,6 +890,43 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
     setPhase(0);
   });
   setPhase(0);
+})();
+
+/* ---------- STEP DI LAVORO: terminale che digita ---------- */
+(function(){
+  const body=document.getElementById('termBody');
+  const btn=document.getElementById('termBtn');
+  const hint=document.getElementById('termHint');
+  const steps=[...document.querySelectorAll('#stepList .st')];
+  const lines=[...body.querySelectorAll('.ln')];
+  const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let running=false,timers=[];
+
+  function light(i){steps.forEach((s,k)=>s.classList.toggle('on',k===i));}
+  function reset(){timers.forEach(clearTimeout);timers=[];lines.forEach(l=>l.classList.remove('in','typing'));steps.forEach(s=>s.classList.remove('on'));}
+  function showAll(){reset();lines.forEach(l=>l.classList.add('in'));steps.forEach(s=>s.classList.add('on'));btn.textContent='↺ Rigioca';btn.classList.remove('next');}
+
+  function play(){
+    if(running)return; running=true; reset();
+    btn.disabled=true; btn.classList.remove('next'); btn.textContent='● in corso…';
+    hint.textContent='Ogni riga accende lo step corrispondente.';
+    let t=250;
+    lines.forEach(ln=>{
+      const step=+ln.dataset.step;
+      timers.push(setTimeout(()=>{ln.classList.add('in','typing');light(step);},t));
+      const dur=Math.min(1500,300+ln.textContent.length*16);
+      timers.push(setTimeout(()=>ln.classList.remove('typing'),t+dur));
+      t+=dur+380;
+    });
+    timers.push(setTimeout(()=>{
+      running=false;btn.disabled=false;btn.textContent='↺ Rigioca';
+      steps.forEach(s=>s.classList.add('on'));
+      hint.textContent='Fine della sequenza: da qui in poi si lavora solo a consegne.';
+    },t+200));
+  }
+
+  if(still){showAll();btn.addEventListener('click',showAll);}
+  else{btn.addEventListener('click',play);}
 })();
 
 /* ---------- CLAUDE.md: copia + download ---------- */
