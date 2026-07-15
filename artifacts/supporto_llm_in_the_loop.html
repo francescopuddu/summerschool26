@@ -249,7 +249,6 @@
   .dmlog .ln.tool{color:#8fe0d5}
   .dmlog .ln.res{color:#e8c68a}
   .dmlog .ln.okl{color:#9be49b}
-  .dmlog .ln.na{color:#e89a9a}
 
   /* pareto */
   .ptabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
@@ -654,7 +653,6 @@
         <div class="dmlog">
           <span class="ln tool">→ cerca_slot(impianto:"caldaia")</span>
           <span class="ln res">← 3 slot: gio 8–10 · ven 9–11 · lun 14–16</span>
-          <span class="ln na">✗ calendario di Maria: fuori perimetro</span>
           <span class="ln tool">→ crea_prenotazione("M. Bianchi", ven 9–11)</span>
           <span class="ln okl">← OK · pratica #1042 ✓</span>
         </div>
@@ -726,7 +724,7 @@
       <div class="st"><p><b>La mappa finale:</b> <b style="color:#16a34a">verde</b> automatizzabile ora · <b style="color:#ca8a04">giallo</b> AI con revisione umana · <b style="color:#dc2626">rosso</b> resta umano — e il passo da cui partirebbe un progetto pilota.</p></div>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
-      <a class="procbtn" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px" href="skill/analisi-processo.skill" download>⬇ Scaricate la skill</a>
+      <a class="procbtn" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px" href="skill/analisi-processo.zip" download>⬇ Scaricate la skill (.zip)</a>
       <button class="procbtn" id="skillCopy" type="button" style="background:var(--accent)">📋 Niente skill? Copiate il prompt</button>
     </div>
     <div class="timer" data-min="20">
@@ -1242,10 +1240,10 @@ document.querySelectorAll('.rday').forEach(c=>c.addEventListener('click',e=>{if(
     later(2000,()=>{ln[0].classList.add('in');say('Interroga il DB prenotazioni da solo…');});
     later(3000,()=>ln[1].classList.add('in'));
     later(4200,()=>{bub[1].classList.add('in');say('…e propone gli slot in chat.');});
-    later(6400,()=>{ln[2].classList.add('in');say('Ma vede solo il DB aziendale: l\'agenda di Maria è fuori dal suo perimetro.');});
+    later(6400,()=>say('Ma vede solo il DB aziendale: l\'agenda di Maria è fuori dal suo perimetro.'));
     later(8600,()=>{bub[2].classList.add('in');say('L\'incrocio con l\'agenda? Lo ha fatto Maria, come sempre.');});
-    later(10400,()=>ln[3].classList.add('in'));
-    later(11200,()=>ln[4].classList.add('in'));
+    later(10400,()=>ln[2].classList.add('in'));
+    later(11200,()=>ln[3].classList.add('in'));
     later(12000,()=>{bub[3].classList.add('in');say('Prenotato. Autonomo sì — ma dentro un perimetro stretto.');});
     later(13800,done);
   }
