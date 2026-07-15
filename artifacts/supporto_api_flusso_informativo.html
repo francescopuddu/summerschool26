@@ -229,19 +229,6 @@
   .pnote{font-size:12px;color:var(--muted);margin:8px 0 0 84px}
   @media(max-width:640px){.prow{flex-direction:column;gap:6px}.prow .ptag{width:100px}.pnote{margin-left:0}}
 
-  /* quiz */
-  .qq{padding:18px 0;border-bottom:1px dashed var(--line)}
-  .qq:last-child{border-bottom:0}
-  .qt{font-weight:750;font-size:16px;margin:0}
-  .qo{border:1.5px solid var(--line-strong);border-radius:10px;padding:9px 13px;margin-top:8px;cursor:pointer;font-size:14.5px;background:var(--card-2);transition:all .15s}
-  .qo:hover{border-color:var(--accent);transform:translateX(2px)}
-  .qo.ok{border-color:var(--accent);background:var(--accent-soft);font-weight:700}
-  .qo.ko{border-color:var(--red);background:var(--red-soft)}
-  .qq.done .qo{cursor:default;opacity:.7;transform:none}
-  .qq.done .qo.ok{opacity:1}
-  .qx{display:none;font-size:13.5px;color:var(--ink-2);margin:12px 0 0;border-left:3px solid var(--accent);padding-left:12px}
-  .qq.done .qx{display:block}
-
   /* timer esercizi */
   .timer{display:flex;align-items:center;gap:12px;margin-top:16px;flex-wrap:wrap}
   .timer .td{font-family:var(--mono);font-size:24px;font-weight:800;color:var(--ink);background:var(--card);border:1.5px solid var(--line-strong);border-radius:10px;padding:6px 16px;font-variant-numeric:tabular-nums;min-width:110px;text-align:center}
@@ -680,39 +667,16 @@
 <!-- ============ QUIZ ============ -->
 <section id="squiz"><div class="wrap reveal">
   <div class="kicker"><span class="n">?</span> Quiz</div>
-  <h2>Quattro domande <span class="em">per fissare</span></h2>
-  <p class="lead">Prima per alzata di mano, poi cliccate per verificare.</p>
+  <h2>Mettetevi alla prova <span class="em">sul quiz online</span></h2>
+  <p class="lead">Quattro blocchi su quiz.danielemartini.eu, uno per argomento — rispondete quando volete, anche dopo la lezione.</p>
   <div class="panel star">
-    <div id="quiz">
-      <div class="qq" data-a="1">
-        <p class="qt">1 · Quando un agente "usa un tool", il modello cosa fa davvero?</p>
-        <div class="qo">Esegue direttamente l'azione</div>
-        <div class="qo">Scrive un blocco di testo che descrive l'azione da compiere</div>
-        <div class="qo">Si collega a internet in autonomia</div>
-        <p class="qx">Il modello scrive soltanto: nome del tool e parametri, come testo strutturato. È l'harness che esegue e gli riporta il risultato. Il concetto cardine della settimana.</p>
-      </div>
-      <div class="qq" data-a="2">
-        <p class="qt">2 · Cos'è un'API?</p>
-        <div class="qo">Un tipo di intelligenza artificiale</div>
-        <div class="qo">Un programma da installare sul PC</div>
-        <div class="qo">Un set di regole che permette a due sistemi di comunicare</div>
-        <p class="qx">Client che chiede, server che risponde, documentazione come grammatica. Il sistema postale dei software.</p>
-      </div>
-      <div class="qq" data-a="0">
-        <p class="qt">3 · Perché il JSON è così importante per l'AI nei processi aziendali?</p>
-        <div class="qo">Permette output strutturati che altri sistemi possono usare direttamente</div>
-        <div class="qo">È più veloce da scaricare</div>
-        <div class="qo">Occupa meno spazio su disco</div>
-        <p class="qx">Il modulo compilato contro il tema libero: campi con nome e tipo entrano nel gestionale senza ricopiature. È ciò che automatizza il data entry.</p>
-      </div>
-      <div class="qq" data-a="1">
-        <p class="qt">4 · Nel playground, l'interfaccia grafica e il JSON della richiesta erano...</p>
-        <div class="qo">Due sistemi diversi che si sincronizzano via cloud</div>
-        <div class="qo">La stessa richiesta, rappresentata in due modi</div>
-        <div class="qo">Due API diverse di Open-Meteo</div>
-        <p class="qx">Ogni interfaccia grafica compila una richiesta strutturata. Toccavi il form e cambiava il JSON — e viceversa — perché sotto c'è un solo flusso.</p>
-      </div>
+    <div class="steps">
+      <div class="st"><p><a href="https://quiz.danielemartini.eu/?block=1" target="_blank" rel="noopener" style="color:var(--accent);font-weight:700">Interoperabilità, API e tool →</a></p></div>
+      <div class="st"><p><a href="https://quiz.danielemartini.eu/?block=2" target="_blank" rel="noopener" style="color:var(--accent);font-weight:700">Agenti, harness e multimodalità →</a></p></div>
+      <div class="st"><p><a href="https://quiz.danielemartini.eu/?block=3" target="_blank" rel="noopener" style="color:var(--accent);font-weight:700">Il modello giusto e i processi aziendali →</a></p></div>
+      <div class="st"><p><a href="https://quiz.danielemartini.eu/?block=4" target="_blank" rel="noopener" style="color:var(--accent);font-weight:700">I rischi e come governarli →</a></p></div>
     </div>
+    <p class="hint" style="margin-top:16px"><a href="https://quiz.danielemartini.eu/" target="_blank" rel="noopener" style="color:var(--accent);font-weight:700">Quiz completo, tutti i blocchi →</a></p>
   </div>
 </div></section>
 
@@ -805,18 +769,6 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
     if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();secs[Math.max(0,current()-1)].scrollIntoView({behavior:'smooth'});}
   });
 })();
-
-/* ---------- quiz ---------- */
-document.querySelectorAll('.qq').forEach(q=>{
-  const opts=[...q.querySelectorAll('.qo')];
-  const right=+q.dataset.a;
-  opts.forEach((o,i)=>o.addEventListener('click',()=>{
-    if(q.classList.contains('done'))return;
-    q.classList.add('done');
-    if(i===right){o.classList.add('ok');}
-    else{o.classList.add('ko');opts[right].classList.add('ok');}
-  }));
-});
 
 /* ---------- timer esercizi ---------- */
 document.querySelectorAll('.timer').forEach(t=>{
