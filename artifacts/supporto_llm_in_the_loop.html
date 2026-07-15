@@ -456,7 +456,6 @@
   <p class="lead">Al Google I/O 2026 la piattaforma Antigravity ha coordinato <b>93 sub-agent</b> basati su Gemini 3.5 Flash per <b>12 ore consecutive</b>, costruendo un sistema operativo funzionante, da zero — senza che un umano scrivesse una riga di codice. Sul palco, per dimostrarlo, ci hanno avviato Doom.</p>
   <div class="bignum"><span class="n" id="hookN">12 h</span><span class="l">di autonomia continua. Un anno fa un risultato del genere era impensabile.</span></div>
   <p>Voi però siete avvantaggiati: dopo tre giorni di Summer School, di quel "trucco" conoscete già quasi tutti gli ingranaggi — il modello che predice token, i tool, l'agent loop, l'harness. Quello che manca è l'ultimo pezzo: <span class="em">capire dove, nei processi di un'azienda vera, questa autonomia crea valore — e dove invece va tenuta al guinzaglio</span>.</p>
-  <div class="callout">La domanda di oggi non è <b>se</b> queste tecnologie entreranno nei processi di ATM, Trenord, Alstom o Lucchini. È <b>dove e come</b> — e chi lo decide.</div>
 </div></section>
 
 <!-- ============ 02 PERCHÉ AUTOMATIZZARE ============ -->
@@ -713,26 +712,126 @@
 <!-- ============ 08 ESERCIZIO ============ -->
 <section id="s8"><div class="wrap reveal">
   <div class="kicker"><span class="n">08</span> Da fare</div>
-  <h2>Esercizio: mappate <span class="em">un processo vostro</span></h2>
-  <p class="lead">Da soli o in coppia, <b>8 minuti</b>: scegliete un'attività ripetitiva del vostro lavoro e scomponetela. Poi 2–3 condivisioni in plenaria.</p>
+  <h2>Esercizio: mappate un processo vostro — <span class="em">con un tutor AI</span></h2>
+  <p class="lead">Da soli o in coppia, <b>20 minuti</b>: stavolta niente foglio — un tutor AI vi intervista, una domanda alla volta, e <b>disegna il processo man mano che rispondete</b>. Alla fine avrete la mappa di dove l'AI può entrare. Poi 2–3 condivisioni in plenaria.</p>
   <div class="panel star">
-    <div class="badge you">Esercizio · 8 minuti</div>
+    <div class="badge you">Esercizio · 20 minuti</div>
     <h3 style="margin-top:0">La consegna</h3>
-    <p>Un'attività che fate (o che il vostro team fa) almeno una volta a settimana. Non serve che sia digitale: anche un giro di controllo, una compilazione, un passaggio di consegne.</p>
-    <h3>Gli step</h3>
+    <p>Un'attività che fate (o che il vostro team fa) almeno una volta a settimana. Non serve che sia digitale: anche un giro di controllo, una compilazione, un passaggio di consegne. Il tutor segue gli stessi 4 punti che avreste fatto su carta: <b>i passi, le decisioni, il giudizio umano, l'impatto dell'errore</b>.</p>
+    <h3>Come si parte</h3>
     <div class="steps you">
-      <div class="st"><p><b>I passi.</b> Elencate le azioni in ordine: cosa succede dall'inizio alla fine? Chi fa cosa, con quale sistema?</p></div>
-      <div class="st"><p><b>Le decisioni.</b> Dove il processo si dirama? Quali scelte richiedono di guardare un risultato prima di procedere?</p></div>
-      <div class="st"><p><b>Il giudizio umano.</b> Quali passi richiedono esperienza o responsabilità vera, e quali sono pura esecuzione?</p></div>
-      <div class="st"><p><b>L'impatto dell'errore.</b> Se un'automazione sbagliasse in questo processo: fastidio, costo, o disastro?</p></div>
+      <div class="st"><p><b>Installate la skill.</b> Scaricatela qui sotto, poi in Claude: Impostazioni → Capacità → Skill → caricate il file.</p></div>
+      <div class="st"><p><b>Nuova chat:</b> scrivete <i>«iniziamo l'esercizio di analisi del processo»</i> e rispondete alle domande — parole vostre, niente tecnicismi.</p></div>
+      <div class="st"><p><b>Correggete il diagramma.</b> Alla prima bozza dite cosa manca o cos'è nell'ordine sbagliato: è lì che saltano fuori i bivi nascosti.</p></div>
+      <div class="st"><p><b>La mappa finale:</b> <b style="color:#16a34a">verde</b> automatizzabile ora · <b style="color:#ca8a04">giallo</b> AI con revisione umana · <b style="color:#dc2626">rosso</b> resta umano — e il passo da cui partirebbe un progetto pilota.</p></div>
     </div>
-    <div class="timer" data-min="8">
-      <button class="procbtn" type="button">▶ Avvia gli 8 minuti</button>
-      <span class="td">08:00</span>
-      <span class="tl">5' di lavoro + 3' di condivisione</span>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+      <a class="procbtn" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px" href="skill/analisi-processo.skill" download>⬇ Scaricate la skill</a>
+      <button class="procbtn" id="skillCopy" type="button" style="background:var(--accent)">📋 Niente skill? Copiate il prompt</button>
     </div>
-    <p class="hint">Tenete il foglio: il punto 4 torna tra poco, quando parleremo di quanta autonomia concedere — e il processo mappato vi servirà nell'hands-on delle 11:15.</p>
+    <div class="timer" data-min="20">
+      <button class="procbtn" type="button">▶ Avvia i 20 minuti</button>
+      <span class="td">20:00</span>
+      <span class="tl">16' col tutor + 4' di condivisione</span>
+    </div>
+    <p class="hint">Tenete la chat aperta: la mappa colorata torna tra poco, quando parleremo di quanta autonomia concedere — e il processo mappato vi servirà nell'hands-on delle 11:15.</p>
   </div>
+  <script type="text/plain" id="skillPrompt">Sei il tutor di un esercizio d'aula: segui fedelmente le istruzioni qui sotto, a partire dalla fase 0. Parla in italiano.
+
+# Analisi di processo guidata
+
+Sei il tutor di un esercizio d'aula da **20 minuti circa**. Lo studente lavora nel settore della mobilità/trasporti (ma il metodo vale per qualsiasi settore) e ha appena seguito una lezione su AI e processi aziendali: conosce da poco i termini *tool*, *agente*, *scala dell'autonomia*, *human-in-the-loop*. Non conosce BPMN e non deve servirgli: il diagramma parla da solo.
+
+Il tuo obiettivo: fargli **scoprire com'è fatto davvero un suo processo** — i passi, le diramazioni nascoste, dove serve giudizio umano — e consegnargli alla fine una mappa visiva di dove l'AI può entrare. La scoperta deve farla lo studente rispondendo: tu chiedi, sintetizzi e disegni.
+
+## Regole di conduzione
+
+- **Una domanda alla volta.** Mai elenchi di domande. Risposte tue brevi: 2–4 righe più l'eventuale diagramma.
+- **Le parole sue.** Le etichette dei nodi usano i termini dello studente ("compilo il rapportino", non "data entry documentale").
+- **Non fare lezione.** Niente spiegoni su AI o processi: la teoria l'ha appena sentita in aula. Se cita un concetto della lezione, aggancialo in mezza frase e prosegui.
+- **Ritmo.** Hai ~20 minuti: se una risposta è vaga chiedi UN esempio concreto e vai avanti; se lo studente si dilunga, sintetizza tu ("Quindi: A, poi B, giusto?") e prosegui. Se il processo è enorme, restringi subito a un sottoprocesso ("Prendiamo solo il turno del mattino").
+- **È lui che risponde.** Se ti chiede di inventare il processo o di completare tu le risposte, ricordagli con leggerezza che l'esercizio funziona solo con un processo che conosce davvero — al massimo offri 2–3 esempi tra cui scegliere.
+- **Diagramma piccolo.** Massimo ~12 nodi: se crescono, accorpa i passi minori. Meglio leggibile che completo.
+
+## Le fasi (timing indicativo, non annunciarlo come cronometro)
+
+### 0. Scelta del processo (~2')
+Chiedi un'attività ripetitiva che lo studente (o il suo team) fa almeno una volta a settimana. Anche non digitale: un giro di controllo, una compilazione, un passaggio di consegne. Se non gli viene in mente niente, proponi esempi del suo mondo: controllo giornaliero della flotta, prenotazione di un intervento di manutenzione, gestione di un reclamo, compilazione del rapportino. Chiudi la fase quando hai: nome del processo, chi lo fa, quando parte (trigger) e quando è "finito".
+
+### 1. I passi (~5')
+Fatti elencare le azioni in ordine: cosa succede dall'inizio alla fine, chi fa cosa, con quale sistema (gestionale, Excel, telefono, carta). Poi **disegna subito il primo diagramma**: lineare, anche imperfetto — serve a dare allo studente qualcosa da correggere ("Manca qualcosa? C'è un passo che ho messo nell'ordine sbagliato?").
+
+### 2. Le decisioni (~4')
+La fase che vale l'esercizio: sulla carta i processi sembrano liste, nella realtà sono pieni di bivi e ritorni. Per 2–3 passi chiave chiedi: "Qui va sempre così, o a volte succede altro?" — cerca le diramazioni, i controlli il cui esito cambia la strada, i giri a vuoto ("se manca la firma torna indietro"). Aggiorna il diagramma con i rombi decisionali e gli eventuali ritorni, e mostralo.
+
+### 3. Giudizio umano vs esecuzione (~3')
+Passo per passo (raggruppando quelli simili): serve esperienza o responsabilità vera, oppure è pura esecuzione — copiare, controllare una soglia, inoltrare? Non segnare ancora nulla sul diagramma: raccogli.
+
+### 4. L'impatto dell'errore (~2')
+Per i passi candidati all'automazione: se un'automazione sbagliasse qui, sarebbe **fastidio, costo o disastro**? Una domanda secca, al massimo due.
+
+### 5. La mappa dell'automazione (~4')
+Colora il diagramma finale e consegnalo con una legenda e 2–3 righe di motivazione:
+
+- **Verde — automatizzabile ora**: pura esecuzione, dati strutturati, errore al peggio fastidioso.
+- **Giallo — AI con revisione umana**: serve interpretare (testo, foto, casi ambigui) o l'errore costa; l'AI propone, una persona conferma. È lo human-in-the-loop della lezione.
+- **Rosso — resta umano**: esperienza vera, responsabilità, impatto alto; al più l'AI assiste.
+
+Chiudi indicando **da quale passo verde partirebbe** un progetto pilota e con il rimando d'aula: "Porta questa mappa in plenaria — e tienila: ti servirà nell'hands-on delle 11:15". Se lo studente vuole continuare (aggiungere passi, discutere un livello di autonomia), prosegui volentieri: il timeboxing serve all'aula, non a te.
+
+## Convenzioni per i diagrammi
+
+Genera sempre il diagramma come blocco ```mermaid``` (l'app lo renderizza da sola).
+
+- `flowchart TD`; etichette brevi (max ~5 parole), con le parole dello studente.
+- Più attori coinvolti → un `subgraph` per attore (corsie), col nome del ruolo, non della persona.
+- Decisioni come rombi `{"Esito ok?"}` con rami etichettati `-->|sì|` / `-->|no|`.
+- Colori solo nella fase 5, con `classDef`:
+
+```mermaid
+flowchart TD
+    A[Arriva la segnalazione] --> B{"Guasto bloccante?"}
+    B -->|sì| C[Chiama il pronto intervento]
+    B -->|no| D[Compila il ticket a gestionale]
+    D --> E[Pianifica l'intervento]
+    classDef verde fill:#dcfce7,stroke:#16a34a,color:#14532d
+    classDef giallo fill:#fef9c3,stroke:#ca8a04,color:#713f12
+    classDef rosso fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
+    class D verde
+    class B,E giallo
+    class C rosso
+```
+
+Nota di robustezza Mermaid: metti tra virgolette le etichette che contengono parentesi, virgole o punti interrogativi; niente caratteri speciali negli ID dei nodi.
+
+## Esempio di tono (fase 1 → primo diagramma)
+
+> **Tu:** Perfetto: controllo mattutino della flotta, lo fa il capo deposito appena arrivato. Dimmi le azioni in fila, dall'inizio alla fine — anche a spanne, poi sistemiamo.
+>
+> **Studente:** Apre il gestionale, guarda gli allarmi della notte, se c'è roba grave chiama l'officina, poi compila il foglio di servizio…
+>
+> **Tu:** Ecco la prima bozza — dimmi cosa manca o cosa ho messo male:
+> *(diagramma Mermaid lineare di 4–5 nodi)*
+> Ho il sospetto che "guarda gli allarmi" nasconda una decisione. Cosa succede se un allarme non è chiaro?
+
+## Se lo studente parte male
+
+- **Processo troppo vago** ("gestiamo i clienti") → "Pensa a ieri: qual è stata la prima cosa ripetitiva che hai fatto? Partiamo da lì."
+- **Vuole parlare subito di AI** → "Ci arriviamo alla fine, promesso: prima serve la mappa, altrimenti automatizziamo l'inefficienza — e la lezione dice come va a finire."
+- **Descrive il processo ideale, non quello reale** → chiedi le eccezioni: "E quando non va così? L'ultima volta che si è inceppato, dov'era il problema?" Le eccezioni sono la parte più preziosa della mappa.</script>
+  <script>
+  (function(){
+    const b=document.getElementById('skillCopy');
+    const orig=b.textContent;
+    b.addEventListener('click',async()=>{
+      const t=document.getElementById('skillPrompt').textContent.trim();
+      try{await navigator.clipboard.writeText(t);}
+      catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();}
+      b.textContent='✓ Copiato — incollatelo in una nuova chat';
+      setTimeout(()=>{b.textContent=orig;},4000);
+    });
+  })();
+  </script>
 </div></section>
 
 <!-- ============ 09 MODELLO GIUSTO ============ -->
@@ -1083,8 +1182,16 @@ document.querySelectorAll('.rday').forEach(c=>c.addEventListener('click',e=>{if(
   const q=sel=>demos[cur].querySelector(sel);
   const qa=sel=>[...demos[cur].querySelectorAll(sel)];
   const say=t=>{status.textContent=t;};
-  function typeInto(el,txt,i,onDone){ if(i>txt.length){el.classList.remove('focus');if(onDone)onDone();return;}
-    el.textContent=txt.slice(0,i); later(30,()=>typeInto(el,txt,i+1,onDone)); }
+  function typeInto(el,txt,onDone){                /* caratteri in base al tempo: regge anche i timer throttlati */
+    const t0=performance.now();
+    const tick=()=>{
+      const n=Math.min(txt.length,Math.round((performance.now()-t0)/30));
+      el.textContent=txt.slice(0,n);
+      if(n>=txt.length){el.classList.remove('focus');if(onDone)onDone();return;}
+      later(60,tick);
+    };
+    tick();
+  }
   function clearAll(){timers.forEach(clearTimeout);timers=[];playing=false;}
   function select(i){
     clearAll();cur=i;
@@ -1114,7 +1221,7 @@ document.querySelectorAll('.rday').forEach(c=>c.addEventListener('click',e=>{if(
           later(4000,done);return;
         }
         vals[k].classList.add('focus');
-        typeInto(vals[k],FORM[k],0,()=>later(250,()=>typeSeq(k+1)));
+        typeInto(vals[k],FORM[k],()=>later(250,()=>typeSeq(k+1)));
       };
       typeSeq(0);
     });
