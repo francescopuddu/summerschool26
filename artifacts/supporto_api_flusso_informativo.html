@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Hands on: API e Flusso informativo | Summer School Giornata 4</title>
+<style>
+  :root{
+    --paper:#f1efe8; --paper-2:#e9e6dd;
+    --card:#ffffff; --card-2:#faf8f6;
+    --ink:#1a1a1a; --ink-2:#5f5e5a; --muted:#8a887f;
+    --line:#d9d6cc; --line-strong:#b4b2a9;
+    --accent:#0F766E; --accent-2:#0d5f58; --accent-soft:#e2f2ef; --accent-soft2:#c6e5dd;
+    --red:#DC2626; --red-soft:#fdecec; --red-soft2:#f9d6d6;
+    --amber:#B45309; --amber-soft:#fbeedd;
+    --blue:#2f7ec9; --blue-soft:#e7f0fa;
+    --purple:#7F77DD; --purple-soft:#eceafb;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(var(--paper-2) 0.5px, transparent 0.5px);background-size:22px 22px;}
+
+  #prog{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:60;transition:width .1s linear}
+  #dots{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:55;display:flex;flex-direction:column;gap:9px}
+  #dots a{width:9px;height:9px;border-radius:50%;background:var(--line-strong);opacity:.55;transition:all .2s;position:relative}
+  #dots a.on{background:var(--accent);opacity:1;transform:scale(1.35)}
+  #dots a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:11px;
+    color:var(--ink-2);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:2px 7px;opacity:0;pointer-events:none;transition:opacity .15s}
+  #dots a:hover span{opacity:1}
+  @media(max-width:900px){#dots{display:none}}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:0 28px}
+  section{padding:60px 0;border-top:1px solid var(--line)}
+  section:first-of-type{border-top:0}
+
+  .kicker{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);
+    display:flex;align-items:center;gap:10px;margin:0 0 14px}
+  .kicker .n{font-family:var(--mono);background:var(--accent);color:#fff;border-radius:5px;padding:1px 7px;font-size:11px;letter-spacing:.05em}
+  .kicker .mins{margin-left:auto;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--muted);border:1px solid var(--line);border-radius:20px;padding:2px 9px;background:var(--card-2);text-transform:none}
+  h1{font-size:clamp(40px,8vw,84px);line-height:.98;letter-spacing:-.02em;font-weight:850;margin:0 0 18px}
+  h2{font-size:clamp(27px,4.4vw,44px);line-height:1.04;letter-spacing:-.015em;font-weight:850;margin:0 0 16px}
+  h3{font-size:19px;font-weight:750;margin:30px 0 6px}
+  .lead{font-size:clamp(17px,2vw,21px);color:var(--ink-2);margin:0 0 10px}
+  p{font-size:16.5px}
+  .em{color:var(--accent);font-weight:600}
+  .mut{color:var(--muted)}
+
+  .hero{padding-top:78px;min-height:82vh;display:flex;flex-direction:column;justify-content:center}
+  .hero .tag{font-family:var(--mono);font-size:12px;color:var(--ink-2);border:1px solid var(--line-strong);
+    border-radius:999px;padding:5px 13px;display:inline-flex;gap:8px;align-items:center;margin-bottom:24px;background:var(--card-2);width:max-content}
+  .hero .tag b{color:var(--accent)}
+  .hero h1 span{color:var(--accent)}
+  .hero .sub{font-size:clamp(18px,2.4vw,24px);font-weight:600;color:var(--ink);margin:0 0 8px}
+  .hero .subm{font-size:16px;color:var(--ink-2)}
+  .arc{display:flex;gap:8px;flex-wrap:wrap;margin-top:30px}
+  .arc .step{font-family:var(--mono);font-size:11px;color:var(--ink-2);border:1px solid var(--line);border-radius:20px;padding:6px 11px;white-space:nowrap;background:var(--card-2)}
+  .arc .step b{color:var(--accent)}
+  .scrollcue{margin-top:36px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+  .scrollcue .a{animation:bob 1.6s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+
+  .callout{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;
+    padding:16px 20px;margin:22px 0;font-size:16.5px;color:#0b4a44}
+  .callout b{color:var(--accent-2)}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:26px;
+    box-shadow:0 1px 0 var(--line),0 18px 40px -32px rgba(0,0,0,.35)}
+  .panel.star{border-color:var(--accent-soft2);box-shadow:0 1px 0 var(--accent-soft2),0 22px 50px -30px rgba(15,118,110,.4);background:linear-gradient(180deg,#fff,#fafffe)}
+  .panel .badge{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);
+    display:inline-flex;align-items:center;gap:7px;margin-bottom:14px}
+  .panel .badge.you{background:var(--amber);color:#fff;border-radius:6px;padding:3px 10px}
+  .panel .badge.doer{background:var(--accent);color:#fff;border-radius:6px;padding:3px 10px}
+
+  .hint{font-size:13px;color:var(--muted);margin-top:12px}
+  .cap{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:10px}
+  code,.mono{font-family:var(--mono)}
+  .cmd{font-family:var(--mono);font-weight:700;color:var(--accent-2);background:var(--accent-soft);border:1px solid var(--accent-soft2);border-radius:6px;padding:2px 8px;font-size:.92em;white-space:nowrap}
+
+  .why{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0}
+  @media(max-width:720px){.why{grid-template-columns:1fr}}
+  .wbox{border-radius:14px;padding:18px 20px;border:1px solid}
+  .wbox h4{margin:0 0 8px;font-size:15px;display:flex;align-items:center;gap:9px;font-family:var(--mono)}
+  .wbox h4::before{content:"";width:9px;height:9px;border-radius:50%}
+  .wbox p{margin:0 0 8px;font-size:14.5px;max-width:none}
+  .wbox p:last-child{margin-bottom:0}
+  .wbox.a{background:var(--accent-soft);border-color:var(--accent-soft2)}
+  .wbox.a h4{color:var(--accent-2)} .wbox.a h4::before{background:var(--accent)}
+  .wbox.b{background:var(--amber-soft);border-color:#efd9bb}
+  .wbox.b h4{color:var(--amber)} .wbox.b h4::before{background:var(--amber)}
+
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+  @media(max-width:720px){.cards{grid-template-columns:1fr}}
+  .cardx{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+  .cardx h4{margin:0 0 6px;font-size:15px;display:flex;gap:9px;align-items:center}
+  .cardx h4 .ic{font-size:18px}
+  .cardx p{margin:0;font-size:14px;color:var(--ink-2)}
+  .cardx .who{display:inline-block;font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--accent-2);background:var(--accent-soft);border-radius:5px;padding:1px 7px;margin-bottom:7px}
+  .cardx .tool{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10.5px;font-weight:700;border-radius:5px;padding:1px 7px;margin-left:6px}
+  .cardx .tool.cw{color:#3d379a;background:var(--purple-soft)}
+  .cardx .tool.cc{color:var(--amber);background:var(--amber-soft)}
+
+  /* anatomia richiesta/risposta */
+  .apiflow{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;margin-top:18px}
+  @media(max-width:760px){.apiflow{grid-template-columns:1fr}.apiflow .arrow{transform:rotate(90deg);justify-self:center;padding:6px 0}}
+  .apibox{border:1.5px solid var(--line);border-radius:14px;padding:16px;background:var(--card-2);transition:all .3s}
+  .apibox.hot{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 10px 30px -20px rgba(15,118,110,.6);transform:translateY(-3px)}
+  .apibox .nm{font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
+  .apibox .nm .icn{font-size:22px}
+  .apibox .sub{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);margin-top:2px}
+  .apibox ul{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:5px}
+  .apibox li{font-family:var(--mono);font-size:11.5px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+  .apibox li b{color:var(--accent-2)}
+  .apiflow .arrow{display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--line-strong);font-size:20px;padding:0 10px;gap:2px}
+  .apiflow .arrow small{font-family:var(--mono);font-size:10px;color:var(--muted)}
+
+  .txtbox{background:#20201e;color:#e9e6dd;border-radius:12px;padding:14px;font-family:var(--mono);font-size:12.5px;line-height:1.55;white-space:pre-wrap;overflow:auto;max-height:360px}
+  .txtbox .k{color:#8fb8e6}
+  .txtbox .v{color:#8fe0b5}
+  .txtbox .num{color:#e6c86e}
+  .txtbox .cm{color:#77756c;font-style:italic}
+  .txtbox .hl{color:#e6864f;font-weight:700}
+
+  /* JSON vs tema libero */
+  .jsontoggle{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+  .jsontoggle button{font-family:inherit;font-size:13px;border:1px solid var(--line-strong);background:var(--card-2);border-radius:8px;padding:7px 12px;cursor:pointer;color:var(--ink-2);font-weight:600}
+  .jsontoggle button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+  /* flusso agente-api */
+  .agflow{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+  .agstep{display:grid;grid-template-columns:40px 1fr;gap:14px;align-items:start;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--card-2);transition:all .3s;opacity:.55}
+  .agstep.hot{opacity:1;border-color:var(--accent);background:var(--accent-soft);box-shadow:0 8px 24px -18px rgba(15,118,110,.7)}
+  .agstep.done{opacity:1;border-color:var(--accent-soft2)}
+  .agstep .ic{font-size:24px;line-height:1.2;text-align:center}
+  .agstep .tt{font-weight:750;font-size:14.5px}
+  .agstep .dd{font-size:13.5px;color:var(--ink-2);margin-top:2px}
+  .agstep .dd code{font-family:var(--mono);font-size:11.5px;background:var(--paper-2);border-radius:4px;padding:1px 5px}
+  .procbtn{font-family:var(--sans);font-size:14px;font-weight:700;background:var(--ink);color:#fff;border:0;border-radius:10px;padding:11px 18px;cursor:pointer;transition:transform .05s,background .15s}
+  .procbtn:hover{background:#000}.procbtn:active{transform:translateY(1px)}
+  .procbtn:disabled{opacity:.5;cursor:default}
+  .procbtn.acc{background:var(--accent)}.procbtn.acc:hover{background:var(--accent-2)}
+
+  /* ============ PLAYGROUND ============ */
+  .pg{display:grid;grid-template-columns:1fr 1.15fr;gap:16px;margin-top:6px}
+  @media(max-width:860px){.pg{grid-template-columns:1fr}}
+  .pgcol h5{margin:0 0 10px;font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .pgform{border:1.5px solid var(--line);border-radius:14px;background:var(--card-2);padding:16px;display:flex;flex-direction:column;gap:14px}
+  .pgrow label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-2);margin-bottom:5px}
+  .pgrow select,.pgrow input[type=date]{width:100%;font-family:inherit;font-size:14px;padding:9px 10px;border:1px solid var(--line-strong);border-radius:9px;background:var(--card);color:var(--ink)}
+  .pgdates{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .pgvars{display:flex;flex-direction:column;gap:7px}
+  .pgvars label{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:500;color:var(--ink);cursor:pointer;margin:0}
+  .pgvars input{accent-color:var(--accent);width:16px;height:16px}
+  .pgvars .vi{font-size:15px;width:20px;text-align:center}
+  .pgreq{display:flex;flex-direction:column;gap:12px}
+  .pgurl{font-family:var(--mono);font-size:11.5px;line-height:1.5;background:#20201e;color:#e9e6dd;border-radius:10px;padding:11px 13px;word-break:break-all}
+  .pgurl .base{color:#8fb8e6}
+  .pgurl .qp{color:#8fe0b5}
+  .pgjson{width:100%;min-height:190px;font-family:var(--mono);font-size:12.5px;line-height:1.55;border:1.5px solid var(--line-strong);border-radius:10px;padding:12px;background:var(--card);color:var(--ink);resize:vertical}
+  .pgjson.err{border-color:var(--red);background:var(--red-soft)}
+  .pgerr{font-family:var(--mono);font-size:12px;color:var(--red);min-height:18px}
+  .pgsync{font-family:var(--mono);font-size:11px;color:var(--accent-2);text-align:center;letter-spacing:.06em}
+  .pgresp{margin-top:16px}
+  .pgresp .txtbox{max-height:300px}
+  .pgtable{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}
+  .pgtable th{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;padding:6px 8px;border-bottom:1.5px solid var(--line-strong)}
+  .pgtable td{padding:6px 8px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+  .pgstatus{font-family:var(--mono);font-size:12px;margin-top:8px}
+  .pgstatus.ok{color:var(--accent-2)}
+  .pgstatus.ko{color:var(--red)}
+
+  /* steps numerati */
+  .steps{counter-reset:st;display:flex;flex-direction:column;gap:0;margin-top:8px}
+  .steps .st{counter-increment:st;display:grid;grid-template-columns:34px 1fr;gap:14px;padding:14px 0;border-bottom:1px dashed var(--line);align-items:start}
+  .steps .st:last-child{border-bottom:0}
+  .steps .st::before{content:counter(st,decimal-leading-zero);font-family:var(--mono);font-weight:800;font-size:13px;color:#fff;background:var(--accent);border-radius:8px;width:34px;height:26px;display:flex;align-items:center;justify-content:center;margin-top:2px}
+  .steps .st p{margin:0;font-size:15.5px}
+  .steps .st p b{color:var(--ink)}
+  .steps.you .st::before{background:var(--amber)}
+
+  .dlbtn{display:inline-flex;align-items:center;gap:10px;text-decoration:none;
+    font-size:14.5px;font-weight:700;color:#fff;background:var(--ink);border-radius:10px;padding:11px 16px;
+    transition:background .15s,transform .05s}
+  .dlbtn:hover{background:#000}
+  .dlbtn:active{transform:translateY(1px)}
+  .dlbtn span{font-family:var(--mono);font-size:11.5px;font-weight:400;color:#b9b8b3}
+
+  .takes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+  @media(max-width:720px){.takes{grid-template-columns:1fr}}
+  .take{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:16px 18px}
+  .take h4{margin:0 0 6px;font-size:15px}
+  .take p{margin:0;font-size:14px;color:var(--ink-2)}
+
+  /* mappa bikemi */
+  #bmMap{height:440px;border-radius:14px;border:1.5px solid var(--line-strong);margin-top:14px;display:none;box-shadow:0 14px 34px -22px rgba(0,0,0,.45);z-index:1;position:relative}
+  #bmMap .leaflet-popup-content{font-family:var(--sans);font-size:13.5px;line-height:1.45;margin:10px 14px}
+  #bmMap .leaflet-popup-content b{font-size:14px}
+  .bmlegend{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:12.5px;color:var(--ink-2)}
+  .bmlegend span{display:inline-flex;align-items:center;gap:6px}
+  .bmlegend i{width:11px;height:11px;border-radius:50%;display:inline-block;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+
+  /* progetti 2025: schemi allora/oggi */
+  .proj{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:16px 18px;margin-top:16px}
+  .proj h4{margin:0 0 4px;font-size:15.5px;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+  .proj h4 .ic{font-size:18px}
+  .proj .sub{font-size:13px;color:var(--ink-2);margin:0 0 12px}
+  .prow{display:flex;align-items:flex-start;gap:10px;margin-top:10px}
+  .prow .ptag{flex:none;width:74px;font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:4px 0;text-align:center;border-radius:6px;margin-top:3px}
+  .prow.then .ptag{color:#7c1d1d;background:var(--red-soft)}
+  .prow.now .ptag{color:#fff;background:var(--accent)}
+  .pflow{display:flex;flex-wrap:wrap;align-items:center;gap:5px;min-width:0}
+  .pnode{display:inline-flex;align-items:center;gap:5px;font-size:12px;line-height:1.25;border:1px solid var(--line-strong);border-radius:8px;padding:4px 8px;background:var(--card-2)}
+  .pnode.ext{border-color:#eccdbf;background:var(--red-soft);color:#7c1d1d}
+  .pnode.ai{border-style:dashed}
+  .parr{color:var(--line-strong);font-size:13px;flex:none}
+  .pbox{display:flex;flex-wrap:wrap;align-items:center;gap:5px;border:1.5px solid var(--accent);background:var(--accent-soft);border-radius:10px;padding:7px 9px}
+  .pbox .pbt{flex:none;width:100%;font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:.06em;color:var(--accent-2);text-transform:uppercase}
+  .pbox .pnode{background:var(--card);border-color:var(--accent-soft2);color:var(--ink)}
+  .pnote{font-size:12px;color:var(--muted);margin:8px 0 0 84px}
+  @media(max-width:640px){.prow{flex-direction:column;gap:6px}.prow .ptag{width:100px}.pnote{margin-left:0}}
+
+  /* quiz */
+  .qq{padding:18px 0;border-bottom:1px dashed var(--line)}
+  .qq:last-child{border-bottom:0}
+  .qt{font-weight:750;font-size:16px;margin:0}
+  .qo{border:1.5px solid var(--line-strong);border-radius:10px;padding:9px 13px;margin-top:8px;cursor:pointer;font-size:14.5px;background:var(--card-2);transition:all .15s}
+  .qo:hover{border-color:var(--accent);transform:translateX(2px)}
+  .qo.ok{border-color:var(--accent);background:var(--accent-soft);font-weight:700}
+  .qo.ko{border-color:var(--red);background:var(--red-soft)}
+  .qq.done .qo{cursor:default;opacity:.7;transform:none}
+  .qq.done .qo.ok{opacity:1}
+  .qx{display:none;font-size:13.5px;color:var(--ink-2);margin:12px 0 0;border-left:3px solid var(--accent);padding-left:12px}
+  .qq.done .qx{display:block}
+
+  /* timer esercizi */
+  .timer{display:flex;align-items:center;gap:12px;margin-top:16px;flex-wrap:wrap}
+  .timer .td{font-family:var(--mono);font-size:24px;font-weight:800;color:var(--ink);background:var(--card);border:1.5px solid var(--line-strong);border-radius:10px;padding:6px 16px;font-variant-numeric:tabular-nums;min-width:110px;text-align:center}
+  .timer.run .td{border-color:var(--accent);color:var(--accent-2)}
+  .timer.over .td{color:#fff;background:var(--red);border-color:var(--red);animation:tpulse 1s ease-in-out infinite}
+  @keyframes tpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+  .timer .tl{font-size:12.5px;color:var(--muted)}
+
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  footer{padding:50px 0 90px;color:var(--ink-2);font-size:13.5px;border-top:1px solid var(--line)}
+  footer b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<nav id="dots"></nav>
+
+<!-- ============ HERO ============ -->
+<section id="s0" class="hero"><div class="wrap reveal">
+  <div class="tag">Summer School 2026 · Giornata 4 · <b>Hands-on</b></div>
+  <h1>API e <span>flusso informativo</span></h1>
+  <p class="sub">Le porte da cui i dati entrano ed escono dai sistemi — e da cui gli agenti li fanno passare. Stamattina le aprite voi: prima a mano, poi con Claude Code.</p>
+  <p class="subm">Un'ora e tre quarti: mezz'ora di anatomia (standard, API, JSON), poi due esercizi su dati veri — i treni che circolano adesso.</p>
+  <div class="arc">
+    <span class="step"><b>1</b> · Hello, webapp</span>
+    <span class="step"><b>2</b> · Standard &amp; anatomia API</span>
+    <span class="step"><b>3</b> · JSON</span>
+    <span class="step"><b>4</b> · Playground</span>
+    <span class="step"><b>5</b> · Hands-on con Claude Code</span>
+  </div>
+  <div class="scrollcue"><span class="a">↓</span> scorri per iniziare · frecce ← → per saltare di sezione</div>
+</div></section>
+
+<!-- ============ 01 STANDARD ============ -->
+<section id="s1"><div class="wrap reveal">
+  <div class="kicker"><span class="n">01</span> Standard invisibili</div>
+  <h2>Ci accorgiamo degli standard <span class="em">solo quando mancano</span></h2>
+  <p class="lead">In Italia carichiamo il telefono ovunque senza pensarci; basta un viaggio all'estero e serve l'adattatore. Gli standard garantiscono che sistemi diversi possano lavorare insieme — e il vostro settore ne è pieno.</p>
+  <div class="cards">
+    <div class="cardx"><h4><span class="ic">📧</span>L'email e la @</h4><p>Inventata nel 1971: <span class="mono">utente@dominio</span>. Outlook parla con Gmail senza che nessuno dei due chieda il permesso all'altro. Ogni nuovo utente aumenta il valore per tutti: è l'<b>economia di rete</b>.</p></div>
+    <div class="cardx"><h4><span class="ic">💳</span>NFC e pagamenti</h4><p>Per il contactless si scelse una tecnologia esistente: Google e Apple Pay nacquero già compatibili con milioni di POS — inclusi i validatori a bordo che conoscete bene.</p></div>
+    <div class="cardx"><h4><span class="ic">🚌</span>GTFS nei trasporti</h4><p>Le aziende di trasporto pubblicano gli orari in formato GTFS perché Google Maps lo richiede. <b>I vostri orari sono già lì dentro</b>: chi impone lo standard di fatto orienta l'intero settore.</p></div>
+    <div class="cardx"><h4><span class="ic">🏗️</span>E in azienda</h4><p>Pallet EUR, scartamento, sagome limite, tracciati bancari CBI, formati file: il lavoro è pieno di standard invisibili che creano valore proprio perché non si vedono.</p></div>
+  </div>
+  <div class="callout">Cosa c'entra con l'AI? Gli LLM sono addestrati sugli standard: li hanno "letti" milioni di volte. <b>L'AI non ha inventato nuove porte — ha imparato ad aprire benissimo quelle che esistevano già.</b> Oggi guardiamo la porta più importante: le API.</div>
+</div></section>
+
+<!-- ============ HELLO WEBAPP ============ -->
+<section id="shello"><div class="wrap reveal">
+  <div class="kicker"><span class="n">02</span> Da fare subito</div>
+  <h2>Hello, webapp: il vostro <span class="em">primo server</span></h2>
+  <p class="lead">Prima della teoria, un riscaldamento che è anche un collaudo: da zero a una <b>webapp self-hosted sul vostro PC</b>, in due mosse. Ieri avete costruito dentro un'app già impostata — oggi il foglio è bianco ed è tutto vostro.</p>
+
+  <div class="panel star">
+    <div class="badge you">Hands-on · ~18 minuti · a coppie o da soli</div>
+    <h3 style="margin-top:0">Mossa 1 — Il front (5')</h3>
+    <div class="steps you">
+      <div class="st"><p><b>Cartella nuova, terminale, <span class="cmd">claude</span>.</b> Prompt: <i>"Crea una pagina index.html: la lavagna stato mezzi del deposito — tre mezzi, per ognuno un bottone che alterna disponibile / in manutenzione. Pulita, senza librerie."</i></p></div>
+      <div class="st"><p><b>Doppio click su index.html.</b> Si apre nel browser, i bottoni funzionano. Avete un'interfaccia. Ma provate a ricaricare la pagina: <b>tutto resettato</b> — e il collega dal suo PC non la vede. I dati vivono e muoiono nella pagina.</p></div>
+    </div>
+    <h3>Mossa 2 — Il backend (10')</h3>
+    <div class="steps you">
+      <div class="st"><p><b>Prompt:</b> <i>"Aggiungi un backend usando solo ciò che è già installato su questo PC: deve servire la pagina e un endpoint /api/mezzi che legge e salva lo stato dei mezzi in un file JSON. Poi dimmi come avviarlo."</i> Claude ispeziona la macchina e sceglie da solo lo strumento — se ci sono più opzioni e volete il finale in rete locale, chiedetegli di preferire Node.</p></div>
+      <div class="st"><p><b>Avviate il server</b> col comando che vi dà (es. <span class="cmd">node server.js</span>) e aprite <span class="mono">http://localhost:3000</span>. Stessa lavagna — ma ora ricaricate pure: <b>lo stato resta</b>. Vive nel file JSON, dietro l'endpoint.</p></div>
+      <div class="st"><p><b>Il finale:</b> fatevi dare da Claude l'indirizzo IP del PC e fate aprire al vicino <span class="mono">http://VOSTRO-IP:3000</span> dal suo computer. Sta usando la vostra app, servita dalla vostra macchina. <b>Siete un server.</b> (Se compare l'avviso del firewall: consentire — è la vostra app che chiede di farsi trovare.)</p></div>
+    </div>
+    <div class="timer" data-min="18">
+      <button class="procbtn" type="button">▶ Avvia i 18 minuti</button>
+      <span class="td">18:00</span>
+      <span class="tl">5' front + 10' backend + 3' per fare i server</span>
+    </div>
+    <p class="hint">Se sulla macchina non c'è nulla di adatto, Claude ripiegherà su PowerShell (c'è sempre, su Windows): tutto uguale, ma il finale in rete locale può chiedere permessi da amministratore — in quel caso fermatevi a <span class="mono">localhost</span>: il punto è fatto lo stesso.</p>
+  </div>
+  <div class="callout">Tenete a mente cosa è successo tra la mossa 1 e la 2: la pagina ora <b>chiede i dati a un endpoint</b> — <span class="mono">/api/mezzi</span> — invece di tenerli dentro di sé. Avete appena costruito un'API senza saperlo. Adesso diamole i nomi.</div>
+</div></section>
+
+<!-- ============ 02 ANATOMIA API ============ -->
+<section id="s2"><div class="wrap reveal">
+  <div class="kicker"><span class="n">03</span> Anatomia</div>
+  <h2>L'API: il sistema postale <span class="em">dei software</span></h2>
+  <p class="lead"><b>API = Application Programming Interface</b>: il set di regole che consente a un <b>client</b> (chi chiede) e a un <b>server</b> (chi risponde) di comunicare. Ieri l'avete vista nell'architettura dell'app dei treni; cinque minuti fa l'avete costruita. Ora la apriamo.</p>
+
+  <div class="panel star">
+    <div class="badge">Una richiesta vera, pezzo per pezzo</div>
+    <div class="apiflow">
+      <div class="apibox" id="reqBox">
+        <div class="nm"><span class="icn">📮</span>La richiesta (client)</div>
+        <div class="sub">come una lettera: serve tutto questo</div>
+        <ul>
+          <li><b>indirizzo</b> · l'URL del server</li>
+          <li><b>chiave (token)</b> · il badge: certifica chi sei</li>
+          <li><b>parametri</b> · "gli impegni da lunedì a domenica"</li>
+          <li><b>formato</b> · scritto come dice la documentazione</li>
+        </ul>
+      </div>
+      <div class="arrow">⇄<small>HTTP</small></div>
+      <div class="apibox" id="resBox">
+        <div class="nm"><span class="icn">📬</span>La risposta (server)</div>
+        <div class="sub">dati strutturati, sempre nello stesso formato</div>
+        <ul>
+          <li><b>status</b> · 200 ok · 401 chiave sbagliata · 404 non esiste</li>
+          <li><b>dati</b> · la lista che hai chiesto, in JSON</li>
+          <li><b>errori chiari</b> · anche l'errore è documentato</li>
+        </ul>
+      </div>
+    </div>
+    <p class="cap">La <b>documentazione è la grammatica</b>: dice esattamente come strutturare la richiesta e cosa aspettarsi in risposta. Le REST API sono lo standard di fatto: caratteristiche comuni e prevedibili, così ogni sviluppatore — e ogni AI — sa già come usarle.</p>
+  </div>
+
+  <div class="callout">Fermatevi su questo: la richiesta a un'API è <b>testo strutturato secondo regole scritte in una documentazione</b>. E chi è bravissimo a scrivere testo seguendo regole? Il modello. Tutto il resto della mattinata discende da qui.</div>
+</div></section>
+
+<!-- ============ 03 JSON ============ -->
+<section id="s3"><div class="wrap reveal">
+  <div class="kicker"><span class="n">04</span> La lingua dei dati</div>
+  <h2>JSON: quando l'output smette <span class="em">di essere solo testo</span></h2>
+  <p class="lead"><b>JSON (JavaScript Object Notation)</b>: il formato standard con cui i sistemi si scambiano dati — leggibile dalle macchine e (quasi) dagli umani. La differenza tra un tema libero e un modulo compilato.</p>
+
+  <div class="panel star">
+    <div class="badge">Lo stesso treno, due modi di raccontarlo</div>
+    <div class="jsontoggle">
+      <button class="on" id="jtFree">📝 Tema libero</button>
+      <button id="jtJson">🗂 Modulo compilato (JSON)</button>
+    </div>
+    <div class="txtbox" id="jsonDemo">Il regionale 2153 delle 7:42 da Milano Porta Garibaldi per Lecco oggi viaggia con circa 8 minuti di ritardo; parte dal binario 12 invece che dal 10. Al momento risultano una quarantina di posti liberi in coda al treno.</div>
+    <p class="cap" id="jsonCap">Chiaro per un umano. Ma quale software può usarlo direttamente? Dove sono i campi?</p>
+  </div>
+
+  <p style="margin-top:20px">Gli LLM sono addestrati a produrre JSON: possono restituire non una frase ma <b>dati strutturati</b> — campi, valori, elenchi — che entrano direttamente in un altro sistema: gestionale, database, CRM. Senza ricopiature. <span class="em">È questo che automatizza il data entry</span>: l'AI come traduttore universale tra informazione disordinata (foto, PDF, audio, testo libero) e sistemi che vogliono dati ordinati.</p>
+</div></section>
+
+<!-- ============ 04 TOOL CALLING RICHIAMO ============ -->
+<section id="s4"><div class="wrap reveal">
+  <div class="kicker"><span class="n">05</span> Richiamo · già visto martedì</div>
+  <h2>Il modello propone, <span class="em">l'applicazione esegue</span></h2>
+  <p class="lead">Lo ripetiamo perché è il concetto cardine della settimana: quando un agente "chiama un'API", <b>il modello scrive soltanto</b> — un blocco di testo strutturato con il nome del tool e i parametri. Qualcun altro (l'harness) lo esegue e gli riporta il risultato.</p>
+
+  <div class="panel star">
+    <div class="badge doer">Il flusso completo · "quando posso fare la call di un'ora, settimana prossima?"</div>
+    <div class="agflow" id="agflow">
+      <div class="agstep" data-i="0"><div class="ic">🧠</div><div><div class="tt">1 · L'agente capisce che gli serve il calendario</div><div class="dd">Non può inventare i vostri impegni: gli servono dati veri.</div></div></div>
+      <div class="agstep" data-i="1"><div class="ic">📖</div><div><div class="tt">2 · Ha nel contesto la documentazione dell'API</div><div class="dd">La grammatica: come si scrive la richiesta, cosa torna indietro.</div></div></div>
+      <div class="agstep" data-i="2"><div class="ic">✍️</div><div><div class="tt">3 · Genera la richiesta — come blocco di testo</div><div class="dd"><code>{"tool":"calendario","from":"2026-07-20","to":"2026-07-26"}</code> · il modello scrive, non esegue.</div></div></div>
+      <div class="agstep" data-i="3"><div class="ic">⚙️</div><div><div class="tt">4 · L'harness la esegue e incassa la risposta</div><div class="dd">La lista impegni, in JSON, rientra nel contesto del modello.</div></div></div>
+      <div class="agstep" data-i="4"><div class="ic">💬</div><div><div class="tt">5 · L'agente risponde su fatti, non su invenzioni</div><div class="dd">"Martedì 14:00–15:00 siete tutti liberi." E con un'API di scrittura potrebbe anche creare l'evento.</div></div></div>
+    </div>
+    <div style="text-align:center;margin-top:16px">
+      <button class="procbtn" id="agPlay">▶ Percorri il flusso</button>
+    </div>
+    <p class="cap" style="text-align:center">Nessuna magia: solo testo ben strutturato che viaggia su porte standard.</p>
+  </div>
+
+  <div class="callout">E <b>MCP</b>, i connettori di martedì? Concettualmente la stessa cosa: un modo standard per mettere a disposizione dell'AI le porte dei sistemi. Nato in Anthropic, da fine 2025 è uno <b>standard aperto sotto la Linux Foundation</b>, adottato da tutti i grandi (OpenAI, Google, Microsoft): la storia delle prese elettriche che si ripete. Capita l'API, avete capito anche MCP.</div>
+</div></section>
+
+<!-- ============ 05 PLAYGROUND ============ -->
+<section id="s5"><div class="wrap reveal">
+  <div class="kicker"><span class="n">06</span> Da provare qui</div>
+  <h2>Il playground: <span class="em">la stessa richiesta, due facce</span></h2>
+  <p class="lead">Un'API vera, gratuita, senza chiave: <b>Open-Meteo</b>, il servizio meteo che usano anche molte app. A sinistra un'interfaccia da app meteo; a destra la richiesta nuda. <span class="em">Sono la stessa cosa</span>: toccate una, si aggiorna l'altra.</p>
+
+  <div class="panel star">
+    <div class="badge">API Playground · Open-Meteo · nessuna chiave richiesta</div>
+    <div class="pg">
+      <div class="pgcol">
+        <h5>Interfaccia grafica — come un'app meteo</h5>
+        <div class="pgform">
+          <div class="pgrow">
+            <label for="pgCity">📍 Località (sulla rete lombarda)</label>
+            <select id="pgCity">
+              <option value="milano">Milano</option>
+              <option value="lecco">Lecco</option>
+              <option value="varese">Varese</option>
+              <option value="bergamo">Bergamo</option>
+              <option value="como">Como</option>
+              <option value="cremona">Cremona</option>
+              <option value="custom">— coordinate personalizzate —</option>
+            </select>
+          </div>
+          <div class="pgrow">
+            <label>📅 Periodo</label>
+            <div class="pgdates">
+              <input type="date" id="pgFrom" aria-label="data inizio">
+              <input type="date" id="pgTo" aria-label="data fine">
+            </div>
+          </div>
+          <div class="pgrow">
+            <label>📊 Variabili giornaliere</label>
+            <div class="pgvars">
+              <label><input type="checkbox" data-v="temperature_2m_max" checked><span class="vi">🌡️</span> Temperatura massima</label>
+              <label><input type="checkbox" data-v="temperature_2m_min"><span class="vi">❄️</span> Temperatura minima</label>
+              <label><input type="checkbox" data-v="precipitation_sum" checked><span class="vi">🌧️</span> Precipitazioni</label>
+              <label><input type="checkbox" data-v="windspeed_10m_max"><span class="vi">💨</span> Vento massimo</label>
+              <label><input type="checkbox" data-v="snowfall_sum"><span class="vi">🌨️</span> Neve</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pgcol">
+        <h5>La richiesta nuda — parametri modificabili a mano</h5>
+        <div class="pgreq">
+          <div class="pgurl" id="pgUrl"></div>
+          <textarea class="pgjson" id="pgJson" spellcheck="false" aria-label="parametri JSON della richiesta"></textarea>
+          <div class="pgerr" id="pgErr"></div>
+          <div class="pgsync" id="pgSync">⇄ form e JSON sono la stessa richiesta: modificane uno, l'altro segue</div>
+          <div style="text-align:center">
+            <button class="procbtn acc" id="pgCall">📡 Chiama l'API</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pgresp" id="pgResp" style="display:none">
+      <h5 style="font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:14px 0 8px">La risposta del server</h5>
+      <div class="pgstatus" id="pgStatus"></div>
+      <div class="txtbox" id="pgOut" style="margin-top:8px"></div>
+      <div id="pgTableWrap"></div>
+    </div>
+    <p class="hint">Provate anche a <b>rompere la richiesta</b>: scrivete una data come <span class="mono">"banana"</span> nel JSON e chiamate l'API. Anche l'errore è documentato — e didattico.</p>
+  </div>
+
+  <div class="panel star">
+    <div class="badge">Un'altra porta, stessa grammatica · BikeMi (GBFS) · dati veri, adesso</div>
+    <p style="margin-top:0">Il bike sharing milanese pubblica lo stato delle stazioni in <b>GBFS</b>, lo standard mondiale dei dati bike sharing — la stessa famiglia di standard di GTFS. Nessuna chiave, aggiornato ogni pochi secondi. Guardate quante bici ci sono in giro <i>in questo momento</i>:</p>
+    <div style="text-align:center">
+      <button class="procbtn acc" id="bmCall">🚲 Chiama l'API di BikeMi</button>
+    </div>
+    <div id="bmOut" style="display:none">
+      <div class="pgstatus" id="bmStatus" style="margin-top:14px"></div>
+      <div id="bmTotals" style="display:flex;gap:26px;flex-wrap:wrap;margin-top:12px"></div>
+      <div id="bmMap"></div>
+      <div class="bmlegend" id="bmLegend" style="display:none">
+        <span><i style="background:#0F766E"></i> 5+ bici</span>
+        <span><i style="background:#B45309"></i> 1–4 bici</span>
+        <span><i style="background:#DC2626"></i> vuota</span>
+        <span style="margin-left:auto" class="mono">cerchio più grande = più bici · cliccate le stazioni</span>
+      </div>
+      <div id="bmTableWrap" style="margin-top:4px"></div>
+    </div>
+    <p class="hint">Endpoint: <span class="mono">gbfs.urbansharing.com/bikemi.com/station_status.json</span> + <span class="mono">station_information.json</span> — due chiamate, incrociate per <span class="mono">station_id</span> e disegnate su OpenStreetMap. Un piccolo flusso informativo già qui: due fonti, un join, una mappa.</p>
+  </div>
+
+  <div class="callout">Il punto della sezione: <b>l'interfaccia grafica è solo un modo comodo di compilare la stessa richiesta strutturata</b>. Ogni app che usate — dal meteo al gestionale — sotto fa esattamente questo. E se la richiesta è testo strutturato, un LLM la può scrivere.</div>
+</div></section>
+
+<!-- ============ 06 HANDS-ON 1 ============ -->
+<section id="s6"><div class="wrap reveal">
+  <div class="kicker"><span class="n">07</span> Da fare · ~15 minuti</div>
+  <h2>Hands-on 1: i treni <span class="em">che circolano adesso</span></h2>
+  <p class="lead">Un'API pubblica e gratuita che conoscete senza saperlo: <b>ViaggiaTreno</b> (RFI) — la stessa da cui arrivano i tabelloni. Nessuna chiave. La esplorate con Claude Code, come martedì e mercoledì.</p>
+
+  <div class="panel star">
+    <div class="badge you">Hands-on · ~20 minuti</div>
+    <h3 style="margin-top:0">La consegna</h3>
+    <p>Nella cartella del vostro progetto, chiedete a Claude Code di interrogare ViaggiaTreno e rispondere: <b>quali treni partono nella prossima ora dalla vostra stazione, e con quanto ritardo?</b></p>
+    <h3>Gli step</h3>
+    <div class="steps you">
+      <div class="st"><p><b>Trovate il codice stazione.</b> Endpoint di autocompletamento: <span class="cmd">viaggiatreno.it/infomobilita/resteasy/viaggiatreno/autocompletaStazione/MILANO</span> — provatelo prima nel browser: è un'API, risponde testo.</p></div>
+      <div class="st"><p><b>Chiedete le partenze.</b> Dite a Claude di usare l'endpoint <span class="mono">/partenze</span> con il codice stazione (es. <span class="mono">S01700</span> per Milano Centrale) e l'orario corrente. Lasciate che sia lui a costruire la richiesta: <b>osservate come la scrive</b>.</p></div>
+      <div class="st"><p><b>Fatevi dare una risposta umana.</b> Dal JSON grezzo (campi come <span class="mono">numeroTreno</span>, <span class="mono">destinazione</span>, <span class="mono">ritardo</span>) a una tabella leggibile: destinazione, orario, binario, ritardo.</p></div>
+      <div class="st"><p><b>Riconoscete il flusso.</b> È il diagramma della sezione 04, dal vivo: documentazione nel contesto → richiesta generata → JSON di risposta → sintesi su fatti veri.</p></div>
+    </div>
+    <div class="timer" data-min="15">
+      <button class="procbtn" type="button">▶ Avvia i 15 minuti</button>
+      <span class="td">15:00</span>
+      <span class="tl">esplorazione libera, poi 2–3 risultati in plenaria</span>
+    </div>
+    <p class="hint">ViaggiaTreno è un'API non ufficiale: se risulta lenta o irraggiungibile, il piano B è la stessa Open-Meteo del playground (<span class="mono">api.open-meteo.com</span>) o i dati del bike sharing milanese (<span class="mono">gbfs.urbansharing.com/bikemi.com/gbfs.json</span>). L'esercizio non cambia: API → JSON → risposta.</p>
+  </div>
+</div></section>
+
+<!-- ============ 07 HANDS-ON 2 ============ -->
+<section id="s7"><div class="wrap reveal">
+  <div class="kicker"><span class="n">08</span> Da fare · ~30 minuti</div>
+  <h2>Hands-on 2: il flusso informativo <span class="em">completo</span></h2>
+  <p class="lead">Il salto di qualità: <b>incrociare una fonte esterna con un sistema interno</b>. Fuori: i dati veri di ViaggiaTreno o Open-Meteo. Dentro: l'ERP Movia che conoscete da ieri — mezzi, manutentori, revisioni.</p>
+
+  <div class="panel star">
+    <div class="badge you">Hands-on · ~40 minuti</div>
+    <h3 style="margin-top:0">La consegna</h3>
+    <p>Il capo impianto vuole, ogni mattina, <b>un quadro operativo in un file solo</b>: lo stato dei mezzi dall'ERP, incrociato con una condizione esterna che può impattare l'esercizio (i ritardi reali in stazione, o il meteo dei prossimi giorni sulla linea). Costruitelo con Claude Code.</p>
+    <h3>Gli step</h3>
+    <div class="steps you">
+      <div class="st"><p><b>I dati interni.</b> Mettete nella cartella il JSON dell'ERP Movia (lo avete da ieri — o riscaricatelo qui sotto). Fatevi dire da Claude quali mezzi hanno revisioni in scadenza questa settimana.</p></div>
+      <div class="st"><p><b>La fonte esterna.</b> Scegliete: partenze/ritardi da ViaggiaTreno, oppure previsioni Open-Meteo sulle località dei depositi (il playground vi ha già mostrato i parametri).</p></div>
+      <div class="st"><p><b>L'incrocio.</b> Chiedete un <b>report del mattino</b> in Markdown: mezzi con revisione in scadenza + condizione esterna rilevante + una riga di raccomandazione per ciascuno. Pretendete anche la versione dati: <b>un JSON strutturato</b> con gli stessi campi, pronto per un altro sistema.</p></div>
+      <div class="st"><p><b>Checkpoint.</b> Come sempre: <span class="cmd">git commit</span> e <span class="cmd">git push</span>. Il report di domani si rigenera con un prompt — o con uno script che Claude vi lascia pronto.</p></div>
+    </div>
+    <p style="margin-top:14px"><a class="dlbtn" href="https://drive.google.com/uc?export=download&amp;id=1Fx_j2mXsTkoVkEVvMDj27_1n1ruNoFoa" target="_blank" rel="noopener">↓ Scarica il JSON dell'ERP Movia <span>json · 24 KB</span></a></p>
+    <div class="timer" data-min="30">
+      <button class="procbtn" type="button">▶ Avvia i 30 minuti</button>
+      <span class="td">30:00</span>
+      <span class="tl">~22' di costruzione + ~8' di confronto sui report</span>
+    </div>
+    <p class="hint">Chi finisce prima: parametrizzate lo script (stazione e deposito a scelta), o aggiungete una terza fonte. E ricordate la lezione delle 8:45: questo report lo <b>valida un umano</b> prima che giri in azienda — l'agente prepara, voi firmate.</p>
+  </div>
+</div></section>
+
+<!-- ============ SPUNTI PROGETTO ============ -->
+<section id="sidee"><div class="wrap reveal">
+  <div class="kicker"><span class="n">09</span> E in azienda?</div>
+  <h2>Un progetto possibile, <span class="em">per ciascuno di voi</span></h2>
+  <p class="lead">Domani c'è il project work — e lunedì si torna in azienda. Non è teoria: <b>l'anno scorso, in questa stessa aula, quattro gruppi hanno costruito prototipi funzionanti</b>. Guardiamo cosa fecero e come lo faremmo oggi — poi uno spunto nuovo per ciascuno di voi.</p>
+
+  <div class="panel star">
+    <div class="badge doer">Successo davvero · i progetti della scorsa edizione (luglio 2025)</div>
+    <p style="margin-top:0">L'anno scorso conveniva assemblare <b>n8n, make.com, bot Telegram, Lovable</b>: l'AI era un nodo dentro un flusso disegnato a mano, e la colla tra i servizi la mettevi tu. Oggi l'AI è <b>il costruttore</b>: lo stesso flusso lo descrivete a Claude Code e diventa una webapp vostra — versionata su Git, self-hosted o in cloud, senza abbonamenti a pezzi e senza lock-in. Gli stessi quattro progetti, allora e oggi:</p>
+    <div class="proj">
+      <h4><span class="ic">📨</span>ATM — Smistamento PEC alla direzione competente</h4>
+      <p class="sub">Caselle generaliste piene di email non strutturate: serviva una revisione umana per smistarle.</p>
+      <div class="prow then">
+        <span class="ptag">2025</span>
+        <div class="pflow">
+          <span class="pnode">📧 PEC in arrivo</span><span class="parr">→</span>
+          <span class="pnode ext">⚙️ make.com · trigger</span><span class="parr">→</span>
+          <span class="pnode ext ai">🤖 modulo OpenAI: categoria</span><span class="parr">→</span>
+          <span class="pnode ext">🔀 router</span><span class="parr">→</span>
+          <span class="pnode">📤 inoltro alla Direzione</span>
+        </div>
+      </div>
+      <div class="prow now">
+        <span class="ptag">Oggi</span>
+        <div class="pbox"><span class="pbt">Una webapp, descritta a Claude Code</span>
+          <span class="pnode">📥 legge la casella</span>
+          <span class="pnode ai">🤖 classifica — prompt versionato su Git</span>
+          <span class="pnode">📤 inoltra</span>
+          <span class="pnode">📊 storico + correzioni umane</span>
+        </div>
+      </div>
+      <p class="pnote">Il pezzo in più che il canvas non dava: la pagina dove vedere le classificazioni e correggerle.</p>
+    </div>
+
+    <div class="proj">
+      <h4><span class="ic">📝</span>Lucchini — Le note MES di fine turno diventano azioni</h4>
+      <p class="sub">Gli operatori annotano problemi e suggerimenti nel MES, ma le note non venivano valorizzate.</p>
+      <div class="prow then">
+        <span class="ptag">2025</span>
+        <div class="pflow">
+          <span class="pnode ext">⏰ n8n · ogni giorno h 6</span><span class="parr">→</span>
+          <span class="pnode ai">🤖 scarta irrilevanti + classifica tema/urgenza</span><span class="parr">→</span>
+          <span class="pnode ext">📄 Google Sheets</span><span class="parr">→</span>
+          <span class="pnode ext">📊 dashboard Lovable</span><span class="parr">→</span>
+          <span class="pnode">📅 proposta meeting</span>
+        </div>
+      </div>
+      <div class="prow now">
+        <span class="ptag">Oggi</span>
+        <div class="pbox"><span class="pbt">Una webapp, un solo progetto</span>
+          <span class="pnode">⚙️ backend: elabora e classifica le note</span>
+          <span class="pnode">📊 dashboard integrata</span>
+          <span class="pnode">📅 meeting proposti → <b>approvazione umana</b></span>
+        </div>
+      </div>
+      <p class="pnote">Tre servizi incollati (n8n + Sheets + Lovable) diventano un progetto solo, leggibile e versionato.</p>
+    </div>
+
+    <div class="proj">
+      <h4><span class="ic">🔧</span>Autoguidovie — I guasti via chat, non su carta</h4>
+      <p class="sub">"8732 porta 3 si chiude troppo velocemente": la segnalazione cartacea di fine turno spesso non avveniva.</p>
+      <div class="prow then">
+        <span class="ptag">2025</span>
+        <div class="pflow">
+          <span class="pnode ext">💬 bot Telegram · linguaggio naturale</span><span class="parr">→</span>
+          <span class="pnode ai">🤖 gravità · urgenza · categoria</span><span class="parr">→</span>
+          <span class="pnode ext">📄 Excel per il capo officina</span>
+        </div>
+      </div>
+      <div class="prow now">
+        <span class="ptag">Oggi</span>
+        <div class="pbox"><span class="pbt">La lavagna dell'hello world, cresciuta</span>
+          <span class="pnode">💬 chat/form per gli autisti</span>
+          <span class="pnode ai">🤖 stessa classificazione</span>
+          <span class="pnode">🗄️ dati in casa</span>
+          <span class="pnode">👷 vista dedicata per l'officina</span>
+        </div>
+      </div>
+      <p class="pnote">L'interfaccia la disegnate voi — e il capo officina ha la sua vista, non un foglio da aprire.</p>
+    </div>
+
+    <div class="proj">
+      <h4><span class="ic">💬</span>Alstom — Wellbeing assistant con dashboard HR</h4>
+      <p class="sub">Survey sporadiche = bassa partecipazione e interventi tardivi. Meglio una chat quotidiana, breve e confidenziale.</p>
+      <div class="prow then">
+        <span class="ptag">2025</span>
+        <div class="pflow">
+          <span class="pnode">💬 "Come ti senti oggi?"</span><span class="parr">→</span>
+          <span class="pnode ai">🤖 urgenza · tema · suggerimenti</span><span class="parr">→</span>
+          <span class="pnode ext">📊 dashboard HR · trend anonimi, alert</span>
+        </div>
+      </div>
+      <div class="prow now">
+        <span class="ptag">Oggi</span>
+        <div class="pbox"><span class="pbt">Stessa webapp, costruita in giornata</span>
+          <span class="pnode">💬 chat</span>
+          <span class="pnode ai">🤖 classificazione</span>
+          <span class="pnode">📊 dashboard</span>
+          <span class="pnode">🔒 <b>i nodi veri: anonimato e GDPR</b> — rischi di stamattina</span>
+        </div>
+      </div>
+      <p class="pnote">Qui la tecnica è il pezzo facile: il progetto si gioca sulla protezione dei dati, non sul codice.</p>
+    </div>
+    <p class="hint">Onestà: n8n e make non sono morti — per orchestrare tanti sistemi enterprise restano sensati. Il punto è che oggi <b>il software su misura è alla vostra portata</b>: quando il flusso è vostro, il codice descritto e versionato batte il canvas di nodi in manutenibilità, costo e proprietà.</p>
+  </div>
+
+  <p class="lead" style="margin-top:30px">E per quest'anno? Uno spunto per ciascuno, dai vostri processi reali:</p>
+  <div class="cards">
+    <div class="cardx"><span class="who">ALSTOM</span><span class="tool cw">Cowork · skill</span><h4><span class="ic">📋</span>La matrice di conformità</h4><p>I capitolati di gara sono PDF da centinaia di pagine. Una skill che estrae i requisiti e prepara la prima bozza della matrice di conformità, con i riferimenti puntuali — l'ufficio commesse rilegge invece di ricopiare.</p></div>
+    <div class="cardx"><span class="who">AUTOGUIDOVIE</span><span class="tool cc">Claude Code · script</span><h4><span class="ic">📊</span>Il report per l'Agenzia TPL</h4><p>Corse perse, puntualità, km percorsi: oggi copia-incolla da più sistemi. Uno script che legge gli export (CSV, Excel) e assembla il report mensile — con la versione JSON pronta per il prossimo sistema.</p></div>
+    <div class="cardx"><span class="who">ATM</span><span class="tool cc">Claude Code · webapp</span><h4><span class="ic">🔧</span>Il work-order intelligente</h4><p>Dal report dell'autista ("vibrazione strana in frenata") alla scheda officina classificata, con il guasto probabile suggerito dallo storico del mezzo. E l'API BikeMi che avete appena chiamato è di casa vostra: i dati ci sono già.</p></div>
+    <div class="cardx"><span class="who">LUCCHINI RS</span><span class="tool cw">Cowork · flusso documentale</span><h4><span class="ic">📜</span>Dal laboratorio al certificato</h4><p>Ogni ruota viaggia con certificati di prova e rintracciabilità di colata. Una cartella-contesto con template e norme: i dati di laboratorio entrano, il certificato di collaudo esce — e l'ufficio qualità valida.</p></div>
+    <div class="cardx"><span class="who">METRA</span><span class="tool cw">Cowork · skill</span><h4><span class="ic">📐</span>Il preventivo dal disegno</h4><p>Richiesta cliente + disegno del profilo → bozza d'offerta: peso al metro, lega, trattamenti, riferimenti a commesse simili dallo storico. La skill impacchetta il know-how dell'ufficio tecnico matrici.</p></div>
+    <div class="cardx"><span class="who">TRENORD</span><span class="tool cc">Claude Code · piccolo software</span><h4><span class="ic">🎫</span>Il verificatore di indennizzi</h4><p>Reclamo per ritardo → verifica automatica contro i dati di circolazione reali (l'avete fatto stamattina con ViaggiaTreno!) → bozza di risposta. L'operatore decide; la ricerca e la verifica le fa la macchina.</p></div>
+    <div class="cardx"><span class="who">MICROELETTRICA</span><span class="tool cc">Claude Code · script</span><h4><span class="ic">⚡</span>Dal banco prova al certificato</h4><p>Collaudo al 100% a fine linea: i log dei banchi diventano rapporti di prova per il cliente, con segnalazione automatica delle derive. E per i ticket RMA dalle sedi estere, la stessa idea con Cowork sulla cartella dello storico.</p></div>
+    <div class="cardx"><span class="who">IL METODO</span><span class="tool cw">Cowork</span><span class="tool cc">Claude Code</span><h4><span class="ic">🧭</span>Come si sceglie</h4><p>Partite dal processo mappato stamattina. Lavoro documentale su cartelle e template → <b>Cowork</b>. Serve toccare dati, API o costruire un'interfaccia → <b>Claude Code</b>. E la regola delle 8:45: si comincia dove l'errore costa poco.</p></div>
+  </div>
+  <div class="callout">Nessuno di questi progetti richiede un team IT: sono tutti <b>alla portata di chi conosce il processo</b> — cioè voi. Il primo passo non è il codice: è la cartella con i documenti giusti e la descrizione di come si fa oggi. Da lì, l'avete visto, si arriva in fondo descrivendo.</div>
+</div></section>
+
+<!-- ============ QUIZ ============ -->
+<section id="squiz"><div class="wrap reveal">
+  <div class="kicker"><span class="n">?</span> Quiz</div>
+  <h2>Quattro domande <span class="em">per fissare</span></h2>
+  <p class="lead">Prima per alzata di mano, poi cliccate per verificare.</p>
+  <div class="panel star">
+    <div id="quiz">
+      <div class="qq" data-a="1">
+        <p class="qt">1 · Quando un agente "usa un tool", il modello cosa fa davvero?</p>
+        <div class="qo">Esegue direttamente l'azione</div>
+        <div class="qo">Scrive un blocco di testo che descrive l'azione da compiere</div>
+        <div class="qo">Si collega a internet in autonomia</div>
+        <p class="qx">Il modello scrive soltanto: nome del tool e parametri, come testo strutturato. È l'harness che esegue e gli riporta il risultato. Il concetto cardine della settimana.</p>
+      </div>
+      <div class="qq" data-a="2">
+        <p class="qt">2 · Cos'è un'API?</p>
+        <div class="qo">Un tipo di intelligenza artificiale</div>
+        <div class="qo">Un programma da installare sul PC</div>
+        <div class="qo">Un set di regole che permette a due sistemi di comunicare</div>
+        <p class="qx">Client che chiede, server che risponde, documentazione come grammatica. Il sistema postale dei software.</p>
+      </div>
+      <div class="qq" data-a="0">
+        <p class="qt">3 · Perché il JSON è così importante per l'AI nei processi aziendali?</p>
+        <div class="qo">Permette output strutturati che altri sistemi possono usare direttamente</div>
+        <div class="qo">È più veloce da scaricare</div>
+        <div class="qo">Occupa meno spazio su disco</div>
+        <p class="qx">Il modulo compilato contro il tema libero: campi con nome e tipo entrano nel gestionale senza ricopiature. È ciò che automatizza il data entry.</p>
+      </div>
+      <div class="qq" data-a="1">
+        <p class="qt">4 · Nel playground, l'interfaccia grafica e il JSON della richiesta erano...</p>
+        <div class="qo">Due sistemi diversi che si sincronizzano via cloud</div>
+        <div class="qo">La stessa richiesta, rappresentata in due modi</div>
+        <div class="qo">Due API diverse di Open-Meteo</div>
+        <p class="qx">Ogni interfaccia grafica compila una richiesta strutturata. Toccavi il form e cambiava il JSON — e viceversa — perché sotto c'è un solo flusso.</p>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ============ TAKEAWAYS ============ -->
+<section id="s8"><div class="wrap reveal">
+  <div class="kicker"><span class="n">✓</span> Da portare a casa</div>
+  <h2>Quattro idee <span class="em">sul flusso informativo</span></h2>
+  <div class="takes">
+    <div class="take"><h4>L'API è una porta standard</h4><p>Indirizzo, chiave, parametri, documentazione. Il sistema postale dei software: chi conosce la grammatica può scrivere a chiunque.</p></div>
+    <div class="take"><h4>GUI e JSON: la stessa richiesta</h4><p>Ogni interfaccia grafica compila una richiesta strutturata. L'avete visto nel playground: due facce, un solo flusso.</p></div>
+    <div class="take"><h4>Il modello propone, l'app esegue</h4><p>L'agente scrive la chiamata come testo; l'harness la esegue e gli riporta il JSON. Nessuna magia — e MCP è la stessa idea, standardizzata.</p></div>
+    <div class="take"><h4>Dentro + fuori = valore</h4><p>Il flusso informativo completo incrocia i vostri sistemi con il mondo esterno. Dati ordinati che entrano nei processi senza ricopiature: è lì che l'LLM entra nel loop.</p></div>
+  </div>
+  <p class="hint" style="margin-top:24px">Domani, project work: il processo che avete mappato alle 10 e il flusso che avete costruito adesso sono due ottimi punti di partenza.</p>
+</div></section>
+
+<footer><div class="wrap">
+  <b>Summer School 2026 — Giornata 4</b> · Hands on: API e Flusso informativo · Daniele Martini.<br>
+  API usate: Open-Meteo (playground) · ViaggiaTreno RFI (esercizi) · GBFS BikeMi (riserva). Tutte gratuite, senza chiave.
+</div></footer>
+
+<script>
+/* ---------- reveal + progress + dots ---------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+let _scrTick=false;const _prog=document.getElementById('prog');
+addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimationFrame(()=>{_scrTick=false;
+  const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight);_prog.style.width=(p*100)+'%';});});
+(function(){const labels={s0:'Intro',s1:'Standard invisibili',shello:'Hello, webapp',s2:'Anatomia API',s3:'JSON',s4:'Il modello propone',s5:'Playground',s6:'Hands-on 1: treni',s7:'Hands-on 2: flusso completo',sidee:'Spunti progetto',squiz:'Quiz',s8:'Da portare a casa'};
+ const nav=document.getElementById('dots');const secs=[...document.querySelectorAll('section')];
+ secs.forEach(s=>{const a=document.createElement('a');a.href='#'+s.id;a.innerHTML='<span>'+(labels[s.id]||s.id)+'</span>';a.dataset.id=s.id;nav.appendChild(a);});
+ const links=[...nav.querySelectorAll('a')];
+ const ob=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.dataset.id===e.target.id));}});},{rootMargin:'-45% 0px -45% 0px'});
+ secs.forEach(s=>ob.observe(s));
+})();
+
+/* ---------- JSON toggle ---------- */
+(function(){
+  const free=document.getElementById('jtFree');
+  const json=document.getElementById('jtJson');
+  const box=document.getElementById('jsonDemo');
+  const cap=document.getElementById('jsonCap');
+  const FREE='Il regionale 2153 delle 7:42 da Milano Porta Garibaldi per Lecco oggi viaggia con circa 8 minuti di ritardo; parte dal binario 12 invece che dal 10. Al momento risultano una quarantina di posti liberi in coda al treno.';
+  const JSONV='{\n  <span class="k">"treno"</span>: <span class="num">2153</span>,\n  <span class="k">"categoria"</span>: <span class="v">"REG"</span>,\n  <span class="k">"origine"</span>: <span class="v">"Milano P.ta Garibaldi"</span>,\n  <span class="k">"destinazione"</span>: <span class="v">"Lecco"</span>,\n  <span class="k">"partenza_prevista"</span>: <span class="v">"07:42"</span>,\n  <span class="k">"ritardo_min"</span>: <span class="num">8</span>,\n  <span class="k">"binario_previsto"</span>: <span class="num">10</span>,\n  <span class="k">"binario_effettivo"</span>: <span class="num">12</span>,\n  <span class="k">"posti_liberi_stima"</span>: <span class="num">40</span>\n}';
+  free.addEventListener('click',()=>{free.classList.add('on');json.classList.remove('on');
+    box.textContent=FREE;cap.textContent='Chiaro per un umano. Ma quale software può usarlo direttamente? Dove sono i campi?';});
+  json.addEventListener('click',()=>{json.classList.add('on');free.classList.remove('on');
+    box.innerHTML=JSONV;cap.textContent='Stesse informazioni, ma ogni dato ha un nome e un tipo: qualunque sistema a valle può usarle subito. Questo è il formato in cui parlano le API — e in cui un LLM sa scrivere.';});
+})();
+
+/* ---------- flusso agente-API ---------- */
+(function(){
+  const steps=[...document.querySelectorAll('#agflow .agstep')];
+  const btn=document.getElementById('agPlay');
+  let running=false;
+  btn.addEventListener('click',()=>{
+    if(running)return;running=true;btn.disabled=true;
+    steps.forEach(s=>s.classList.remove('hot','done'));
+    let i=0;
+    (function next(){
+      steps.forEach((s,k)=>{s.classList.toggle('hot',k===i);s.classList.toggle('done',k<i);});
+      i++;
+      if(i<=steps.length){setTimeout(next,1250);}
+      else{steps.forEach(s=>{s.classList.remove('hot');s.classList.add('done');});
+        running=false;btn.disabled=false;}
+    })();
+  });
+})();
+
+/* ---------- minutaggio per sezione ---------- */
+(function(){
+  const MINS={s1:4,shello:18,s2:6,s3:4,s4:5,s5:10,s6:15,s7:28,sidee:6,squiz:4,s8:2};
+  for(const id in MINS){
+    const k=document.querySelector('#'+id+' .kicker');
+    if(k){const s=document.createElement('span');s.className='mins';s.textContent='~'+MINS[id]+'′';k.appendChild(s);}
+  }
+})();
+
+/* ---------- navigazione da tastiera (frecce) ---------- */
+(function(){
+  const secs=[...document.querySelectorAll('section')];
+  function current(){
+    let best=0,bd=Infinity;
+    secs.forEach((s,i)=>{const d=Math.abs(s.getBoundingClientRect().top);if(d<bd){bd=d;best=i;}});
+    return best;
+  }
+  addEventListener('keydown',e=>{
+    if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
+    if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();secs[Math.min(secs.length-1,current()+1)].scrollIntoView({behavior:'smooth'});}
+    if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();secs[Math.max(0,current()-1)].scrollIntoView({behavior:'smooth'});}
+  });
+})();
+
+/* ---------- quiz ---------- */
+document.querySelectorAll('.qq').forEach(q=>{
+  const opts=[...q.querySelectorAll('.qo')];
+  const right=+q.dataset.a;
+  opts.forEach((o,i)=>o.addEventListener('click',()=>{
+    if(q.classList.contains('done'))return;
+    q.classList.add('done');
+    if(i===right){o.classList.add('ok');}
+    else{o.classList.add('ko');opts[right].classList.add('ok');}
+  }));
+});
+
+/* ---------- timer esercizi ---------- */
+document.querySelectorAll('.timer').forEach(t=>{
+  const btn=t.querySelector('button');
+  const td=t.querySelector('.td');
+  const total=Math.round(parseFloat(t.dataset.min)*60);
+  let left=total,iv=null;
+  const fmt=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+  const orig=btn.textContent;
+  btn.addEventListener('click',()=>{
+    if(iv){clearInterval(iv);iv=null;left=total;t.classList.remove('run','over');td.textContent=fmt(total);btn.textContent=orig;return;}
+    t.classList.add('run');btn.textContent='↺ Reset';
+    iv=setInterval(()=>{
+      left--;td.textContent=fmt(Math.max(0,left));
+      if(left<=0){clearInterval(iv);iv=null;left=total;t.classList.remove('run');t.classList.add('over');td.textContent='Tempo!';}
+    },1000);
+  });
+});
+
+/* ---------- BikeMi live (GBFS) su OpenStreetMap ---------- */
+(function(){
+  const btn=document.getElementById('bmCall');
+  const wrap=document.getElementById('bmOut');
+  const status=document.getElementById('bmStatus');
+  const totals=document.getElementById('bmTotals');
+  const tblWrap=document.getElementById('bmTableWrap');
+  const mapEl=document.getElementById('bmMap');
+  const legend=document.getElementById('bmLegend');
+  let map=null,markers=null;
+
+  function ensureLeaflet(){
+    if(window.L)return Promise.resolve(true);
+    return new Promise(res=>{
+      const l=document.createElement('link');
+      l.rel='stylesheet';l.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      document.head.appendChild(l);
+      const s=document.createElement('script');
+      s.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+      s.onload=()=>res(true);s.onerror=()=>res(false);
+      document.body.appendChild(s);
+    });
+  }
+
+  function drawTable(rows){
+    const top=[...rows].sort((a,b)=>b.bikes-a.bikes).slice(0,8);
+    let h='<table class="pgtable"><thead><tr><th>Stazione</th><th>Bici disponibili</th><th>Stalli liberi</th></tr></thead><tbody>';
+    top.forEach(r=>{h+='<tr><td>'+r.name+'</td><td>'+r.bikes+'</td><td>'+r.docks+'</td></tr>';});
+    h+='</tbody></table><p class="cap">Le 8 stazioni con più bici in questo istante (mappa non disponibile: mostro la tabella).</p>';
+    tblWrap.innerHTML=h;
+  }
+
+  function drawMap(rows){
+    mapEl.style.display='block';legend.style.display='flex';tblWrap.innerHTML='';
+    if(!map){
+      map=L.map(mapEl,{scrollWheelZoom:false}).setView([45.4685,9.1824],13);
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+        maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+      markers=L.layerGroup().addTo(map);
+    }
+    markers.clearLayers();
+    rows.forEach(r=>{
+      if(r.lat==null||r.lon==null)return;
+      const col=r.bikes>=5?'#0F766E':(r.bikes>0?'#B45309':'#DC2626');
+      L.circleMarker([r.lat,r.lon],{
+        radius:4+Math.sqrt(r.bikes)*1.7,
+        color:'#fff',weight:1.5,fillColor:col,fillOpacity:.85
+      }).bindPopup('<b>'+r.name+'</b><br>🚲 '+r.bikes+' bici · 🅿️ '+r.docks+' stalli liberi')
+        .addTo(markers);
+    });
+    setTimeout(()=>map.invalidateSize(),80);
+  }
+
+  btn.addEventListener('click',async()=>{
+    btn.disabled=true;btn.textContent='🚲 In viaggio…';
+    wrap.style.display='block';totals.innerHTML='';
+    status.className='pgstatus';status.textContent='Due richieste in corso: station_information + station_status…';
+    const t0=performance.now();
+    try{
+      const [info,st,hasLeaflet]=await Promise.all([
+        fetch('https://gbfs.urbansharing.com/bikemi.com/station_information.json').then(r=>r.json()),
+        fetch('https://gbfs.urbansharing.com/bikemi.com/station_status.json').then(r=>r.json()),
+        ensureLeaflet()
+      ]);
+      const ms=Math.round(performance.now()-t0);
+      const meta=new Map(info.data.stations.map(s=>[s.station_id,s]));
+      const rows=st.data.stations
+        .filter(s=>s.is_installed&&s.is_renting)
+        .map(s=>{
+          const m=meta.get(s.station_id)||{};
+          return {name:m.name||s.station_id,lat:m.lat,lon:m.lon,bikes:s.num_bikes_available,docks:s.num_docks_available};
+        });
+      const totBikes=rows.reduce((a,r)=>a+r.bikes,0);
+      const totDocks=rows.reduce((a,r)=>a+r.docks,0);
+      status.className='pgstatus ok';
+      status.textContent='✅ 2 × HTTP 200 in '+ms+' ms · '+rows.length+' stazioni attive, join per station_id fatto in pagina';
+      totals.innerHTML=
+        '<div><div style="font-family:var(--serif);font-weight:850;font-size:38px;color:var(--accent)">'+totBikes+'</div><div class="cap" style="margin-top:0">bici disponibili adesso</div></div>'+
+        '<div><div style="font-family:var(--serif);font-weight:850;font-size:38px;color:var(--amber)">'+totDocks+'</div><div class="cap" style="margin-top:0">stalli liberi</div></div>';
+      if(hasLeaflet&&window.L){drawMap(rows);}
+      else{drawTable(rows);}
+    }catch(e){
+      status.className='pgstatus ko';
+      status.textContent='❌ Chiamata fallita: '+e.message;
+    }
+    btn.disabled=false;btn.textContent='🚲 Aggiorna i dati';
+  });
+})();
+
+/* ============ API PLAYGROUND ============ */
+(function(){
+  const CITIES={
+    milano:{lat:45.4642,lon:9.19},
+    lecco:{lat:45.8536,lon:9.3903},
+    varese:{lat:45.8206,lon:8.8251},
+    bergamo:{lat:45.6983,lon:9.6773},
+    como:{lat:45.8081,lon:9.0852},
+    cremona:{lat:45.1332,lon:10.0227}
+  };
+  const citySel=document.getElementById('pgCity');
+  const fromEl=document.getElementById('pgFrom');
+  const toEl=document.getElementById('pgTo');
+  const varEls=[...document.querySelectorAll('.pgvars input')];
+  const urlEl=document.getElementById('pgUrl');
+  const jsonEl=document.getElementById('pgJson');
+  const errEl=document.getElementById('pgErr');
+  const callBtn=document.getElementById('pgCall');
+  const respWrap=document.getElementById('pgResp');
+  const statusEl=document.getElementById('pgStatus');
+  const outEl=document.getElementById('pgOut');
+  const tblWrap=document.getElementById('pgTableWrap');
+
+  /* stato unico della richiesta */
+  let state={latitude:45.4642,longitude:9.19,start_date:'',end_date:'',daily:['temperature_2m_max','precipitation_sum'],timezone:'Europe/Rome'};
+
+  /* date default: oggi → +3 giorni */
+  const today=new Date();
+  const plus3=new Date(today.getTime()+3*86400000);
+  const iso=d=>d.toISOString().slice(0,10);
+  state.start_date=iso(today);state.end_date=iso(plus3);
+  fromEl.value=state.start_date;toEl.value=state.end_date;
+
+  function buildUrl(s){
+    const q=new URLSearchParams({
+      latitude:s.latitude,longitude:s.longitude,
+      start_date:s.start_date,end_date:s.end_date,
+      daily:(s.daily||[]).join(','),timezone:s.timezone||'Europe/Rome'
+    });
+    return 'https://api.open-meteo.com/v1/forecast?'+q.toString();
+  }
+  function renderUrl(){
+    const s=state;
+    const base='https://api.open-meteo.com/v1/forecast';
+    const parts=[
+      'latitude='+s.latitude,'longitude='+s.longitude,
+      'start_date='+s.start_date,'end_date='+s.end_date,
+      'daily='+(s.daily||[]).join(','),'timezone='+encodeURIComponent(s.timezone||'Europe/Rome')
+    ];
+    urlEl.innerHTML='<span class="base">'+base+'</span>?<br>&nbsp;&nbsp;<span class="qp">'+parts.join('</span><br>&nbsp;&nbsp;&amp;<span class="qp">')+'</span>';
+  }
+  function stateToJson(){jsonEl.value=JSON.stringify(state,null,2);jsonEl.classList.remove('err');errEl.textContent='';}
+  function stateToForm(){
+    /* città: match per coordinate */
+    let matched='custom';
+    for(const k in CITIES){if(Math.abs(CITIES[k].lat-state.latitude)<.01&&Math.abs(CITIES[k].lon-state.longitude)<.01){matched=k;break;}}
+    citySel.value=matched;
+    fromEl.value=state.start_date||'';
+    toEl.value=state.end_date||'';
+    varEls.forEach(v=>{v.checked=(state.daily||[]).includes(v.dataset.v);});
+  }
+  function fromForm(){
+    const c=citySel.value;
+    if(c!=='custom'&&CITIES[c]){state.latitude=CITIES[c].lat;state.longitude=CITIES[c].lon;}
+    state.start_date=fromEl.value;state.end_date=toEl.value;
+    state.daily=varEls.filter(v=>v.checked).map(v=>v.dataset.v);
+    stateToJson();renderUrl();
+  }
+  function fromJson(){
+    try{
+      const parsed=JSON.parse(jsonEl.value);
+      if(typeof parsed!=='object'||parsed===null)throw new Error('serve un oggetto JSON');
+      state=Object.assign({timezone:'Europe/Rome'},parsed);
+      if(!Array.isArray(state.daily))state.daily=[];
+      jsonEl.classList.remove('err');errEl.textContent='';
+      stateToForm();renderUrl();
+    }catch(e){
+      jsonEl.classList.add('err');
+      errEl.textContent='JSON non valido: '+e.message+' — il form resta fermo finché la sintassi non torna corretta.';
+    }
+  }
+
+  citySel.addEventListener('change',fromForm);
+  fromEl.addEventListener('change',fromForm);
+  toEl.addEventListener('change',fromForm);
+  varEls.forEach(v=>v.addEventListener('change',fromForm));
+  jsonEl.addEventListener('input',fromJson);
+
+  /* chiamata */
+  const VARLABEL={temperature_2m_max:'T max (°C)',temperature_2m_min:'T min (°C)',precipitation_sum:'Pioggia (mm)',windspeed_10m_max:'Vento max (km/h)',snowfall_sum:'Neve (cm)'};
+  function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+  function highlight(json){
+    return esc(json)
+      .replace(/"([^"]+)":/g,'<span class="k">"$1"</span>:')
+      .replace(/: "([^"]*)"/g,': <span class="v">"$1"</span>')
+      .replace(/: (-?\d+\.?\d*)/g,': <span class="num">$1</span>');
+  }
+  callBtn.addEventListener('click',async()=>{
+    /* se il JSON è in errore, non parte */
+    if(jsonEl.classList.contains('err')){errEl.textContent='Prima sistemate il JSON: la richiesta non può partire malformata.';return;}
+    callBtn.disabled=true;callBtn.textContent='📡 In viaggio…';
+    respWrap.style.display='block';tblWrap.innerHTML='';
+    statusEl.className='pgstatus';statusEl.textContent='Richiesta partita verso api.open-meteo.com…';
+    outEl.textContent='';
+    const url=buildUrl(state);
+    const t0=performance.now();
+    try{
+      const r=await fetch(url);
+      const ms=Math.round(performance.now()-t0);
+      const data=await r.json();
+      const pretty=JSON.stringify(data,null,2);
+      const MAX=3200;
+      outEl.innerHTML=highlight(pretty.length>MAX?pretty.slice(0,MAX)+'\n… (risposta tagliata per leggibilità)':pretty);
+      if(r.ok&&!data.error){
+        statusEl.className='pgstatus ok';
+        statusEl.textContent='✅ HTTP '+r.status+' · risposta in '+ms+' ms · questo è il JSON che riceverebbe anche un agente';
+        /* tabella "vista umana" */
+        if(data.daily&&data.daily.time){
+          const vars=(state.daily||[]).filter(v=>data.daily[v]);
+          let h='<table class="pgtable"><thead><tr><th>Giorno</th>';
+          vars.forEach(v=>h+='<th>'+(VARLABEL[v]||v)+'</th>');
+          h+='</tr></thead><tbody>';
+          data.daily.time.forEach((d,i)=>{
+            h+='<tr><td>'+d+'</td>';
+            vars.forEach(v=>h+='<td>'+data.daily[v][i]+'</td>');
+            h+='</tr>';
+          });
+          h+='</tbody></table>';
+          tblWrap.innerHTML=h+'<p class="cap">La stessa risposta, riletta come tabella: la "vista umana" è solo una presentazione del JSON.</p>';
+        }
+      }else{
+        statusEl.className='pgstatus ko';
+        statusEl.textContent='⚠️ Il server ha risposto con un errore (HTTP '+r.status+') — leggetelo: dice esattamente cosa non va.';
+      }
+    }catch(e){
+      statusEl.className='pgstatus ko';
+      statusEl.textContent='❌ Chiamata fallita: '+e.message+' — rete assente o richiesta bloccata.';
+      outEl.textContent='';
+    }
+    callBtn.disabled=false;callBtn.textContent='📡 Chiama l\'API';
+  });
+
+  /* init */
+  stateToJson();renderUrl();
+})();
+</script>
+</body>
+</html>
