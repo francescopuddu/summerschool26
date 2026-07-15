@@ -103,6 +103,12 @@
   .cardx .tool{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10.5px;font-weight:700;border-radius:5px;padding:1px 7px;margin-left:6px}
   .cardx .tool.cw{color:#3d379a;background:var(--purple-soft)}
   .cardx .tool.cc{color:var(--amber);background:var(--amber-soft)}
+  .cardx .cflow{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:11px;padding-top:11px;border-top:1px dashed var(--line)}
+  .cardx .cflow+.cflow{margin-top:7px;padding-top:0;border-top:0}
+  .cardx .cflow .pnode{font-size:11.5px;padding:3px 7px}
+  .pnode.hum{border-color:#e7c98d;background:var(--amber-soft);color:var(--amber)}
+  .cardx .alt{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:10px;line-height:1.5}
+  .cardx .alt b{color:var(--ink-2)}
 
   /* anatomia richiesta/risposta */
   .apiflow{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;margin-top:18px}
@@ -640,16 +646,33 @@
     <p class="hint">Onestà: n8n e make non sono morti — per orchestrare tanti sistemi enterprise restano sensati. Il punto è che oggi <b>il software su misura è alla vostra portata</b>: quando il flusso è vostro, il codice descritto e versionato batte il canvas di nodi in manutenibilità, costo e proprietà.</p>
   </div>
 
-  <p class="lead" style="margin-top:30px">E per quest'anno? Uno spunto per ciascuno, dai vostri processi reali:</p>
+  <p class="lead" style="margin-top:30px">E per quest'anno? Uno spunto per ciascuno, dai vostri processi reali. In ogni scheda il flusso: <b>cosa entra → cosa fa l'AI → cosa esce → chi valida</b> — più un paio di piste alternative da rubare.</p>
   <div class="cards">
-    <div class="cardx"><span class="who">ALSTOM</span><span class="tool cw">Cowork · skill</span><h4><span class="ic">📋</span>La matrice di conformità</h4><p>I capitolati di gara sono PDF da centinaia di pagine. Una skill che estrae i requisiti e prepara la prima bozza della matrice di conformità, con i riferimenti puntuali — l'ufficio commesse rilegge invece di ricopiare.</p></div>
-    <div class="cardx"><span class="who">AUTOGUIDOVIE</span><span class="tool cc">Claude Code · script</span><h4><span class="ic">📊</span>Il report per l'Agenzia TPL</h4><p>Corse perse, puntualità, km percorsi: oggi copia-incolla da più sistemi. Uno script che legge gli export (CSV, Excel) e assembla il report mensile — con la versione JSON pronta per il prossimo sistema.</p></div>
-    <div class="cardx"><span class="who">ATM</span><span class="tool cc">Claude Code · webapp</span><h4><span class="ic">🔧</span>Il work-order intelligente</h4><p>Dal report dell'autista ("vibrazione strana in frenata") alla scheda officina classificata, con il guasto probabile suggerito dallo storico del mezzo. E l'API BikeMi che avete appena chiamato è di casa vostra: i dati ci sono già.</p></div>
-    <div class="cardx"><span class="who">LUCCHINI RS</span><span class="tool cw">Cowork · flusso documentale</span><h4><span class="ic">📜</span>Dal laboratorio al certificato</h4><p>Ogni ruota viaggia con certificati di prova e rintracciabilità di colata. Una cartella-contesto con template e norme: i dati di laboratorio entrano, il certificato di collaudo esce — e l'ufficio qualità valida.</p></div>
-    <div class="cardx"><span class="who">METRA</span><span class="tool cw">Cowork · skill</span><h4><span class="ic">📐</span>Il preventivo dal disegno</h4><p>Richiesta cliente + disegno del profilo → bozza d'offerta: peso al metro, lega, trattamenti, riferimenti a commesse simili dallo storico. La skill impacchetta il know-how dell'ufficio tecnico matrici.</p></div>
-    <div class="cardx"><span class="who">TRENORD</span><span class="tool cc">Claude Code · piccolo software</span><h4><span class="ic">🎫</span>Il verificatore di indennizzi</h4><p>Reclamo per ritardo → verifica automatica contro i dati di circolazione reali (l'avete fatto stamattina con ViaggiaTreno!) → bozza di risposta. L'operatore decide; la ricerca e la verifica le fa la macchina.</p></div>
-    <div class="cardx"><span class="who">MICROELETTRICA</span><span class="tool cc">Claude Code · script</span><h4><span class="ic">⚡</span>Dal banco prova al certificato</h4><p>Collaudo al 100% a fine linea: i log dei banchi diventano rapporti di prova per il cliente, con segnalazione automatica delle derive. E per i ticket RMA dalle sedi estere, la stessa idea con Cowork sulla cartella dello storico.</p></div>
-    <div class="cardx"><span class="who">IL METODO</span><span class="tool cw">Cowork</span><span class="tool cc">Claude Code</span><h4><span class="ic">🧭</span>Come si sceglie</h4><p>Partite dal processo mappato stamattina. Lavoro documentale su cartelle e template → <b>Cowork</b>. Serve toccare dati, API o costruire un'interfaccia → <b>Claude Code</b>. E la regola delle 8:45: si comincia dove l'errore costa poco.</p></div>
+    <div class="cardx"><span class="who">ALSTOM</span><span class="tool cw">Cowork · skill</span><h4><span class="ic">📋</span>La matrice di conformità</h4><p>I capitolati di gara sono PDF da centinaia di pagine. Una skill che estrae i requisiti e prepara la prima bozza della matrice di conformità, con i riferimenti puntuali — l'ufficio commesse rilegge invece di ricopiare.</p>
+      <div class="cflow"><span class="pnode">📄 capitolato, 300 pag</span><span class="parr">→</span><span class="pnode ai">🤖 estrae i requisiti</span><span class="parr">→</span><span class="pnode">📋 bozza matrice + riferimenti</span><span class="parr">→</span><span class="pnode hum">👤 commesse rilegge</span></div>
+      <p class="alt"><b>altre piste:</b> confronto tra due revisioni di un capitolato · verbali di commessa → elenco azioni</p></div>
+    <div class="cardx"><span class="who">AUTOGUIDOVIE</span><span class="tool cc">Claude Code · script</span><h4><span class="ic">📊</span>Il report per l'Agenzia TPL</h4><p>Corse perse, puntualità, km percorsi: oggi copia-incolla da più sistemi. Uno script che legge gli export (CSV, Excel) e assembla il report mensile — con la versione JSON pronta per il prossimo sistema.</p>
+      <div class="cflow"><span class="pnode">📄 export CSV/Excel dai sistemi</span><span class="parr">→</span><span class="pnode ai">🤖 incrocia e controlla</span><span class="parr">→</span><span class="pnode">📊 report mensile + JSON</span><span class="parr">→</span><span class="pnode hum">👤 responsabile invia</span></div>
+      <p class="alt"><b>altre piste:</b> reclami passeggeri classificati per linea · cruscotto puntualità dai dati GTFS</p></div>
+    <div class="cardx"><span class="who">ATM</span><span class="tool cc">Claude Code · webapp</span><h4><span class="ic">🔧</span>Il work-order intelligente</h4><p>Dal report dell'autista ("vibrazione strana in frenata") alla scheda officina classificata, con il guasto probabile suggerito dallo storico del mezzo. E l'API BikeMi che avete appena chiamato è di casa vostra: i dati ci sono già.</p>
+      <div class="cflow"><span class="pnode">💬 "vibrazione strana in frenata"</span><span class="parr">→</span><span class="pnode ai">🤖 classifica + storico mezzo</span><span class="parr">→</span><span class="pnode">🔧 scheda officina + guasto probabile</span><span class="parr">→</span><span class="pnode hum">👷 officina conferma</span></div>
+      <p class="alt"><b>altre piste:</b> smistamento ticket di deposito · quadro flotta del mattino dalle API interne</p></div>
+    <div class="cardx"><span class="who">LUCCHINI RS</span><span class="tool cw">Cowork · flusso documentale</span><h4><span class="ic">📜</span>Dal laboratorio al certificato</h4><p>Ogni ruota viaggia con certificati di prova e rintracciabilità di colata. Una cartella-contesto con template e norme: i dati di laboratorio entrano, il certificato di collaudo esce — e l'ufficio qualità valida. È la demo di stamattina, sui vostri dati.</p>
+      <div class="cflow"><span class="pnode">🧪 rapporti di prova + colata</span><span class="parr">→</span><span class="pnode ai">🤖 compila il template a norma</span><span class="parr">→</span><span class="pnode">📜 certificato in bozza</span><span class="parr">→</span><span class="pnode hum">👤 qualità firma</span></div>
+      <p class="alt"><b>altre piste:</b> alert sulle derive nei dati di prova · dossier di rintracciabilità assemblato da cartelle</p></div>
+    <div class="cardx"><span class="who">METRA</span><span class="tool cw">Cowork · skill</span><h4><span class="ic">📐</span>Il preventivo dal disegno</h4><p>Richiesta cliente + disegno del profilo → bozza d'offerta: peso al metro, lega, trattamenti, riferimenti a commesse simili dallo storico. La skill impacchetta il know-how dell'ufficio tecnico matrici.</p>
+      <div class="cflow"><span class="pnode">📐 richiesta + disegno profilo</span><span class="parr">→</span><span class="pnode ai">🤖 peso · lega · commesse simili</span><span class="parr">→</span><span class="pnode">💶 bozza d'offerta</span><span class="parr">→</span><span class="pnode hum">👤 tecnico rifinisce</span></div>
+      <p class="alt"><b>altre piste:</b> distinta base in bozza dal disegno · richieste in ingresso classificate per fattibilità</p></div>
+    <div class="cardx"><span class="who">TRENORD</span><span class="tool cc">Claude Code · piccolo software</span><h4><span class="ic">🎫</span>Il verificatore di indennizzi</h4><p>Reclamo per ritardo → verifica automatica contro i dati di circolazione reali (l'avete fatto stamattina con ViaggiaTreno!) → bozza di risposta. L'operatore decide; la ricerca e la verifica le fa la macchina.</p>
+      <div class="cflow"><span class="pnode">📨 reclamo per ritardo</span><span class="parr">→</span><span class="pnode ai">🤖 verifica sui dati di circolazione</span><span class="parr">→</span><span class="pnode">✉️ esito + bozza risposta</span><span class="parr">→</span><span class="pnode hum">👤 operatore decide</span></div>
+      <p class="alt"><b>altre piste:</b> sintesi giornaliera delle irregolarità per la direzione · risposte ai passeggeri su dati veri, non a memoria</p></div>
+    <div class="cardx"><span class="who">MICROELETTRICA</span><span class="tool cc">Claude Code · script</span><h4><span class="ic">⚡</span>Dal banco prova al certificato</h4><p>Collaudo al 100% a fine linea: i log dei banchi diventano rapporti di prova per il cliente, con segnalazione automatica delle derive. E per i ticket RMA dalle sedi estere, la stessa idea con Cowork sulla cartella dello storico.</p>
+      <div class="cflow"><span class="pnode">⚡ log dei banchi prova</span><span class="parr">→</span><span class="pnode ai">🤖 rapporto + segnala derive</span><span class="parr">→</span><span class="pnode">📄 certificato per il cliente</span><span class="parr">→</span><span class="pnode hum">👤 qualità firma</span></div>
+      <p class="alt"><b>altre piste:</b> ticket RMA dalle sedi estere con Cowork · manuali prodotto interrogabili in linguaggio naturale</p></div>
+    <div class="cardx"><span class="who">IL METODO</span><span class="tool cw">Cowork</span><span class="tool cc">Claude Code</span><h4><span class="ic">🧭</span>Come si sceglie</h4><p>Partite dal processo mappato stamattina. Lavoro documentale su cartelle e template → <b>Cowork</b>. Serve toccare dati, API o costruire un'interfaccia → <b>Claude Code</b>. E la regola delle 8:45: si comincia dove l'errore costa poco.</p>
+      <div class="cflow"><span class="pnode">📁 cartelle, template, documenti</span><span class="parr">→</span><span class="pnode" style="border-color:#cfcaf2;background:var(--purple-soft);color:#3d379a">Cowork</span></div>
+      <div class="cflow"><span class="pnode">🔌 dati, API, interfacce</span><span class="parr">→</span><span class="pnode" style="border-color:#e7c98d;background:var(--amber-soft);color:var(--amber)">Claude Code</span></div>
+      <p class="alt"><b>in ogni caso:</b> l'ultimo nodo del flusso è sempre una persona — l'AI prepara, voi firmate</p></div>
   </div>
   <div class="callout">Nessuno di questi progetti richiede un team IT: sono tutti <b>alla portata di chi conosce il processo</b> — cioè voi. Il primo passo non è il codice: è la cartella con i documenti giusti e la descrizione di come si fa oggi. Da lì, l'avete visto, si arriva in fondo descrivendo.</div>
 </div></section>
@@ -761,7 +784,7 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
 
 /* ---------- minutaggio per sezione ---------- */
 (function(){
-  const MINS={s1:4,shello:18,s2:6,s3:4,s4:5,s5:10,s6:15,s7:28,sidee:6,squiz:4,s8:2};
+  const MINS={s1:4,shello:18,s2:6,s3:4,s4:5,s5:10,s6:15,s7:28,sidee:9,squiz:4,s8:2};
   for(const id in MINS){
     const k=document.querySelector('#'+id+' .kicker');
     if(k){const s=document.createElement('span');s.className='mins';s.textContent='~'+MINS[id]+'′';k.appendChild(s);}
