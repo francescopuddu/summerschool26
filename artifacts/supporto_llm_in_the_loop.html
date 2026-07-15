@@ -180,8 +180,9 @@
   .procbtn:disabled{opacity:.5;cursor:default}
 
   /* scala autonomia */
-  .ladder{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
-  @media(max-width:700px){.ladder{grid-template-columns:1fr}}
+  .ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
+  @media(max-width:860px){.ladder{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.ladder{grid-template-columns:1fr}}
   .rung{border:1.5px solid var(--line);border-radius:14px;padding:16px 14px;background:var(--card-2);text-align:center;cursor:pointer;transition:all .25s;position:relative}
   .rung .lv{font-family:var(--mono);font-size:10.5px;color:var(--muted);letter-spacing:.08em}
   .rung .icn{font-size:26px;line-height:1.2;margin-top:6px}
@@ -240,12 +241,15 @@
   .bub.cli{align-self:flex-start;background:var(--card);border:1px solid var(--line);border-bottom-left-radius:4px}
   .bub.sys{align-self:flex-end;background:var(--accent-soft);border:1px solid var(--accent-soft2);border-bottom-right-radius:4px}
   .bub .who{display:block;font-family:var(--mono);font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+  .dmjson{font-family:var(--mono);font-size:12px;line-height:1.55;background:var(--card);border:1.5px dashed var(--accent-soft2);border-radius:10px;padding:10px 12px;color:var(--accent-2);white-space:pre;overflow-x:auto;opacity:0;transition:opacity .4s;margin:0 0 12px}
+  .dmjson.in{opacity:1}
   .dmlog{font-family:var(--mono);font-size:12.5px;line-height:1.7;background:#20201e;color:#c9d6d0;border-radius:10px;padding:12px 14px;min-height:180px}
   .dmlog .ln{display:block;opacity:0;transition:opacity .3s}
   .dmlog .ln.in{opacity:1}
   .dmlog .ln.tool{color:#8fe0d5}
   .dmlog .ln.res{color:#e8c68a}
   .dmlog .ln.okl{color:#9be49b}
+  .dmlog .ln.na{color:#e89a9a}
 
   /* pareto */
   .ptabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
@@ -431,6 +435,13 @@
       <button class="tchip" data-t="artifact" data-d="La chiedi in chat e ne esce una mini-app self-contained da condividere: un <b>Artifact</b> — come la dashboard fornitori.">Una dashboard o mini-app da mostrare</button>
       <button class="tchip" data-t="code" data-d="Script che gira davvero, collegato ai vostri dati: <b>Claude Code</b> — come l'esercizio del revisore.">Un'automazione che si ripete ogni giorno</button>
       <button class="tchip" data-t="code" data-d="Vibe coding: dal database all'interfaccia. <b>Claude Code</b> — l'app dei treni di ieri.">Una webapp vera per il team</button>
+      <button class="tchip" data-t="chat" data-d="Botta e risposta, pro e contro, alternative: la <b>Chat</b> è fatta per ragionare insieme prima di decidere.">Brainstorming su un problema</button>
+      <button class="tchip" data-t="chat" data-d="Alleghi il capitolato o la norma e chiedi &quot;cosa prevede per...?&quot; — risposta con il punto esatto citato: <b>Chat</b>.">Cercare in un capitolato o una norma</button>
+      <button class="tchip" data-t="cowork" data-d="<b>Cowork</b> legge i rapporti di prova e compila il certificato dal template — lo vedrete nella demo di stamattina.">Compilare un template da una pila di PDF</button>
+      <button class="tchip" data-t="cowork" data-d="Rinominare, smistare in sottocartelle, creare un indice: lavoro ripetitivo sui file = <b>Cowork</b>.">Mettere ordine in centinaia di file</button>
+      <button class="tchip" data-t="artifact" data-d="La descrivi in chat, esce una pagina interattiva da girare con un link: <b>Artifact</b> — come la matrice impatto/sforzo.">Un quiz o una checklist per il team</button>
+      <button class="tchip" data-t="code" data-d="Un DDT fotografato che diventa dati nel gestionale: <b>Claude Code</b> — la demo foto→JSON di stamattina.">Dati da foto e scansioni al gestionale</button>
+      <button class="tchip" data-t="code" data-d="Uno script che chiama l'API e usa la risposta: <b>Claude Code</b> — esattamente il tema delle 11:15.">Interrogare un'API: orari, meteo, flotta</button>
     </div>
     <p class="tdesc" id="wpDesc">Scegliete un compito qui sopra: si accende lo strumento giusto — e il perché.</p>
   </div>
@@ -561,13 +572,14 @@
 <section id="s6"><div class="wrap reveal">
   <div class="kicker"><span class="n">06</span> La scala dell'autonomia</div>
   <h2>Dal modulo <span class="em">all'agente</span></h2>
-  <p class="lead">Prendiamo un processo che conoscete bene: la <b>prenotazione dell'intervento di un tecnico</b>. Le informazioni sono due: <b>gli slot liberi dell'azienda</b> e <b>l'agenda di Maria</b>, la cliente. La domanda che separa i tre livelli è una sola: <span class="em">chi fa l'incrocio?</span> Cliccate un gradino, poi premete ▶.</p>
+  <p class="lead">Prendiamo un processo che conoscete bene: la <b>prenotazione dell'intervento di un tecnico</b>. Le informazioni sono due: <b>gli slot liberi dell'azienda</b> e <b>l'agenda di Maria</b>, la cliente. La domanda che separa i quattro livelli è una sola: <span class="em">chi fa l'incrocio?</span> Cliccate un gradino, poi premete ▶.</p>
 
   <div class="panel star">
     <div class="ladder" id="ladder">
       <div class="rung on" data-i="0"><div class="lv">LIVELLO 1</div><div class="icn">📄</div><div class="nm">Modulo standardizzato</div></div>
       <div class="rung" data-i="1"><div class="lv">LIVELLO 2</div><div class="icn">✨</div><div class="nm">LLM nel flusso</div></div>
-      <div class="rung" data-i="2"><div class="lv">LIVELLO 3</div><div class="icn">🤖</div><div class="nm">Agente autonomo</div></div>
+      <div class="rung" data-i="2"><div class="lv">LIVELLO 3</div><div class="icn">💬</div><div class="nm">Agente specializzato</div></div>
+      <div class="rung" data-i="3"><div class="lv">LIVELLO 4</div><div class="icn">🤖</div><div class="nm">Agente generalista</div></div>
     </div>
     <div class="meters">
       <span class="ml">Autonomia del sistema</span><div class="meterbar au"><i id="mAu" style="width:10%"></i></div>
@@ -604,34 +616,59 @@
       </div>
     </div>
 
-    <!-- L2: chat/vocale + agenda di Maria -->
+    <!-- L2: LLM nel flusso — linguaggio naturale → dati strutturati -->
     <div class="dmwrap" id="demo1" hidden>
       <div class="dmpane">
         <h5>Cosa vede l'utente · chat (o voce)</h5>
         <div class="dmchat">
-          <div class="bub cli"><span class="who">Maria</span>Buongiorno, che disponibilità avete per un intervento alla caldaia?</div>
-          <div class="bub sys"><span class="who">Chatbot</span>Domani gio 8–10, ven 9–11 oppure lun 14–16.</div>
-          <div class="bub cli"><span class="who">Maria</span>Ven 9–11 va benissimo. Maria Bianchi, via Roma 12.</div>
-          <div class="bub sys"><span class="who">Chatbot</span>Confermato: ven 17/07, 9–11 — pratica #1042 ✅</div>
+          <div class="bub cli"><span class="who">Maria</span>Buongiorno, mi servirebbe un tecnico per la caldaia — venerdì mattina se possibile. Maria Bianchi, via Roma 12.</div>
+          <div class="bub sys"><span class="who">Sistema</span>Richiesta registrata: ven 17/07, 9–11 — pratica #1042 ✅</div>
         </div>
       </div>
       <div class="dmpane">
-        <h5>L'agenda di Maria</h5>
-        <div class="dmagd">
-          <div class="agrow"><span class="agd">Gio 16 · 8–10</span><span class="agt">riunione condominio</span></div>
-          <div class="agrow"><span class="agd">Ven 17 · 9–11</span><span class="agt">— libera —</span></div>
-          <div class="agrow"><span class="agd">Lun 20 · 14–16</span><span class="agt">dentista</span></div>
+        <h5>Dietro le quinte · estrazione LLM</h5>
+        <pre class="dmjson">{ "impianto":   "caldaia",
+  "cliente":    "Maria Bianchi",
+  "indirizzo":  "via Roma 12",
+  "preferenza": "ven mattina" }</pre>
+        <div class="dmform">
+          <div class="dmfield"><label>Nome</label><div class="val" data-f="0"></div></div>
+          <div class="dmfield"><label>Impianto</label><div class="val" data-f="1"></div></div>
+          <div class="dmfield"><label>Preferenza</label><div class="val" data-f="2"></div></div>
         </div>
       </div>
     </div>
 
-    <!-- L3: agente personale + backstage tool call -->
+    <!-- L3: agente specializzato — tool solo sul DB aziendale -->
     <div class="dmwrap" id="demo2" hidden>
       <div class="dmpane">
         <h5>Cosa vede l'utente · chat</h5>
         <div class="dmchat">
+          <div class="bub cli"><span class="who">Maria</span>Che disponibilità avete per un intervento alla caldaia?</div>
+          <div class="bub sys"><span class="who">Agente azienda</span>Gio 8–10, ven 9–11 oppure lun 14–16: quale preferisce?</div>
+          <div class="bub cli"><span class="who">Maria</span>Ven 9–11. Maria Bianchi, via Roma 12.</div>
+          <div class="bub sys"><span class="who">Agente azienda</span>Confermato: ven 17/07, 9–11 — pratica #1042 ✅</div>
+        </div>
+      </div>
+      <div class="dmpane">
+        <h5>Dietro le quinte · tool &amp; DB</h5>
+        <div class="dmlog">
+          <span class="ln tool">→ cerca_slot(impianto:"caldaia")</span>
+          <span class="ln res">← 3 slot: gio 8–10 · ven 9–11 · lun 14–16</span>
+          <span class="ln na">✗ calendario di Maria: fuori perimetro</span>
+          <span class="ln tool">→ crea_prenotazione("M. Bianchi", ven 9–11)</span>
+          <span class="ln okl">← OK · pratica #1042 ✓</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- L4: agente generalista — multi-fonte -->
+    <div class="dmwrap" id="demo3" hidden>
+      <div class="dmpane">
+        <h5>Cosa vede l'utente · chat</h5>
+        <div class="dmchat">
           <div class="bub cli"><span class="who">Maria</span>Prenotami un tecnico per la caldaia, questa settimana.</div>
-          <div class="bub sys"><span class="who">Agente di Maria</span>Ven 17, 9–11: l'unico slot libero sia per te sia per il tecnico. Confermo?</div>
+          <div class="bub sys"><span class="who">Agente di Maria</span>Ven 17, 9–11: unico slot libero per entrambi — e arrivi in tempo anche col traffico del venerdì. Confermo?</div>
           <div class="bub cli"><span class="who">Maria</span>Sì.</div>
           <div class="bub sys"><span class="who">Agente di Maria</span>Fatto — pratica #1042, e te l'ho segnato in calendario. ✅</div>
         </div>
@@ -643,10 +680,10 @@
           <span class="ln res">← 3 slot: gio 8–10 · ven 9–11 · lun 14–16</span>
           <span class="ln tool">→ leggi_calendario(maria)</span>
           <span class="ln res">← gio occupata · ven libera · lun occupata</span>
-          <span class="ln">✳ incrocio → resta ven 17 · 9–11</span>
+          <span class="ln tool">→ maps_tempo_viaggio(ufficio → casa, ven 8:30)</span>
+          <span class="ln res">← 24 min · arrivo 8:54, ok per le 9:00</span>
           <span class="ln tool">→ crea_prenotazione("M. Bianchi", ven 9–11)</span>
-          <span class="ln okl">← OK · pratica #1042 ✓</span>
-          <span class="ln tool">→ scrivi_calendario(maria, ven 9–11)</span>
+          <span class="ln okl">← OK · #1042 ✓ · scritto anche nel calendario</span>
         </div>
       </div>
     </div>
@@ -1027,17 +1064,19 @@ document.querySelectorAll('.rday').forEach(c=>c.addEventListener('click',e=>{if(
   const mAu=document.getElementById('mAu'),mHu=document.getElementById('mHu');
   const btn=document.getElementById('ladPlay');
   const status=document.getElementById('ladStatus');
-  const demos=[0,1,2].map(i=>document.getElementById('demo'+i));
+  const demos=[0,1,2,3].map(i=>document.getElementById('demo'+i));
   const init=demos.map(d=>d.innerHTML);            /* snapshot per il reset */
   const data=[
     {au:10,hu:90,t:'<b>Modulo standardizzato.</b> Il sistema è già collegato al DB: propone solo gli slot liberi — questo esisteva anche prima degli LLM, insieme ai chatbot a regole («premi 1 per…»). Ma leggere le opzioni, incrociarle con la propria agenda, scegliere e compilare i campi: tutto lavoro dell\'umano.'},
-    {au:45,hu:55,t:'<b>LLM nel flusso.</b> La prenotazione diventa una conversazione — in chat o al telefono, con voci ormai quasi indistinguibili da un operatore: chiedete e prenotate come parlate, niente campi rigidi. <span class="em">Ma l\'incrocio con la vostra agenda resta a voi.</span> Il passaggio dialogo → dati strutturati lo costruirete voi alle 11:15.'},
-    {au:90,hu:10,t:'<b>Agente autonomo.</b> Il vostro agente legge entrambe le fonti — gli slot dell\'azienda e il vostro calendario — incrocia da solo e propone già la soluzione. Poi prenota e scrive nei vostri sistemi: massima autonomia, massima posta in gioco. Quanta concedergliene? Dipende dal costo dell\'errore — ci arriviamo.'}
+    {au:35,hu:65,t:'<b>LLM nel flusso.</b> Il linguaggio naturale diventa dati strutturati: scrivete — o dettate — come parlate, l\'LLM compila per voi e il gestionale fa il resto. L\'incrocio con la vostra agenda però resta a voi. <span class="em">Questo passaggio testo → JSON lo costruirete voi alle 11:15.</span>'},
+    {au:65,hu:35,t:'<b>Agente specializzato.</b> Conversa e usa i tool — in chat o al telefono, con voci quasi indistinguibili da un operatore — ma dentro un perimetro: accede solo al DB prenotazioni dell\'azienda. Propone gli slot e prenota da solo; la vostra agenda però non la vede. L\'incrocio è ancora vostro.'},
+    {au:90,hu:10,t:'<b>Agente generalista.</b> Accede a più fonti: gli slot dell\'azienda, il vostro calendario, perfino i tempi di viaggio su Maps. Incrocia tutto da solo, propone la soluzione già pronta, poi prenota e scrive nei vostri sistemi. Massima autonomia, massima posta in gioco: quanta concedergliene dipende dal costo dell\'errore — ci arriviamo.'}
   ];
   const idle=[
     'Livello 1 selezionato · premete ▶ per vedere la scena.',
     'Livello 2 selezionato · premete ▶ per vedere la scena.',
-    'Livello 3 selezionato · premete ▶ per vedere la scena.'
+    'Livello 3 selezionato · premete ▶ per vedere la scena.',
+    'Livello 4 selezionato · premete ▶ per vedere la scena.'
   ];
   let cur=-1,timers=[],playing=false;
   const later=(ms,fn)=>timers.push(setTimeout(fn,ms));
@@ -1057,6 +1096,7 @@ document.querySelectorAll('.rday').forEach(c=>c.addEventListener('click',e=>{if(
     say(idle[i]);
   }
   const FORM=['Maria Bianchi','Caldaia — via Roma 12'];
+  const FORM2=['Maria Bianchi','Caldaia — via Roma 12','Ven mattina'];
   function done(){playing=false;btn.textContent='↺ Rivedi il livello '+(cur+1);}
   function playL1(){
     const vals=qa('.dmfield .val'),slots=qa('.slotopt'),ag=qa('.agrow');
@@ -1080,33 +1120,45 @@ document.querySelectorAll('.rday').forEach(c=>c.addEventListener('click',e=>{if(
     });
   }
   function playL2(){
-    const bub=qa('.bub'),ag=qa('.agrow');
-    later(0,()=>{bub[0].classList.add('in');say('In chat — o al telefono, con una voce sintetica: niente campi, linguaggio naturale.');});
-    later(2400,()=>{bub[1].classList.add('in');say('Il sistema legge il DB e risponde con gli slot liberi.');});
-    later(4800,()=>ag[0].classList.add('ko'));
-    later(5400,()=>ag[2].classList.add('ko'));
-    later(6000,()=>{ag[1].classList.add('ok');say('Ma l\'agenda chi la controlla? Sempre Maria: l\'incrocio resta a lei.');});
-    later(8200,()=>{bub[2].classList.add('in');say('Scelta fatta — da un umano.');});
-    later(10400,()=>{bub[3].classList.add('in');say('Prenotato in linguaggio naturale. Comodo — ma l\'incrocio l\'ha fatto Maria.');});
-    later(12800,done);
+    const bub=qa('.bub'),vals=qa('.dmfield .val');
+    later(0,()=>{bub[0].classList.add('in');say('Maria scrive come parla — la sua agenda l\'ha già controllata da sola.');});
+    later(2800,()=>{q('.dmjson').classList.add('in');say('L\'LLM traduce il testo libero in dati strutturati…');});
+    later(4800,()=>say('…e compila il gestionale da solo: niente campi rigidi per Maria.'));
+    [4800,5300,5800].forEach((t,k)=>later(t,()=>{vals[k].textContent=FORM2[k];vals[k].classList.add('auto');}));
+    later(7400,()=>{bub[1].classList.add('in');say('Il gestionale trova lo slot e conferma. Qui l\'LLM è solo il traduttore.');});
+    later(9800,()=>say('Comodo. Ma la scelta del momento giusto — l\'incrocio — l\'ha fatta Maria, prima di scrivere.'));
+    later(12000,done);
   }
   function playL3(){
     const bub=qa('.bub'),ln=qa('.ln');
-    later(0,()=>{bub[0].classList.add('in');say('Stavolta l\'agente lavora per Maria: basta un messaggio.');});
-    later(2000,()=>{ln[0].classList.add('in');say('Interroga le disponibilità dell\'azienda…');});
+    later(0,()=>{bub[0].classList.add('in');say('Un agente vero: conversa e usa i tool dell\'azienda.');});
+    later(2000,()=>{ln[0].classList.add('in');say('Interroga il DB prenotazioni da solo…');});
     later(3000,()=>ln[1].classList.add('in'));
-    later(4000,()=>{ln[2].classList.add('in');say('…e il calendario di Maria: vede entrambe le fonti.');});
-    later(5000,()=>ln[3].classList.add('in'));
-    later(6000,()=>{ln[4].classList.add('in');say('L\'incrocio lo fa lui: nessun umano ha confrontato due agende.');});
-    later(7600,()=>{bub[1].classList.add('in');say('E propone direttamente la soluzione — già al corrente di tutto.');});
-    later(9800,()=>bub[2].classList.add('in'));
-    later(10800,()=>{ln[5].classList.add('in');say('Conferma ricevuta: prenota…');});
-    later(11800,()=>ln[6].classList.add('in'));
-    later(12600,()=>{ln[7].classList.add('in');say('…e scrive anche nel calendario di Maria.');});
-    later(13600,()=>bub[3].classList.add('in'));
-    later(15000,()=>{say('Due fonti lette e incrociate, due sistemi scritti — da solo. Autonomia ↑ = posta in gioco ↑.');done();});
+    later(4200,()=>{bub[1].classList.add('in');say('…e propone gli slot in chat.');});
+    later(6400,()=>{ln[2].classList.add('in');say('Ma vede solo il DB aziendale: l\'agenda di Maria è fuori dal suo perimetro.');});
+    later(8600,()=>{bub[2].classList.add('in');say('L\'incrocio con l\'agenda? Lo ha fatto Maria, come sempre.');});
+    later(10400,()=>ln[3].classList.add('in'));
+    later(11200,()=>ln[4].classList.add('in'));
+    later(12000,()=>{bub[3].classList.add('in');say('Prenotato. Autonomo sì — ma dentro un perimetro stretto.');});
+    later(13800,done);
   }
-  const SCRIPTS=[playL1,playL2,playL3];
+  function playL4(){
+    const bub=qa('.bub'),ln=qa('.ln');
+    later(0,()=>{bub[0].classList.add('in');say('Stavolta l\'agente lavora per Maria: basta un messaggio.');});
+    later(1800,()=>{ln[0].classList.add('in');say('Interroga gli slot dell\'azienda…');});
+    later(2800,()=>ln[1].classList.add('in'));
+    later(3800,()=>{ln[2].classList.add('in');say('…il calendario di Maria…');});
+    later(4800,()=>ln[3].classList.add('in'));
+    later(5800,()=>{ln[4].classList.add('in');say('…e perfino il tempo di viaggio su Maps.');});
+    later(6800,()=>ln[5].classList.add('in'));
+    later(8200,()=>{bub[1].classList.add('in');say('Incrocia tutto da solo e propone la soluzione già pronta.');});
+    later(10400,()=>bub[2].classList.add('in'));
+    later(11400,()=>{ln[6].classList.add('in');say('Conferma ricevuta: prenota e scrive nel calendario.');});
+    later(12400,()=>ln[7].classList.add('in'));
+    later(13200,()=>bub[3].classList.add('in'));
+    later(14800,()=>{say('Più fonti lette e incrociate, più sistemi scritti — da solo. Autonomia ↑ = posta in gioco ↑.');done();});
+  }
+  const SCRIPTS=[playL1,playL2,playL3,playL4];
   btn.addEventListener('click',()=>{
     if(playing)return;playing=true;
     demos[cur].innerHTML=init[cur];          /* rigioca da pulito */
