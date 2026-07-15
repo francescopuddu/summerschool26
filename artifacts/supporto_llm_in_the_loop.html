@@ -50,6 +50,25 @@
   .week .d .t{font-size:12.5px;font-weight:700;margin-top:2px;line-height:1.3}
   .week .d.now{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 8px 24px -18px rgba(15,118,110,.7)}
   .week .d.now .g{color:var(--accent-2)}
+  /* recap giornate (00 · Dove eravamo) */
+  .recap{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px;align-items:start}
+  @media(max-width:860px){.recap{grid-template-columns:1fr}}
+  .rday{border:1.5px solid var(--line);border-radius:14px;background:var(--card);padding:16px 18px;cursor:pointer;transition:all .25s}
+  .rday .g{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .rday .tools{display:flex;gap:6px;flex-wrap:wrap;margin:9px 0 8px}
+  .rday .tools i{font-style:normal;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--accent-2);background:var(--accent-soft);border:1px solid var(--accent-soft2);border-radius:6px;padding:2px 8px}
+  .rday .sum{font-size:13.5px;color:var(--ink-2);margin:0}
+  .rday .cue{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:12px;display:flex;align-items:center;gap:7px}
+  .rday .cue::before{content:"▸";color:var(--accent);transition:transform .25s}
+  .rday.open .cue::before{transform:rotate(90deg)}
+  .rday ul.ex{display:none;list-style:none;margin:12px 0 0;padding:12px 0 0;border-top:1px dashed var(--line)}
+  .rday ul.ex li{font-size:13.5px;margin-bottom:8px;padding-left:22px;position:relative}
+  .rday ul.ex li:last-child{margin-bottom:0}
+  .rday ul.ex li::before{content:"⚙";position:absolute;left:0;color:var(--accent)}
+  .rday:hover{border-color:var(--line-strong)}
+  .rday.open{border-color:var(--accent);background:linear-gradient(180deg,#fff,#fafffe);box-shadow:0 10px 30px -20px rgba(15,118,110,.6)}
+  .rday.open ul.ex{display:block}
+
   h1{font-size:clamp(40px,8vw,84px);line-height:.98;letter-spacing:-.02em;font-weight:850;margin:0 0 18px}
   h2{font-size:clamp(27px,4.4vw,44px);line-height:1.04;letter-spacing:-.015em;font-weight:850;margin:0 0 16px}
   h3{font-size:19px;font-weight:750;margin:30px 0 6px}
@@ -137,9 +156,8 @@
   .procbtn:disabled{opacity:.5;cursor:default}
 
   /* scala autonomia */
-  .ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
-  @media(max-width:860px){.ladder{grid-template-columns:1fr 1fr}}
-  @media(max-width:560px){.ladder{grid-template-columns:1fr}}
+  .ladder{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+  @media(max-width:700px){.ladder{grid-template-columns:1fr}}
   .rung{border:1.5px solid var(--line);border-radius:14px;padding:16px 14px;background:var(--card-2);text-align:center;cursor:pointer;transition:all .25s;position:relative}
   .rung .lv{font-family:var(--mono);font-size:10.5px;color:var(--muted);letter-spacing:.08em}
   .rung .icn{font-size:26px;line-height:1.2;margin-top:6px}
@@ -153,6 +171,43 @@
   .meterbar.hu i{background:var(--amber)}
   .ladderdesc{margin-top:16px;font-size:15px;color:var(--ink-2);min-height:64px}
   .ladderdesc b{color:var(--ink)}
+
+  /* demo scala autonomia */
+  .demohead{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:22px;padding-top:18px;border-top:1px dashed var(--line)}
+  .demohead .task{font-family:var(--mono);font-size:12px;color:var(--ink-2);flex:1;min-width:220px}
+  .demohead .task b{color:var(--amber)}
+  .dmwrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+  .dmwrap.solo{grid-template-columns:minmax(0,520px);justify-content:center}
+  @media(max-width:860px){.dmwrap{grid-template-columns:1fr}}
+  .dmpane{border:1.5px solid var(--line);border-radius:14px;background:var(--card-2);padding:14px;min-height:230px}
+  .dmpane h5{margin:0 0 12px;font-family:var(--mono);font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .dmform{display:flex;flex-direction:column;gap:9px}
+  .dmfield{display:grid;grid-template-columns:96px 1fr;gap:8px;align-items:center}
+  .dmfield label{font-size:12.5px;font-weight:700;color:var(--ink-2)}
+  .dmfield .val{font-family:var(--mono);font-size:13.5px;min-height:34px;border:1.5px solid var(--line-strong);border-radius:8px;background:var(--card);padding:6px 10px;transition:all .3s;white-space:nowrap;overflow:hidden}
+  .dmfield .val.focus{border-color:var(--accent)}
+  .dmfield .val.focus::after{content:"▏";color:var(--accent);animation:dmblink 1s steps(1) infinite}
+  @keyframes dmblink{50%{opacity:0}}
+  .dmfield .val.auto{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-2);font-weight:700}
+  .dmsubmit{align-self:flex-start;font-size:13px;font-weight:700;border-radius:8px;background:var(--ink);color:#fff;padding:8px 16px;opacity:.35;transition:all .3s;margin-top:2px}
+  .dmsubmit.hot{opacity:1;transform:translateY(1px)}
+  .dmalert{font-size:13.5px;border:1.5px solid var(--red-soft2);background:var(--red-soft);color:#7c1d1d;border-radius:8px;padding:8px 11px;opacity:0;transition:opacity .4s;margin-top:2px}
+  .dmalert.warn{border-color:#efd9bb;background:var(--amber-soft);color:var(--amber)}
+  .dmalert.in{opacity:1}
+  .dmchat{display:flex;flex-direction:column;gap:8px}
+  .bub{max-width:88%;padding:8px 12px;border-radius:12px;font-size:14px;line-height:1.45;opacity:0;transform:translateY(6px);transition:all .35s}
+  .bub.in{opacity:1;transform:none}
+  .bub.cli{align-self:flex-start;background:var(--card);border:1px solid var(--line);border-bottom-left-radius:4px}
+  .bub.sys{align-self:flex-end;background:var(--accent-soft);border:1px solid var(--accent-soft2);border-bottom-right-radius:4px}
+  .bub .who{display:block;font-family:var(--mono);font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+  .dmjson{font-family:var(--mono);font-size:12px;line-height:1.55;background:var(--card);border:1.5px dashed var(--accent-soft2);border-radius:10px;padding:10px 12px;color:var(--accent-2);white-space:pre;overflow-x:auto;opacity:0;transition:opacity .4s;margin:0 0 12px}
+  .dmjson.in{opacity:1}
+  .dmlog{font-family:var(--mono);font-size:12.5px;line-height:1.7;background:#20201e;color:#c9d6d0;border-radius:10px;padding:12px 14px;min-height:180px}
+  .dmlog .ln{display:block;opacity:0;transition:opacity .3s}
+  .dmlog .ln.in{opacity:1}
+  .dmlog .ln.tool{color:#8fe0d5}
+  .dmlog .ln.res{color:#e8c68a}
+  .dmlog .ln.okl{color:#9be49b}
 
   /* pareto */
   .ptabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
@@ -261,6 +316,50 @@
     <div class="d"><div class="g">Venerdì</div><div class="t">Project work</div></div>
   </div>
   <div class="scrollcue"><span class="a">↓</span> scorri per iniziare · frecce ← → per saltare di sezione</div>
+</div></section>
+
+<!-- ============ 00 RECAP ============ -->
+<section id="srecap"><div class="wrap reveal">
+  <div class="kicker"><span class="n">00</span> Dove eravamo</div>
+  <h2>Tre giorni, <span class="em">cinque strumenti</span></h2>
+  <p class="lead">Check di base prima di partire. Un click su ogni giornata: cosa avete visto — e <b>cosa ci potete già automatizzare</b>.</p>
+  <div class="recap">
+    <div class="rday">
+      <div class="g">Lunedì</div>
+      <div class="tools"><i>LLM</i></div>
+      <p class="sum">Un modello che <b>predice il prossimo token</b> — <span class="mono">y = Wx + b</span>, embeddings, attention. Tutto il resto della settimana è costruito sopra questo.</p>
+      <div class="cue">cosa ci automatizzate</div>
+      <ul class="ex">
+        <li>Classificare i reclami in arrivo per tipo e urgenza</li>
+        <li>Estrarre dati da testo libero: email, verbali, segnalazioni</li>
+        <li>Sintetizzare un documento di 40 pagine in mezza</li>
+      </ul>
+    </div>
+    <div class="rday">
+      <div class="g">Martedì</div>
+      <div class="tools"><i>Chat</i><i>Agenti</i><i>Cowork</i></div>
+      <p class="sum">La <b>Chat</b>: system / user / assistant, la "memoria" è solo contesto. Poi tool + agent loop + connettori: la chat diventa un <b>agente</b>. E <b>Cowork</b>: l'agente dentro la cartella dove lavorate.</p>
+      <div class="cue">cosa ci automatizzate</div>
+      <ul class="ex">
+        <li>Bozze di risposta ai clienti, riscritture, traduzioni</li>
+        <li>Un agente che consulta i vostri file e connettori prima di rispondere</li>
+        <li>Revisione di documenti in una cartella di lavoro (l'esercizio sul bando)</li>
+      </ul>
+    </div>
+    <div class="rday">
+      <div class="g">Mercoledì</div>
+      <div class="tools"><i>Claude Code</i><i>Artifact</i></div>
+      <p class="sum"><b>Claude Code</b>: vibe coding — l'app dei treni costruita descrivendola, git come checkpoint. E gli <b>Artifact</b>: la mini-app che esce da una chat (la dashboard fornitori dall'Excel).</p>
+      <div class="cue">cosa ci automatizzate</div>
+      <ul class="ex">
+        <li>Una webapp interna senza scrivere una riga di codice</li>
+        <li>Un'automazione ricorrente: dagli appunti del revisore al gestionale</li>
+        <li>Una dashboard decisionale a partire da un Excel</li>
+      </ul>
+    </div>
+  </div>
+  <p class="hint">In aula: prima di aprire ogni carta, giro veloce — "voi, con questo, cosa automatizzereste?"</p>
+  <div class="callout">Cinque nomi, <b>un solo modello sotto</b>: cambia l'harness — quanto contesto vede, quali strumenti ha, quanta libertà gli lasciamo. La domanda di oggi è proprio questa: <b>dove metterlo dentro un processo vero, e con quanta autonomia</b>.</div>
 </div></section>
 
 <!-- ============ 01 HOOK ============ -->
@@ -386,20 +485,90 @@
 <section id="s6"><div class="wrap reveal">
   <div class="kicker"><span class="n">06</span> La scala dell'autonomia</div>
   <h2>Dal modulo <span class="em">all'agente</span></h2>
-  <p class="lead">Prendiamo un processo che conoscete bene: la <b>prenotazione di un intervento</b> (o di un appuntamento, o di un viaggio). Lo stesso compito si può automatizzare a quattro livelli molto diversi. Cliccate sui gradini.</p>
+  <p class="lead">Prendiamo un processo che conoscete bene: la <b>prenotazione dell'intervento di un tecnico</b>. Stessa richiesta — <i>«un tecnico per la caldaia, giovedì pomeriggio»</i> — e stesso imprevisto: <b>giovedì è al completo</b>. Guardate come la gestiscono tre livelli di automazione molto diversi. Cliccate un gradino, poi premete ▶.</p>
 
   <div class="panel star">
     <div class="ladder" id="ladder">
-      <div class="rung" data-i="0"><div class="lv">LIVELLO 1</div><div class="icn">📄</div><div class="nm">Modulo standardizzato</div></div>
-      <div class="rung" data-i="1"><div class="lv">LIVELLO 2</div><div class="icn">💬</div><div class="nm">Chatbot a regole</div></div>
-      <div class="rung" data-i="2"><div class="lv">LIVELLO 3</div><div class="icn">🎙️</div><div class="nm">Agente vocale</div></div>
-      <div class="rung" data-i="3"><div class="lv">LIVELLO 4</div><div class="icn">🤖</div><div class="nm">Agente generalista</div></div>
+      <div class="rung on" data-i="0"><div class="lv">LIVELLO 1</div><div class="icn">📄</div><div class="nm">Modulo standardizzato</div></div>
+      <div class="rung" data-i="1"><div class="lv">LIVELLO 2</div><div class="icn">✨</div><div class="nm">LLM nel flusso</div></div>
+      <div class="rung" data-i="2"><div class="lv">LIVELLO 3</div><div class="icn">🤖</div><div class="nm">Agente autonomo</div></div>
     </div>
     <div class="meters">
       <span class="ml">Autonomia del sistema</span><div class="meterbar au"><i id="mAu" style="width:10%"></i></div>
       <span class="ml">Intervento umano</span><div class="meterbar hu"><i id="mHu" style="width:90%"></i></div>
     </div>
-    <p class="ladderdesc" id="ladderDesc">Scegliete un gradino: per ognuno, più autonomia del sistema e meno intervento umano — ma anche una posta in gioco diversa quando qualcosa va storto.</p>
+    <p class="ladderdesc" id="ladderDesc"></p>
+
+    <div class="demohead">
+      <span class="task">🎬 Scenario: <b>«tecnico per la caldaia, giovedì pomeriggio»</b> — ma giovedì è pieno.</span>
+      <button class="procbtn" id="ladPlay">▶ Guarda il livello 1</button>
+    </div>
+
+    <!-- L1: solo il modulo -->
+    <div class="dmwrap solo" id="demo0">
+      <div class="dmpane">
+        <h5>Cosa vede l'utente · modulo web</h5>
+        <div class="dmform">
+          <div class="dmfield"><label>Nome</label><div class="val" data-f="0"></div></div>
+          <div class="dmfield"><label>Impianto</label><div class="val" data-f="1"></div></div>
+          <div class="dmfield"><label>Giorno</label><div class="val" data-f="2"></div></div>
+          <div class="dmfield"><label>Fascia</label><div class="val" data-f="3"></div></div>
+          <span class="dmsubmit">Invia richiesta</span>
+          <div class="dmalert">⛔ Slot non disponibile: giovedì pomeriggio è al completo. Ricompilare il modulo.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L2: chat + estrazione LLM -->
+    <div class="dmwrap" id="demo1" hidden>
+      <div class="dmpane">
+        <h5>Cosa vede l'utente</h5>
+        <div class="dmchat">
+          <div class="bub cli"><span class="who">Cliente</span>Buongiorno, mi servirebbe un tecnico per la caldaia, giovedì pomeriggio se possibile. Maria Bianchi, via Roma 12.</div>
+        </div>
+      </div>
+      <div class="dmpane">
+        <h5>Dietro le quinte · estrazione LLM</h5>
+        <pre class="dmjson">{ "impianto":  "caldaia",
+  "cliente":   "Maria Bianchi",
+  "indirizzo": "via Roma 12",
+  "giorno":    "gio 16/07",
+  "fascia":    "pomeriggio" }</pre>
+        <div class="dmform">
+          <div class="dmfield"><label>Nome</label><div class="val" data-f="0"></div></div>
+          <div class="dmfield"><label>Impianto</label><div class="val" data-f="1"></div></div>
+          <div class="dmfield"><label>Giorno</label><div class="val" data-f="2"></div></div>
+          <div class="dmfield"><label>Fascia</label><div class="val" data-f="3"></div></div>
+          <div class="dmalert warn">⚠ Giovedì pomeriggio: nessuno slot libero. In coda per l'operatore.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L3: chat + backstage tool call -->
+    <div class="dmwrap" id="demo2" hidden>
+      <div class="dmpane">
+        <h5>Cosa vede l'utente · chat</h5>
+        <div class="dmchat">
+          <div class="bub cli"><span class="who">Cliente</span>Buongiorno, mi servirebbe un tecnico per la caldaia, giovedì pomeriggio se possibile. Maria Bianchi, via Roma 12.</div>
+          <div class="bub sys"><span class="who">Agente</span>Giovedì pomeriggio siamo al completo. Posso proporle venerdì 17, ore 9:00–11:00: va bene?</div>
+          <div class="bub cli"><span class="who">Cliente</span>Sì, venerdì va benissimo.</div>
+          <div class="bub sys"><span class="who">Agente</span>Fatto! Tecnico prenotato per venerdì 9:00–11:00 — pratica #1042. ✅</div>
+        </div>
+      </div>
+      <div class="dmpane">
+        <h5>Dietro le quinte · tool &amp; DB</h5>
+        <div class="dmlog">
+          <span class="ln tool">→ cerca_slot(giorno:"gio 16/07", fascia:"pom")</span>
+          <span class="ln res">← 0 slot disponibili</span>
+          <span class="ln tool">→ cerca_slot(giorno:"ven 17/07")</span>
+          <span class="ln res">← 1 slot: 09:00–11:00</span>
+          <span class="ln tool">→ crea_prenotazione("M. Bianchi", ven 09–11)</span>
+          <span class="ln okl">← OK · prenotazione #1042 ✓</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="cap" id="ladStatus" style="text-align:center">Livello 1 selezionato · premete ▶ per vedere la scena.</p>
   </div>
 
   <p style="margin-top:20px">Prima degli LLM esisteva solo il primo gradino: si automatizzava solo ciò che l'utente compilava in campi rigidi. Le voci sintetiche di oggi sono in certi casi difficilmente distinguibili da un operatore umano. Ma attenzione: <b>l'AI può sbagliare</b> — nel 2024 <span class="em">Air Canada</span> ha dovuto rimborsare un cliente a cui il suo chatbot aveva fornito una politica di rimborso inventata. Un tribunale canadese ha stabilito che l'azienda risponde di ciò che il suo bot dichiara — respingendo la tesi che il chatbot fosse "un'entità separata".</p>
@@ -699,13 +868,16 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 let _scrTick=false;const _prog=document.getElementById('prog');
 addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimationFrame(()=>{_scrTick=false;
   const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight);_prog.style.width=(p*100)+'%';});});
-(function(){const labels={s0:'Intro',s1:'12 ore senza umani',s2:'Perché automatizzare',s3:'Waymo 1:40',s4:'Prima il processo',s5:'Iterativo',s6:'Scala dell\'autonomia',s7:'Use case',s8:'Esercizio: mappa',s9:'Pareto',s10:'Benchmark',s11:'4 passi',secon:'Quanto costa',s12:'Rischi',squiz:'Quiz',s13:'Governance'};
+(function(){const labels={s0:'Intro',srecap:'Dove eravamo',s1:'12 ore senza umani',s2:'Perché automatizzare',s3:'Waymo 1:40',s4:'Prima il processo',s5:'Iterativo',s6:'Scala dell\'autonomia',s7:'Use case',s8:'Esercizio: mappa',s9:'Pareto',s10:'Benchmark',s11:'4 passi',secon:'Quanto costa',s12:'Rischi',squiz:'Quiz',s13:'Governance'};
  const nav=document.getElementById('dots');const secs=[...document.querySelectorAll('section')];
  secs.forEach(s=>{const a=document.createElement('a');a.href='#'+s.id;a.innerHTML='<span>'+(labels[s.id]||s.id)+'</span>';a.dataset.id=s.id;nav.appendChild(a);});
  const links=[...nav.querySelectorAll('a')];
  const ob=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.dataset.id===e.target.id));}});},{rootMargin:'-45% 0px -45% 0px'});
  secs.forEach(s=>ob.observe(s));
 })();
+
+/* ---------- recap giornate ---------- */
+document.querySelectorAll('.rday').forEach(c=>c.addEventListener('click',()=>c.classList.toggle('open')));
 
 /* ---------- Waymo counter ---------- */
 (function(){
@@ -752,22 +924,86 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
   });
 })();
 
-/* ---------- scala autonomia ---------- */
+/* ---------- scala autonomia: 3 livelli, demo animate ---------- */
 (function(){
   const rungs=[...document.querySelectorAll('#ladder .rung')];
   const desc=document.getElementById('ladderDesc');
-  const mAu=document.getElementById('mAu');const mHu=document.getElementById('mHu');
+  const mAu=document.getElementById('mAu'),mHu=document.getElementById('mHu');
+  const btn=document.getElementById('ladPlay');
+  const status=document.getElementById('ladStatus');
+  const demos=[0,1,2].map(i=>document.getElementById('demo'+i));
+  const init=demos.map(d=>d.innerHTML);            /* snapshot per il reset */
   const data=[
-    {au:10,hu:90,t:'<b>Modulo standardizzato.</b> L\'umano fa tutto: compila campi rigidi, la macchina capisce solo quelli. Era l\'unico gradino possibile prima degli LLM. Errore possibile: quasi solo umano.'},
-    {au:35,hu:65,t:'<b>Chatbot a regole.</b> Percorsi fissi progettati a mano: "premi 1 per…". Automatizza i casi previsti, e su tutto il resto fa scappare l\'utente verso l\'operatore.'},
-    {au:65,hu:35,t:'<b>Agente vocale.</b> Capisce il linguaggio naturale, parla con voce quasi indistinguibile da un umano, accede ai sistemi via API. Il prodotto esiste oggi — e con lui il rischio Air Canada: risponde l\'azienda di ciò che il bot dichiara.'},
-    {au:90,hu:10,t:'<b>Agente generalista.</b> Pianifica, sceglie i tool, reagisce a ciò che trova, consegna il compito intero. Massima autonomia, massima posta in gioco: non più una risposta sbagliata in chat, ma un\'azione sbagliata nel mondo. Quanta autonomia conviene concedere? Dipende dal costo dell\'errore — ci arriviamo.'}
+    {au:10,hu:90,t:'<b>Modulo standardizzato.</b> L\'umano fa tutto: campi rigidi, la macchina capisce solo quelli. Prima degli LLM esistevano solo questo gradino e i chatbot a regole («premi 1 per…»): automatizzavano i casi previsti, e su tutto il resto rimandavano a un operatore. Davanti all\'imprevisto, si ricomincia da capo.'},
+    {au:45,hu:55,t:'<b>LLM nel flusso.</b> Il cliente scrive come parla; l\'LLM traduce il testo libero in dati strutturati e compila il modulo da solo — altro che «premi 1 per…». Ma decide ancora l\'umano: l\'imprevisto arriva sulla sua scrivania. <span class="em">Il passaggio testo → JSON lo costruirete voi alle 11:15.</span>'},
+    {au:90,hu:10,t:'<b>Agente autonomo.</b> Legge, interroga i sistemi con i tool, propone alternative e agisce — in chat o al telefono, con voci ormai quasi indistinguibili da un operatore. Risolve l\'imprevisto da solo: massima autonomia, massima posta in gioco — un\'azione sbagliata non è più solo una risposta sbagliata.'}
   ];
-  rungs.forEach((r,i)=>r.addEventListener('click',()=>{
-    rungs.forEach(x=>x.classList.remove('on'));r.classList.add('on');
+  const idle=[
+    'Livello 1 selezionato · premete ▶ per vedere la scena.',
+    'Livello 2 selezionato · premete ▶ per vedere la scena.',
+    'Livello 3 selezionato · premete ▶ per vedere la scena.'
+  ];
+  let cur=-1,timers=[],playing=false;
+  const later=(ms,fn)=>timers.push(setTimeout(fn,ms));
+  const q=sel=>demos[cur].querySelector(sel);
+  const qa=sel=>[...demos[cur].querySelectorAll(sel)];
+  const say=t=>{status.textContent=t;};
+  function typeInto(el,txt,i){ if(i>txt.length){el.classList.remove('focus');return;}
+    el.textContent=txt.slice(0,i); later(30,()=>typeInto(el,txt,i+1)); }
+  function clearAll(){timers.forEach(clearTimeout);timers=[];playing=false;}
+  function select(i){
+    clearAll();cur=i;
+    rungs.forEach((r,k)=>r.classList.toggle('on',k===i));
     mAu.style.width=data[i].au+'%';mHu.style.width=data[i].hu+'%';
     desc.innerHTML=data[i].t;
-  }));
+    demos.forEach((d,k)=>{d.hidden=k!==i;if(k===i)d.innerHTML=init[k];});
+    btn.textContent='▶ Guarda il livello '+(i+1);
+    say(idle[i]);
+  }
+  const FORM=['Maria Bianchi','Caldaia — via Roma 12','Giovedì 16/07','Pomeriggio (14–18)'];
+  function done(){playing=false;btn.textContent='↺ Rivedi il livello '+(cur+1);}
+  function playL1(){
+    const vals=qa('.dmfield .val');
+    say('Maria compila il modulo, campo per campo…');
+    [200,1400,2900,4200].forEach((t,k)=>later(t,()=>{vals[k].classList.add('focus');typeInto(vals[k],FORM[k],0);}));
+    later(5600,()=>{q('.dmsubmit').classList.add('hot');say('Invia richiesta…');});
+    later(6700,()=>{q('.dmalert').classList.add('in');say('⛔ Giovedì è pieno. Il modulo sa solo dire di no: nessuna alternativa proposta.');});
+    later(9200,()=>{vals.forEach(v=>{v.textContent='';});q('.dmsubmit').classList.remove('hot');
+      say('Si ricomincia da capo — nuovo modulo o telefonata. L\'imprevisto è tutto a carico dell\'umano.');});
+    later(11500,done);
+  }
+  function playL2(){
+    const vals=qa('.dmfield .val');
+    later(0,()=>{q('.bub').classList.add('in');say('Il cliente scrive come parla: nessun campo rigido.');});
+    later(2600,()=>{q('.dmjson').classList.add('in');say('L\'LLM estrae i dati dal testo libero…');});
+    later(4600,()=>say('…e compila il modulo da solo. Estrazione perfetta.'));
+    [4600,5000,5400,5800].forEach((t,k)=>later(t,()=>{vals[k].textContent=FORM[k];vals[k].classList.add('auto');}));
+    later(7300,()=>{q('.dmalert').classList.add('in');say('Ma giovedì è pieno: il conflitto l\'LLM non lo risolve.');});
+    later(9800,()=>say('L\'imprevisto finisce sulla scrivania di un operatore: è lui che richiama Maria.'));
+    later(12000,done);
+  }
+  function playL3(){
+    const bub=qa('.bub'),ln=qa('.ln');
+    later(0,()=>{bub[0].classList.add('in');say('Stessa richiesta, stesso imprevisto.');});
+    later(2200,()=>{ln[0].classList.add('in');say('L\'agente interroga il DB delle disponibilità…');});
+    later(3400,()=>ln[1].classList.add('in'));
+    later(4600,()=>{ln[2].classList.add('in');say('Giovedì pieno: cerca un\'alternativa da solo.');});
+    later(5800,()=>ln[3].classList.add('in'));
+    later(7000,()=>{bub[1].classList.add('in');say('…e la propone in chat, senza passare da un operatore.');});
+    later(9600,()=>bub[2].classList.add('in'));
+    later(11000,()=>{ln[4].classList.add('in');say('Conferma ricevuta: l\'agente scrive nel gestionale.');});
+    later(12200,()=>ln[5].classList.add('in'));
+    later(13000,()=>bub[3].classList.add('in'));
+    later(14600,()=>{say('Imprevisto risolto senza umani in azienda. Ma notate: l\'agente ha appena scritto nel vostro DB. Autonomia ↑ = posta in gioco ↑.');done();});
+  }
+  const SCRIPTS=[playL1,playL2,playL3];
+  btn.addEventListener('click',()=>{
+    if(playing)return;playing=true;
+    demos[cur].innerHTML=init[cur];          /* rigioca da pulito */
+    SCRIPTS[cur]();
+  });
+  rungs.forEach((r,i)=>r.addEventListener('click',()=>select(i)));
+  select(0);
 })();
 
 /* ---------- pareto interattivo ---------- */
@@ -857,7 +1093,7 @@ addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimation
 
 /* ---------- minutaggio per sezione ---------- */
 (function(){
-  const MINS={s1:5,s2:6,s3:8,s4:7,s5:10,s6:8,s7:10,s8:10,s9:8,s10:8,s11:4,secon:6,s12:18,squiz:8,s13:8};
+  const MINS={srecap:5,s1:5,s2:6,s3:8,s4:7,s5:10,s6:10,s7:10,s8:10,s9:8,s10:8,s11:4,secon:6,s12:18,squiz:8,s13:8};
   for(const id in MINS){
     const k=document.querySelector('#'+id+' .kicker');
     if(k){const s=document.createElement('span');s.className='mins';s.textContent='~'+MINS[id]+'′';k.appendChild(s);}
