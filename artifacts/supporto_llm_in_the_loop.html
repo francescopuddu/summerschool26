@@ -1019,24 +1019,6 @@ Nota di robustezza Mermaid: metti tra virgolette le etichette che contengono par
   </div>
 </div></section>
 
-<!-- ============ 13 TAKEAWAYS ============ -->
-<section id="s13"><div class="wrap reveal">
-  <div class="kicker"><span class="n">✓</span> Per chiudere</div>
-  <h2>La governance <span class="em">non è un freno</span></h2>
-  <p class="lead">Nessuna misura da sola elimina il rischio: conferme, sandbox, supervisione, verifica degli output — ognuna copre un pezzo. Messe insieme, però, lo rendono governabile. <b>La governance non è un freno all'automazione: è la condizione che la rende davvero adottabile</b> — come la cintura di sicurezza non è contro la guida.</p>
-  <div class="callout"><b>E non è solo buon senso: è legge.</b> L'<b>EU AI Act</b> è in vigore: dal 2025 valgono i divieti (incluso il riconoscimento delle emozioni sul luogo di lavoro) e l'obbligo di <b>alfabetizzazione AI</b> in azienda — questa settimana di formazione è anche quello. Dal <b>2 agosto 2026</b> scattano gli obblighi di trasparenza: sapere quando si interagisce con un'AI, etichettare i contenuti generati. Gli obblighi "alto rischio" sono rinviati al 2027–28. Per voi: le regole aziendali sull'AI che arriveranno non sono zelo — sono compliance.</div>
-  <div class="takes">
-    <div class="take"><span class="k">01</span><h4>Umano + macchina, quasi sempre</h4><p>Nemmeno Waymo elimina gli umani (1 ogni 40 veicoli). Il lavoro cambia livello: da esecutore a supervisore.</p></div>
-    <div class="take"><span class="k">02</span><h4>Prima il processo, poi l'automazione</h4><p>Automatizzare l'inefficienza la amplifica (Gates). Mappare, migliorare, poi automatizzare.</p></div>
-    <div class="take"><span class="k">03</span><h4>I processi veri sono iterativi</h4><p>Decisioni e ritorni, non liste di passi. È per questo che gli agenti — che iterano — li sanno automatizzare.</p></div>
-    <div class="take"><span class="k">04</span><h4>"Migliore per cosa?"</h4><p>Scopo → frontiera di Pareto → trade-off costo-qualità → prova sui propri dati. Il passo 4 non si salta.</p></div>
-    <div class="take"><span class="k">05</span><h4>Tre cassetti: input, output, azioni</h4><p>Cosa gli do, cosa mi restituisce, cosa può fare da solo. Ogni nuovo strumento AI si valuta così.</p></div>
-    <div class="take"><span class="k">06</span><h4>Autonomia ∝ 1 / costo dell'errore</h4><p>Dove l'errore costa, l'umano resta nel ciclo: conferme, sandbox, possibilità di fermare tutto.</p></div>
-  </div>
-  <div class="callout warn" style="margin-top:26px"><b>Un'ultima cosa, sul vostro cervello.</b> Uno studio preliminare del MIT Media Lab (<i>Your Brain on ChatGPT</i>, 2025 — non ancora peer-reviewed, campione piccolo) misura via EEG una <b>ridotta connettività neurale durante il compito di scrittura</b> in chi la delega sistematicamente all'AI: i ricercatori la chiamano <b>debito cognitivo</b>. Prendetelo per quello che è — un segnale, non una sentenza. La lezione non è "non usate l'AI": è usarla per <b>moltiplicarvi, non per spegnervi</b> — l'AI prepara, voi decidete, verificate e restate padroni del contenuto. <a href="https://www.media.mit.edu/publications/your-brain-on-chatgpt/" target="_blank" rel="noopener" style="color:var(--red)">Lo studio →</a></div>
-  <p class="hint" style="margin-top:24px">Alle 11:15 si torna al concreto: <a href="supporto_api_flusso_informativo.html" style="color:var(--accent);font-weight:700">API e flusso informativo →</a> — aprirete voi le porte da cui gli agenti fanno entrare i dati nei processi.</p>
-</div></section>
-
 <footer><div class="wrap">
   <b>Summer School 2026 — Giornata 4</b> · Processi Produttivi e Use Case: LLM in the Loop · Daniele Martini.
 </div></footer>
@@ -1048,7 +1030,7 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 let _scrTick=false;const _prog=document.getElementById('prog');
 addEventListener('scroll',()=>{if(_scrTick)return;_scrTick=true;requestAnimationFrame(()=>{_scrTick=false;
   const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight);_prog.style.width=(p*100)+'%';});});
-(function(){const labels={s0:'Intro',srecap:'Dove eravamo',s1:'12 ore senza umani',s2:'Perché automatizzare',s3:'Waymo 1:40',s4:'Prima il processo',s5:'Iterativo',s6:'Scala dell\'autonomia',s7:'Use case',s8:'Esercizio: mappa',s9:'Pareto',s10:'Benchmark',s11:'4 passi',secon:'Quanto costa',s12:'Rischi',squiz:'Quiz',s13:'Governance'};
+(function(){const labels={s0:'Intro',srecap:'Dove eravamo',s1:'12 ore senza umani',s2:'Perché automatizzare',s3:'Waymo 1:40',s4:'Prima il processo',s5:'Iterativo',s6:'Scala dell\'autonomia',s7:'Use case',s8:'Esercizio: mappa',s9:'Pareto',s10:'Benchmark',s11:'4 passi',secon:'Quanto costa',s12:'Rischi',squiz:'Quiz'};
  const nav=document.getElementById('dots');const secs=[...document.querySelectorAll('section')];
  secs.forEach(s=>{const a=document.createElement('a');a.href='#'+s.id;a.innerHTML='<span>'+(labels[s.id]||s.id)+'</span>';a.dataset.id=s.id;nav.appendChild(a);});
  const links=[...nav.querySelectorAll('a')];
@@ -1323,7 +1305,7 @@ document.querySelectorAll('.rday').forEach(c=>c.addEventListener('click',e=>{if(
 
 /* ---------- minutaggio per sezione ---------- */
 (function(){
-  const MINS={srecap:8,s1:5,s2:6,s3:8,s4:7,s5:10,s6:10,s7:10,s8:10,s9:8,s10:8,s11:4,secon:6,s12:18,squiz:8,s13:8};
+  const MINS={srecap:8,s1:5,s2:6,s3:8,s4:7,s5:10,s6:10,s7:10,s8:10,s9:8,s10:8,s11:4,secon:6,s12:18,squiz:8};
   for(const id in MINS){
     const k=document.querySelector('#'+id+' .kicker');
     if(k){const s=document.createElement('span');s.className='mins';s.textContent='~'+MINS[id]+'′';k.appendChild(s);}
