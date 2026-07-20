@@ -86,6 +86,23 @@
   }
   .card:hover { transform:translateY(-3px); border-color:var(--border-strong); box-shadow:0 14px 40px rgba(0,0,0,.35); }
   .shot { display:block; position:relative; aspect-ratio:16/10; overflow:hidden; background:var(--slate-800); border-bottom:1px solid var(--border); }
+  .demo-badge {
+    position:absolute; top:12px; right:12px; z-index:2;
+    display:inline-flex; align-items:center; gap:7px;
+    font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+    padding:5px 12px; border-radius:999px;
+    background:rgba(43,49,61,.88); backdrop-filter:blur(6px);
+    border:1px solid var(--border-strong); color:var(--fg-2);
+  }
+  .demo-badge::before { content:""; width:7px; height:7px; border-radius:50%; flex:none; }
+  .demo-badge.full    { border-color:rgba(116,199,124,.6); color:#a7dcac; }
+  .demo-badge.full::before    { background:#74c77c; }
+  .demo-badge.data    { border-color:rgba(234,168,50,.6); color:var(--amber-300); }
+  .demo-badge.data::before    { background:var(--amber-500); }
+  .demo-badge.partial { border-color:rgba(125,180,224,.55); color:var(--blue-400); }
+  .demo-badge.partial::before { background:var(--blue-500); }
+  .demo-badge.repo    { color:var(--fg-3); }
+  .demo-badge.repo::before    { background:var(--fg-4); }
   .shot img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; transition:transform .3s ease; }
   .card:hover .shot img { transform:scale(1.025); }
 
@@ -154,123 +171,9 @@
   <div class="wrap">
     <div class="grid">
 
-      <!-- Alstom — Sara -->
+      <!-- Microelettronica — Farnaz · demo completa -->
       <article class="card">
-        <a class="shot" href="https://progetto-indus.vercel.app/monitoraggio_attrezzature.html" target="_blank" rel="noopener"><img src="img/progetto-indus.jpg" alt="Monitoraggio Attrezzature e Manutenzione Predittiva — Alstom" loading="lazy"></a>
-        <div class="card-body">
-          <div class="card-top"><span class="chip">Alstom</span><span class="who">Sara</span></div>
-          <h3>Monitoraggio Attrezzature &amp; Manutenzione Predittiva</h3>
-          <p>La sala prove sotto controllo in un'unica dashboard: ore d'uso, guasti, scadenze di taratura e <strong>proiezioni predittive</strong> che segnalano quali attrezzature andranno in manutenzione prima che si fermino.</p>
-          <span class="hint">La demo online mostra l'interfaccia; i dati completi arrivano dal server locale dell'app.</span>
-          <div class="actions">
-            <a class="btn primary" href="https://progetto-indus.vercel.app/monitoraggio_attrezzature.html" target="_blank" rel="noopener">Apri la demo</a>
-            <a class="btn ghost" href="https://github.com/corsara24/progetto_indus" target="_blank" rel="noopener">GitHub</a>
-          </div>
-        </div>
-      </article>
-
-      <!-- Alstom — Laura -->
-      <article class="card">
-        <a class="shot" href="app/automazionecavi/" target="_blank" rel="noopener"><img src="img/automazionecavi.jpg" alt="Confronto Liste Cavi — Alstom" loading="lazy"></a>
-        <div class="card-body">
-          <div class="card-top"><span class="chip">Alstom</span><span class="who">Laura</span></div>
-          <h3>Confronto Liste Cavi</h3>
-          <p>Carichi due liste cavi Excel e ottieni il confronto e l'<strong>istruzione operativa Word già impaginata</strong> per l'industrializzazione delle modifiche sui Coradia Stream. Un lavoro di ore ridotto a un click.</p>
-          <div class="actions">
-            <a class="btn primary" href="app/automazionecavi/" target="_blank" rel="noopener">Apri la demo</a>
-            <a class="btn ghost" href="https://github.com/lauraurso/Automazionecavi" target="_blank" rel="noopener">GitHub</a>
-          </div>
-        </div>
-      </article>
-
-      <!-- Alstom — Nazanin -->
-      <article class="card">
-        <a class="shot" href="https://github.com/hojam18/Report-generator" target="_blank" rel="noopener"><img src="img/report-generator.jpg" alt="Fleet Reliability Report Builder — Alstom" loading="lazy"></a>
-        <div class="card-body">
-          <div class="card-top"><span class="chip">Alstom</span><span class="who">Nazanin</span></div>
-          <h3>Fleet Reliability Report Builder</h3>
-          <p>Dagli export mensili di manutenzione a un <strong>report di affidabilità flotta</strong> impaginato per capitoli, pronto da rivedere, salvare in PDF e inviare via email — tutto dentro un'unica web app.</p>
-          <span class="hint">App con backend: si esegue in locale dal repository.</span>
-          <div class="actions">
-            <a class="btn ghost" href="https://github.com/hojam18/Report-generator" target="_blank" rel="noopener">GitHub</a>
-          </div>
-        </div>
-      </article>
-
-      <!-- Metra — Barbara -->
-      <article class="card">
-        <a class="shot" href="https://github.com/BarbaraUde/Avanzamento-contratti" target="_blank" rel="noopener"><img src="img/avanzamento-contratti.jpg" alt="Avanzamento Contratti — Metra" loading="lazy"></a>
-        <div class="card-body">
-          <div class="card-top"><span class="chip">Metra</span><span class="who">Barbara</span></div>
-          <h3>Pipeline Commesse &amp; Avanzamento Contratti</h3>
-          <p>Contratti, spedito e fatturato in un'unica pipeline con avanzamento a colpo d'occhio, import da Excel e <strong>closure letter generata e approvata direttamente in app</strong>, email precompilata inclusa.</p>
-          <span class="hint">App con backend: si esegue in locale dal repository.</span>
-          <div class="actions">
-            <a class="btn ghost" href="https://github.com/BarbaraUde/Avanzamento-contratti" target="_blank" rel="noopener">GitHub</a>
-          </div>
-        </div>
-      </article>
-
-      <!-- Autoguidovie -->
-      <article class="card">
-        <a class="shot" href="app/autoguidovie/" target="_blank" rel="noopener"><img src="img/autoguidovie.jpg" alt="Occupazione attesa delle corse — Autoguidovie" loading="lazy"></a>
-        <div class="card-body">
-          <div class="card-top"><span class="chip">Autoguidovie</span><span class="who">Team Autoguidovie</span></div>
-          <h3>Previsione Occupazione Corse</h3>
-          <p>Quanto sarà piena la corsa delle 7:40? Mappa della linea, fermate e <strong>affluenza attesa corsa per corsa</strong>, con il meteo del giorno integrato nel modello di previsione.</p>
-          <div class="actions">
-            <a class="btn primary" href="app/autoguidovie/" target="_blank" rel="noopener">Apri la demo</a>
-            <a class="btn ghost" href="https://github.com/niccofiore/summer-school-projectwork" target="_blank" rel="noopener">GitHub</a>
-          </div>
-        </div>
-      </article>
-
-      <!-- Lucchini -->
-      <article class="card">
-        <a class="shot" href="https://github.com/LoriGH25/FatturAI/releases" target="_blank" rel="noopener"><img src="img/fatturai.jpg" alt="FatturAI — Lucchini RS" loading="lazy"></a>
-        <div class="card-body">
-          <div class="card-top"><span class="chip">Lucchini RS</span><span class="who">Team Lucchini</span></div>
-          <h3>FatturAI — Compilazione ROD Spedizioni</h3>
-          <p>Incrocia stock di magazzino e produzione in corso e <strong>compila da solo il ROD Spedizioni del mese</strong>, applicando le regole di allocazione del pianificatore — con una chat AI per interrogare il risultato. App desktop con auto-update, rilasciata via CI.</p>
-          <div class="actions">
-            <a class="btn primary" href="https://github.com/LoriGH25/FatturAI/releases" target="_blank" rel="noopener">Scarica l'app</a>
-            <a class="btn ghost" href="https://github.com/LoriGH25/FatturAI" target="_blank" rel="noopener">GitHub</a>
-          </div>
-        </div>
-      </article>
-
-      <!-- ATM -->
-      <article class="card">
-        <a class="shot" href="app/atm/" target="_blank" rel="noopener"><img src="img/atm.jpg" alt="Programmazione lavori notturni Linea 1 — ATM" loading="lazy"></a>
-        <div class="card-body">
-          <div class="card-top"><span class="chip">ATM</span><span class="who">Team ATM</span></div>
-          <h3>Programmazione Lavori Notturni — Linea 1</h3>
-          <p>Manutenzioni, corse prova e trasferimenti della metro M1 in un <strong>calendario notturno con verifica automatica delle interferenze</strong>: importi gli Excel di programmazione e vedi subito cosa può convivere e cosa no.</p>
-          <span class="hint">Per provarla con i dati demo: <a href="app/atm/Manutenzioni_Programmate_20-26_luglio_2026.xlsx">manutenzioni</a> e <a href="app/atm/CorseProva_Movimentazioni_20-26_luglio_2026.xlsx">corse prova</a>, da importare nell'app.</span>
-          <div class="actions">
-            <a class="btn primary" href="app/atm/" target="_blank" rel="noopener">Apri la demo</a>
-            <a class="btn ghost" href="https://github.com/CristianoRombola96/programmazione-linea1" target="_blank" rel="noopener">GitHub</a>
-          </div>
-        </div>
-      </article>
-
-      <!-- Trenord — Alessandro -->
-      <article class="card">
-        <a class="shot" href="https://github.com/3107076/poc_letsencrypt" target="_blank" rel="noopener"><img src="img/poc-letsencrypt.jpg" alt="Rotazione automatica certificati SSL — Trenord" loading="lazy"></a>
-        <div class="card-body">
-          <div class="card-top"><span class="chip">Trenord</span><span class="who">Alessandro</span></div>
-          <h3>Rotazione Automatica Certificati SSL</h3>
-          <p>Un proof-of-concept infrastrutturale completo: certificati TLS che <strong>si rinnovano da soli</strong> (protocollo ACME, nginx, Docker) senza downtime — accompagnato da una spiegazione divulgativa che si legge come un piccolo corso.</p>
-          <span class="hint">PoC docker-compose: si esegue in locale dal repository.</span>
-          <div class="actions">
-            <a class="btn ghost" href="https://github.com/3107076/poc_letsencrypt" target="_blank" rel="noopener">GitHub</a>
-          </div>
-        </div>
-      </article>
-
-      <!-- Microelettronica — Farnaz -->
-      <article class="card">
-        <a class="shot" href="https://artamad.github.io/HSCB-Configurations/" target="_blank" rel="noopener"><img src="img/hscb-configurations.jpg" alt="Railway HSCB Selector — Microelettrica" loading="lazy"></a>
+        <a class="shot" href="https://artamad.github.io/HSCB-Configurations/" target="_blank" rel="noopener"><span class="demo-badge full">Demo completa</span><img src="img/hscb-configurations.jpg" alt="Railway HSCB Selector — Microelettrica" loading="lazy"></a>
         <div class="card-body">
           <div class="card-top"><span class="chip">Microelettrica</span><span class="who">Farnaz</span></div>
           <h3>Railway HSCB Selector</h3>
@@ -282,9 +185,53 @@
         </div>
       </article>
 
-      <!-- Microelettronica — Zouhair -->
+      <!-- Autoguidovie · demo completa -->
       <article class="card">
-        <a class="shot" href="app/collaudo-me1000/" target="_blank" rel="noopener"><img src="img/collaudo-me1000.jpg" alt="Collaudo ME1000 — Microelettrica" loading="lazy"></a>
+        <a class="shot" href="app/autoguidovie/" target="_blank" rel="noopener"><span class="demo-badge full">Demo completa</span><img src="img/autoguidovie.jpg" alt="Occupazione attesa delle corse — Autoguidovie" loading="lazy"></a>
+        <div class="card-body">
+          <div class="card-top"><span class="chip">Autoguidovie</span><span class="who">Team Autoguidovie</span></div>
+          <h3>Previsione Occupazione Corse</h3>
+          <p>Quanto sarà piena la corsa delle 7:40? Mappa della linea, fermate e <strong>affluenza attesa corsa per corsa</strong>, con il meteo del giorno integrato nel modello di previsione.</p>
+          <div class="actions">
+            <a class="btn primary" href="app/autoguidovie/" target="_blank" rel="noopener">Apri la demo</a>
+            <a class="btn ghost" href="https://github.com/niccofiore/summer-school-projectwork" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Microelettronica — Hussain · demo completa (dati demo inclusi) -->
+      <article class="card">
+        <a class="shot" href="app/amca/" target="_blank" rel="noopener"><span class="demo-badge full">Demo completa</span><img src="img/amca.jpg" alt="Fan Test Suite AMCA — Microelettrica" loading="lazy"></a>
+        <div class="card-body">
+          <div class="card-top"><span class="chip">Microelettrica</span><span class="who">Hussain</span></div>
+          <h3>Fan Test Suite — AMCA 210</h3>
+          <p>La suite di prova ventilatori secondo AMCA 210: criteri di accettazione, curve di performance, vibrazioni e rumore, <strong>giudizio PASS/FAIL automatico</strong> e report di laboratorio scaricabile.</p>
+          <span class="hint">«Load sample run» carica subito un giro di prova; volendo puoi usare i <a href="app/amca/plugfan_PF-1000_test_data.csv">dati demo CSV</a>.</span>
+          <div class="actions">
+            <a class="btn primary" href="app/amca/" target="_blank" rel="noopener">Apri la demo</a>
+            <a class="btn ghost" href="https://github.com/sadafhussain-a11y/Testing-Validation" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- ATM · demo con dati da caricare -->
+      <article class="card">
+        <a class="shot" href="app/atm/" target="_blank" rel="noopener"><span class="demo-badge data">Demo — carica i dati</span><img src="img/atm.jpg" alt="Programmazione lavori notturni Linea 1 — ATM" loading="lazy"></a>
+        <div class="card-body">
+          <div class="card-top"><span class="chip">ATM</span><span class="who">Team ATM</span></div>
+          <h3>Programmazione Lavori Notturni — Linea 1</h3>
+          <p>Manutenzioni, corse prova e trasferimenti della metro M1 in un <strong>calendario notturno con verifica automatica delle interferenze</strong>: importi gli Excel di programmazione e vedi subito cosa può convivere e cosa no.</p>
+          <span class="hint">Per vederla piena: scarica <a href="app/atm/Manutenzioni_Programmate_20-26_luglio_2026.xlsx">manutenzioni</a> e <a href="app/atm/CorseProva_Movimentazioni_20-26_luglio_2026.xlsx">corse prova</a> demo e importale nell'app.</span>
+          <div class="actions">
+            <a class="btn primary" href="app/atm/" target="_blank" rel="noopener">Apri la demo</a>
+            <a class="btn ghost" href="https://github.com/CristianoRombola96/programmazione-linea1" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Microelettronica — Zouhair · demo con dati da caricare -->
+      <article class="card">
+        <a class="shot" href="app/collaudo-me1000/" target="_blank" rel="noopener"><span class="demo-badge data">Demo — carica i dati</span><img src="img/collaudo-me1000.jpg" alt="Collaudo ME1000 — Microelettrica" loading="lazy"></a>
         <div class="card-body">
           <div class="card-top"><span class="chip">Microelettrica</span><span class="who">Zouhair</span></div>
           <h3>Collaudo ME1000 — Analisi &amp; Report</h3>
@@ -297,17 +244,88 @@
         </div>
       </article>
 
-      <!-- Microelettronica — Hussain -->
+      <!-- Alstom — Laura · demo, servono Excel propri -->
       <article class="card">
-        <a class="shot" href="app/amca/" target="_blank" rel="noopener"><img src="img/amca.jpg" alt="Fan Test Suite AMCA — Microelettrica" loading="lazy"></a>
+        <a class="shot" href="app/automazionecavi/" target="_blank" rel="noopener"><span class="demo-badge data">Demo — servono i tuoi Excel</span><img src="img/automazionecavi.jpg" alt="Confronto Liste Cavi — Alstom" loading="lazy"></a>
         <div class="card-body">
-          <div class="card-top"><span class="chip">Microelettrica</span><span class="who">Hussain</span></div>
-          <h3>Fan Test Suite — AMCA 210</h3>
-          <p>La suite di prova ventilatori secondo AMCA 210: criteri di accettazione, curve di performance, vibrazioni e rumore, <strong>giudizio PASS/FAIL automatico</strong> e report di laboratorio scaricabile.</p>
-          <span class="hint">Per provarla: scarica i <a href="app/amca/plugfan_PF-1000_test_data.csv">dati di prova demo</a> e caricali nell'app (Load sample run funziona anche senza).</span>
+          <div class="card-top"><span class="chip">Alstom</span><span class="who">Laura</span></div>
+          <h3>Confronto Liste Cavi</h3>
+          <p>Carichi due liste cavi Excel e ottieni il confronto e l'<strong>istruzione operativa Word già impaginata</strong> per l'industrializzazione delle modifiche sui Coradia Stream. Un lavoro di ore ridotto a un click.</p>
+          <span class="hint">L'interfaccia è tutta online; per vederla all'opera servono liste cavi Excel nel formato Alstom.</span>
           <div class="actions">
-            <a class="btn primary" href="app/amca/" target="_blank" rel="noopener">Apri la demo</a>
-            <a class="btn ghost" href="https://github.com/sadafhussain-a11y/Testing-Validation" target="_blank" rel="noopener">GitHub</a>
+            <a class="btn primary" href="app/automazionecavi/" target="_blank" rel="noopener">Apri la demo</a>
+            <a class="btn ghost" href="https://github.com/lauraurso/Automazionecavi" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Alstom — Sara · demo parziale (dati su server locale) -->
+      <article class="card">
+        <a class="shot" href="https://progetto-indus.vercel.app/monitoraggio_attrezzature.html" target="_blank" rel="noopener"><span class="demo-badge partial">Demo parziale</span><img src="img/progetto-indus.jpg" alt="Monitoraggio Attrezzature e Manutenzione Predittiva — Alstom" loading="lazy"></a>
+        <div class="card-body">
+          <div class="card-top"><span class="chip">Alstom</span><span class="who">Sara</span></div>
+          <h3>Monitoraggio Attrezzature &amp; Manutenzione Predittiva</h3>
+          <p>La sala prove sotto controllo in un'unica dashboard: ore d'uso, guasti, scadenze di taratura e <strong>proiezioni predittive</strong> che segnalano quali attrezzature andranno in manutenzione prima che si fermino.</p>
+          <span class="hint">La demo online mostra solo l'interfaccia (con un avviso di connessione): i dati vivono sul server locale dell'app. Lo screenshot qui sopra la mostra all'opera.</span>
+          <div class="actions">
+            <a class="btn primary" href="https://progetto-indus.vercel.app/monitoraggio_attrezzature.html" target="_blank" rel="noopener">Apri la demo</a>
+            <a class="btn ghost" href="https://github.com/corsara24/progetto_indus" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Lucchini · app desktop da scaricare -->
+      <article class="card">
+        <a class="shot" href="https://github.com/LoriGH25/FatturAI/releases" target="_blank" rel="noopener"><span class="demo-badge repo">App da scaricare</span><img src="img/fatturai.jpg" alt="FatturAI — Lucchini RS" loading="lazy"></a>
+        <div class="card-body">
+          <div class="card-top"><span class="chip">Lucchini RS</span><span class="who">Team Lucchini</span></div>
+          <h3>FatturAI — Compilazione ROD Spedizioni</h3>
+          <p>Incrocia stock di magazzino e produzione in corso e <strong>compila da solo il ROD Spedizioni del mese</strong>, applicando le regole di allocazione del pianificatore — con una chat AI per interrogare il risultato. App desktop con auto-update, rilasciata via CI.</p>
+          <div class="actions">
+            <a class="btn primary" href="https://github.com/LoriGH25/FatturAI/releases" target="_blank" rel="noopener">Scarica l'app</a>
+            <a class="btn ghost" href="https://github.com/LoriGH25/FatturAI" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Alstom — Nazanin · si esegue in locale -->
+      <article class="card">
+        <a class="shot" href="https://github.com/hojam18/Report-generator" target="_blank" rel="noopener"><span class="demo-badge repo">Si esegue in locale</span><img src="img/report-generator.jpg" alt="Fleet Reliability Report Builder — Alstom" loading="lazy"></a>
+        <div class="card-body">
+          <div class="card-top"><span class="chip">Alstom</span><span class="who">Nazanin</span></div>
+          <h3>Fleet Reliability Report Builder</h3>
+          <p>Dagli export mensili di manutenzione a un <strong>report di affidabilità flotta</strong> impaginato per capitoli, pronto da rivedere, salvare in PDF e inviare via email — tutto dentro un'unica web app.</p>
+          <span class="hint">App con backend: si esegue in locale dal repository. Lo screenshot la mostra all'opera.</span>
+          <div class="actions">
+            <a class="btn ghost" href="https://github.com/hojam18/Report-generator" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Metra — Barbara · si esegue in locale -->
+      <article class="card">
+        <a class="shot" href="https://github.com/BarbaraUde/Avanzamento-contratti" target="_blank" rel="noopener"><span class="demo-badge repo">Si esegue in locale</span><img src="img/avanzamento-contratti.jpg" alt="Avanzamento Contratti — Metra" loading="lazy"></a>
+        <div class="card-body">
+          <div class="card-top"><span class="chip">Metra</span><span class="who">Barbara</span></div>
+          <h3>Pipeline Commesse &amp; Avanzamento Contratti</h3>
+          <p>Contratti, spedito e fatturato in un'unica pipeline con avanzamento a colpo d'occhio, import da Excel e <strong>closure letter generata e approvata direttamente in app</strong>, email precompilata inclusa.</p>
+          <span class="hint">App con backend: si esegue in locale dal repository. Lo screenshot la mostra all'opera.</span>
+          <div class="actions">
+            <a class="btn ghost" href="https://github.com/BarbaraUde/Avanzamento-contratti" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Trenord — Alessandro · si esegue in locale -->
+      <article class="card">
+        <a class="shot" href="https://github.com/3107076/poc_letsencrypt" target="_blank" rel="noopener"><span class="demo-badge repo">Si esegue in locale</span><img src="img/poc-letsencrypt.jpg" alt="Rotazione automatica certificati SSL — Trenord" loading="lazy"></a>
+        <div class="card-body">
+          <div class="card-top"><span class="chip">Trenord</span><span class="who">Alessandro</span></div>
+          <h3>Rotazione Automatica Certificati SSL</h3>
+          <p>Un proof-of-concept infrastrutturale completo: certificati TLS che <strong>si rinnovano da soli</strong> (protocollo ACME, nginx, Docker) senza downtime — accompagnato da una spiegazione divulgativa che si legge come un piccolo corso.</p>
+          <span class="hint">PoC docker-compose: si esegue in locale dal repository.</span>
+          <div class="actions">
+            <a class="btn ghost" href="https://github.com/3107076/poc_letsencrypt" target="_blank" rel="noopener">GitHub</a>
           </div>
         </div>
       </article>
