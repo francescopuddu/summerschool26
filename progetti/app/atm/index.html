@@ -1,0 +1,2469 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Programmazione Notturna Linea 1</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  :root{
+    color-scheme: light;
+    --surface-1:#ffffff; --page:#eef1f8;
+    --text-primary:#10121a; --text-secondary:#565b6a; --muted:#8b8fa0;
+    --gridline:#e3e6f0; --baseline:#c6cad9; --border:rgba(16,18,26,0.09);
+    --series-manut:#2563eb; --series-manut-2:#5b9bff;
+    --series-corsa:#f97316; --series-corsa-2:#ffb14d;
+    --series-trasf:#0ea472; --series-trasf-2:#34d399;
+    --series-manut-grad: linear-gradient(135deg, var(--series-manut), var(--series-manut-2));
+    --series-corsa-grad: linear-gradient(135deg, var(--series-corsa), var(--series-corsa-2));
+    --series-trasf-grad: linear-gradient(135deg, var(--series-trasf), var(--series-trasf-2));
+    --accent:#e4032e; --accent-2:#ff5876;
+    --accent-grad: linear-gradient(135deg, var(--accent), var(--accent-2));
+    --danger:#ef4444;
+    --shadow: 0 1px 2px rgba(16,18,26,.05), 0 10px 28px rgba(16,18,26,.08);
+    --shadow-lift: 0 14px 30px rgba(16,18,26,.16);
+    --shadow-glow: 0 6px 18px rgba(228,3,46,.32);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      color-scheme: dark;
+      --surface-1:#181a20; --page:#0a0b0f;
+      --text-primary:#f6f7fa; --text-secondary:#c4c8d4; --muted:#8b8fa0;
+      --gridline:#272a34; --baseline:#3c404e; --border:rgba(255,255,255,0.09);
+      --series-manut:#5b9bff; --series-manut-2:#9cc2ff;
+      --series-corsa:#ff9a44; --series-corsa-2:#ffc182;
+      --series-trasf:#22d3a3; --series-trasf-2:#6ee7c4;
+      --accent:#ff3b5c; --accent-2:#ff8098;
+      --danger:#ff6b6b;
+      --shadow: 0 1px 2px rgba(0,0,0,.35), 0 14px 34px rgba(0,0,0,.5);
+      --shadow-lift: 0 18px 34px rgba(0,0,0,.55);
+      --shadow-glow: 0 6px 20px rgba(255,59,92,.4);
+    }
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--page); color:var(--text-primary);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size:14px; line-height:1.4;
+    background-image: radial-gradient(1100px 480px at 15% -10%, rgba(37,99,235,.10), transparent 60%),
+                       radial-gradient(900px 420px at 100% 0%, rgba(228,3,46,.08), transparent 55%);
+    background-repeat:no-repeat;
+  }
+  .app{ max-width:1500px; margin:0 auto; padding:0 16px 48px; }
+
+  /* ---------- Toolbar ---------- */
+  .toolbar{
+    position:sticky; top:0; z-index:20;
+    background:var(--surface-1); border-bottom:1px solid var(--border);
+    box-shadow:var(--shadow);
+    padding:16px 20px; margin:0 -16px 22px; border-radius:0 0 16px 16px;
+    border-top:3px solid transparent;
+    border-image:var(--accent-grad) 1;
+  }
+  .toolbar-row1{ display:flex; align-items:flex-start; gap:18px; flex-wrap:wrap; }
+  .m1-badge{
+    flex:none; height:60px; width:auto; border-radius:10px; border:none; padding:7px 14px;
+    background:#fff; display:flex; align-items:center; justify-content:center;
+    box-shadow:var(--shadow-glow), inset 0 0 0 1px rgba(11,11,11,.06);
+    transition:transform .2s ease; cursor:pointer;
+  }
+  .m1-badge:hover{ transform:scale(1.04); }
+  .m1-badge img, .m1-badge svg{ height:100%; width:auto; display:block; }
+  .app-title-block{ margin-right:auto; }
+  .eyebrow{ font-size:14px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--text-secondary); margin-bottom:5px; display:flex; align-items:center; gap:9px; }
+  .linea1-pill{ display:inline-block; background:var(--accent-grad); color:#fff; padding:4px 13px; border-radius:7px; font-size:14px; font-weight:800; letter-spacing:.03em; box-shadow:0 3px 8px rgba(228,3,46,.28); }
+  .stat-chips{ display:flex; gap:8px; flex-wrap:wrap; margin-top:11px; }
+  .stat-chip{
+    background:var(--surface-1); border:1px solid var(--gridline); border-radius:20px; padding:5px 13px 5px 11px;
+    font-size:11.5px; font-weight:600; color:var(--text-secondary); display:flex; align-items:center; gap:6px;
+    box-shadow:0 1px 2px rgba(16,18,26,.04); transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  .stat-chip::before{ content:""; width:7px; height:7px; border-radius:50%; background:var(--series-manut-grad); flex:none; }
+  .stat-chip:hover{ transform:translateY(-1px); box-shadow:var(--shadow-lift); border-color:var(--series-manut); }
+  .stat-chip b{ color:var(--text-primary); font-weight:800; }
+
+  .frozen-badge{
+    display:none; align-items:center; gap:6px; background:var(--series-corsa); color:#fff;
+    padding:6px 14px; border-radius:20px; font-size:12px; font-weight:700; align-self:flex-start; margin-top:2px;
+  }
+
+  .tabs{ display:flex; gap:4px; background:var(--page); border:1px solid var(--border); border-radius:11px; padding:3px; align-self:flex-start; }
+  .tab-btn{
+    border:none; background:transparent; padding:8px 14px; border-radius:8px;
+    font-size:13px; font-weight:700; color:var(--text-secondary); cursor:pointer; transition:background .18s ease, color .18s ease, box-shadow .18s ease, transform .1s ease;
+  }
+  .tab-btn:hover{ color:var(--text-primary); background:rgba(37,99,235,.08); }
+  .tab-btn.active{ background:var(--series-manut-grad); color:#fff; box-shadow:0 4px 12px rgba(37,99,235,.35); }
+  .tab-btn.active:hover{ background:var(--series-manut-grad); }
+  .tab-btn:active{ transform:scale(.97); }
+  .tab-btn.active .tab-icon{ color:#fff; }
+  .tab-icon{ vertical-align:-2px; margin-right:4px; color:var(--muted); }
+  .tab-count{ display:inline-block; background:var(--muted); color:#fff; border-radius:10px; font-size:10px; font-weight:800; padding:1px 7px; margin-left:6px; min-width:14px; text-align:center; transition:background .15s; }
+  .tab-count.has-items{ background:var(--series-corsa-grad); }
+  .tab-btn.drop-target{ box-shadow:inset 0 0 0 2px var(--series-trasf); background:rgba(27,175,122,.18); transition:background .2s, box-shadow .2s; }
+  .tab-btn.drop-hover{ background:rgba(27,175,122,.42); color:var(--text-primary); }
+
+  /* ---------- Dropdown "Nuova" ---------- */
+  .dropdown{ position:relative; }
+  .dropdown-panel{
+    position:absolute; top:calc(100% + 6px); right:0; min-width:270px;
+    background:var(--surface-1); border:1px solid var(--gridline); border-radius:10px;
+    box-shadow:0 14px 36px rgba(0,0,0,.2); padding:8px; z-index:30;
+  }
+  .dropdown-group + .dropdown-group{ margin-top:6px; padding-top:6px; border-top:1px solid var(--gridline); }
+  .dropdown-group-label{ font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); padding:6px 8px 3px; }
+  .dropdown-item{
+    display:block; width:100%; text-align:left; border:none; background:transparent;
+    padding:8px 10px; border-radius:6px; font-size:13px; font-weight:600; color:var(--text-primary);
+    cursor:pointer;
+  }
+  .dropdown-item:hover{ background:var(--page); }
+
+  .btn{
+    border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary);
+    padding:8px 14px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer;
+    transition:border-color .15s ease, transform .08s ease, box-shadow .15s ease;
+  }
+  .btn:hover{ border-color:var(--text-secondary); box-shadow:0 3px 10px rgba(16,18,26,.08); transform:translateY(-1px); }
+  .btn:active{ transform:scale(.98); }
+  .btn[disabled]{ opacity:.4; cursor:not-allowed; }
+  .btn[disabled]:hover{ border-color:var(--border); box-shadow:none; transform:none; }
+  .btn-primary{ background:var(--series-manut-grad); border-color:transparent; color:#fff; box-shadow:0 4px 12px rgba(37,99,235,.32); }
+  .btn-primary:hover{ filter:brightness(1.06); border-color:transparent; box-shadow:0 6px 18px rgba(37,99,235,.42); transform:translateY(-1px); }
+
+  .toolbar-row2{ display:flex; align-items:center; gap:18px; flex-wrap:wrap; margin-top:14px; padding-top:14px; border-top:1px solid var(--gridline); }
+  .legend{ display:flex; gap:8px; flex-wrap:wrap; }
+  .legend-item{
+    display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--text-secondary);
+    background:var(--page); border:1px solid var(--gridline); border-radius:20px; padding:4px 11px 4px 8px;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .legend-item:hover{ transform:translateY(-1px); box-shadow:0 3px 8px rgba(16,18,26,.08); }
+  .legend-swatch{ width:12px; height:12px; border-radius:4px; flex:none; box-shadow:0 1px 3px rgba(0,0,0,.2); }
+  .legend-swatch.facility{ border-radius:3px; background:var(--muted); }
+
+  .toolbar-actions{ display:flex; gap:8px; margin-left:auto; flex-wrap:wrap; }
+
+  /* ---------- Workspace layout (vista principale + pannello laterale) ---------- */
+  .workspace{ display:flex; align-items:flex-start; gap:20px; }
+  .main-view{ flex:1; min-width:0; }
+  .side-panel{
+    width:360px; flex:none; background:var(--surface-1); border:1px solid var(--gridline);
+    border-radius:14px; box-shadow:var(--shadow); padding:16px 18px;
+    max-height:80vh; overflow:auto;
+    border-top:3px solid transparent; border-image:var(--series-trasf-grad) 1;
+  }
+  @media (max-width: 980px){
+    .workspace{ flex-direction:column; }
+    .side-panel{ width:100%; max-height:none; }
+  }
+
+  /* ---------- Calendar ---------- */
+  .range-filter-bar{
+    max-height:80px; opacity:1; overflow:hidden; margin-bottom:12px;
+    transition:max-height .25s ease, opacity .2s ease, margin .25s ease;
+  }
+  .range-filter-bar.collapsed{ max-height:0; opacity:0; margin-bottom:0; }
+  .week-nav{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
+  .week-label{ font-weight:800; font-size:15px; }
+  .range-filter{ display:flex; align-items:flex-end; gap:10px; }
+  .range-filter .field label{ font-size:10.5px; color:var(--text-secondary); font-weight:700; }
+  .range-filter .field input{ padding:5px 7px; border-radius:6px; border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary); font-size:12.5px; }
+
+  .calendar{
+    display:flex; flex-direction:column;
+    border:1px solid var(--gridline); border-radius:14px;
+    background:var(--surface-1); box-shadow:var(--shadow);
+    max-height:min(72vh, 640px); overflow-y:auto; overflow-x:hidden;
+  }
+  .cal-hourhead{
+    display:flex; border-bottom:1px solid var(--gridline); background:var(--surface-1);
+    position:sticky; top:0; z-index:4; box-shadow:0 1px 0 var(--gridline), 0 2px 6px rgba(11,11,11,.06);
+  }
+  .cal-daylabel-spacer{ width:122px; flex:none; border-right:1px solid var(--gridline); }
+  .cal-hour-axis{ flex:1; position:relative; height:32px; }
+  .cal-hour-axis span{ position:absolute; top:50%; transform:translate(-50%,-50%); font-size:11px; font-weight:700; color:var(--muted); }
+  .cal-hour-axis span:first-child{ transform:translate(2px,-50%); }
+  .cal-hour-axis span:last-child{ transform:translate(calc(-100% - 2px),-50%); }
+
+  .cal-day-row{ display:flex; border-bottom:1px solid var(--gridline); transition:background .15s ease; }
+  .cal-day-row:last-child{ border-bottom:none; }
+  .cal-day-row:hover{ background:rgba(37,99,235,.035); }
+  .cal-day-label{
+    width:122px; flex:none; border-right:1px solid var(--gridline);
+    padding:7px 12px; display:flex; flex-direction:column; justify-content:center;
+    background:linear-gradient(180deg, rgba(37,99,235,.04), transparent);
+  }
+  .cal-day-label b{ font-size:12.5px; font-weight:800; }
+  .cal-day-label .d{ font-weight:400; color:var(--text-secondary); font-size:11px; }
+
+  .cal-timeline{
+    flex:1; position:relative;
+    background-color:transparent;
+    background-image:linear-gradient(90deg, var(--gridline) 1px, transparent 1px);
+    background-size:25% 100%;
+    transition:background-color .2s ease, outline-color .2s ease;
+  }
+  .cal-timeline.drop-target{ background-color:rgba(27,175,122,.16); outline:2px dashed var(--series-trasf); outline-offset:-2px; }
+  .cal-timeline.drop-hover{ background-color:rgba(27,175,122,.38); outline:2px solid var(--series-trasf); outline-offset:-2px; }
+  .cal-timeline.drop-blocked{ background-color:rgba(208,59,59,.14); outline:2px dashed var(--danger); outline-offset:-2px; cursor:not-allowed; }
+  .cal-block{
+    position:absolute; border-radius:8px; padding:0 9px; overflow:hidden;
+    color:#fff; cursor:pointer; font-size:11.5px; line-height:1.2;
+    display:flex; align-items:center; gap:6px; white-space:nowrap;
+    border:1px solid rgba(255,255,255,.35); box-shadow:0 2px 6px rgba(0,0,0,.16);
+    transition:filter .12s ease, opacity .35s ease, transform .12s ease, box-shadow .12s ease;
+  }
+  .cal-block:hover{ filter:brightness(1.07); transform:translateY(-1px); box-shadow:0 6px 16px rgba(0,0,0,.24); z-index:3; }
+  .cal-block b{ font-size:11.5px; overflow:hidden; text-overflow:ellipsis; }
+  .cal-block .sub{ opacity:.92; font-size:10.5px; overflow:hidden; text-overflow:ellipsis; }
+  .cal-block.manut{ background:var(--series-manut-grad); }
+  .cal-block.corsa{ background:var(--series-corsa-grad); }
+  .cal-block.trasf{ background:var(--series-trasf-grad); color:#04241a; }
+  .cal-block.draggable{ cursor:grab; }
+  .cal-block.dragging{ opacity:1; outline:2px dashed rgba(255,255,255,.85); outline-offset:1px; transform:scale(1.02); z-index:5; }
+  .cal-block.dimmed{ opacity:.1; pointer-events:none; }
+  .resched-flag{
+    flex:none; width:16px; height:16px; border-radius:50%;
+    background:#fff; color:#7a1fa2; font-size:11px; font-weight:900;
+    display:flex; align-items:center; justify-content:center; line-height:1;
+    box-shadow:0 1px 3px rgba(0,0,0,.35), 0 0 0 2px rgba(255,255,255,.55);
+    animation:reschedPulse 2.2s ease-in-out infinite;
+  }
+  @keyframes reschedPulse{
+    0%,100%{ box-shadow:0 1px 3px rgba(0,0,0,.35), 0 0 0 2px rgba(255,255,255,.55); }
+    50%{ box-shadow:0 1px 3px rgba(0,0,0,.35), 0 0 0 5px rgba(255,255,255,0); }
+  }
+  .resched-flag-demo{
+    display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px;
+    border-radius:50%; background:#7a1fa2; color:#fff; font-size:11px; font-weight:900; flex:none;
+  }
+
+  .empty-day{ position:absolute; inset:0; display:flex; align-items:center; padding-left:14px; color:var(--muted); font-size:11.5px; }
+
+  /* ---------- Map ---------- */
+  .map-filters{
+    display:flex; gap:16px; align-items:flex-end; flex-wrap:wrap;
+    margin-bottom:14px; padding:14px; border:1px solid var(--gridline); border-radius:12px;
+    background:var(--surface-1); box-shadow:var(--shadow);
+  }
+  .field{ display:flex; flex-direction:column; gap:4px; }
+  .field label{ font-size:11px; color:var(--text-secondary); font-weight:700; }
+  .field select{ padding:7px 8px; border-radius:6px; border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary); font-size:13px; }
+  .map-summary{ font-size:12.5px; color:var(--text-secondary); margin-left:auto; align-self:center; }
+
+  .side-panel-filters{ display:flex; gap:8px; margin-bottom:12px; }
+  .side-panel-filters input[type="search"]{ flex:1 1 auto; min-width:0; padding:7px 9px; border-radius:6px; border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary); font-size:12.5px; }
+  .side-panel-filters select{ flex:0 0 auto; padding:7px 8px; border-radius:6px; border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary); font-size:12.5px; max-width:42%; }
+
+  .map-wrap{ position:relative; border:1px solid var(--gridline); border-radius:18px; background:var(--surface-1); padding:12px; box-shadow:var(--shadow); }
+  .map-wrap svg{ display:block; width:100%; height:auto; cursor:grab; touch-action:none; }
+  .map-wrap svg.panning{ cursor:grabbing; }
+  .map-zoom-controls{ position:absolute; top:22px; right:22px; display:flex; gap:5px; background:var(--surface-1); padding:5px; border-radius:10px; border:1px solid var(--gridline); box-shadow:var(--shadow); z-index:2; }
+  .map-zoom-btn{ width:26px; height:26px; border-radius:7px; border:1px solid var(--border); background:var(--page); color:var(--text-primary); font-size:15px; font-weight:700; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .map-zoom-btn:hover{ background:var(--surface-1); box-shadow:var(--shadow); }
+  .map-hint{ font-size:11px; color:var(--muted); margin-top:8px; }
+  .map-callouts{ position:absolute; inset:12px; pointer-events:none; overflow:visible; }
+  .map-callout{
+    position:absolute; transform:translate(-50%,-100%); margin-top:-10px;
+    background:var(--surface-1); border:1px solid var(--gridline); border-radius:11px;
+    box-shadow:var(--shadow); padding:6px 10px 7px; font-size:11px; line-height:1.35;
+    max-width:190px; min-width:120px; pointer-events:auto; cursor:pointer; z-index:1;
+    transition:opacity .12s ease;
+  }
+  .map-callout:hover{ box-shadow:0 4px 16px rgba(11,11,11,.16); }
+  .map-callout::after{
+    content:""; position:absolute; left:50%; bottom:-6px;
+    width:11px; height:11px; background:var(--surface-1);
+    border-right:1px solid var(--gridline); border-bottom:1px solid var(--gridline);
+    transform:translateX(-50%) rotate(45deg);
+  }
+  .map-callout .mc-bar{ height:3px; border-radius:2px; margin-bottom:5px; }
+  .map-callout .mc-title{ font-weight:800; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .map-callout .mc-sub{ color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  svg text{ fill:var(--text-primary); font-family:inherit; }
+  .st-label{ font-size:10px; fill:var(--text-secondary); }
+  .st-label.tronchino{ font-weight:700; fill:var(--text-primary); }
+  .base-line{ stroke:var(--baseline); stroke-width:6.5; stroke-linecap:round; stroke-linejoin:round; }
+  .facility-stub{ stroke:var(--baseline); stroke-width:4.5; stroke-linecap:round; }
+  .st-dot{ fill:var(--surface-1); stroke:var(--text-secondary); stroke-width:2.5; transition:stroke-width .12s; }
+  .st-dot.tronchino{ fill:var(--muted); stroke:var(--text-primary); }
+  .seg-overlay{ stroke-linecap:round; stroke-linejoin:round; cursor:pointer; transition:opacity .12s; }
+  .seg-overlay:hover{ opacity:.8; }
+  .st-dot.active{ cursor:pointer; }
+  .st-dot.active:hover{ stroke-width:3.5; }
+  .facility-dot{ cursor:pointer; }
+
+  /* ---------- Table view ---------- */
+  table.data-table{ width:100%; border-collapse:separate; border-spacing:0; font-size:12.5px; background:var(--surface-1); }
+  table.data-table caption{ text-align:left; font-weight:700; margin-bottom:6px; }
+  table.data-table th, table.data-table td{ border-bottom:1px solid var(--gridline); border-right:1px solid var(--gridline); padding:7px 8px; text-align:left; vertical-align:top; }
+  table.data-table th:last-child, table.data-table td:last-child{ border-right:none; }
+  table.data-table th{
+    background:var(--page); position:sticky; top:0; z-index:3; font-size:11.5px;
+    box-shadow:0 1px 0 var(--gridline), 0 2px 6px rgba(11,11,11,.06);
+  }
+  .tbl-wrap{ overflow:auto; max-height:640px; border:1px solid var(--gridline); border-radius:12px; box-shadow:var(--shadow); }
+  .type-pill{ display:inline-block; padding:2px 9px; border-radius:20px; color:#fff; font-size:11px; font-weight:700; box-shadow:0 1px 3px rgba(0,0,0,.18); }
+  .type-pill.manut{ background:var(--series-manut-grad); }
+  .type-pill.corsa{ background:var(--series-corsa-grad); }
+  .type-pill.trasf{ background:var(--series-trasf-grad); color:#04241a; }
+
+  section[hidden]{ display:none !important; }
+
+  /* ---------- Pannello "In sospeso" ---------- */
+  .side-panel.drop-target{ box-shadow:inset 0 0 0 2px var(--series-trasf), var(--shadow); background-color:rgba(27,175,122,.08); }
+  .side-panel.drop-hover{ background-color:rgba(27,175,122,.2); }
+  .side-panel-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; }
+  .side-panel-close{ border:none; background:transparent; font-size:20px; line-height:1; color:var(--muted); cursor:pointer; }
+  .resched-row{ display:flex; align-items:center; justify-content:space-between; gap:14px; padding:11px 0; border-bottom:1px solid var(--gridline); font-size:13px; }
+  .resched-row:last-child{ border-bottom:none; }
+  .resched-row.draggable-suspended{ cursor:grab; }
+  .resched-row.dragging-suspended{ opacity:.4; }
+  .prio-badge{ background:var(--series-corsa); color:#fff; font-size:10.5px; padding:1px 8px; border-radius:10px; margin-left:6px; }
+
+  /* ---------- Modal / forms ---------- */
+  .backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:50; display:flex; align-items:center; justify-content:center; padding:20px; }
+  .modal{ background:var(--surface-1); border-radius:16px; max-width:600px; width:100%; max-height:88vh; overflow:auto; padding:22px 24px; box-shadow:0 24px 70px rgba(0,0,0,.4); border-top:4px solid transparent; border-image:var(--accent-grad) 1; }
+  .modal h2{ margin:0 0 2px; font-size:16px; }
+  .modal .modal-sub{ color:var(--text-secondary); font-size:12.5px; margin-bottom:14px; }
+  .modal dl{ display:grid; grid-template-columns: 160px 1fr; gap:6px 12px; margin:0; }
+  .modal dt{ color:var(--text-secondary); font-size:12px; font-weight:600; }
+  .modal dd{ margin:0; font-size:13px; }
+  .modal .close-x{ float:right; border:none; background:transparent; font-size:22px; cursor:pointer; color:var(--muted); line-height:1; }
+
+  /* ---------- Mini calendario date alternative ---------- */
+  .alt-cal{ border:1px solid var(--gridline); border-radius:12px; padding:12px 14px 14px; margin:6px 0 16px; }
+  .alt-cal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; font-size:13.5px; }
+  .alt-cal-nav{ border:1px solid var(--gridline); background:var(--surface-1); border-radius:8px; width:28px; height:28px; font-size:16px; line-height:1; cursor:pointer; color:var(--text-primary); }
+  .alt-cal-nav:disabled{ opacity:.3; cursor:not-allowed; }
+  .alt-cal-nav:not(:disabled):hover{ background:var(--page); }
+  .alt-cal-weekdays{ display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:4px; text-align:center; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); }
+  .alt-cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+  .alt-cal-day{ position:relative; aspect-ratio:1; border-radius:9px; border:1px solid transparent; background:transparent; font-size:12.5px; color:var(--text-primary); display:flex; align-items:center; justify-content:center; }
+  .alt-cal-day.empty{ visibility:hidden; }
+  .alt-cal-day.outrange{ color:var(--muted); background:transparent; cursor:not-allowed; opacity:.35; }
+  .alt-cal-day.blocked{ color:var(--text-secondary); background:rgba(208,59,59,.10); border-color:rgba(208,59,59,.35); cursor:not-allowed; }
+  .alt-cal-day.available{ cursor:pointer; border-color:rgba(27,175,122,.4); background:rgba(27,175,122,.12); font-weight:700; }
+  .alt-cal-day.available:hover{ background:rgba(27,175,122,.28); border-color:var(--series-trasf); }
+  .alt-cal-day.orig{ box-shadow:inset 0 0 0 2px var(--series-manut); }
+  .alt-cal-day .alt-cal-dot{ position:absolute; bottom:3px; width:5px; height:5px; border-radius:50%; background:var(--series-trasf); }
+  .alt-cal-day.blocked .alt-cal-dot{ background:var(--danger); }
+  .alt-cal-legend{ display:flex; align-items:center; gap:14px; margin-top:10px; font-size:11.5px; color:var(--text-secondary); }
+  .alt-cal-legend-item{ display:flex; align-items:center; gap:6px; }
+  .alt-cal-legend .alt-cal-dot{ position:static; display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--series-trasf); }
+  .alt-cal-legend .alt-cal-dot.blocked{ background:var(--danger); }
+  .modal-group + .modal-group{ margin-top:16px; padding-top:12px; border-top:1px solid var(--gridline); }
+
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px 16px; margin-top:8px; }
+  .form-grid label{ display:flex; flex-direction:column; gap:4px; font-size:12px; font-weight:600; color:var(--text-secondary); }
+  .form-grid label.checkbox{ flex-direction:row; align-items:center; gap:8px; font-weight:500; }
+  .form-grid input, .form-grid select{ padding:7px 8px; border-radius:6px; border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary); font-size:13px; font-family:inherit; }
+  .form-grid input:focus, .form-grid select:focus{ outline:2px solid var(--series-manut); outline-offset:1px; }
+  .range-fields{ grid-column:1/-1; display:flex; gap:16px; }
+  .field-group{ display:contents; }
+  .field-group.fg-hidden{ display:none; }
+  .field-group.fg-hidden label{ display:none; }
+  .form-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:4px; }
+  .conflict-alert{ grid-column:1/-1; background:rgba(235,104,52,.12); border:1px solid var(--series-corsa); border-radius:8px; padding:10px 12px; font-size:12.5px; }
+  .warn-text{ color:var(--series-corsa); font-weight:700; }
+  .ok-text{ color:var(--series-trasf); font-weight:700; }
+
+  #printReport{ display:none; }
+  @media print{
+    body *{ visibility:hidden; }
+    #printReport, #printReport *{ visibility:visible; }
+    #printReport{ display:block; position:absolute; left:0; top:0; width:100%; }
+    #printReport table{ width:100%; border-collapse:collapse; margin-bottom:18px; }
+    #printReport th, #printReport td{ border:1px solid #999; padding:5px 7px; font-size:11px; text-align:left; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="toolbar">
+    <div class="toolbar-row1">
+      <button type="button" class="m1-badge" id="atmLogoBtn" title="ATM - Azienda Trasporti Milanesi: torna al calendario"><svg role="img" aria-label="ATM Azienda Trasporti Milanesi" width="3232" height="1000" viewBox="0 0 3232 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M2046.8 812.261H2029.16L1985.49 872.033L1941.81 812.261H1924.19V957.854H1943.35V844.445L1983.95 900.382H1987.02L2027.64 844.445V957.854H2046.8V812.261Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M2073.61 811.492H2092.01V957.093H2073.61V811.492Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M2139.53 812.261H2121.12V957.854H2199.28V938.698H2139.53V812.261Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M2461.37 812.261H2443.74V924.908L2354.86 812.261H2339.52V957.854H2357.16V845.206L2445.27 957.854H2461.37V812.261Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M2559.45 812.261H2485.11V957.854H2561.75V938.698H2504.27V893.487H2557.92V875.092H2504.27V830.655H2559.45V812.261Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M2644.51 820.686C2635.31 813.791 2625.35 809.963 2615.4 809.963C2591.63 809.963 2575.54 825.29 2575.54 849.042C2575.54 888.89 2632.24 892.724 2632.24 922.61C2632.24 930.266 2625.35 940.997 2610.8 940.997C2597.77 940.997 2586.27 933.333 2576.31 919.543V946.355C2587.03 955.555 2598.52 959.391 2613.1 959.391C2634.54 959.391 2649.88 943.295 2649.88 920.311C2649.88 873.563 2593.17 874.331 2593.17 845.975C2593.17 836.013 2601.59 829.118 2613.86 829.118C2622.29 829.118 2633.79 832.185 2644.51 843.677V820.686Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M2669.79 811.492H2688.95V957.093H2669.79V811.492Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M259.015 829.886L174.717 957.854H294.259V938.698H209.974L294.259 810.724H180.088V829.886H259.015Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M309.587 810.724H328.743V957.854H309.587V810.724Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M432.197 810.724H357.097V957.854H433.726V938.698H376.253V893.487H430.659V874.331H376.253V829.886H432.197V810.724Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M575.493 810.724H557.098V924.908L467.449 810.724H452.883V957.854H470.509V844.445L558.628 957.854H575.493V810.724Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M996.959 810.724H885.847V829.886H931.822V957.854H950.985V829.886H996.959V810.724Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1320.34 819.156C1311.14 812.261 1300.42 809.194 1290.45 809.194C1266.7 809.194 1250.6 824.521 1250.6 848.273C1250.6 888.89 1308.08 891.957 1308.08 922.61C1308.08 930.266 1301.18 940.997 1285.85 940.997C1272.83 940.997 1260.57 933.333 1251.37 919.543V946.355C1262.09 955.555 1273.59 960.152 1288.15 960.152C1309.61 960.152 1325.7 943.295 1325.7 920.311C1325.7 873.563 1268.24 873.563 1268.24 845.206C1268.24 835.252 1276.66 828.357 1288.92 828.357C1298.12 828.357 1308.85 831.416 1320.34 843.677V819.156Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1798.52 810.724H1687.4V829.886H1733.37V957.854H1752.53V829.886H1798.52V810.724Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1813.84 810.724H1832.99V957.854H1813.84V810.724Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1069.76 182.361C1106.55 153.255 1131.83 152.482 1167.08 152.482H3074.4L3226.9 -5.49218e-06H1162.48C1090.45 -5.49218e-06 1018.42 22.9835 964.777 72.7752L533.347 504.216H748.679L1069.76 182.361Z" fill="#FF9600"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M2349.49 531.796C2312.69 561.682 2287.41 562.444 2252.16 562.444L344.834 561.683L192.336 714.939H2256.76C2328.78 714.939 2400.82 691.179 2453.7 642.145L2885.12 210.714H2670.56L2349.49 531.796Z" fill="#CC0001"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M2854.47 819.156C2844.51 813.022 2833.79 809.194 2823.07 809.194C2796.99 809.194 2780.15 824.521 2780.15 847.505C2780.15 885.823 2841.45 888.89 2841.45 918.774C2841.45 926.438 2833.79 936.4 2818.47 936.4C2803.91 936.4 2790.87 928.736 2780.91 915.707V941.758C2792.4 950.19 2805.43 954.794 2820.77 954.794C2842.98 954.794 2859.84 938.698 2859.84 916.47C2859.84 871.264 2798.54 871.264 2798.54 844.445C2798.54 834.483 2808.5 827.588 2821.52 827.588C2830.72 827.588 2842.21 831.416 2854.47 842.147V819.156Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M2889.72 929.505C2882.82 929.505 2877.47 934.863 2877.47 941.758C2877.47 948.653 2882.82 954.794 2889.72 954.794C2896.63 954.794 2901.98 948.653 2901.98 941.758C2901.98 934.863 2896.63 929.505 2889.72 929.505Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M2943.38 950.19C2950.27 953.257 2955.62 954.794 2961.76 954.794C2989.34 954.794 3009.27 934.863 3009.27 906.514C3009.27 875.861 2990.89 859.772 2956.39 859.772H2924.97V1000H2943.38V950.19ZM2943.38 875.861H2960.24C2980.15 875.861 2990.12 887.36 2990.12 906.514C2990.12 924.908 2977.85 937.93 2961.01 937.93C2954.87 937.93 2948.73 936.4 2943.38 934.101V875.861Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M3033.8 929.505C3026.91 929.505 3021.52 934.863 3021.52 941.758C3021.52 948.653 3026.91 954.794 3033.8 954.794C3040.7 954.794 3046.05 948.653 3046.05 941.758C3046.05 934.863 3040.7 929.505 3033.8 929.505Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M3131.88 810.724H3117.32L3056.79 952.496H3077.47L3095.11 911.111H3155.64L3174.02 952.496H3194.73L3131.88 810.724ZM3124.23 841.378L3147.21 892.724H3103.53L3124.23 841.378Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M3218.48 929.505C3211.57 929.505 3206.22 934.863 3206.22 941.758C3206.22 948.653 3211.57 954.794 3218.48 954.794C3225.37 954.794 3231.5 948.653 3231.5 941.758C3231.5 934.863 3225.37 929.505 3218.48 929.505Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1252.9 521.834V485.053H1214.59C1205.4 485.053 1198.5 482.755 1198.5 475.859C1198.5 471.263 1199.27 468.196 1200.8 465.129L1216.89 416.095H1329.54L1346.4 465.129C1347.16 468.196 1347.93 472.793 1347.93 477.389C1347.93 481.986 1344.1 485.053 1332.61 485.053H1293.52V521.834H1938.76V485.053H1908.09C1897.37 485.053 1885.1 479.688 1885.1 468.196V242.136H1886.65L1977.06 521.834H2018.45L2113.45 242.136H2114.23V468.196C2114.23 478.158 2106.56 485.053 2092.77 485.053H2060.59V521.834H2233.01V485.053H2201.58C2187.79 485.053 2180.13 476.628 2180.13 461.293V245.979C2180.13 233.697 2187.79 229.1 2199.29 229.1H2233.01V192.326H2082.82L2006.96 407.655H2006.18L1938.76 192.326H1783.18V229.1H1814.61C1826.1 229.1 1833.77 233.697 1833.77 245.979V468.196C1833.77 479.688 1828.4 485.053 1812.31 485.053H1642.19C1626.87 485.053 1622.27 479.688 1622.27 466.659V229.1C1677.44 229.1 1704.25 252.874 1704.25 305.737L1705.02 327.967H1741.04V192.326H1433.76V327.967H1470.54V305.737C1470.54 252.874 1497.36 229.1 1552.54 229.1V466.659C1552.54 479.688 1547.93 485.053 1532.61 485.053H1466.71C1439.89 485.053 1423.02 481.225 1413.83 458.234L1314.97 192.326H1245.25L1150.22 458.234C1141.8 481.225 1124.93 485.053 1098.12 485.053V521.834H1252.9ZM1231.45 379.303L1271.3 258.997H1272.07L1314.97 379.303H1231.45Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M2271.33 811.492H2258.29L2201.58 957.854H2220.74L2237.6 914.94H2293.56L2311.17 957.854H2330.33L2271.33 811.492ZM2264.43 842.908L2285.87 895.785H2245.27L2264.43 842.908Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M146.363 832.953V895.785H84.2926L146.363 832.953ZM162.452 809.962H149.43L0 957.854H21.4608L65.1372 914.94H147.132V957.854H162.452V809.962Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M603.083 957.854H655.185C698.868 957.854 724.926 921.841 724.926 884.286C724.926 849.803 703.465 810.724 655.185 810.724H603.083V957.854ZM622.239 829.886H651.356C688.906 829.886 705.763 855.176 705.763 884.286C705.763 902.68 695.801 938.698 652.886 938.698H622.239V829.886Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M792.361 809.962H779.325L722.627 957.854H741.782L758.64 914.94H814.576L832.202 957.854H852.126L792.361 809.962ZM785.459 842.147L806.912 895.785H765.535L785.459 842.147Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1013.82 810.724V957.854H1032.21V894.255H1040.64C1050.6 894.255 1058.27 897.32 1075.89 927.967L1092.75 957.854H1115.74C1106.55 944.056 1103.47 938.698 1098.11 928.736C1087.38 910.344 1080.49 897.32 1068.23 888.127C1082.79 881.987 1090.45 868.966 1090.45 852.101C1090.45 826.819 1073.59 810.724 1046.77 810.724H1013.82ZM1032.21 829.118H1044.48C1062.86 829.118 1070.53 837.55 1070.53 851.34C1071.29 863.6 1065.16 875.092 1044.48 875.092H1032.21V829.118Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1184.71 809.962H1171.69L1114.21 957.854H1134.13L1150.22 914.94H1206.93L1224.55 957.854H1243.71L1184.71 809.962ZM1177.81 842.147L1199.27 895.785H1157.89L1177.81 842.147Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1343.33 810.724V957.854H1362.49V894.255H1382.41C1413.06 894.255 1426.86 876.629 1426.86 852.87C1426.86 829.886 1413.82 810.724 1384.71 810.724H1343.33ZM1362.49 829.886H1384.71C1402.33 829.886 1407.7 841.378 1407.7 852.101C1407.7 866.667 1398.5 875.092 1383.94 875.092H1362.49V829.886Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1436.05 884.286C1436.05 924.14 1463.64 960.152 1506.55 960.152C1551.76 960.152 1578.58 924.14 1578.58 884.286C1578.58 843.677 1550.99 809.194 1507.32 809.194C1464.4 809.194 1436.05 843.677 1436.05 884.286ZM1455.98 884.286C1455.98 852.102 1477.43 828.357 1507.32 828.357C1537.2 828.357 1558.66 852.102 1558.66 884.286C1558.66 916.47 1537.2 940.228 1507.32 940.228C1477.43 940.228 1455.98 916.47 1455.98 884.286Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1601.57 810.724V957.854H1619.97V894.255H1628.39C1637.59 894.255 1646.02 897.32 1663.65 927.967L1680.5 957.854H1703.49C1694.3 944.056 1691.23 938.698 1685.11 928.736C1675.14 910.344 1668.24 897.32 1655.98 888.127C1669.77 881.987 1678.2 868.966 1678.2 852.101C1678.2 826.819 1661.35 810.724 1634.52 810.724H1601.57ZM1619.97 829.118H1632.22C1650.62 829.118 1658.28 837.55 1658.28 851.34C1658.28 863.6 1652.91 875.092 1632.22 875.092H1619.97V829.118Z" fill="black"/>
+</svg></button>
+      <div class="app-title-block">
+        <div class="eyebrow"><span class="linea1-pill">Linea 1</span> Programmazione lavori notturni</div>
+        <div class="stat-chips" id="statChips"></div>
+      </div>
+      <span class="frozen-badge" id="frozenBadge">Programma congelato</span>
+      <div class="tabs">
+        <button class="tab-btn view-tab active" data-tab="calendar"><svg class="tab-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Calendario</button>
+        <button class="tab-btn view-tab" data-tab="map"><svg class="tab-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16"/><circle cx="4" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="20" cy="12" r="2"/></svg>Mappa linea</button>
+        <button class="tab-btn view-tab" data-tab="table"><svg class="tab-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg>Tabella dati</button>
+      </div>
+    </div>
+    <div class="toolbar-row2">
+      <div class="legend">
+        <div class="legend-item"><span class="legend-swatch" style="background:var(--series-manut)"></span>Manutenzione programmata</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:var(--series-corsa)"></span>Corsa prova</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:var(--series-trasf)"></span>Trasferimento</div>
+        <div class="legend-item"><span class="legend-swatch facility"></span>Tronchino / stazionamento</div>
+        <div class="legend-item"><span class="resched-flag-demo">&#8635;</span>Rinviabile</div>
+      </div>
+      <div class="toolbar-actions">
+        <button class="tab-btn" data-panel="resched" id="btnResched" aria-expanded="false"><svg class="tab-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-4 4M21 7H8a5 5 0 0 0 0 10h1M7 21l-4-4 4-4M3 17h13a5 5 0 0 0 0-10h-1"/></svg>Rischedula<span class="tab-count" id="reschedCount">0</span></button>
+        <button class="tab-btn" data-panel="cancelled" id="btnSospeso" aria-expanded="false"><svg class="tab-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5l3.2 1.8"/></svg>In sospeso<span class="tab-count" id="cancelCount">0</span></button>
+        <div class="dropdown">
+          <button class="btn btn-primary" id="btnNewMenuToggle">+ Nuova
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:3px;vertical-align:-1px;"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="dropdown-panel" id="newMenuPanel" hidden>
+            <div class="dropdown-group">
+              <button type="button" class="dropdown-item" data-action="new-activity">Nuova attività</button>
+            </div>
+            <div class="dropdown-group">
+              <div class="dropdown-group-label">Import massivo</div>
+              <button type="button" class="dropdown-item" data-action="import-corsa-file">Importa corse prova da file</button>
+              <button type="button" class="dropdown-item" data-action="import-manut-file">Importa manutenzioni da file</button>
+              <button type="button" class="dropdown-item" data-action="import-manut-sap">Importa manutenzioni da SAP</button>
+            </div>
+          </div>
+        </div>
+        <input type="file" id="importFileCorsa" accept=".csv,.xlsx" style="display:none">
+        <input type="file" id="importFileManut" accept=".csv,.xlsx" style="display:none">
+        <div class="dropdown">
+          <button class="btn" id="btnFreeze">Conferma programma</button>
+          <div class="dropdown-panel" id="freezeConfirmPanel" hidden style="min-width:220px;">
+            <div style="padding:4px 8px 10px; font-size:12.5px; color:var(--text-secondary);">Confermare il programma e generare il PDF?</div>
+            <div style="display:flex; gap:8px; padding:0 8px 6px;">
+              <button type="button" class="btn btn-primary" id="freezeYes" style="flex:1;">Sì</button>
+              <button type="button" class="btn" id="freezeNo" style="flex:1;">No</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="workspace">
+    <div class="main-view">
+      <!-- ======================= CALENDARIO ======================= -->
+      <section id="tab-calendar">
+        <div class="range-filter-bar" id="calFilterBar">
+          <div class="week-nav">
+            <span class="week-label" id="calRangeLabel"></span>
+            <div class="range-filter">
+              <div class="field"><label for="calFrom">Da</label><input type="date" id="calFrom" min="2026-07-20" max="2026-12-31"></div>
+              <div class="field"><label for="calTo">A</label><input type="date" id="calTo" min="2026-07-20" max="2026-12-31"></div>
+            </div>
+          </div>
+        </div>
+        <div class="calendar" id="calendarGrid"></div>
+      </section>
+
+      <!-- ======================= MAPPA LINEA ======================= -->
+      <section id="tab-map" hidden>
+        <div class="map-filters">
+          <div class="field"><label for="mapDate">Data (notte del)</label><select id="mapDate"></select></div>
+          <div class="field"><label for="mapFrom">Da</label><select id="mapFrom"></select></div>
+          <div class="field"><label for="mapTo">A</label><select id="mapTo"></select></div>
+          <div class="map-summary" id="mapSummary"></div>
+        </div>
+        <div class="map-wrap">
+          <svg id="lineSvg" viewBox="0 0 1520 500" width="1520" height="500"></svg>
+          <div class="map-callouts" id="mapCallouts"></div>
+          <div class="map-zoom-controls">
+            <button type="button" class="map-zoom-btn" id="mapZoomOut" title="Riduci zoom" aria-label="Riduci zoom">&minus;</button>
+            <button type="button" class="map-zoom-btn" id="mapZoomReset" title="Reimposta zoom" aria-label="Reimposta zoom">&#8634;</button>
+            <button type="button" class="map-zoom-btn" id="mapZoomIn" title="Aumenta zoom" aria-label="Aumenta zoom">&plus;</button>
+          </div>
+        </div>
+        <div class="map-hint">Scorri con la rotella per ingrandire, trascina per spostarti, doppio click su una stazione o un tratto per centrare lo zoom.</div>
+      </section>
+
+      <!-- ======================= TABELLA DATI ======================= -->
+      <section id="tab-table" hidden>
+        <div class="range-filter" id="tblFilterBar" style="margin-bottom:12px;">
+          <div class="field"><label for="tblFrom">Da</label><input type="date" id="tblFrom" min="2026-07-20" max="2026-12-31"></div>
+          <div class="field"><label for="tblTo">A</label><input type="date" id="tblTo" min="2026-07-20" max="2026-12-31"></div>
+        </div>
+        <div class="tbl-wrap">
+          <table class="data-table">
+            <caption id="tblCaption">Attività attive nella finestra selezionata</caption>
+            <thead>
+              <tr>
+                <th>ID</th><th>Tipo</th><th>Data</th><th>Fascia oraria</th><th>Da</th><th>A</th>
+                <th>Oggetto</th><th>Reparto/Fornitore</th><th>Priorità</th><th>Parallelizzabile</th>
+                <th>Fuori tensione</th><th>Tronchino</th><th>Stazionamento</th><th>Scadenza</th><th>Stato</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================= PANNELLO LATERALE: IN SOSPESO ======================= -->
+    <aside id="sospesoPanel" class="side-panel" hidden>
+      <div id="sidePanelContent"></div>
+    </aside>
+  </div>
+
+  <div id="printReport"></div>
+</div>
+
+<script>
+/* =========================================================================
+   1. DATI DI PARTENZA (seed) — derivati dai due Excel fittizi generati per
+      la simulazione. Da qui in poi lo stato vive in memoria (array `store`)
+      ed è modificabile tramite le funzionalità dell'app.
+   ========================================================================= */
+
+const manutenzioniSeed = [];
+
+const movimentazioniSeed = [];
+
+// stato mutabile dell'applicazione
+const store = manutenzioniSeed.concat(movimentazioniSeed).map(a => ({...a, cancelled:false}));
+let frozen = false;
+
+function activeStore(){ return store.filter(a=>!a.cancelled); }
+
+function category(tipo){
+  if (tipo === "Manutenzione") return "manut";
+  if (tipo === "Corsa prova") return "corsa";
+  return "trasf";
+}
+function categoryLabel(cat){
+  return cat==="manut" ? "Manutenzione programmata" : cat==="corsa" ? "Corsa prova" : "Trasferimento";
+}
+
+/* =========================================================================
+   2. TOPOLOGIA LINEA (ordine reale ricavato dalle intestazioni del file
+      sorgente PLANNING LINEA 1 15 LUGLIO 2026.xlsx — due rami ovest
+      [Rho Fiera / Bisceglie] che confluiscono a Pagano nel tronco unico
+      verso Sesto FS) + impianti (tronchini e stazionamenti)
+   ========================================================================= */
+
+const LINE = {
+  branchA: ["RHOTR","RHO","PER","MOL","SLE","BON","URU","LAM","QT8","LOT","FIE","BUO"],
+  branchB: ["TRBIS","BIS","ING","PRI","BNE","GAM","DEA","WAG"],
+  merge: "PAG",
+  trunk: ["CON","CAD","CAI","COR","DUO","SBA","PAL","VEN","LIM","LOR","PAS","ROV","TUR","GOR","PRE","VSG","MAR","RON","SFS","TRSFS"]
+};
+const TRONCHINI = new Set(["RHOTR","TRBIS","TRSFS"]);
+const ALL_CODES = [...LINE.branchA, LINE.merge, ...LINE.branchB, ...LINE.trunk];
+
+// tutti gli impianti (tronchini + stazionamenti) citati nei dati attività,
+// con la stazione "ospite" a cui sono fisicamente collegati sul tracciato
+const FACILITIES = [
+  {name:"Tronchino Rho", host:"RHO", tipo:"tronchino", terminus:"RHOTR"},
+  {name:"Tronchino Bisceglie", host:"BIS", tipo:"tronchino", terminus:"TRBIS"},
+  {name:"Tronchino Sesto FS", host:"SFS", tipo:"tronchino", terminus:"TRSFS"},
+  {name:"Tronchino Rovereto", host:"ROV", tipo:"tronchino"},
+  {name:"Tronchino Gambara", host:"GAM", tipo:"tronchino"},
+  {name:"Tronchino Primaticcio", host:"PRI", tipo:"tronchino"},
+  {name:"Tronchino QT8", host:"QT8", tipo:"tronchino"},
+  {name:"Stazionamento Loreto", host:"LOR", tipo:"stazionamento"},
+  {name:"Stazionamento San Babila", host:"SBA", tipo:"stazionamento"},
+  {name:"Stazionamento Lampugnano", host:"LAM", tipo:"stazionamento"},
+  {name:"Stazionamento Primaticcio", host:"PRI", tipo:"stazionamento"}
+];
+const TERMINUS_FACILITY = {RHOTR:"Tronchino Rho", TRBIS:"Tronchino Bisceglie", TRSFS:"Tronchino Sesto FS"};
+
+const graph = {};
+function link(a,b){ (graph[a] = graph[a]||[]).push(b); (graph[b] = graph[b]||[]).push(a); }
+function seqLink(arr){ for(let i=0;i<arr.length-1;i++) link(arr[i], arr[i+1]); }
+seqLink(LINE.branchA); link(LINE.branchA[LINE.branchA.length-1], LINE.merge);
+seqLink(LINE.branchB); link(LINE.branchB[LINE.branchB.length-1], LINE.merge);
+link(LINE.merge, LINE.trunk[0]); seqLink(LINE.trunk);
+
+function pathBetween(a, b){
+  if (a === b) return [a];
+  const queue = [[a]]; const seen = new Set([a]);
+  while(queue.length){
+    const path = queue.shift();
+    const node = path[path.length-1];
+    for(const next of (graph[node]||[])){
+      if(seen.has(next)) continue;
+      const newPath = [...path, next];
+      if(next === b) return newPath;
+      seen.add(next); queue.push(newPath);
+    }
+  }
+  return [a,b];
+}
+function segmentsOf(path){
+  const segs = [];
+  for(let i=0;i<path.length-1;i++) segs.push([path[i], path[i+1]].sort().join("|"));
+  return segs;
+}
+
+/* =========================================================================
+   3. UTILITY DATA/ORARIO
+   ========================================================================= */
+
+function parseFascia(f){
+  if (f === "Tutta la notte") return {start:0, end:180, label:f};
+  const [a,b] = f.split("-");
+  const toMin = t => { const [h,m] = t.split(":").map(Number); return (h*60+m) - 60; };
+  let start = toMin(a), end = toMin(b);
+  return {start: Math.max(0, Math.min(180,start)), end: Math.max(0, Math.min(180,end)), label:f};
+}
+function fmtDateIt(iso){
+  if(!iso) return "—";
+  const d = new Date(iso+"T00:00:00");
+  const giorni = ["Domenica","Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato"];
+  return giorni[d.getDay()] + " " + d.toLocaleDateString("it-IT",{day:"2-digit",month:"2-digit",year:"numeric"});
+}
+function fmtDateShort(iso){
+  if(!iso) return "—";
+  const d = new Date(iso+"T00:00:00");
+  return d.toLocaleDateString("it-IT",{day:"2-digit",month:"2-digit"});
+}
+function isoFromLocalDate(d){
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function addDays(iso, n){
+  const [y,m,d] = iso.split("-").map(Number);
+  const dt = new Date(y, m-1, d);
+  dt.setDate(dt.getDate()+n);
+  return isoFromLocalDate(dt);
+}
+function hourOptionsHtml(){
+  const hours=[];
+  for(let m=0;m<=180;m+=30){ const t=60+m; hours.push({val:m,label:String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0")}); }
+  return hours.map(h=>`<option value="${h.val}">${h.label}</option>`).join("");
+}
+
+const WEEK_DATES = ["2026-07-20","2026-07-21","2026-07-22","2026-07-23","2026-07-24","2026-07-25","2026-07-26"];
+const RANGE_START = "2026-07-20";
+const RANGE_END = "2026-12-31";
+function datesBetween(a, b){
+  const out = []; let d = a; let guard = 0;
+  while(d <= b && guard < 400){ out.push(d); d = addDays(d,1); guard++; }
+  return out;
+}
+let filterFrom = WEEK_DATES[0];
+let filterTo = WEEK_DATES[WEEK_DATES.length-1];
+function getFilteredDates(){ return datesBetween(filterFrom, filterTo); }
+
+/* =========================================================================
+   4. INTERFERENZE / CONFLITTI
+   ========================================================================= */
+
+function timeOverlap(f1,f2){ return f1.start < f2.end && f2.start < f1.end; }
+function segsOf(a){ return new Set(segmentsOf(pathBetween(a.da,a.a))); }
+function facilitiesOf(a){
+  const s = new Set();
+  if(a.tronchino) s.add("T:"+a.tronchino);
+  if(a.stazionamento) s.add("S:"+a.stazionamento);
+  return s;
+}
+function conflictsWith(candidate, pool){
+  const f1 = parseFascia(candidate.fascia);
+  const segs1 = segsOf(candidate);
+  const fac1 = facilitiesOf(candidate);
+  return pool.filter(b=>{
+    if(b === candidate || b.id === candidate.id) return false;
+    if(b.data !== candidate.data) return false;
+    const f2 = parseFascia(b.fascia);
+    if(!timeOverlap(f1,f2)) return false;
+    if(candidate.parallelizzabile && b.parallelizzabile) return false;
+    const segs2 = segsOf(b);
+    const sharedSeg = [...segs1].some(s=>segs2.has(s));
+    const fac2 = facilitiesOf(b);
+    const sharedFac = [...fac1].some(x=>fac2.has(x));
+    return sharedSeg || sharedFac;
+  });
+}
+function firstFreeDate(candidateTemplate, startDate, endDate, pool){
+  const [sy,sm,sd] = startDate.split("-").map(Number);
+  const [ey,em,ed] = endDate.split("-").map(Number);
+  let d = new Date(sy, sm-1, sd);
+  const end = new Date(ey, em-1, ed);
+  let guard = 0;
+  while(d <= end && guard < 400){
+    const iso = isoFromLocalDate(d);
+    const test = {...candidateTemplate, data: iso};
+    if(conflictsWith(test, pool).length === 0) return iso;
+    d.setDate(d.getDate()+1); guard++;
+  }
+  return null;
+}
+function generateId(tipo){
+  const prefix = tipo === "Manutenzione" ? "MNT" : tipo === "Corsa prova" ? "CP" : "TRF";
+  const nums = store.filter(a=>a.id.startsWith(prefix+"-2026-")).map(a=>parseInt(a.id.split("-")[2],10)).filter(n=>!isNaN(n));
+  const next = (nums.length ? Math.max(...nums) : 0) + 1;
+  return prefix + "-2026-" + String(next).padStart(3,"0");
+}
+
+/* =========================================================================
+   5. CALENDARIO
+   ========================================================================= */
+
+function renderCalendar(){
+  const grid = document.getElementById("calendarGrid");
+  grid.innerHTML = "";
+  const rangeLabel = document.getElementById("calRangeLabel");
+  if(rangeLabel) rangeLabel.textContent = "Dal " + fmtDateShort(filterFrom) + " al " + fmtDateShort(filterTo);
+
+  const hourhead = document.createElement("div");
+  hourhead.className = "cal-hourhead";
+  const spacer = document.createElement("div");
+  spacer.className = "cal-daylabel-spacer";
+  hourhead.appendChild(spacer);
+  const axis = document.createElement("div");
+  axis.className = "cal-hour-axis";
+  ["01:00","02:00","03:00","04:00"].forEach((t,i)=>{
+    const s = document.createElement("span");
+    s.style.left = (i/3*100) + "%";
+    s.textContent = t;
+    axis.appendChild(s);
+  });
+  hourhead.appendChild(axis);
+  grid.appendChild(hourhead);
+
+  const list = activeStore();
+  const LANE_H = 32; // px per corsia
+
+  getFilteredDates().forEach(iso=>{
+    const row = document.createElement("div");
+    row.className = "cal-day-row";
+
+    const label = document.createElement("div");
+    label.className = "cal-day-label";
+    const d = new Date(iso+"T00:00:00");
+    const giorni = ["Domenica","Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato"];
+    label.innerHTML = "<b>"+giorni[d.getDay()]+"</b><div class='d'>"+fmtDateShort(iso)+"</div>";
+    row.appendChild(label);
+
+    const timeline = document.createElement("div");
+    timeline.className = "cal-timeline";
+    timeline.dataset.date = iso;
+    attachDropHandlers(timeline);
+    const dayActs = list.filter(a=>a.data===iso);
+
+    if(dayActs.length===0){
+      timeline.style.height = LANE_H + "px";
+      const e = document.createElement("div");
+      e.className = "empty-day";
+      e.textContent = "Nessuna attività";
+      timeline.appendChild(e);
+    } else {
+      const withTime = dayActs.map(a=>({a, ...parseFascia(a.fascia)})).sort((x,y)=>x.start-y.start);
+      const lanes = [];
+      withTime.forEach(item=>{
+        let laneIdx = lanes.findIndex(end => end <= item.start);
+        if(laneIdx === -1){ laneIdx = lanes.length; lanes.push(item.end); }
+        else { lanes[laneIdx] = item.end; }
+        item.lane = laneIdx;
+      });
+      const totalLanes = Math.max(1, lanes.length);
+      timeline.style.height = (totalLanes * LANE_H) + "px";
+
+      withTime.forEach(item=>{
+        const block = document.createElement("div");
+        const cat = category(item.a.tipo);
+        block.className = "cal-block " + cat;
+        const left = (item.start/180*100);
+        const width = Math.max((item.end-item.start)/180*100, 4);
+        block.style.left = left + "%";
+        block.style.width = width + "%";
+        block.style.top = (item.lane * LANE_H + 3) + "px";
+        block.style.height = (LANE_H - 6) + "px";
+        const chi = item.a.reparto || item.a.fornitore || "—";
+        const flag = isRinviabile(item.a) ? '<span class="resched-flag" title="Rinviabile">&#8635;</span>' : "";
+        block.innerHTML = flag + "<b>"+chi+"</b><span class='sub'>"+item.a.da+" &rarr; "+item.a.a+" &middot; "+item.a.fascia+"</span>";
+        block.title = item.a.id + " — " + item.a.oggetto;
+        block.addEventListener("click", ()=>openModal([item.a]));
+        attachDragHandlers(block, item.a);
+        timeline.appendChild(block);
+      });
+    }
+    row.appendChild(timeline);
+    grid.appendChild(row);
+  });
+}
+
+/* =========================================================================
+   6. MAPPA TOPOGRAFICA
+   ========================================================================= */
+
+const POS = {};
+LINE.branchA.forEach((code,i)=> POS[code] = {x: 55 + i*(455/(LINE.branchA.length-1)), y:85});
+LINE.branchB.forEach((code,i)=> POS[code] = {x: 55 + i*(455/(LINE.branchB.length-1)), y:435});
+POS[LINE.merge] = {x:560, y:260};
+LINE.trunk.forEach((code,i)=> POS[code] = {x: 615 + i*44, y:260});
+
+/* ---- zoom/pan sulla mappa topografica ---- */
+const MAP_BASE_VB = {x:0, y:0, w:1520, h:500};
+const MAP_MIN_W = 300; // massimo ingrandimento (~5x)
+let mapVB = {...MAP_BASE_VB};
+let mapActiveForCallouts = []; // popolato da renderMap(), riletto da updateMapCallouts()
+
+function clampMapSize(){
+  mapVB.w = Math.min(MAP_BASE_VB.w, Math.max(MAP_MIN_W, mapVB.w));
+  mapVB.h = mapVB.w * (MAP_BASE_VB.h/MAP_BASE_VB.w);
+}
+function clampMapPos(){
+  const maxX = MAP_BASE_VB.x + MAP_BASE_VB.w - mapVB.w;
+  const maxY = MAP_BASE_VB.y + MAP_BASE_VB.h - mapVB.h;
+  mapVB.x = Math.min(Math.max(mapVB.x, MAP_BASE_VB.x), Math.max(MAP_BASE_VB.x, maxX));
+  mapVB.y = Math.min(Math.max(mapVB.y, MAP_BASE_VB.y), Math.max(MAP_BASE_VB.y, maxY));
+}
+function applyMapViewBox(){
+  const svg = document.getElementById("lineSvg");
+  svg.setAttribute("viewBox", mapVB.x+" "+mapVB.y+" "+mapVB.w+" "+mapVB.h);
+  updateMapCallouts();
+}
+function zoomMapAt(factor, cx, cy){
+  const relX = (cx - mapVB.x)/mapVB.w, relY = (cy - mapVB.y)/mapVB.h;
+  mapVB.w *= factor;
+  clampMapSize();
+  mapVB.x = cx - relX*mapVB.w;
+  mapVB.y = cy - relY*mapVB.h;
+  clampMapPos();
+  applyMapViewBox();
+}
+function focusMapOn(x, y, targetW){
+  mapVB.w = targetW;
+  clampMapSize();
+  mapVB.x = x - mapVB.w/2;
+  mapVB.y = y - mapVB.h/2;
+  clampMapPos();
+  applyMapViewBox();
+}
+function resetMapZoom(){ mapVB = {...MAP_BASE_VB}; applyMapViewBox(); }
+function toggleMapFocus(x, y){
+  const isHere = mapVB.w < MAP_BASE_VB.w*0.6 &&
+    Math.abs((mapVB.x+mapVB.w/2)-x) < mapVB.w*0.5 && Math.abs((mapVB.y+mapVB.h/2)-y) < mapVB.h*0.5;
+  if(isHere) resetMapZoom();
+  else focusMapOn(x, y, MAP_BASE_VB.w*0.3);
+}
+function clientToMapPoint(clientX, clientY){
+  const svg = document.getElementById("lineSvg");
+  const ctm = svg.getScreenCTM();
+  if(!ctm) return {x:mapVB.x+mapVB.w/2, y:mapVB.y+mapVB.h/2};
+  const pt = svg.createSVGPoint();
+  pt.x = clientX; pt.y = clientY;
+  const loc = pt.matrixTransform(ctm.inverse());
+  return {x:loc.x, y:loc.y};
+}
+function computePathMidpoint(path){
+  let total = 0;
+  const segLens = [];
+  for(let i=0;i<path.length-1;i++){
+    const p1=POS[path[i]], p2=POS[path[i+1]];
+    const len = Math.hypot(p2.x-p1.x, p2.y-p1.y);
+    segLens.push(len); total += len;
+  }
+  let target = total/2, acc = 0;
+  for(let i=0;i<segLens.length;i++){
+    if(acc+segLens[i] >= target){
+      const p1=POS[path[i]], p2=POS[path[i+1]];
+      const t = segLens[i] ? (target-acc)/segLens[i] : 0;
+      return { x: p1.x+(p2.x-p1.x)*t, y: p1.y+(p2.y-p1.y)*t, total };
+    }
+    acc += segLens[i];
+  }
+  const last = POS[path[path.length-1]];
+  return { x:last.x, y:last.y, total };
+}
+function prioRank(p){ return p==="Alta"?2 : p==="Media"?1 : 0; }
+function updateMapCallouts(){
+  const container = document.getElementById("mapCallouts");
+  const svg = document.getElementById("lineSvg");
+  if(!container || !svg) return;
+  container.innerHTML = "";
+  const svgRect = svg.getBoundingClientRect();
+  const wrapRect = document.querySelector(".map-wrap").getBoundingClientRect();
+  if(!svgRect.width) return; // vista mappa non attiva
+  const pxPerUnit = svgRect.width / mapVB.w;
+  const THRESH_PX = 78; // lunghezza minima a schermo perché il tratto sia leggibile
+
+  const candidates = mapActiveForCallouts
+    .filter(c => c.len*pxPerUnit >= THRESH_PX)
+    .filter(c => c.x >= mapVB.x-40 && c.x <= mapVB.x+mapVB.w+40 && c.y >= mapVB.y-40 && c.y <= mapVB.y+mapVB.h+40)
+    .map(c => ({
+      ...c,
+      sx: (svgRect.left - wrapRect.left) + (c.x - mapVB.x) * pxPerUnit,
+      sy: (svgRect.top - wrapRect.top) + (c.y - mapVB.y) * pxPerUnit
+    }))
+    .sort((a,b)=> (prioRank(b.a.priorita)-prioRank(a.a.priorita)) || (b.len-a.len));
+
+  const placed = [];
+  candidates.forEach(c=>{
+    const overlap = placed.some(p => Math.abs(p.sx-c.sx) < 100 && Math.abs(p.sy-c.sy) < 50);
+    if(overlap) return;
+    placed.push(c);
+    const cat = category(c.a.tipo);
+    const bubble = document.createElement("div");
+    bubble.className = "map-callout";
+    bubble.style.left = c.sx + "px";
+    bubble.style.top = c.sy + "px";
+    bubble.innerHTML = `<div class="mc-bar" style="background:var(--series-${cat})"></div>
+      <div class="mc-title">${c.a.id} · ${c.a.oggetto}</div>
+      <div class="mc-sub">${c.a.da} &rarr; ${c.a.a} · ${c.a.fascia}</div>
+      <div class="mc-sub">${c.a.reparto || c.a.fornitore || ""}</div>`;
+    bubble.addEventListener("click", ()=> openModal([c.a]));
+    container.appendChild(bubble);
+  });
+}
+function initMapZoomPan(){
+  const svg = document.getElementById("lineSvg");
+  svg.addEventListener("wheel", e=>{
+    e.preventDefault();
+    const pt = clientToMapPoint(e.clientX, e.clientY);
+    zoomMapAt(e.deltaY < 0 ? 0.85 : 1/0.85, pt.x, pt.y);
+  }, {passive:false});
+  let pan = null;
+  svg.addEventListener("mousedown", e=>{
+    if(mapVB.w >= MAP_BASE_VB.w - 0.5) return; // niente pan alla vista completa
+    pan = { startX:e.clientX, startY:e.clientY, startVB:{...mapVB} };
+    svg.classList.add("panning");
+  });
+  window.addEventListener("mousemove", e=>{
+    if(!pan) return;
+    const rect = svg.getBoundingClientRect();
+    if(!rect.width) return;
+    const scaleX = pan.startVB.w / rect.width, scaleY = pan.startVB.h / rect.height;
+    mapVB.x = pan.startVB.x - (e.clientX - pan.startX) * scaleX;
+    mapVB.y = pan.startVB.y - (e.clientY - pan.startY) * scaleY;
+    clampMapPos();
+    applyMapViewBox();
+  });
+  window.addEventListener("mouseup", ()=>{ if(pan){ pan=null; svg.classList.remove("panning"); } });
+  document.getElementById("mapZoomIn").addEventListener("click", ()=> zoomMapAt(0.75, mapVB.x+mapVB.w/2, mapVB.y+mapVB.h/2));
+  document.getElementById("mapZoomOut").addEventListener("click", ()=> zoomMapAt(1/0.75, mapVB.x+mapVB.w/2, mapVB.y+mapVB.h/2));
+  document.getElementById("mapZoomReset").addEventListener("click", resetMapZoom);
+  window.addEventListener("resize", updateMapCallouts);
+}
+
+function populateMapDateOptions(){
+  const dateSel = document.getElementById("mapDate");
+  const prevValue = dateSel.value;
+  dateSel.innerHTML = "";
+  const dates = getFilteredDates();
+  dates.forEach(iso=>{
+    const opt = document.createElement("option");
+    opt.value = iso; opt.textContent = fmtDateIt(iso);
+    dateSel.appendChild(opt);
+  });
+  if(dates.includes(prevValue)) dateSel.value = prevValue;
+  else if(dates.length) dateSel.value = dates[0];
+}
+
+function initMapFilters(){
+  populateMapDateOptions();
+  const fromSel = document.getElementById("mapFrom");
+  const toSel = document.getElementById("mapTo");
+  const hours = [];
+  for(let m=0; m<=180; m+=30){
+    const totalMin = 60+m;
+    hours.push({val:m, label: String(Math.floor(totalMin/60)).padStart(2,"0")+":"+String(totalMin%60).padStart(2,"0")});
+  }
+  hours.forEach(h=>{
+    const o1 = document.createElement("option"); o1.value=h.val; o1.textContent=h.label; fromSel.appendChild(o1);
+    const o2 = document.createElement("option"); o2.value=h.val; o2.textContent=h.label; toSel.appendChild(o2);
+  });
+  fromSel.value = 0; toSel.value = 180;
+  [document.getElementById("mapDate"), fromSel, toSel].forEach(el=> el.addEventListener("change", renderMap));
+}
+
+function renderMap(){
+  const svg = document.getElementById("lineSvg");
+  svg.innerHTML = "";
+  const date = document.getElementById("mapDate").value;
+  const from = Number(document.getElementById("mapFrom").value);
+  const to = Number(document.getElementById("mapTo").value);
+  const lo = Math.min(from,to), hi = Math.max(from,to);
+
+  const ns = "http://www.w3.org/2000/svg";
+  const add = (tag, attrs, parent=svg) => {
+    const el = document.createElementNS(ns, tag);
+    for(const k in attrs) el.setAttribute(k, attrs[k]);
+    parent.appendChild(el);
+    return el;
+  };
+
+  const active = activeStore().filter(a=>{
+    if(a.data !== date) return false;
+    const f = parseFascia(a.fascia);
+    return f.start < hi && f.end > lo;
+  });
+
+  mapActiveForCallouts = active.map(a=>{
+    const mid = computePathMidpoint(pathBetween(a.da, a.a));
+    return { a, x:mid.x, y:mid.y, len:mid.total };
+  });
+
+  const segMap = {};
+  active.forEach(a=>{
+    const path = pathBetween(a.da, a.a);
+    segmentsOf(path).forEach(segId=>{ (segMap[segId] = segMap[segId] || []).push(a); });
+  });
+  const facilityActs = {};
+  active.forEach(a=>{
+    if(a.tronchino) (facilityActs[a.tronchino] = facilityActs[a.tronchino]||[]).push(a);
+    if(a.stazionamento) (facilityActs[a.stazionamento] = facilityActs[a.stazionamento]||[]).push(a);
+  });
+
+  function drawBase(codes){
+    for(let i=0;i<codes.length-1;i++){
+      const p1 = POS[codes[i]], p2 = POS[codes[i+1]];
+      add("line", {x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,class:"base-line"});
+    }
+  }
+  drawBase(LINE.branchA);
+  drawBase(LINE.branchB);
+  drawBase(LINE.trunk);
+  add("line", {x1:POS[LINE.branchA[LINE.branchA.length-1]].x, y1:POS[LINE.branchA[LINE.branchA.length-1]].y, x2:POS[LINE.merge].x, y2:POS[LINE.merge].y, class:"base-line"});
+  add("line", {x1:POS[LINE.branchB[LINE.branchB.length-1]].x, y1:POS[LINE.branchB[LINE.branchB.length-1]].y, x2:POS[LINE.merge].x, y2:POS[LINE.merge].y, class:"base-line"});
+  add("line", {x1:POS[LINE.merge].x, y1:POS[LINE.merge].y, x2:POS[LINE.trunk[0]].x, y2:POS[LINE.trunk[0]].y, class:"base-line"});
+
+  for(const segId in segMap){
+    const [c1,c2] = segId.split("|");
+    const p1 = POS[c1], p2 = POS[c2];
+    const acts = segMap[segId];
+    const n = acts.length;
+    acts.forEach((a,i)=>{
+      const offset = (i - (n-1)/2) * 6;
+      const dx = p2.x-p1.x, dy = p2.y-p1.y;
+      const len = Math.hypot(dx,dy) || 1;
+      const nx = -dy/len*offset, ny = dx/len*offset;
+      const cat = category(a.tipo);
+      const colorVar = "var(--series-"+cat+")";
+      const lineEl = add("line", { x1:p1.x+nx, y1:p1.y+ny, x2:p2.x+nx, y2:p2.y+ny, class:"seg-overlay", stroke:colorVar, "stroke-width":5.5 });
+      lineEl.addEventListener("click", ()=>openModal([a]));
+      lineEl.addEventListener("dblclick", e=>{ e.stopPropagation(); toggleMapFocus((p1.x+p2.x)/2, (p1.y+p2.y)/2); });
+      const t = document.createElementNS(ns,"title");
+      t.textContent = a.id + " — " + categoryLabel(cat) + " — " + a.oggetto;
+      lineEl.appendChild(t);
+    });
+  }
+
+  // stazioni + etichette
+  ALL_CODES.forEach(code=>{
+    const p = POS[code];
+    const isTronchino = TRONCHINI.has(code);
+    const onBranchB = LINE.branchB.includes(code);
+    const r = isTronchino ? 7 : 5;
+    const dot = add("circle", {cx:p.x, cy:p.y, r:r, class:"st-dot"+(isTronchino?" tronchino":"")});
+    dot.style.cursor = "pointer";
+    dot.addEventListener("dblclick", e=>{ e.stopPropagation(); toggleMapFocus(p.x, p.y); });
+    const relatedActs = active.filter(a=> pathBetween(a.da,a.a).includes(code));
+    let combined = relatedActs.slice();
+    if(isTronchino){
+      const facName = TERMINUS_FACILITY[code];
+      const occ = facilityActs[facName];
+      if(occ && occ.length){
+        occ.forEach(o=>{ if(!combined.includes(o)) combined.push(o); });
+        const cat = category(occ[0].tipo);
+        dot.style.fill = "var(--series-"+cat+")";
+        dot.style.stroke = "var(--series-"+cat+")";
+      }
+    }
+    if(combined.length){
+      dot.classList.add("active");
+      dot.addEventListener("click", ()=>openModal(combined));
+      const t = document.createElementNS(ns,"title");
+      t.textContent = code + " — " + combined.map(a=>a.id).join(", ");
+      dot.appendChild(t);
+    } else {
+      const t = document.createElementNS(ns,"title");
+      t.textContent = code;
+      dot.appendChild(t);
+    }
+    const label = add("text", { x:p.x, y: onBranchB ? p.y+18 : p.y-10, "text-anchor":"middle", class:"st-label"+(isTronchino?" tronchino":"") });
+    label.textContent = code;
+  });
+
+  // impianti non-terminali (tronchini/stazionamenti intermedi) come diramazioni grafiche
+  const nonTerminus = FACILITIES.filter(f=>!f.terminus);
+  const byHost = {};
+  nonTerminus.forEach(f=>{ (byHost[f.host]=byHost[f.host]||[]).push(f); });
+  Object.keys(byHost).forEach(host=>{
+    const p = POS[host];
+    const dir = LINE.branchB.includes(host) ? -1 : 1; // sotto per ramoA/tronco, sopra per ramoB (lato opposto all'etichetta stazione)
+    const list = byHost[host];
+    list.forEach((f,i)=>{
+      const spread = (i - (list.length-1)/2) * 18;
+      const stubX = p.x + spread;
+      const stubY = p.y + dir*32;
+      add("line", {x1:p.x, y1:p.y, x2:stubX, y2:stubY, class:"facility-stub"});
+      const occ = facilityActs[f.name];
+      const cat = occ && occ.length ? category(occ[0].tipo) : null;
+      const rect = add("rect", {
+        x:stubX-7, y:stubY-7, width:14, height:14, rx:5,
+        class:"facility-dot", "stroke-width":2.5
+      });
+      rect.style.fill = cat ? "var(--series-"+cat+")" : "var(--surface-1)";
+      rect.style.stroke = cat ? "var(--series-"+cat+")" : "var(--muted)";
+      if(occ && occ.length) rect.addEventListener("click", ()=>openModal(occ));
+      const t = document.createElementNS(ns,"title");
+      t.textContent = f.name + (occ&&occ.length ? " — occupato da "+occ.map(a=>a.id).join(", ") : " — libero");
+      rect.appendChild(t);
+      const lbl = add("text", {x:stubX, y: stubY + (dir>0? 17:-11), "text-anchor":"middle", class:"st-label", "font-size":"8.5"});
+      lbl.textContent = f.tipo === "tronchino" ? "Tr." : "St.";
+    });
+  });
+
+  const summary = document.getElementById("mapSummary");
+  summary.textContent = active.length
+    ? active.length + " attività attive su " + fmtDateIt(date) + " tra le " + document.getElementById("mapFrom").selectedOptions[0].text + " e le " + document.getElementById("mapTo").selectedOptions[0].text
+    : "Nessuna attività nella finestra selezionata — linea libera";
+
+  applyMapViewBox(); // mantiene zoom/pan corrente e aggiorna le vignette
+}
+
+/* =========================================================================
+   7. TABELLA DATI
+   ========================================================================= */
+
+function renderTable(){
+  const tbody = document.getElementById("tableBody");
+  tbody.innerHTML = "";
+  const sorted = activeStore().filter(a=> a.data >= filterFrom && a.data <= filterTo)
+    .sort((a,b)=> a.data.localeCompare(b.data) || a.id.localeCompare(b.id));
+  const caption = document.getElementById("tblCaption");
+  if(caption) caption.textContent = "Attività attive dal " + fmtDateShort(filterFrom) + " al " + fmtDateShort(filterTo) + " (vista tabellare, alternativa a calendario e mappa)";
+  sorted.forEach(a=>{
+    const cat = category(a.tipo);
+    const tr = document.createElement("tr");
+    tr.style.cursor = "pointer";
+    tr.addEventListener("click", ()=>openModal([a]));
+    tr.innerHTML = `
+      <td>${a.id}</td>
+      <td><span class="type-pill ${cat}">${a.tipo}</span></td>
+      <td>${fmtDateShort(a.data)}</td>
+      <td>${a.fascia}</td>
+      <td>${a.da}</td>
+      <td>${a.a}</td>
+      <td>${a.oggetto}</td>
+      <td>${a.reparto || a.fornitore || "—"}</td>
+      <td>${a.priorita}</td>
+      <td>${a.parallelizzabile ? "Sì" : "No"}</td>
+      <td>${a.fuoriTensione ? "Sì" : "No"}</td>
+      <td>${a.tronchino || "—"}</td>
+      <td>${a.stazionamento || "—"}</td>
+      <td>${a.scadenza ? fmtDateShort(a.scadenza) : "—"}</td>
+      <td>${a.stato}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+/* =========================================================================
+   8. CANCELLATE / REINSERIMENTO
+   ========================================================================= */
+
+function renderCancelled(){
+  const wrap = document.getElementById("sidePanelContent");
+  const items = store.filter(a=>a.cancelled);
+  const highPriority = items.filter(a=>a.priorita==="Alta");
+  const calendarActive = !document.getElementById("tab-calendar").hidden;
+
+  let html = `<div class="side-panel-head"><h2 style="margin:0;">Attività in sospeso</h2><button class="side-panel-close" id="sidePanelClose" aria-label="Chiudi pannello">&times;</button></div>
+    <div class="modal-sub" style="margin-bottom:14px;">Sospese dal programma (annullate o create senza data). ${calendarActive ? 'Trascinale direttamente su un giorno del calendario, oppure' : 'Clicca un\'attività per vedere le date alternative disponibili, oppure'} usa "Reinserisci".</div>`;
+  if(highPriority.length){
+    html += `<div class="conflict-alert" style="margin-bottom:14px;"><b>Attenzione — reinserimento obbligatorio:</b> ${highPriority.length} attività ad alta priorità sono in sospeso e devono essere reinserite prima di congelare il programma.</div>`;
+  }
+  if(!items.length){
+    html += '<p style="color:var(--text-secondary)">Nessuna attività in sospeso: tutto il programma è attivo.</p>';
+  }
+  items.forEach(a=>{
+    const cat = category(a.tipo);
+    html += `<div class="resched-row" data-row-id="${a.id}">
+      <div><span class="type-pill ${cat}">${a.tipo}</span> <b>${a.id}</b> — ${a.oggetto}
+        ${a.priorita==="Alta" ? '<span class="prio-badge">Alta priorità</span>' : ""}
+        <br><span class="modal-sub">${a.da} → ${a.a} · ${a.data ? "era il "+fmtDateShort(a.data) : "nessuna data"} · ${a.fascia}</span></div>
+      <button class="btn btn-primary reinsert-btn" data-id="${a.id}" ${frozen?"disabled":""}>Reinserisci</button>
+    </div>`;
+  });
+  wrap.innerHTML = html;
+  const closeBtn = document.getElementById("sidePanelClose");
+  if(closeBtn) closeBtn.addEventListener("click", closeSidePanel);
+  wrap.querySelectorAll(".reinsert-btn").forEach(btn=>{
+    btn.addEventListener("click", e=>{
+      e.stopPropagation();
+      openReinsertModal(store.find(x=>x.id===btn.dataset.id));
+    });
+  });
+  wrap.querySelectorAll(".resched-row[data-row-id]").forEach(row=>{
+    const a = store.find(x=>x.id===row.dataset.rowId);
+    if(!a) return;
+    if(calendarActive) attachSuspendedDragHandlers(row, a);
+    row.addEventListener("click", e=>{
+      if(e.target.closest(".reinsert-btn")) return;
+      const avail = [...computeAvailableDatesForActivity(a)];
+      if(avail.length) openAlternativesPopup(a, avail);
+      else alert("Nessuna data alternativa libera trovata per "+a.id+" nel periodo gestito dall'app.");
+    });
+  });
+}
+
+/* =========================================================================
+   9. MODALE DETTAGLIO (con azioni: annulla / reinserisci / rischedula)
+   ========================================================================= */
+
+function closeAnyModal(){ const bd = document.querySelector(".backdrop"); if(bd) bd.remove(); }
+
+function openModal(acts){
+  closeAnyModal();
+  const backdrop = document.createElement("div");
+  backdrop.className = "backdrop";
+  backdrop.addEventListener("click", e=>{ if(e.target===backdrop) backdrop.remove(); });
+
+  const modal = document.createElement("div");
+  modal.className = "modal";
+
+  let html = `<button class="close-x" aria-label="Chiudi">&times;</button>`;
+  acts.forEach(a=>{
+    const cat = category(a.tipo);
+    html += `<div class="modal-group">
+      <h2>${a.id} <span class="type-pill ${cat}">${a.tipo}</span></h2>
+      <div class="modal-sub">${a.oggetto}</div>
+      <dl>
+        <dt>Data</dt><dd>${fmtDateIt(a.data)}</dd>
+        <dt>Fascia oraria</dt><dd>${a.fascia}</dd>
+        <dt>Tratta</dt><dd>${a.da} → ${a.a}</dd>
+        <dt>${a.reparto ? "Reparto" : "Fornitore"}</dt><dd>${a.reparto || a.fornitore || "—"}</dd>
+        ${a.rotabile ? `<dt>Rotabile/mezzo</dt><dd>${a.rotabile}</dd>` : ""}
+        <dt>Priorità</dt><dd>${a.priorita}</dd>
+        <dt>Scadenza</dt><dd>${a.scadenza ? fmtDateIt(a.scadenza) : "—"}${a.tolleranza!=null ? " (tolleranza "+a.tolleranza+" gg)" : ""}</dd>
+        <dt>Parallelizzabile</dt><dd>${a.parallelizzabile ? "Sì" : "No"}</dd>
+        <dt>Rischi</dt><dd>${a.rischi}</dd>
+        <dt>Fuori tensione</dt><dd>${a.fuoriTensione ? "Sì" : "No"}</dd>
+        ${a.compatCollaudo!=null ? `<dt>Compatibile con collaudo</dt><dd>${a.compatCollaudo ? "Sì" : "No"}</dd>` : ""}
+        <dt>Tronchino richiesto</dt><dd>${a.tronchino || "No"}</dd>
+        <dt>Stazionamento richiesto</dt><dd>${a.stazionamento || "No"}</dd>
+        <dt>Stato</dt><dd>${a.stato}</dd>
+        <dt>Note</dt><dd>${a.note}</dd>
+      </dl>
+    </div>`;
+  });
+
+  if(acts.length===1){
+    const a = acts[0];
+    let actions = '<div class="form-actions">';
+    if(!frozen){
+      if(a.cancelled){
+        actions += `<button class="btn btn-primary" id="mReinsert">Reinserisci</button>`;
+      } else {
+        actions += `<button class="btn" id="mResched">Rischedula questa attività</button>`;
+        actions += `<button class="btn" id="mCancel">Sospendi attività</button>`;
+      }
+    }
+    actions += "</div>";
+    html += actions;
+  }
+
+  modal.innerHTML = html;
+  modal.querySelector(".close-x").addEventListener("click", ()=>backdrop.remove());
+  backdrop.appendChild(modal);
+  document.body.appendChild(backdrop);
+
+  if(acts.length===1){
+    const a = acts[0];
+    const cancelBtn = modal.querySelector("#mCancel");
+    if(cancelBtn) cancelBtn.addEventListener("click", ()=>{
+      a.cancelled = true; a.stato = "In sospeso";
+      backdrop.remove(); renderAll();
+    });
+    const reinsertBtn = modal.querySelector("#mReinsert");
+    if(reinsertBtn) reinsertBtn.addEventListener("click", ()=>{
+      backdrop.remove();
+      openReinsertModal(a);
+    });
+    const reschedBtn = modal.querySelector("#mResched");
+    if(reschedBtn) reschedBtn.addEventListener("click", ()=>{
+      backdrop.remove();
+      promptReschedule(a);
+    });
+  }
+}
+
+/* =========================================================================
+   10. RISCHEDULAZIONE MANUTENZIONI
+   ========================================================================= */
+
+function promptReschedule(a){
+  const pool = store.filter(x=>!x.cancelled && x.id!==a.id);
+  const windowEnd = addDays(a.scadenza, a.tolleranza);
+  let suggestion = firstFreeDate(a, addDays(a.data,1), windowEnd, pool);
+  let overTolerance = false;
+  if(!suggestion){
+    suggestion = firstFreeDate(a, addDays(windowEnd,1), addDays(windowEnd,14), pool);
+    overTolerance = true;
+  }
+  if(!suggestion){
+    alert("Nessuna data libera trovata nelle prossime settimane per "+a.id+".");
+    return;
+  }
+  let msg = "";
+  if(overTolerance){
+    msg = "Attenzione: nessuno slot libero entro la tolleranza normativa (scadenza + tolleranza: "+fmtDateIt(windowEnd)+").\n";
+  } else if(suggestion > a.scadenza){
+    msg = "Attenzione: la proposta rientra nel periodo di tolleranza (scadenza normativa: "+fmtDateIt(a.scadenza)+").\n";
+  }
+  msg += "Data alternativa proposta per "+a.id+" ("+a.oggetto+"): "+fmtDateIt(suggestion)+".\n\nLo slot attuale ("+fmtDateIt(a.data)+") si libererà per una corsa prova o un trasferimento.\n\nApplicare lo spostamento?";
+  if(confirm(msg)){ a.data = suggestion; renderAll(); }
+}
+
+let reschedSearchQuery = "";
+let reschedRepartoFilter = "";
+
+function renderReschedPanel(){
+  const wrap = document.getElementById("sidePanelContent");
+  const candidates = store.filter(a=>!a.cancelled && a.tipo==="Manutenzione" && a.tolleranza>0 && a.scadenza)
+    .sort((a,b)=> a.scadenza.localeCompare(b.scadenza));
+  const reparti = [...new Set(candidates.map(a=>a.reparto).filter(Boolean))].sort();
+  if(reschedRepartoFilter && !reparti.includes(reschedRepartoFilter)) reschedRepartoFilter = "";
+
+  wrap.innerHTML = `<div class="side-panel-head"><h2 style="margin:0;">Manutenzioni rischedulabili</h2><button class="side-panel-close" id="sidePanelClose" aria-label="Chiudi pannello">&times;</button></div>
+    <div class="modal-sub" style="margin-bottom:10px;">Attività con margine di tolleranza residuo: cerca e applica la prima data alternativa libera, liberando lo slot originale per una corsa prova. Puoi anche trascinarle direttamente dal calendario.</div>
+    <div class="side-panel-filters">
+      <input type="search" id="reschedSearch" placeholder="Cerca per ID, oggetto, tratta..." value="${reschedSearchQuery.replace(/"/g,"&quot;")}">
+      <select id="reschedRepartoFilter">
+        <option value="">Tutti i reparti</option>
+        ${reparti.map(r=>`<option value="${r}" ${r===reschedRepartoFilter?"selected":""}>${r}</option>`).join("")}
+      </select>
+    </div>
+    <div id="reschedRowsWrap"></div>`;
+
+  const closeBtn = document.getElementById("sidePanelClose");
+  if(closeBtn) closeBtn.addEventListener("click", closeSidePanel);
+
+  const searchEl = document.getElementById("reschedSearch");
+  const repartoEl = document.getElementById("reschedRepartoFilter");
+  searchEl.addEventListener("input", ()=>{ reschedSearchQuery = searchEl.value; renderReschedRows(candidates); });
+  repartoEl.addEventListener("change", ()=>{ reschedRepartoFilter = repartoEl.value; renderReschedRows(candidates); });
+
+  renderReschedRows(candidates);
+}
+
+function renderReschedRows(candidates){
+  const rowsWrap = document.getElementById("reschedRowsWrap");
+  if(!rowsWrap) return;
+  const q = reschedSearchQuery.trim().toLowerCase();
+  const filtered = candidates.filter(a=>{
+    if(reschedRepartoFilter && a.reparto !== reschedRepartoFilter) return false;
+    if(!q) return true;
+    return [a.id, a.oggetto, a.reparto, a.da, a.a].filter(Boolean).join(" ").toLowerCase().includes(q);
+  });
+  let html = "";
+  if(!candidates.length) html = "<p style=\"color:var(--text-secondary)\">Nessuna manutenzione con tolleranza residua al momento.</p>";
+  else if(!filtered.length) html = "<p style=\"color:var(--text-secondary)\">Nessuna manutenzione corrisponde ai filtri.</p>";
+  filtered.forEach(a=>{
+    html += `<div class="resched-row">
+      <div><b>${a.id}</b> — ${a.oggetto}<br><span class="modal-sub">${a.reparto} · ${a.da} → ${a.a} · attualmente ${fmtDateShort(a.data)} · scadenza ${fmtDateShort(a.scadenza)} (tolleranza ${a.tolleranza} gg)</span></div>
+      <button class="btn resched-apply" data-id="${a.id}" ${frozen?"disabled":""}>Trova data alternativa</button>
+    </div>`;
+  });
+  rowsWrap.innerHTML = html;
+  rowsWrap.querySelectorAll(".resched-apply").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      promptReschedule(store.find(x=>x.id===btn.dataset.id));
+    });
+  });
+}
+
+/* =========================================================================
+   10bis. DRAG & DROP DELLE ATTIVITÀ RISCHEDULABILI SUL CALENDARIO
+   ========================================================================= */
+
+let dragState = null; // { activity, dropped, availableDates:Set, fromSuspended }
+
+function isReschedulable(a){
+  return !a.cancelled && !frozen;
+}
+
+function isRinviabile(a){
+  if(a.cancelled) return false;
+  if(a.tipo==="Manutenzione") return a.tolleranza>0;
+  if(!a.scadenza || !a.data) return true;
+  return a.scadenza > a.data;
+}
+
+function computeAvailableDatesForActivity(activity){
+  const pool = store.filter(x=>!x.cancelled && x.id!==activity.id);
+  const avail = new Set();
+  datesBetween(RANGE_START, RANGE_END).forEach(d=>{
+    if(!activity.cancelled && d === activity.data) return; // già lì: non è un'alternativa
+    const test = {...activity, data:d};
+    if(conflictsWith(test, pool).length === 0) avail.add(d);
+  });
+  return avail;
+}
+
+function beginDrag(activity, sourceEl, isSuspended){
+  dragState = { activity, dropped:false, availableDates: computeAvailableDatesForActivity(activity), fromSuspended: !!isSuspended };
+  // il timeout lascia catturare al browser l'immagine di trascinamento
+  // con l'aspetto normale, prima di applicare dissolvenze ed evidenziazioni
+  setTimeout(()=>{
+    sourceEl.classList.add(isSuspended ? "dragging-suspended" : "dragging");
+    document.querySelectorAll(".cal-block").forEach(b=>{
+      if(b !== sourceEl) b.classList.add("dimmed");
+    });
+    document.querySelectorAll(".cal-timeline[data-date]").forEach(tl=>{
+      const d = tl.dataset.date;
+      if(!d) return;
+      if(!isSuspended && d === activity.data) return; // già lì: nessuna evidenziazione necessaria
+      tl.classList.add(dragState.availableDates.has(d) ? "drop-target" : "drop-blocked");
+    });
+    const sospesoBtn = document.getElementById("btnSospeso");
+    if(sospesoBtn && !isSuspended) sospesoBtn.classList.add("drop-target");
+    const panel = document.getElementById("sospesoPanel");
+    if(panel && !panel.hidden && !isSuspended) panel.classList.add("drop-target");
+  }, 0);
+}
+
+function endDrag(sourceEl, isSuspended){
+  const wasDropped = dragState && dragState.dropped;
+  const avail = dragState ? [...dragState.availableDates] : [];
+  const act2 = dragState ? dragState.activity : null;
+  resetDragVisuals();
+  dragState = null;
+  if(!wasDropped && act2 && avail.length){
+    openAlternativesPopup(act2, avail);
+  }
+}
+
+function attachDragHandlers(block, activity){
+  if(!isReschedulable(activity)) return;
+  block.draggable = true;
+  block.classList.add("draggable");
+  block.addEventListener("dragstart", e=>{
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", activity.id);
+    beginDrag(activity, block, false);
+  });
+  block.addEventListener("dragend", ()=> endDrag(block, false));
+}
+
+function attachSuspendedDragHandlers(row, activity){
+  if(frozen) return;
+  row.draggable = true;
+  row.classList.add("draggable-suspended");
+  row.addEventListener("dragstart", e=>{
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", activity.id);
+    beginDrag(activity, row, true);
+  });
+  row.addEventListener("dragend", ()=> endDrag(row, true));
+}
+
+function resetDragVisuals(){
+  document.querySelectorAll(".cal-block.dimmed").forEach(b=>b.classList.remove("dimmed"));
+  document.querySelectorAll(".cal-block.dragging").forEach(b=>b.classList.remove("dragging"));
+  document.querySelectorAll(".draggable-suspended.dragging-suspended").forEach(b=>b.classList.remove("dragging-suspended"));
+  document.querySelectorAll(".cal-timeline").forEach(c=>c.classList.remove("drop-target","drop-hover","drop-blocked"));
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("drop-target","drop-hover"));
+  const panel = document.getElementById("sospesoPanel");
+  if(panel) panel.classList.remove("drop-target","drop-hover");
+}
+
+function attachDropHandlers(timeline){
+  timeline.addEventListener("dragover", e=>{
+    if(!dragState) return;
+    const d = timeline.dataset.date;
+    if(dragState.availableDates.has(d)){
+      e.preventDefault();
+      timeline.classList.add("drop-hover");
+    }
+    // slot non disponibile (rosso): niente preventDefault -> il browser mostra il cursore
+    // "non consentito" e l'evento drop non viene consegnato qui
+  });
+  timeline.addEventListener("dragleave", ()=>{ timeline.classList.remove("drop-hover"); });
+  timeline.addEventListener("drop", e=>{
+    e.preventDefault();
+    if(!dragState) return;
+    const activity = dragState.activity;
+    const targetDate = timeline.dataset.date;
+    if(!dragState.availableDates.has(targetDate)) return;
+    dragState.dropped = true;
+    resetDragVisuals();
+    dragState = null;
+    if(!targetDate || (targetDate === activity.data && !activity.cancelled)) return;
+    openDropConfirm(activity, targetDate);
+  });
+}
+
+function attachSospendiDropZone(){
+  const tabBtn = document.getElementById("btnSospeso");
+  const panel = document.getElementById("sospesoPanel");
+  [tabBtn, panel].forEach(zone=>{
+    if(!zone) return;
+    zone.addEventListener("dragover", e=>{
+      if(!dragState || dragState.fromSuspended) return;
+      e.preventDefault();
+      zone.classList.add("drop-hover");
+    });
+    zone.addEventListener("dragleave", ()=>{ zone.classList.remove("drop-hover"); });
+    zone.addEventListener("drop", e=>{
+      e.preventDefault();
+      if(!dragState || dragState.fromSuspended) return;
+      const activity = dragState.activity;
+      dragState.dropped = true;
+      resetDragVisuals();
+      dragState = null;
+      openSospendiConfirm(activity);
+    });
+  });
+}
+
+// scorrimento automatico del calendario mentre si trascina un'attività
+// (da un altro giorno del calendario, o dal pannello laterale) vicino ai bordi
+let lastDragClientY = null;
+document.addEventListener("dragover", e=>{ if(dragState) lastDragClientY = e.clientY; });
+document.addEventListener("drop", ()=>{ lastDragClientY = null; });
+document.addEventListener("dragend", ()=>{ lastDragClientY = null; });
+function autoScrollTick(){
+  if(dragState && lastDragClientY != null){
+    const calSection = document.getElementById("tab-calendar");
+    const container = document.querySelector(".calendar");
+    if(container && calSection && !calSection.hidden){
+      const rect = container.getBoundingClientRect();
+      const edge = 60;
+      if(lastDragClientY < rect.top + edge && lastDragClientY > rect.top - 30){
+        container.scrollTop -= 14;
+      } else if(lastDragClientY > rect.bottom - edge && lastDragClientY < rect.bottom + 30){
+        container.scrollTop += 14;
+      }
+    }
+  }
+  requestAnimationFrame(autoScrollTick);
+}
+requestAnimationFrame(autoScrollTick);
+
+function openAlternativesPopup(activity, availableDates){
+  closeAnyModal();
+  const availSet = new Set(availableDates);
+  const backdrop = document.createElement("div");
+  backdrop.className = "backdrop";
+  backdrop.addEventListener("click", e=>{ if(e.target===backdrop) backdrop.remove(); });
+  const modal = document.createElement("div");
+  modal.className = "modal";
+  backdrop.appendChild(modal);
+  document.body.appendChild(backdrop);
+
+  const sorted = [...availableDates].sort();
+  const initialIso = sorted[0] || activity.data || RANGE_START;
+  const [iy, im] = initialIso.split("-").map(Number);
+  let viewY = iy, viewM = im;
+  const monthNames = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
+
+  function draw(){
+    const first = new Date(viewY, viewM-1, 1);
+    const startOffset = (first.getDay()+6)%7; // lunedì come primo giorno
+    const daysInMonth = new Date(viewY, viewM, 0).getDate();
+    const monthStartIso = isoFromLocalDate(first);
+    const monthEndIso = isoFromLocalDate(new Date(viewY, viewM-1, daysInMonth));
+    const prevEnabled = addDays(monthStartIso,-1) >= RANGE_START;
+    const nextEnabled = addDays(monthEndIso,1) <= RANGE_END;
+
+    let cells = "";
+    for(let i=0;i<startOffset;i++) cells += `<div class="alt-cal-day empty"></div>`;
+    for(let day=1; day<=daysInMonth; day++){
+      const iso = viewY+"-"+String(viewM).padStart(2,"0")+"-"+String(day).padStart(2,"0");
+      const inRange = iso>=RANGE_START && iso<=RANGE_END;
+      const avail = inRange && availSet.has(iso);
+      const blocked = inRange && !avail;
+      const isOrig = iso === activity.data;
+      const stateClass = avail ? "available" : (blocked ? "blocked" : "outrange");
+      const dot = avail ? '<span class="alt-cal-dot"></span>' : (blocked ? '<span class="alt-cal-dot"></span>' : "");
+      const label = avail ? " — libero, senza interferenze" : (blocked ? " — occupato, interferenze con altre attività" : " — fuori dal periodo gestito");
+      cells += `<button type="button" class="alt-cal-day ${stateClass} ${isOrig?"orig":""}" data-date="${iso}" ${avail?"":"disabled"} title="${fmtDateIt(iso)}${label}">
+        <span class="alt-cal-daynum">${day}</span>${dot}
+      </button>`;
+    }
+
+    modal.innerHTML = `<button class="close-x">&times;</button>
+      <h2>Scegli una data alternativa</h2>
+      <div class="modal-sub">Il trascinamento non è terminato su una notte compatibile con <b>${activity.id}</b> — ${activity.oggetto}<br>
+        (tratta ${activity.da} &rarr; ${activity.a}, fascia ${activity.fascia}). Sfoglia il calendario: bollino verde = giorno libero senza interferenze, bollino rosso = giorno con interferenze. Puoi anche tornare indietro e trascinare di nuovo su uno slot verde.</div>
+      <div class="alt-cal">
+        <div class="alt-cal-head">
+          <button type="button" class="alt-cal-nav" id="altPrev" ${prevEnabled?"":"disabled"} aria-label="Mese precedente">&#8249;</button>
+          <b>${monthNames[viewM-1]} ${viewY}</b>
+          <button type="button" class="alt-cal-nav" id="altNext" ${nextEnabled?"":"disabled"} aria-label="Mese successivo">&#8250;</button>
+        </div>
+        <div class="alt-cal-weekdays"><span>Lun</span><span>Mar</span><span>Mer</span><span>Gio</span><span>Ven</span><span>Sab</span><span>Dom</span></div>
+        <div class="alt-cal-grid">${cells}</div>
+        <div class="alt-cal-legend">
+          <span class="alt-cal-legend-item"><span class="alt-cal-dot"></span>senza interferenze</span>
+          <span class="alt-cal-legend-item"><span class="alt-cal-dot blocked"></span>con interferenze</span>
+        </div>
+      </div>
+      <div class="form-actions"><button class="btn" id="altClose">Torna al calendario</button></div>`;
+
+    modal.querySelector(".close-x").addEventListener("click", ()=>backdrop.remove());
+    modal.querySelector("#altClose").addEventListener("click", ()=>backdrop.remove());
+    const prevBtn = modal.querySelector("#altPrev");
+    const nextBtn = modal.querySelector("#altNext");
+    if(prevBtn) prevBtn.addEventListener("click", ()=>{ viewM--; if(viewM<1){ viewM=12; viewY--; } draw(); });
+    if(nextBtn) nextBtn.addEventListener("click", ()=>{ viewM++; if(viewM>12){ viewM=1; viewY++; } draw(); });
+    modal.querySelectorAll(".alt-cal-day.available").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        backdrop.remove();
+        openDropConfirm(activity, btn.dataset.date);
+      });
+    });
+  }
+  draw();
+}
+
+function openSospendiConfirm(activity){
+  closeAnyModal();
+  const backdrop = document.createElement("div");
+  backdrop.className = "backdrop";
+  backdrop.addEventListener("click", e=>{ if(e.target===backdrop) backdrop.remove(); });
+  const modal = document.createElement("div");
+  modal.className = "modal";
+  modal.innerHTML = `<button class="close-x">&times;</button>
+    <h2>Sospendi attività</h2>
+    <div class="modal-sub"><b>${activity.id}</b> — ${activity.oggetto}<br>
+      Verrà rimossa dal programma della notte del ${fmtDateIt(activity.data)} (tratta ${activity.da} &rarr; ${activity.a}) e spostata tra le attività <b>in sospeso</b>: lo slot si libera subito, potrai reinserirla in un'altra data quando vuoi.</div>
+    <div class="form-actions">
+      <button class="btn" id="susCancel">Annulla</button>
+      <button class="btn btn-primary" id="susConfirm">Conferma sospensione</button>
+    </div>`;
+  backdrop.appendChild(modal);
+  document.body.appendChild(backdrop);
+  modal.querySelector(".close-x").addEventListener("click", ()=>backdrop.remove());
+  modal.querySelector("#susCancel").addEventListener("click", ()=>backdrop.remove());
+  modal.querySelector("#susConfirm").addEventListener("click", ()=>{
+    activity.cancelled = true;
+    activity.stato = "In sospeso";
+    backdrop.remove();
+    renderAll();
+  });
+}
+
+function openReinsertModal(a){
+  closeAnyModal();
+  const pool = store.filter(x=>!x.cancelled && x.id!==a.id);
+  const origConflicts = conflictsWith(a, pool);
+  const backdrop = document.createElement("div");
+  backdrop.className = "backdrop";
+  backdrop.addEventListener("click", e=>{ if(e.target===backdrop) backdrop.remove(); });
+  const modal = document.createElement("div");
+  modal.className = "modal";
+  const hasOrigDate = !!a.data;
+  modal.innerHTML = `<button class="close-x">&times;</button>
+    <h2>Reinserisci attività</h2>
+    <div class="modal-sub"><b>${a.id}</b> — ${a.oggetto}<br>Tratta ${a.da} &rarr; ${a.a} &middot; fascia ${a.fascia}</div>
+    ${hasOrigDate ? `<div class="resched-row" style="align-items:flex-start;">
+      <div>Slot originario: <b>${fmtDateIt(a.data)}</b>
+        ${origConflicts.length
+          ? `<div class="conflict-alert" style="margin-top:6px;">Interferenza con: ${origConflicts.map(c=>c.id).join(", ")}</div>`
+          : `<div class="ok-text" style="margin-top:4px;">Nessuna interferenza</div>`}
+      </div>
+      <button class="btn btn-primary" id="reinsOrig">Usa slot originario</button>
+    </div>` : `<p class="modal-sub">Questa attività è stata creata senza una data: scegli quando programmarla.</p>`}
+    <div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--gridline);">
+      <label style="font-size:12px; font-weight:700; color:var(--text-secondary);">${hasOrigDate ? "Oppure scegli una nuova data" : "Scegli una data"}</label>
+      <div style="display:flex; gap:10px; margin-top:6px;">
+        <input type="date" id="reinsDate" min="${RANGE_START}" max="${RANGE_END}" value="${a.data || filterFrom}">
+        <button class="btn btn-primary" id="reinsNew">Usa questa data</button>
+      </div>
+      <div id="reinsNewResult" style="margin-top:8px;"></div>
+    </div>
+    <div class="form-actions"><button class="btn" id="reinsCancel">Annulla</button></div>`;
+  backdrop.appendChild(modal);
+  document.body.appendChild(backdrop);
+  modal.querySelector(".close-x").addEventListener("click", ()=>backdrop.remove());
+  modal.querySelector("#reinsCancel").addEventListener("click", ()=>backdrop.remove());
+  const reinsOrigBtn = modal.querySelector("#reinsOrig");
+  if(reinsOrigBtn) reinsOrigBtn.addEventListener("click", ()=>{
+    if(origConflicts.length && !confirm("Interferenza rilevata con: "+origConflicts.map(c=>c.id).join(", ")+".\nReinserire comunque nello slot originario?")) return;
+    a.cancelled = false; a.stato = "Programmata";
+    backdrop.remove(); renderAll();
+  });
+  modal.querySelector("#reinsNew").addEventListener("click", ()=>{
+    const newDate = modal.querySelector("#reinsDate").value;
+    const test = {...a, data:newDate};
+    const conflicts = conflictsWith(test, pool);
+    const resEl = modal.querySelector("#reinsNewResult");
+    if(conflicts.length){
+      resEl.innerHTML = `<div class="conflict-alert">Interferenza con: ${conflicts.map(c=>c.id).join(", ")}.<div class="form-actions" style="margin-top:8px;"><button class="btn btn-primary" id="reinsForce">Reinserisci comunque su questa data</button></div></div>`;
+      resEl.querySelector("#reinsForce").addEventListener("click", ()=>{
+        a.data = newDate; a.cancelled = false; a.stato = "Programmata";
+        backdrop.remove(); renderAll();
+      });
+    } else {
+      a.data = newDate; a.cancelled = false; a.stato = "Programmata";
+      backdrop.remove(); renderAll();
+    }
+  });
+}
+
+function openDropConfirm(activity, targetDate){
+  const isReinsert = !!activity.cancelled;
+  const pool = store.filter(x=>!x.cancelled && x.id!==activity.id);
+  const cand = {...activity, data:targetDate};
+  const conflicts = conflictsWith(cand, pool);
+  const dayActs = pool.filter(a=>a.data===targetDate);
+
+  closeAnyModal();
+  const backdrop = document.createElement("div");
+  backdrop.className = "backdrop";
+  backdrop.addEventListener("click", e=>{ if(e.target===backdrop) backdrop.remove(); });
+  const modal = document.createElement("div");
+  modal.className = "modal";
+
+  let html = `<button class="close-x">&times;</button>
+    <h2>${isReinsert ? "Conferma reinserimento" : "Conferma spostamento"}</h2>
+    <div class="modal-sub"><b>${activity.id}</b> — ${activity.oggetto}<br>
+      ${isReinsert ? "Verrà reinserita il" : "Da "+fmtDateIt(activity.data)+" a"} <b>${fmtDateIt(targetDate)}</b> &middot; tratta ${activity.da} &rarr; ${activity.a} &middot; fascia ${activity.fascia}</div>`;
+
+  if(activity.scadenza && targetDate > activity.scadenza){
+    const fornitoreNote = activity.fornitore ? " (cronoprogramma Fornitore: " + activity.fornitore + ")" : "";
+    html += `<div class="conflict-alert"><b>Attenzione:</b> la nuova data supera la scadenza registrata per questa attività (${fmtDateIt(activity.scadenza)})${fornitoreNote}. Verifica che sia comunque accettabile prima di confermare.</div>`;
+  }
+
+  if(!dayActs.length){
+    html += '<p class="ok-text">Nessun\'altra attività è pianificata in questa notte: nessuna interferenza rilevata.</p>';
+  } else {
+    html += "<p><b>Attività già pianificate su "+fmtDateIt(targetDate)+":</b></p><div>";
+    dayActs.forEach(a=>{
+      const isConflict = conflicts.some(c=>c.id===a.id);
+      html += `<div class="resched-row"><div>
+        <span class="type-pill ${category(a.tipo)}">${a.tipo}</span> <b>${a.id}</b> — ${a.oggetto}
+        <br><span class="modal-sub">${a.da} &rarr; ${a.a} &middot; ${a.fascia}</span>
+        </div><span class="${isConflict?"warn-text":"ok-text"}">${isConflict?"Interferenza":"Compatibile"}</span></div>`;
+    });
+    html += "</div>";
+    html += conflicts.length
+      ? `<div class="conflict-alert" style="margin-top:10px;"><b>Attenzione:</b> ${conflicts.length} attività risultano in interferenza (stessa tratta/orario, non entrambe parallelizzabili). Verifica prima di confermare.</div>`
+      : '<p class="ok-text">Nessuna interferenza rilevata con le attività esistenti su questa data.</p>';
+  }
+
+  html += `<div class="form-actions">
+    <button class="btn" id="dropCancel">Annulla</button>
+    <button class="btn btn-primary" id="dropConfirm">${isReinsert ? "Conferma reinserimento" : "Conferma spostamento"}</button>
+  </div>`;
+
+  modal.innerHTML = html;
+  backdrop.appendChild(modal);
+  document.body.appendChild(backdrop);
+  modal.querySelector(".close-x").addEventListener("click", ()=>backdrop.remove());
+  modal.querySelector("#dropCancel").addEventListener("click", ()=>backdrop.remove());
+  modal.querySelector("#dropConfirm").addEventListener("click", ()=>{
+    activity.data = targetDate;
+    if(isReinsert){ activity.cancelled = false; activity.stato = "Programmata"; }
+    backdrop.remove();
+    renderAll();
+  });
+}
+
+/* =========================================================================
+   11. NUOVA ATTIVITÀ (popup unificato — tipo selezionabile all'apertura)
+   ========================================================================= */
+
+function openNewActivityModal(){
+  if(frozen){ alert("Il programma è congelato. Riapri il programma per poter aggiungere nuove attività."); return; }
+  closeAnyModal();
+  const backdrop = document.createElement("div");
+  backdrop.className = "backdrop";
+  backdrop.addEventListener("click", e=>{ if(e.target===backdrop) backdrop.remove(); });
+  const modal = document.createElement("div");
+  modal.className = "modal";
+  const stationOptions = ALL_CODES.filter(c=>!TRONCHINI.has(c)).map(c=>`<option value="${c}">${c}</option>`).join("");
+  const repartoOptions = REPARTI.map(r=>`<option>${r}</option>`).join("");
+  const tronchinoOptions = FACILITIES.filter(f=>f.tipo==="tronchino").map(f=>`<option value="${f.name}">${f.name}</option>`).join("");
+  const stazOptions = FACILITIES.filter(f=>f.tipo==="stazionamento").map(f=>`<option value="${f.name}">${f.name}</option>`).join("");
+
+  modal.innerHTML = `
+    <button class="close-x">&times;</button>
+    <h2>Nuova attività</h2>
+    <div class="modal-sub">Scegli la tipologia di attività: i campi richiesti si adattano di conseguenza. Se lasci la data vuota, l'attività viene creata direttamente tra le "in sospeso".</div>
+    <form id="newActForm" class="form-grid">
+      <label style="grid-column:1/-1">Tipo di attività
+        <select name="tipoAttivita" id="tipoAttivitaSelect">
+          <option value="Manutenzione">Manutenzione programmata</option>
+          <option value="Corsa prova" selected>Corsa prova</option>
+          <option value="Trasferimento rotabile">Trasferimento rotabile</option>
+          <option value="Trasferimento motocarrello">Trasferimento motocarrello</option>
+        </select>
+      </label>
+      <div class="field-group" data-type-group="Manutenzione">
+        <label>Reparto<select name="reparto">${repartoOptions}</select></label>
+      </div>
+      <label>Data (opzionale)<input type="date" name="data" min="2026-07-20" max="2026-12-31"></label>
+      <label>Da<select name="da" required>${stationOptions}</select></label>
+      <label>A<select name="a" required>${stationOptions}</select></label>
+      <label>Fascia
+        <select name="fasciaMode">
+          <option value="notte">Tutta la notte</option>
+          <option value="range">Intervallo orario</option>
+        </select>
+      </label>
+      <div></div>
+      <div class="range-fields" style="display:none">
+        <label>Dalle<select name="fasciaStart">${hourOptionsHtml()}</select></label>
+        <label>Alle<select name="fasciaEnd">${hourOptionsHtml()}</select></label>
+      </div>
+      <label style="grid-column:1/-1">Oggetto<input type="text" name="oggetto" required placeholder="Es. Prova di frenatura e sistemi di sicurezza"></label>
+      <div class="field-group" data-type-group="corsa">
+        <label>Fornitore<input type="text" name="fornitore" placeholder="Es. Impresa esterna incaricata"></label>
+        <label>Rotabile/mezzo<input type="text" name="rotabile"></label>
+      </div>
+      <label id="scadenzaLabel">Scadenza cronoprogramma (opzionale)<input type="date" name="scadenza" id="scadenzaInput"></label>
+      <div class="field-group" data-type-group="Manutenzione">
+        <label>Tolleranza (gg oltre scadenza)<input type="number" name="tolleranza" min="0" value="2"></label>
+      </div>
+      <label>Priorità
+        <select name="priorita"><option>Alta</option><option selected>Media</option><option>Bassa</option></select>
+      </label>
+      <label>Tronchino richiesto<select name="tronchino"><option value="">Nessuno</option>${tronchinoOptions}</select></label>
+      <label>Stazionamento richiesto<select name="stazionamento"><option value="">Nessuno</option>${stazOptions}</select></label>
+      <label class="checkbox"><input type="checkbox" name="parallelizzabile"> Parallelizzabile con altre attività</label>
+      <label class="checkbox"><input type="checkbox" name="fuoriTensione"> Richiede messa fuori tensione</label>
+      <div class="field-group" data-type-group="Manutenzione">
+        <label class="checkbox"><input type="checkbox" name="compatCollaudo"> Compatibile con corse di collaudo treni nuovi</label>
+      </div>
+      <label style="grid-column:1/-1">Rischi<input type="text" name="rischi" placeholder="Nessuno di rilievo"></label>
+      <label style="grid-column:1/-1">Note<input type="text" name="note"></label>
+      <div id="conflictBox" style="grid-column:1/-1"></div>
+      <div class="form-actions" style="grid-column:1/-1">
+        <button type="button" class="btn" id="cancelNewAct">Annulla</button>
+        <button type="submit" class="btn btn-primary">Inserisci</button>
+      </div>
+    </form>
+  `;
+  backdrop.appendChild(modal);
+  document.body.appendChild(backdrop);
+
+  modal.querySelector(".close-x").addEventListener("click", ()=>backdrop.remove());
+  modal.querySelector("#cancelNewAct").addEventListener("click", ()=>backdrop.remove());
+  const form = modal.querySelector("#newActForm");
+  form.querySelector("[name=fasciaMode]").addEventListener("change", e=>{
+    modal.querySelector(".range-fields").style.display = e.target.value==="range" ? "flex" : "none";
+  });
+
+  const typeSelect = form.querySelector("#tipoAttivitaSelect");
+  const scadenzaLabel = modal.querySelector("#scadenzaLabel");
+  const scadenzaInput = modal.querySelector("#scadenzaInput");
+  const repartoSelect = form.querySelector("[name=reparto]");
+  const tolleranzaInput = form.querySelector("[name=tolleranza]");
+  const oggettoInput = form.querySelector("[name=oggetto]");
+  function applyTypeVisibility(){
+    const isManut = typeSelect.value === "Manutenzione";
+    modal.querySelectorAll('[data-type-group="Manutenzione"]').forEach(g=> g.classList.toggle("fg-hidden", !isManut));
+    modal.querySelectorAll('[data-type-group="corsa"]').forEach(g=> g.classList.toggle("fg-hidden", isManut));
+    repartoSelect.required = isManut;
+    tolleranzaInput.required = isManut;
+    scadenzaInput.required = isManut;
+    scadenzaLabel.firstChild.textContent = isManut ? "Scadenza" : "Scadenza cronoprogramma (opzionale)";
+    oggettoInput.placeholder = isManut
+      ? "Es. Cambio ferro, rilievi geometria deviatoi..."
+      : "Es. Prova di frenatura e sistemi di sicurezza";
+  }
+  typeSelect.addEventListener("change", applyTypeVisibility);
+  applyTypeVisibility();
+
+  form.addEventListener("submit", e=>{
+    e.preventDefault();
+    const fd = new FormData(form);
+    const da = fd.get("da"), a2 = fd.get("a");
+    if(da === a2){ alert("La tratta Da/A non può coincidere."); return; }
+    const fasciaMode = fd.get("fasciaMode");
+    let fascia;
+    if(fasciaMode==="notte"){ fascia = "Tutta la notte"; }
+    else {
+      const toLabel = m => { const t=60+Number(m); return String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0"); };
+      const s = fd.get("fasciaStart"), en = fd.get("fasciaEnd");
+      if(Number(s) >= Number(en)){ alert("L'orario di fine deve essere successivo a quello di inizio."); return; }
+      fascia = toLabel(s) + "-" + toLabel(en);
+    }
+    const tipo = fd.get("tipoAttivita");
+    const isManut = tipo === "Manutenzione";
+    const dataVal = fd.get("data") || null;
+    const cand = isManut ? {
+      id: generateId(tipo), tipo:"Manutenzione", data: dataVal,
+      reparto: fd.get("reparto"), oggetto: fd.get("oggetto"), da, a:a2, fascia,
+      scadenza: fd.get("scadenza")||null, tolleranza: Number(fd.get("tolleranza")||0),
+      priorita: fd.get("priorita"),
+      parallelizzabile: fd.get("parallelizzabile")==="on", rischi: fd.get("rischi")||"Nessuno di rilievo",
+      fuoriTensione: fd.get("fuoriTensione")==="on", compatCollaudo: fd.get("compatCollaudo")==="on",
+      tronchino: fd.get("tronchino")||null, stazionamento: fd.get("stazionamento")||null,
+      stato: dataVal ? "Programmata" : "In sospeso", note: fd.get("note")||"", cancelled: !dataVal
+    } : {
+      id: generateId(tipo), tipo, data: dataVal, fascia, da, a:a2,
+      oggetto: fd.get("oggetto"), fornitore: fd.get("fornitore")||null, rotabile: fd.get("rotabile")||null,
+      scadenza: fd.get("scadenza")||null, priorita: fd.get("priorita"),
+      parallelizzabile: fd.get("parallelizzabile")==="on", rischi: fd.get("rischi")||"Nessuno di rilievo",
+      fuoriTensione: fd.get("fuoriTensione")==="on",
+      tronchino: fd.get("tronchino")||null, stazionamento: fd.get("stazionamento")||null,
+      stato: dataVal ? "Programmata" : "In sospeso", note: fd.get("note")||"", cancelled: !dataVal
+    };
+    if(!dataVal){
+      store.push(cand);
+      renderAll();
+      backdrop.remove();
+      return;
+    }
+    const pool = store.filter(x=>!x.cancelled);
+    const conflicts = conflictsWith(cand, pool);
+    const box = modal.querySelector("#conflictBox");
+    if(conflicts.length){
+      box.innerHTML = '<div class="conflict-alert"><b>Interferenza rilevata</b> con: ' +
+        conflicts.map(c=>c.id+" ("+c.oggetto+", "+c.fascia+")").join(", ") +
+        '<div class="form-actions">' +
+        '<button type="button" class="btn" id="findAlt">Cerca data alternativa</button>' +
+        '<button type="button" class="btn btn-primary" id="forceInsert">Inserisci comunque</button>' +
+        "</div></div>";
+      box.querySelector("#findAlt").addEventListener("click", ()=>{
+        const alt = firstFreeDate(cand, addDays(cand.data,1), addDays(cand.data,21), pool);
+        if(alt){
+          form.querySelector("[name=data]").value = alt;
+          box.innerHTML = '<span class="ok-text">Prima data libera trovata: '+fmtDateIt(alt)+'. Campo data aggiornato: ricontrolla e reinvia il modulo.</span>';
+        } else {
+          box.innerHTML = '<span class="warn-text">Nessuna data libera trovata nelle prossime 3 settimane.</span>';
+        }
+      });
+      box.querySelector("#forceInsert").addEventListener("click", ()=>{
+        store.push(cand); renderAll(); backdrop.remove();
+      });
+      return;
+    }
+    store.push(cand);
+    renderAll();
+    backdrop.remove();
+  });
+}
+
+/* =========================================================================
+   12. CONGELAMENTO PROGRAMMA + REPORT STAMPABILE
+   ========================================================================= */
+
+function buildPrintReport(){
+  const el = document.getElementById("printReport");
+  const list = activeStore().sort((x,y)=> x.data.localeCompare(y.data) || x.id.localeCompare(y.id));
+  const datesPresent = [...new Set(list.map(a=>a.data))].sort();
+  let html = "<h1>Programmazione Notturna — Linea 1</h1><div>Programma confermato il "+ new Date().toLocaleDateString("it-IT") +" · "+ list.length +" attività attive dal "+ fmtDateShort(datesPresent[0]) +" al "+ fmtDateShort(datesPresent[datesPresent.length-1]) +"</div>";
+  datesPresent.forEach(iso=>{
+    const dayActs = list.filter(a=>a.data===iso);
+    html += "<h2>"+fmtDateIt(iso)+"</h2>";
+    html += "<table><thead><tr><th>ID</th><th>Tipo</th><th>Reparto/Fornitore</th><th>Tratta</th><th>Fascia</th><th>Priorità</th><th>Tronchino</th><th>Stazionamento</th><th>Note</th></tr></thead><tbody>";
+    dayActs.forEach(a=>{
+      html += `<tr><td>${a.id}</td><td>${a.tipo}</td><td>${a.reparto||a.fornitore||"—"}</td><td>${a.da} → ${a.a}</td><td>${a.fascia}</td><td>${a.priorita}</td><td>${a.tronchino||"—"}</td><td>${a.stazionamento||"—"}</td><td>${a.note||""}</td></tr>`;
+    });
+    html += "</tbody></table>";
+  });
+  el.innerHTML = html;
+}
+
+function openFreezeBlockedModal(blockers){
+  closeAnyModal();
+  const backdrop = document.createElement("div");
+  backdrop.className = "backdrop";
+  backdrop.addEventListener("click", e=>{ if(e.target===backdrop) backdrop.remove(); });
+  const modal = document.createElement("div");
+  modal.className = "modal";
+  let html = `<button class="close-x">&times;</button>
+    <h2>Impossibile congelare il programma</h2>
+    <div class="modal-sub">${blockers.length} attività ad alta priorità sono in sospeso: vanno reinserite o rischedulate prima di poter congelare la settimana.</div>
+    <div>`;
+  blockers.forEach(b=>{
+    html += `<div class="resched-row"><div>
+      <span class="type-pill ${category(b.tipo)}">${b.tipo}</span> <b>${b.id}</b> — ${b.oggetto}
+      <span class="prio-badge">Alta priorità</span>
+      <br><span class="modal-sub">${b.da} &rarr; ${b.a} &middot; era programmata il ${fmtDateShort(b.data)}</span>
+      </div></div>`;
+  });
+  html += `</div><div class="form-actions">
+    <button class="btn" id="fbClose">Chiudi</button>
+    <button class="btn btn-primary" id="fbGoCancelled">Vai alle attività in sospeso per rischedulare</button>
+  </div>`;
+  modal.innerHTML = html;
+  backdrop.appendChild(modal);
+  document.body.appendChild(backdrop);
+  modal.querySelector(".close-x").addEventListener("click", ()=>backdrop.remove());
+  modal.querySelector("#fbClose").addEventListener("click", ()=>backdrop.remove());
+  modal.querySelector("#fbGoCancelled").addEventListener("click", ()=>{
+    backdrop.remove();
+    openSidePanel("sospeso");
+  });
+}
+
+function tryFreeze(){
+  const blockers = store.filter(a=>a.cancelled && a.priorita==="Alta");
+  if(blockers.length){
+    openFreezeBlockedModal(blockers);
+    return;
+  }
+  frozen = true;
+  updateFrozenUI();
+  buildPrintReport();
+  window.print();
+}
+
+/* =========================================================================
+   13. IMPORT MASSIVO CORSE PROVA (CSV nativo, XLSX via libreria opzionale)
+   ========================================================================= */
+
+function normHeader(h){ return String(h||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").trim(); }
+const HEADER_MAP_CORSA = {
+  "id attivita":"id", "tipo":"tipo", "data":"data", "fascia oraria":"fascia",
+  "tratta da":"da", "da":"da", "tratta a":"a", "a":"a",
+  "oggetto/motivo":"oggetto", "oggetto":"oggetto",
+  "fornitore incaricato":"fornitore", "fornitore":"fornitore",
+  "rotabile/mezzo":"rotabile", "rotabile":"rotabile",
+  "scadenza (cronoprogramma)":"scadenza", "scadenza":"scadenza",
+  "priorita":"priorita", "parallelizzabile":"parallelizzabile", "rischi":"rischi",
+  "fuori tensione richiesta":"fuoriTensione", "fuori tensione":"fuoriTensione",
+  "tronchino richiesto":"tronchino",
+  "stazionamento/banchina richiesto":"stazionamento", "stazionamento richiesto":"stazionamento",
+  "stato":"stato", "note":"note"
+};
+const HEADER_MAP_MANUT = {
+  "id attivita":"id", "data (notte del)":"data", "data":"data", "reparto":"reparto", "oggetto":"oggetto",
+  "tratta da":"da", "da":"da", "tratta a":"a", "a":"a", "fascia oraria":"fascia",
+  "scadenza":"scadenza", "tolleranza (gg)":"tolleranza", "tolleranza":"tolleranza",
+  "priorita":"priorita", "parallelizzabile":"parallelizzabile", "rischi":"rischi",
+  "fuori tensione richiesta":"fuoriTensione", "fuori tensione":"fuoriTensione",
+  "compatibile corse collaudo":"compatCollaudo",
+  "tronchino richiesto":"tronchino",
+  "stazionamento/banchina richiesto":"stazionamento", "stazionamento richiesto":"stazionamento",
+  "stato":"stato", "note":"note"
+};
+const REPARTI = ["ARMAMENTO","SEGNALAMENTO","ELETTRICISTI METRO","IDRAULICI","ALIMENTAZIONE","EDILMETRO","DMOM","TRAZIONE","CONTROLLI TECNICI"];
+function toBool(v){
+  const s = String(v||"").trim().toLowerCase();
+  return s==="si" || s==="sì" || s==="true" || s==="yes" || s==="x";
+}
+function toISODate(v){
+  if(!v) return null;
+  const s = String(v).trim();
+  const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if(m) return m[3]+"-"+m[2].padStart(2,"0")+"-"+m[1].padStart(2,"0");
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  return null;
+}
+function parseCSV(text){
+  const lines = text.split(/\r?\n/).filter(l=>l.length);
+  return lines.map(line=>{
+    const cells=[]; let cell=""; let q=false;
+    for(let i=0;i<line.length;i++){
+      const c=line[i];
+      if(c === '"'){ if(q && line[i+1]==='"'){ cell+='"'; i++; } else { q=!q; } }
+      else if(c===',' && !q){ cells.push(cell); cell=""; }
+      else cell+=c;
+    }
+    cells.push(cell);
+    return cells;
+  });
+}
+let sheetJSPromise = null;
+function loadSheetJS(){
+  if(window.XLSX) return Promise.resolve();
+  if(sheetJSPromise) return sheetJSPromise;
+  sheetJSPromise = new Promise((resolve,reject)=>{
+    const s = document.createElement("script");
+    s.src = "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js";
+    s.onload = ()=>resolve();
+    s.onerror = ()=>reject(new Error("load failed"));
+    document.head.appendChild(s);
+    setTimeout(()=>reject(new Error("timeout")), 6000);
+  });
+  return sheetJSPromise;
+}
+function assignSequentialIds(candidates){
+  const counters = {};
+  candidates.forEach(c=>{
+    if(c.id) return;
+    const prefix = c.tipo === "Manutenzione" ? "MNT" : c.tipo === "Corsa prova" ? "CP" : "TRF";
+    if(counters[prefix] == null){
+      const nums = store.filter(a=>a.id.startsWith(prefix+"-2026-")).map(a=>parseInt(a.id.split("-")[2],10)).filter(n=>!isNaN(n));
+      counters[prefix] = nums.length ? Math.max(...nums) : 0;
+    }
+    counters[prefix]++;
+    c.id = prefix+"-2026-"+String(counters[prefix]).padStart(3,"0");
+  });
+}
+function buildCandidateFromRow(obj, kind){
+  const baseId = obj.id && !store.some(x=>x.id===obj.id) ? obj.id : null;
+  if(kind === "manut"){
+    return {
+      id: baseId, tipo:"Manutenzione", data: toISODate(obj.data) || WEEK_DATES[0],
+      reparto: (obj.reparto || REPARTI[0]).toString().toUpperCase(), oggetto: obj.oggetto,
+      da: String(obj.da).trim().toUpperCase(), a: String(obj.a).trim().toUpperCase(),
+      fascia: obj.fascia || "Tutta la notte",
+      scadenza: toISODate(obj.scadenza) || addDays(WEEK_DATES[0], 14),
+      tolleranza: (obj.tolleranza!=null && obj.tolleranza!=="") ? Number(obj.tolleranza) : 2,
+      priorita: obj.priorita || "Media",
+      parallelizzabile: toBool(obj.parallelizzabile), rischi: obj.rischi || "Nessuno di rilievo",
+      fuoriTensione: toBool(obj.fuoriTensione), compatCollaudo: toBool(obj.compatCollaudo),
+      tronchino: obj.tronchino && obj.tronchino!=="-" ? obj.tronchino : null,
+      stazionamento: obj.stazionamento && obj.stazionamento!=="-" ? obj.stazionamento : null,
+      stato:"Programmata", note: obj.note || "", cancelled:false
+    };
+  }
+  const tipo = ["Corsa prova","Trasferimento rotabile","Trasferimento motocarrello"].includes(obj.tipo) ? obj.tipo : "Corsa prova";
+  return {
+    id: baseId, tipo, data: toISODate(obj.data) || WEEK_DATES[0],
+    fascia: obj.fascia || "Tutta la notte",
+    da: String(obj.da).trim().toUpperCase(), a: String(obj.a).trim().toUpperCase(),
+    oggetto: obj.oggetto, fornitore: obj.fornitore || null, rotabile: obj.rotabile || null,
+    scadenza: toISODate(obj.scadenza), priorita: obj.priorita || "Media",
+    parallelizzabile: toBool(obj.parallelizzabile), rischi: obj.rischi || "Nessuno di rilievo",
+    fuoriTensione: toBool(obj.fuoriTensione),
+    tronchino: obj.tronchino && obj.tronchino!=="-" ? obj.tronchino : null,
+    stazionamento: obj.stazionamento && obj.stazionamento!=="-" ? obj.stazionamento : null,
+    stato:"Programmata", note: obj.note || "", cancelled:false
+  };
+}
+function processImportRows(rows, kind){
+  if(!rows || !rows.length){ alert("File vuoto o non leggibile."); return; }
+  const headerMap = kind === "manut" ? HEADER_MAP_MANUT : HEADER_MAP_CORSA;
+  const headers = rows[0].map(h=>normHeader(h));
+  const keys = headers.map(h=>headerMap[h] || null);
+  const dataRows = rows.slice(1).filter(r=>r.some(c=>String(c||"").trim()!==""));
+  const candidates = [];
+  dataRows.forEach(r=>{
+    const obj = {};
+    keys.forEach((k,i)=>{ if(k) obj[k] = r[i]; });
+    if(!obj.da || !obj.a || !obj.oggetto) return;
+    candidates.push(buildCandidateFromRow(obj, kind));
+  });
+  if(!candidates.length){ alert("Nessuna riga valida trovata nel file (mancano tratta Da/A oppure oggetto)."); return; }
+  assignSequentialIds(candidates);
+  openImportReview(candidates, kind);
+}
+function handleImportFile(file, kind){
+  const name = file.name.toLowerCase();
+  if(name.endsWith(".csv")){
+    const reader = new FileReader();
+    reader.onload = e => processImportRows(parseCSV(e.target.result), kind);
+    reader.readAsText(file, "UTF-8");
+  } else if(name.endsWith(".xlsx")){
+    loadSheetJS().then(()=>{
+      const reader = new FileReader();
+      reader.onload = e=>{
+        const wb = XLSX.read(new Uint8Array(e.target.result), {type:"array"});
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(ws, {header:1, raw:false});
+        processImportRows(rows, kind);
+      };
+      reader.readAsArrayBuffer(file);
+    }).catch(()=> alert("Impossibile caricare il modulo di lettura .xlsx (serve una connessione internet). Riprova con un file .csv esportato da Excel."));
+  } else {
+    alert("Formato non supportato. Usa .csv oppure .xlsx.");
+  }
+}
+
+/* ---- pannello dedicato: interferenze rilevate durante l'import (file o SAP) ---- */
+function openImportReview(candidates, kind){
+  closeAnyModal();
+  const pool = store.filter(x=>!x.cancelled);
+  const rows = candidates.map(cand=>{
+    const conflicts = conflictsWith(cand, pool);
+    const altDate = conflicts.length ? firstFreeDate(cand, addDays(cand.data,1), addDays(cand.data,21), pool) : null;
+    return { cand, conflicts, altDate, decision: conflicts.length ? "review" : "accept" };
+  });
+
+  const backdrop = document.createElement("div");
+  backdrop.className = "backdrop";
+  backdrop.addEventListener("click", e=>{ if(e.target===backdrop) backdrop.remove(); });
+  const modal = document.createElement("div");
+  modal.className = "modal";
+  modal.style.maxWidth = "700px";
+
+  function paint(){
+    const nConflicts = rows.filter(r=>r.conflicts.length).length;
+    let html = `<button class="close-x">&times;</button>
+      <h2>Verifica import — ${kind==="manut" ? "attività di manutenzione" : "corse prova / movimentazioni"}</h2>
+      <div class="modal-sub">${rows.length} righe lette${nConflicts ? ", " + nConflicts + " con interferenze rilevate: scegli come procedere per ciascuna prima di confermare." : ", nessuna interferenza rilevata."}</div>
+      <div id="reviewRows">`;
+    rows.forEach((r,i)=>{
+      const c = r.cand;
+      html += `<div class="resched-row" style="align-items:flex-start;">
+        <div style="flex:1;">
+          <span class="type-pill ${category(c.tipo)}">${c.tipo}</span> <b>${c.id}</b> — ${c.oggetto}
+          <br><span class="modal-sub">${c.da} &rarr; ${c.a} &middot; ${fmtDateShort(c.data)} &middot; ${c.fascia}</span>`;
+      if(r.conflicts.length){
+        html += `<div class="conflict-alert" style="margin-top:6px;">
+          <b>Attenzione — interferenza</b> con: ${r.conflicts.map(x=>x.id).join(", ")}.
+          ${r.altDate ? " Prima alternativa utile: <b>"+fmtDateIt(r.altDate)+"</b>." : " Nessuna alternativa libera trovata nelle prossime 3 settimane."}
+        </div>`;
+      } else {
+        html += `<div class="ok-text" style="margin-top:4px;">Nessuna interferenza rilevata.</div>`;
+      }
+      html += `</div>`;
+      if(r.conflicts.length){
+        html += `<div style="display:flex; flex-direction:column; gap:6px; align-items:stretch; min-width:170px;">
+          <button class="btn resolve-btn ${r.decision==="alt"?"btn-primary":""}" data-i="${i}" data-mode="alt" ${r.altDate?"":"disabled"}>Usa data alternativa</button>
+          <button class="btn resolve-btn ${r.decision==="accept"?"btn-primary":""}" data-i="${i}" data-mode="accept">Importa comunque</button>
+          <button class="btn resolve-btn ${r.decision==="skip"?"btn-primary":""}" data-i="${i}" data-mode="skip">Scarta riga</button>
+        </div>`;
+      } else {
+        html += `<span class="ok-text" style="min-width:70px; text-align:right;">Pronta</span>`;
+      }
+      html += `</div>`;
+    });
+    html += `</div><div class="form-actions">
+      <button class="btn" id="reviewCancel">Annulla import</button>
+      <button class="btn btn-primary" id="reviewConfirm">Conferma import</button>
+    </div>`;
+    modal.innerHTML = html;
+    modal.querySelector(".close-x").addEventListener("click", ()=>backdrop.remove());
+    modal.querySelector("#reviewCancel").addEventListener("click", ()=>backdrop.remove());
+    modal.querySelectorAll(".resolve-btn").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        rows[Number(btn.dataset.i)].decision = btn.dataset.mode;
+        paint();
+      });
+    });
+    modal.querySelector("#reviewConfirm").addEventListener("click", ()=>{
+      let imported=0, skipped=0;
+      rows.forEach(r=>{
+        if(r.decision === "skip"){ skipped++; return; }
+        if(r.decision === "alt" && r.altDate){ r.cand.data = r.altDate; }
+        store.push(r.cand); imported++;
+      });
+      backdrop.remove();
+      renderAll();
+      alert(imported + " righe importate" + (skipped ? ", " + skipped + " scartate." : "."));
+    });
+  }
+  paint();
+  backdrop.appendChild(modal);
+  document.body.appendChild(backdrop);
+}
+
+/* ---- importazione SAP fittizia (simula un'estrazione di manutenzioni programmate) ---- */
+function runFakeSapImport(){
+  if(frozen){ alert("Il programma è congelato. Riapri il programma per poter importare nuove attività."); return; }
+  const sapBatch = [
+    {reparto:"SEGNALAMENTO", oggetto:"Verifica periodica apparati ACC (estrazione SAP)", da:"CAI", a:"COR", data:"2026-07-23", fascia:"01:00-03:00", scadenza:"2026-07-29", tolleranza:3, priorita:"Media", parallelizzabile:true, rischi:"Nessuno di rilievo", fuoriTensione:false, compatCollaudo:true},
+    {reparto:"ELETTRICISTI METRO", oggetto:"Sostituzione corpi illuminanti banchina (estrazione SAP)", da:"PAL", a:"VEN", data:"2026-07-24", fascia:"01:00-02:30", scadenza:"2026-07-30", tolleranza:2, priorita:"Bassa", parallelizzabile:true, rischi:"Nessuno di rilievo", fuoriTensione:true, compatCollaudo:true},
+    {reparto:"ARMAMENTO", oggetto:"Ispezione ordinaria armamento (estrazione SAP)", da:"TUR", a:"GOR", data:"2026-07-21", fascia:"01:00-04:00", scadenza:"2026-07-27", tolleranza:2, priorita:"Media", parallelizzabile:false, rischi:"Presenza mezzo leggero su binario", fuoriTensione:false, compatCollaudo:false}
+  ];
+  const candidates = sapBatch.map(r => ({
+    id:null, tipo:"Manutenzione", data:r.data, reparto:r.reparto, oggetto:r.oggetto,
+    da:r.da, a:r.a, fascia:r.fascia, scadenza:r.scadenza, tolleranza:r.tolleranza, priorita:r.priorita,
+    parallelizzabile:r.parallelizzabile, rischi:r.rischi, fuoriTensione:r.fuoriTensione, compatCollaudo:r.compatCollaudo,
+    tronchino:null, stazionamento:null, stato:"Programmata", note:"Importata da estrazione SAP simulata", cancelled:false
+  }));
+  assignSequentialIds(candidates);
+  openImportReview(candidates, "manut");
+}
+
+/* =========================================================================
+   14. STATO GENERALE / FREEZE UI / STATS
+   ========================================================================= */
+
+function updateHeaderStats(){
+  const list = activeStore();
+  const counts = {manut:0,corsa:0,trasf:0};
+  list.forEach(a=> counts[category(a.tipo)]++);
+  document.getElementById("statChips").innerHTML = `
+    <span class="stat-chip"><b>${list.length}</b> attività attive</span>
+    <span class="stat-chip"><b>${counts.manut}</b> manutenzioni</span>
+    <span class="stat-chip"><b>${counts.corsa}</b> corse prova</span>
+    <span class="stat-chip"><b>${counts.trasf}</b> trasferimenti</span>
+    <span class="stat-chip"><b>${store.filter(a=>a.cancelled).length}</b> in sospeso</span>
+  `;
+}
+function updateFrozenUI(){
+  document.getElementById("frozenBadge").style.display = frozen ? "inline-flex" : "none";
+  document.getElementById("btnNewMenuToggle").disabled = frozen;
+  document.getElementById("btnFreeze").textContent = frozen ? "Riapri programma" : "Conferma programma";
+}
+function updateSidePanelBadges(){
+  const items = store.filter(a=>a.cancelled);
+  const highPriority = items.filter(a=>a.priorita==="Alta");
+  const cEl = document.getElementById("cancelCount");
+  cEl.textContent = items.length;
+  cEl.classList.toggle("has-items", items.length > 0);
+  cEl.title = highPriority.length
+    ? highPriority.length + " ad alta priorità da reinserire prima del congelamento"
+    : items.length + " attività in sospeso";
+
+  const candidates = store.filter(a=>!a.cancelled && a.tipo==="Manutenzione" && a.tolleranza>0 && a.scadenza);
+  const rEl = document.getElementById("reschedCount");
+  rEl.textContent = candidates.length;
+  rEl.classList.toggle("has-items", candidates.length > 0);
+}
+function renderSidePanel(){
+  if(sidePanelMode === "sospeso") renderCancelled();
+  else if(sidePanelMode === "resched") renderReschedPanel();
+}
+function renderAll(){
+  renderCalendar();
+  renderMap();
+  renderTable();
+  renderSidePanel();
+  updateSidePanelBadges();
+  updateHeaderStats();
+  updateFrozenUI();
+}
+
+/* =========================================================================
+   15. TABS + WIRING TOOLBAR + INIT
+   ========================================================================= */
+
+document.querySelectorAll(".view-tab").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".view-tab").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll("[id^='tab-']").forEach(s=>s.hidden = true);
+    document.getElementById("tab-"+btn.dataset.tab).hidden = false;
+    renderSidePanel(); // aggiorna trascinabilità delle righe in base alla vista attiva
+    if(btn.dataset.tab === "map") updateMapCallouts(); // ricalcola le posizioni ora che la mappa è visibile
+  });
+});
+
+document.getElementById("atmLogoBtn").addEventListener("click", ()=>{
+  document.querySelector('.view-tab[data-tab="calendar"]').click();
+  closeSidePanel();
+  window.scrollTo({top:0, behavior:"smooth"});
+});
+
+let sidePanelMode = null; // 'sospeso' | 'resched' | null
+function updateSidePanelToggleButtons(){
+  document.getElementById("btnSospeso").classList.toggle("active", sidePanelMode==="sospeso");
+  document.getElementById("btnSospeso").setAttribute("aria-expanded", sidePanelMode==="sospeso");
+  document.getElementById("btnResched").classList.toggle("active", sidePanelMode==="resched");
+  document.getElementById("btnResched").setAttribute("aria-expanded", sidePanelMode==="resched");
+}
+function openSidePanel(mode){
+  sidePanelMode = mode;
+  document.getElementById("sospesoPanel").hidden = false;
+  renderSidePanel();
+  updateSidePanelToggleButtons();
+}
+function closeSidePanel(){
+  sidePanelMode = null;
+  document.getElementById("sospesoPanel").hidden = true;
+  updateSidePanelToggleButtons();
+}
+document.getElementById("btnSospeso").addEventListener("click", ()=>{
+  if(sidePanelMode === "sospeso") closeSidePanel(); else openSidePanel("sospeso");
+});
+document.getElementById("btnResched").addEventListener("click", ()=>{
+  if(sidePanelMode === "resched") closeSidePanel(); else openSidePanel("resched");
+});
+
+const freezeConfirmPanel = document.getElementById("freezeConfirmPanel");
+document.getElementById("btnFreeze").addEventListener("click", e=>{
+  if(frozen){ frozen = false; updateFrozenUI(); return; }
+  e.stopPropagation();
+  freezeConfirmPanel.hidden = !freezeConfirmPanel.hidden;
+});
+document.getElementById("freezeYes").addEventListener("click", ()=>{
+  freezeConfirmPanel.hidden = true;
+  tryFreeze();
+});
+document.getElementById("freezeNo").addEventListener("click", ()=>{
+  freezeConfirmPanel.hidden = true;
+});
+document.addEventListener("click", e=>{
+  if(!freezeConfirmPanel.hidden && !e.target.closest(".dropdown")) freezeConfirmPanel.hidden = true;
+});
+
+const newMenuPanel = document.getElementById("newMenuPanel");
+document.getElementById("btnNewMenuToggle").addEventListener("click", e=>{
+  e.stopPropagation();
+  if(frozen) return;
+  newMenuPanel.hidden = !newMenuPanel.hidden;
+});
+document.addEventListener("click", e=>{
+  if(!newMenuPanel.hidden && !e.target.closest(".dropdown")) newMenuPanel.hidden = true;
+});
+document.addEventListener("keydown", e=>{
+  if(e.key === "Escape") newMenuPanel.hidden = true;
+});
+document.querySelectorAll(".dropdown-item").forEach(item=>{
+  item.addEventListener("click", ()=>{
+    newMenuPanel.hidden = true;
+    if(frozen){ alert("Il programma è congelato. Riapri il programma per poter aggiungere nuove attività."); return; }
+    const action = item.dataset.action;
+    if(action === "new-activity") openNewActivityModal();
+    else if(action === "import-corsa-file") document.getElementById("importFileCorsa").click();
+    else if(action === "import-manut-file") document.getElementById("importFileManut").click();
+    else if(action === "import-manut-sap") runFakeSapImport();
+  });
+});
+document.getElementById("importFileCorsa").addEventListener("change", e=>{
+  const file = e.target.files[0];
+  if(file) handleImportFile(file, "corsa");
+  e.target.value = "";
+});
+document.getElementById("importFileManut").addEventListener("change", e=>{
+  const file = e.target.files[0];
+  if(file) handleImportFile(file, "manut");
+  e.target.value = "";
+});
+
+function syncRangeInputs(){
+  [["calFrom","calTo"],["tblFrom","tblTo"]].forEach(([fromId,toId])=>{
+    const fEl = document.getElementById(fromId), tEl = document.getElementById(toId);
+    if(fEl) fEl.value = filterFrom;
+    if(tEl) tEl.value = filterTo;
+  });
+}
+function applyRangeChange(newFrom, newTo){
+  if(newFrom > newTo){ const t=newFrom; newFrom=newTo; newTo=t; }
+  filterFrom = newFrom; filterTo = newTo;
+  syncRangeInputs();
+  renderCalendar();
+  renderTable();
+  populateMapDateOptions();
+  renderMap();
+}
+["calFrom","calTo","tblFrom","tblTo"].forEach(id=>{
+  const el = document.getElementById(id);
+  if(el) el.addEventListener("change", ()=>{
+    const from = document.getElementById(id.startsWith("cal") ? "calFrom" : "tblFrom").value || filterFrom;
+    const to = document.getElementById(id.startsWith("cal") ? "calTo" : "tblTo").value || filterTo;
+    applyRangeChange(from, to);
+  });
+});
+syncRangeInputs();
+
+// nasconde la barra filtro data del calendario mentre si scorre verso il basso
+document.getElementById("calendarGrid").addEventListener("scroll", ()=>{
+  const bar = document.getElementById("calFilterBar");
+  const st = document.getElementById("calendarGrid").scrollTop;
+  bar.classList.toggle("collapsed", st > 24);
+});
+
+initMapFilters();
+initMapZoomPan();
+attachSospendiDropZone();
+renderAll();
+</script>
+</body>
+</html>

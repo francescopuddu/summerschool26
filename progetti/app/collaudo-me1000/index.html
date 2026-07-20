@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Collaudo ME1000 — analisi e report</title>
+<style>
+:root{
+  --surface-0:#f7f6f3; --surface-1:#fcfcfb; --surface-2:#ffffff;
+  --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#898781;
+  --border:rgba(11,11,11,.12); --grid:#e1e0d9; --raw:#78776f; --sfondo:#f7f6f3;
+  --blue:#2a78d6; --green:#008300; --ok:#0ca30c; --ko:#d03b3b;
+  --radius:8px;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --surface-0:#111110; --surface-1:#1a1a19; --surface-2:#232322;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#898781;
+    --border:rgba(255,255,255,.14); --grid:#2c2c2a; --raw:#8b8a82; --sfondo:#111110;
+    --blue:#3987e5; --green:#3aa03a; --ok:#3ab13a; --ko:#e66767;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0; padding:28px; background:var(--surface-0); color:var(--text-primary);
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif; font-size:15px; line-height:1.6;}
+.wrap{max-width:1100px; margin:0 auto;}
+h1{font-size:22px; font-weight:500; margin:0 0 4px;}
+h2{font-size:18px; font-weight:500; margin:28px 0 10px;}
+.sub{color:var(--text-secondary); font-size:14px; margin:0 0 20px;}
+.card{background:var(--surface-1); border:.5px solid var(--border); border-radius:12px; padding:18px 20px; margin-bottom:18px;}
+button{font:inherit; font-size:14px; padding:8px 16px; border-radius:var(--radius);
+  border:.5px solid var(--text-muted); background:transparent; color:var(--text-primary); cursor:pointer;}
+button:hover:not(:disabled){background:var(--surface-2);}
+button:disabled{opacity:.4; cursor:not-allowed;}
+button.primary{background:var(--blue); border-color:var(--blue); color:#fff;}
+select{font:inherit; font-size:14px; padding:8px 10px; border-radius:var(--radius);
+  border:.5px solid var(--border); background:var(--surface-2); color:var(--text-primary); min-width:240px;}
+label{font-size:13px; color:var(--text-secondary); display:block; margin-bottom:4px;}
+.row{display:flex; gap:14px; align-items:flex-end; flex-wrap:wrap;}
+.hidden{display:none;}
+table{border-collapse:collapse; width:100%; font-size:14px;}
+th,td{text-align:left; padding:8px 10px; border-bottom:.5px solid var(--border);}
+th{font-weight:500; color:var(--text-secondary); font-size:13px;}
+td.num{font-variant-numeric:tabular-nums; text-align:right;}
+.badge{font-size:12px; padding:2px 9px; border-radius:20px; font-weight:500;}
+.pass{background:rgba(12,163,12,.14); color:var(--ok);}
+.fail{background:rgba(208,59,59,.14); color:var(--ko);}
+.legend{display:flex; gap:16px; font-size:12px; color:var(--text-secondary); margin:0 0 6px;}
+.legend span{display:flex; align-items:center; gap:5px;}
+.sw{width:14px; height:3px; border-radius:2px; display:inline-block;}
+.plot{position:relative; width:100%; height:200px;}
+canvas{width:100%; height:100%; display:block;}
+.grid2{display:grid; grid-template-columns:repeat(auto-fit,minmax(420px,1fr)); gap:22px;}
+.kpi{background:var(--surface-2); border-radius:var(--radius); padding:12px 14px;}
+.kpi .l{font-size:12px; color:var(--text-secondary);}
+.kpi .v{font-size:22px; font-weight:500; font-variant-numeric:tabular-nums;}
+.kpis{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-bottom:18px;}
+.note{font-size:13px; color:var(--text-muted);}
+.cap{font-size:13px; color:var(--text-secondary); margin-bottom:2px;}
+.verdict{font-size:18px; font-weight:500; padding:12px 16px; border-radius:var(--radius);}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Collaudo ME1000 — analisi e report</h1>
+<p class="sub">Interruttore extrarapido in corrente continua (HSCB). Acquisizione corrente circuito principale e corsa contatti.</p>
+
+<div class="card">
+  <div class="row">
+    <div>
+      <label>1. Cartella con i collaudi</label>
+      <input type="file" id="picker" webkitdirectory directory multiple>
+    </div>
+    <div>
+      <label>2. Collaudo da elaborare</label>
+      <select id="sel" disabled><option>— nessuna cartella caricata —</option></select>
+    </div>
+    <button id="run" class="primary" disabled>Elabora</button>
+    <button id="rep" disabled>Genera report di collaudo</button>
+  </div>
+  <p class="note" id="status" style="margin:12px 0 0;">Seleziona la cartella <code>collaudi</code>. I file restano sul tuo PC, nulla viene caricato in rete.</p>
+</div>
+
+<div id="out" class="hidden"></div>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const fmt = (v, d = 2) => (v === null || !isFinite(v)) ? '—' : v.toFixed(d);
+let TESTS = {}, R = null;
+
+/* ---------- lettura CSV oscilloscopio (formato Rigol) ---------- */
+function parseScopeCsv(text) {
+  const lines = text.split(/\r?\n/);
+  const h = lines[1].split(',');
+  const start = parseFloat(h[3]), inc = parseFloat(h[4]);
+  const n = lines.length - 2;
+  const t = new Float64Array(n), c1 = new Float64Array(n), c2 = new Float64Array(n);
+  let k = 0;
+  for (let i = 2; i < lines.length; i++) {
+    const L = lines[i];
+    if (!L) continue;
+    const p = L.split(',');
+    t[k] = (start + k * inc) * 1000;
+    c1[k] = +p[1];
+    c2[k] = +p[2];
+    k++;
+  }
+  return { t: t.subarray(0, k), i: c1.subarray(0, k), s: c2.subarray(0, k), fs: 1 / inc };
+}
+
+/* ---------- filtri ---------- */
+function median(a, w) {
+  const h = w >> 1, o = new Float64Array(a.length), buf = new Float64Array(w);
+  for (let i = 0; i < a.length; i++) {
+    let n = 0;
+    for (let j = -h; j <= h; j++) { const k = i + j; if (k >= 0 && k < a.length) buf[n++] = a[k]; }
+    const v = Array.prototype.slice.call(buf.subarray(0, n)).sort((x, y) => x - y);
+    o[i] = v[n >> 1];
+  }
+  return o;
+}
+function movAvg(a, w) {
+  const h = w >> 1, n = a.length, cs = new Float64Array(n + 1), o = new Float64Array(n);
+  for (let i = 0; i < n; i++) cs[i + 1] = cs[i] + a[i];
+  for (let i = 0; i < n; i++) {
+    const lo = Math.max(0, i - h), hi = Math.min(n - 1, i + h);
+    o[i] = (cs[hi + 1] - cs[lo]) / (hi - lo + 1);
+  }
+  return o;
+}
+const filtra = (a, wm, wa) => movAvg(movAvg(median(a, wm), wa), wa);
+
+/* ---------- utilita' di misura ---------- */
+function medWin(t, y, t0, t1) {
+  const v = [];
+  for (let i = 0; i < t.length; i++) if (t[i] >= t0 && t[i] <= t1) v.push(y[i]);
+  v.sort((a, b) => a - b);
+  return v.length ? v[v.length >> 1] : NaN;
+}
+function stdWin(t, y, t0, t1) {
+  const v = [];
+  for (let i = 0; i < t.length; i++) if (t[i] >= t0 && t[i] <= t1) v.push(y[i]);
+  const m = v.reduce((a, b) => a + b, 0) / v.length;
+  return Math.sqrt(v.reduce((a, b) => a + (b - m) ** 2, 0) / v.length);
+}
+function crossings(t, y, thr, tmin) {
+  const up = [], dn = [];
+  for (let i = 1; i < t.length; i++) {
+    if (t[i] < tmin) continue;
+    const a = y[i - 1] >= thr, b = y[i] >= thr;
+    if (a === b) continue;
+    const x = t[i - 1] + (thr - y[i - 1]) * (t[i] - t[i - 1]) / (y[i] - y[i - 1]);
+    (b ? up : dn).push(x);
+  }
+  return { up, dn };
+}
+function firstAbove(t, y, thr, tmin) {
+  for (let i = 0; i < t.length; i++) if (t[i] >= tmin && y[i] >= thr) return t[i];
+  return NaN;
+}
+function firstBelow(t, y, thr, tmin) {
+  for (let i = 0; i < t.length; i++) if (t[i] >= tmin && y[i] <= thr) return t[i];
+  return NaN;
+}
+
+/* ---------- post-processing ---------- */
+function analizzaChiusura(d) {
+  const iF = filtra(d.i, 5, 7), sF = filtra(d.s, 5, 9);
+  const tEnd = d.t[d.t.length - 1];
+  const iBase = medWin(d.t, iF, d.t[0], -1);
+  const iOn = medWin(d.t, iF, tEnd - 20, tEnd);
+  const thr = iBase + 0.5 * (iOn - iBase);
+  const cr = crossings(d.t, iF, thr, 0);
+  const primo = cr.up.length ? cr.up[0] : NaN;
+  const tutte = cr.up.concat(cr.dn).sort((a, b) => a - b);
+  const ultima = tutte.length ? tutte[tutte.length - 1] : NaN;
+  const nMicro = cr.dn.filter(x => x > primo).length;
+
+  const sBase = medWin(d.t, sF, d.t[0], -1);
+  const sFin = medWin(d.t, sF, tEnd - 10, tEnd);
+  const corsa = sFin - sBase;
+  const tMorto = firstAbove(d.t, sF, sBase + 0.03 * corsa, 0);
+  const t10 = firstAbove(d.t, sF, sBase + 0.10 * corsa, 0);
+  const t90 = firstAbove(d.t, sF, sBase + 0.90 * corsa, 0);
+  let sTouch = NaN;
+  for (let i = 0; i < d.t.length; i++) if (d.t[i] >= primo) { sTouch = sF[i]; break; }
+
+  return {
+    iF, sF, thr, marks: [primo],
+    tChiusura: primo, bounceDur: ultima - primo, nMicro,
+    iChiusura: iOn, ripple: stdWin(d.t, d.i, tEnd - 20, tEnd),
+    corsa, tMorto, tCorsa: t90 - t10, vMedia: (0.8 * corsa) / (t90 - t10),
+    sovracorsa: sFin - sTouch, sBase, sFin
+  };
+}
+function analizzaApertura(d) {
+  const iF = filtra(d.i, 5, 7), sF = filtra(d.s, 5, 9);
+  const tEnd = d.t[d.t.length - 1];
+  const iOn = medWin(d.t, iF, d.t[0], -1);
+  const iOff = medWin(d.t, iF, tEnd - 20, tEnd);
+  const thr = iOff + 0.5 * (iOn - iOff);
+  const cr = crossings(d.t, iF, thr, 0);
+  const sep = cr.dn.length ? cr.dn[0] : NaN;
+  const riades = cr.up.filter(x => x > sep).length;
+
+  const sBase = medWin(d.t, sF, d.t[0], -1);
+  const sFin = medWin(d.t, sF, tEnd - 10, tEnd);
+  const corsa = sBase - sFin;
+  const tRil = firstBelow(d.t, sF, sBase - 0.01 * corsa, 0);
+  const t90 = firstBelow(d.t, sF, sBase - 0.10 * corsa, 0);
+  const t10 = firstBelow(d.t, sF, sBase - 0.90 * corsa, 0);
+  let smin = Infinity;
+  for (let i = 0; i < d.t.length; i++) if (d.t[i] > tRil) smin = Math.min(smin, sF[i]);
+
+  return {
+    iF, sF, thr, marks: [sep],
+    tApertura: sep, riades, iPrima: iOn,
+    corsa, tRilascio: tRil, tCorsa: t10 - t90, vMedia: (0.8 * corsa) / (t10 - t90),
+    overshoot: sFin - smin, sBase, sFin
+  };
+}
+
+/* ---------- grafico ---------- */
+const CHIARO = { '--grid': '#e1e0d9', '--text-muted': '#898781', '--raw': '#78776f', '--sfondo': '#ffffff', '--blue': '#2a78d6', '--green': '#008300' };
+
+function draw(cv, t, raw, filt, col, ylab, marks, ymin, ymax, xw, opt) {
+  const scala = opt?.scala ?? (window.devicePixelRatio || 1);
+  const W = opt?.w ?? cv.clientWidth, H = opt?.h ?? cv.clientHeight;
+  cv.width = W * scala; cv.height = H * scala;
+  const g = cv.getContext('2d');
+  g.scale(scala, scala);
+  const cs = getComputedStyle(document.documentElement);
+  // il report e' sempre su carta bianca: usa la palette chiara anche se l'app e' in tema scuro
+  const C = (n) => opt?.chiaro ? CHIARO[n] : cs.getPropertyValue(n).trim();
+  const L = 52, Rm = 8, T = 8, B = 30;
+  if (xw) {
+    const dt = t[1] - t[0];
+    const i0 = Math.max(0, Math.floor((xw[0] - t[0]) / dt));
+    const i1 = Math.min(t.length, Math.ceil((xw[1] - t[0]) / dt));
+    t = t.subarray(i0, i1); raw = raw.subarray(i0, i1); filt = filt.subarray(i0, i1);
+  }
+  if (t.length < 2) return;
+  const x0 = t[0], x1 = t[t.length - 1];
+  const px = (v) => L + (v - x0) / (x1 - x0) * (W - L - Rm);
+  const py = (v) => T + (ymax - v) / (ymax - ymin) * (H - T - B);
+
+  g.strokeStyle = C('--grid'); g.lineWidth = 1;
+  g.fillStyle = C('--text-muted'); g.font = '11px system-ui'; g.textAlign = 'right';
+  const dy = (ymax - ymin) < 20 ? 1 : 0;
+  for (let k = 0; k <= 4; k++) {
+    const v = ymin + (ymax - ymin) * k / 4, y = Math.round(py(v)) + .5;
+    g.beginPath(); g.moveTo(L, y); g.lineTo(W - Rm, y); g.stroke();
+    g.fillText(v.toFixed(dy), L - 8, y + 4);
+  }
+  g.textAlign = 'center';
+  const step = (x1 - x0) / 6, dx = (x1 - x0) < 25 ? 1 : 0;
+  for (let k = 0; k <= 6; k++) {
+    const v = x0 + step * k;
+    g.fillText(v.toFixed(dx), px(v), H - 10);
+  }
+  g.save(); g.translate(12, H / 2); g.rotate(-Math.PI / 2); g.textAlign = 'center';
+  g.fillText(ylab, 0, 0); g.restore();
+
+  const cols = Math.floor(W - L - Rm);
+  const dt = t[1] - t[0];
+  const band = (y, color, w) => {
+    g.strokeStyle = color; g.lineWidth = w;
+    g.lineJoin = 'round'; g.lineCap = 'round';
+    g.beginPath();
+    if (t.length <= cols * 2) {
+      // pochi campioni per pixel: polilinea sui campioni reali
+      for (let i = 0; i < t.length; i++) (i ? g.lineTo : g.moveTo).call(g, px(t[i]), py(y[i]));
+    } else {
+      // molti campioni per pixel: min/max per colonna, indicizzati sul tempo
+      for (let c = 0; c < cols; c++) {
+        const ia = Math.max(0, Math.round((x0 + (x1 - x0) * c / cols - t[0]) / dt));
+        const ib = Math.min(t.length, Math.max(ia + 1, Math.round((x0 + (x1 - x0) * (c + 1) / cols - t[0]) / dt)));
+        let lo = Infinity, hi = -Infinity;
+        for (let i = ia; i < ib; i++) { if (y[i] < lo) lo = y[i]; if (y[i] > hi) hi = y[i]; }
+        if (lo === Infinity) continue;
+        const X = L + c + .5;
+        g.moveTo(X, py(hi)); g.lineTo(X, py(lo) + .5);
+      }
+    }
+    g.stroke();
+  };
+  g.save();
+  g.beginPath(); g.rect(L, T, W - L - Rm, H - T - B); g.clip();
+  band(raw, C('--raw'), 1);
+  // guaina del colore dello sfondo: stacca la traccia filtrata dalla banda di rumore.
+  // Tenuta stretta di proposito: piu' e' larga, piu' mangia il grezzo che deve restare visibile
+  band(filt, C('--sfondo'), 3.2);
+  band(filt, C(col), 2);
+  g.restore();
+
+  g.strokeStyle = C('--text-muted'); g.setLineDash([4, 4]); g.lineWidth = 1;
+  marks.forEach(m => { if (isFinite(m)) { g.beginPath(); g.moveTo(px(m), T); g.lineTo(px(m), H - B); g.stroke(); } });
+  g.setLineDash([]);
+}
+
+function pngGrafico(t, raw, filt, col, ylab, marks, ymin, ymax, xw) {
+  const cv = document.createElement('canvas');
+  // proporzioni larghe: nel report i grafici occupano tutta la larghezza della diapositiva
+  draw(cv, t, raw, filt, col, ylab, marks, ymin, ymax, xw, { w: 1120, h: 235, scala: 2, chiaro: true });
+  return cv.toDataURL('image/png');
+}
+
+function plotBlock(id, title) {
+  const leg = (c) => `<div class="legend"><span><span class="sw" style="background:var(--raw)"></span>grezzo</span>
+    <span><span class="sw" style="background:var(--${c})"></span>filtrato</span>
+    <span><span class="sw" style="background:var(--text-muted);height:1px"></span>evento</span></div>`;
+  const cell = (cid, c, cap) => `<div><div class="cap">${cap}</div>${leg(c)}<div class="plot"><canvas id="${cid}"></canvas></div></div>`;
+  return `<h2>${title}</h2>
+  <div class="grid2">
+    ${cell(id + 'a', 'blue', 'Corrente — acquisizione completa')}
+    ${cell(id + 'b', 'green', 'Posizione — acquisizione completa')}
+    ${cell(id + 'ad', 'blue', 'Corrente — dettaglio sull\'evento')}
+    ${cell(id + 'bd', 'green', 'Posizione — dettaglio sull\'evento')}
+  </div>`;
+}
+
+/* ---------- tolleranze e verdetto ---------- */
+function misure(C, A) {
+  const M = [
+    ['Tempo di chiusura', C.tChiusura, 'ms', 45, 75, 1],
+    ['Tempo morto chiusura', C.tMorto, 'ms', null, null, 1],
+    ['Tempo di corsa chiusura (10–90%)', C.tCorsa, 'ms', null, null, 1],
+    ['Corrente di chiusura', C.iChiusura, 'A', 97, 103, 1],
+    ['Rumore corrente (RMS)', C.ripple, 'A', null, 2.5, 2],
+    ['Corsa (chiusura)', C.corsa, 'mm', 43.5, 46.5, 2],
+    ['Sovracorsa contatti', C.sovracorsa, 'mm', 0.6, 1.5, 2],
+    ['Durata bouncing', C.bounceDur, 'ms', null, 12, 1],
+    ['Microinterruzioni', C.nMicro, '', null, 3, 0],
+    ['Tempo di apertura', A.tApertura, 'ms', null, 12, 1],
+    ['Ritardo di rilascio', A.tRilascio, 'ms', null, null, 1],
+    ['Tempo di corsa apertura (90–10%)', A.tCorsa, 'ms', null, null, 1],
+    ['Corsa (apertura)', A.corsa, 'mm', 43.5, 46.5, 2],
+    ['Velocità media apertura', A.vMedia, 'mm/ms', 2.2, null, 2],
+    ['Overshoot apertura', A.overshoot, 'mm', null, 4, 2],
+    ['Riadescamenti', A.riades, '', null, 0, 0],
+  ];
+  return M.map(([n, v, u, lo, hi, d]) => {
+    let esito = null, tol = '—';
+    if (lo !== null && hi !== null) { tol = `${lo} … ${hi} ${u}`.trim(); esito = v >= lo && v <= hi; }
+    else if (hi !== null) { tol = `≤ ${hi} ${u}`.trim(); esito = v <= hi; }
+    else if (lo !== null) { tol = `≥ ${lo} ${u}`.trim(); esito = v >= lo; }
+    return { n, v, u, d, tol, esito };
+  });
+}
+function tabella(M) {
+  const r = M.map(m => `<tr><td>${m.n}</td><td class="num">${fmt(m.v, m.d)} ${m.u}</td>
+    <td class="num">${m.tol}</td><td>${m.esito === null ? '<span class="note">informativa</span>'
+      : `<span class="badge ${m.esito ? 'pass' : 'fail'}">${m.esito ? 'CONFORME' : 'NON CONFORME'}</span>`}</td></tr>`).join('');
+  return `<table><thead><tr><th>Grandezza</th><th style="text-align:right">Valore</th>
+    <th style="text-align:right">Tolleranza</th><th>Esito</th></tr></thead><tbody>${r}</tbody></table>`;
+}
+
+/* ---------- flusso ---------- */
+function caricaCartella(files) {
+  TESTS = {};
+  for (const f of files) {
+    const p = f.webkitRelativePath.split('/');
+    const name = p[p.length - 2], file = p[p.length - 1];
+    if (!/\.(csv|json)$/i.test(file)) continue;
+    (TESTS[name] ||= {})[file] = f;
+  }
+  for (const k of Object.keys(TESTS)) if (!TESTS[k]['chiusura.csv'] || !TESTS[k]['apertura.csv']) delete TESTS[k];
+  const keys = Object.keys(TESTS).sort();
+  const sel = $('#sel');
+  sel.innerHTML = keys.map(k => `<option>${k}</option>`).join('');
+  sel.disabled = !keys.length;
+  $('#run').disabled = !keys.length;
+  $('#status').textContent = keys.length
+    ? `${keys.length} collaudi trovati. Scegli quale elaborare.`
+    : 'Nessun collaudo valido trovato: servono chiusura.csv e apertura.csv in ogni sottocartella.';
+  return keys;
+}
+$('#picker').addEventListener('change', (e) => caricaCartella(e.target.files));
+
+$('#run').addEventListener('click', async () => {
+  const k = $('#sel').value, T = TESTS[k];
+  $('#status').textContent = 'Elaborazione in corso…';
+  const dc = parseScopeCsv(await T['chiusura.csv'].text());
+  const da = parseScopeCsv(await T['apertura.csv'].text());
+  const info = T['info.json'] ? JSON.parse(await T['info.json'].text()) : { matricola: k };
+  const C = analizzaChiusura(dc), A = analizzaApertura(da);
+  const M = misure(C, A);
+  const ok = M.every(m => m.esito !== false);
+  R = { k, info, dc, da, C, A, M, ok };
+
+  const kpi = (l, v) => `<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div></div>`;
+  $('#out').className = '';
+  $('#out').innerHTML = `
+    <div class="verdict" style="background:${ok ? 'rgba(12,163,12,.12)' : 'rgba(208,59,59,.12)'};
+      color:var(--${ok ? 'ok' : 'ko'}); margin-bottom:18px;">
+      ${k} — esito ${ok ? 'CONFORME' : 'NON CONFORME'}</div>
+    <div class="kpis">
+      ${kpi('Tempo di chiusura', fmt(C.tChiusura, 1) + ' ms')}
+      ${kpi('Tempo di apertura', fmt(A.tApertura, 1) + ' ms')}
+      ${kpi('Corrente di chiusura', fmt(C.iChiusura, 1) + ' A')}
+      ${kpi('Corsa', fmt(C.corsa, 2) + ' mm')}
+      ${kpi('Bouncing', fmt(C.bounceDur, 1) + ' ms / ' + C.nMicro)}
+    </div>
+    ${plotBlock('ch', 'Chiusura — grezzo e filtrato sovrapposti')}
+    ${plotBlock('ap', 'Apertura — grezzo e filtrato sovrapposti')}
+    <h2>Misure estratte</h2>${tabella(M)}
+    <p class="note" style="margin-top:10px;">Filtro: mediana a 5 campioni per rimuovere gli spike di commutazione,
+    seguita da doppia media mobile a fase nulla (7 campioni sulla corrente, 9 sulla posizione a 50 kSa/s).
+    I tempi sono misurati sul segnale filtrato al 50% del fronte. Il filtro è a fase nulla, quindi non introduce ritardo sui tempi.</p>`;
+  redraw();
+  $('#rep').disabled = false;
+  $('#status').textContent = `Elaborato ${k}. Puoi generare il report.`;
+});
+
+function redraw() {
+  if (!R) return;
+  const C = R.C, A = R.A;
+  const t0 = C.tChiusura, t1 = t0 + C.bounceDur, sep = A.tApertura;
+  draw($('#cha'), R.dc.t, R.dc.i, C.iF, '--blue', 'corrente (A)', C.marks, -12, 120);
+  draw($('#chb'), R.dc.t, R.dc.s, C.sF, '--green', 'posizione (mm)', C.marks, -6, 52);
+  draw($('#chad'), R.dc.t, R.dc.i, C.iF, '--blue', 'corrente (A)', C.marks, -12, 120, [t0 - 2, t1 + 3]);
+  draw($('#chbd'), R.dc.t, R.dc.s, C.sF, '--green', 'posizione (mm)', C.marks,
+    C.sFin - 4, C.sFin + 4, [t0 - 2, t1 + 8]);
+  draw($('#apa'), R.da.t, R.da.i, A.iF, '--blue', 'corrente (A)', A.marks, -12, 120);
+  draw($('#apb'), R.da.t, R.da.s, A.sF, '--green', 'posizione (mm)', A.marks, -8, 52);
+  draw($('#apad'), R.da.t, R.da.i, A.iF, '--blue', 'corrente (A)', A.marks, -12, 120, [sep - 1.5, sep + 2.5]);
+  draw($('#apbd'), R.da.t, R.da.s, A.sF, '--green', 'posizione (mm)', A.marks,
+    A.sFin - 5, A.sFin + 6, [sep + 4, sep + 40]);
+}
+window.addEventListener('resize', redraw);
+
+/* ---------- report a diapositive ---------- */
+function costruisciReport() {
+  const C = R.C, A = R.A, i = R.info, M = R.M;
+  const t0 = C.tChiusura, t1 = t0 + C.bounceDur, sep = A.tApertura;
+  const G = {
+    ci: pngGrafico(R.dc.t, R.dc.i, C.iF, '--blue', 'corrente (A)', C.marks, -12, 120),
+    cid: pngGrafico(R.dc.t, R.dc.i, C.iF, '--blue', 'corrente (A)', C.marks, -12, 120, [t0 - 2, t1 + 3]),
+    cs: pngGrafico(R.dc.t, R.dc.s, C.sF, '--green', 'posizione (mm)', C.marks, -6, 52),
+    csd: pngGrafico(R.dc.t, R.dc.s, C.sF, '--green', 'posizione (mm)', C.marks, C.sFin - 4, C.sFin + 4, [t0 - 2, t1 + 8]),
+    ai: pngGrafico(R.da.t, R.da.i, A.iF, '--blue', 'corrente (A)', A.marks, -12, 120),
+    aid: pngGrafico(R.da.t, R.da.i, A.iF, '--blue', 'corrente (A)', A.marks, -12, 120, [sep - 1.5, sep + 2.5]),
+    as: pngGrafico(R.da.t, R.da.s, A.sF, '--green', 'posizione (mm)', A.marks, -8, 52),
+    asd: pngGrafico(R.da.t, R.da.s, A.sF, '--green', 'posizione (mm)', A.marks, A.sFin - 5, A.sFin + 6, [sep + 4, sep + 40]),
+  };
+  const trova = (n) => M.find(m => m.n === n);
+  const ko = M.filter(m => m.esito === false);
+  const d = new Date().toLocaleString('it-IT');
+
+  const dato = (nome, etichetta) => {
+    const m = trova(nome);
+    if (!m) return '';
+    const cls = m.esito === null ? 'i' : (m.esito ? 'p' : 'f');
+    return `<div class="dato ${cls}"><div class="dl">${etichetta ?? m.n}</div>
+      <div class="dv">${fmt(m.v, m.d)}<span class="du">${m.u}</span></div>
+      <div class="dt">${m.tol === '—' ? 'informativa' : m.tol}</div></div>`;
+  };
+  const meta = (l, v) => `<tr><td class="ml">${l}</td><td>${v ?? '—'}</td></tr>`;
+  const slide = (n, tit, sot, corpo) => `<section class="slide">
+    <header><div><h2>${tit}</h2>${sot ? `<p class="sot">${sot}</p>` : ''}</div>
+    <div class="mark">${i.matricola ?? R.k}</div></header>
+    <div class="corpo">${corpo}</div>
+    <footer><span>Collaudo ME1000 — HSCB</span><span>${n} / 8</span></footer></section>`;
+  const coppia = (a, b, ca, cb) => `<div class="coppia">
+    <figure><img src="${a}"><figcaption>${ca}</figcaption></figure>
+    <figure><img src="${b}"><figcaption>${cb}</figcaption></figure></div>`;
+  const conDati = (grafici, dati) => `${grafici}<div class="dati">${dati}</div>`;
+
+  return `<!DOCTYPE html><html lang="it"><head><meta charset="utf-8">
+<title>Collaudo ${i.matricola ?? R.k}</title>
+<style>
+@page{ size:A4 landscape; margin:0; }
+*{box-sizing:border-box}
+body{margin:0; background:#e9e8e4; color:#0b0b0b; font-family:system-ui,"Segoe UI",sans-serif; line-height:1.5;}
+.slide{width:297mm; height:209mm; background:#fff; padding:14mm 16mm 10mm; margin:0 auto 8mm;
+  display:flex; flex-direction:column; page-break-after:always; break-after:page; box-shadow:0 2px 12px rgba(0,0,0,.14);}
+.slide:last-child{page-break-after:auto; break-after:auto;}
+header{display:flex; justify-content:space-between; align-items:flex-start; border-bottom:.5px solid rgba(0,0,0,.14); padding-bottom:6px;}
+h2{font-size:19pt; font-weight:500; margin:0;}
+.sot{font-size:10pt; color:#52514e; margin:2px 0 0;}
+.mark{font-size:9pt; color:#898781; font-variant-numeric:tabular-nums; padding-top:4px;}
+.corpo{flex:1; padding-top:6px; min-height:0; display:flex; flex-direction:column;}
+footer{display:flex; justify-content:space-between; font-size:8pt; color:#898781; border-top:.5px solid rgba(0,0,0,.1); padding-top:5px;}
+.coppia{display:flex; flex-direction:column; gap:3mm;}
+figure{margin:0;} img{width:100%; display:block; border:.5px solid rgba(0,0,0,.12); border-radius:6px;}
+figcaption{font-size:8.5pt; color:#52514e; margin-top:2px;}
+.dati{display:grid; grid-template-columns:repeat(auto-fit,minmax(30mm,1fr)); gap:5mm; padding-top:4mm;}
+.corpo > .dati:last-child{margin-top:auto;}
+.dato{border-left:3px solid #b9b8b1; padding:2px 0 2px 8px;}
+.dato.p{border-color:#0ca30c} .dato.f{border-color:#d03b3b} .dato.i{border-color:#c3c2b7}
+.dl{font-size:8.5pt; color:#52514e;}
+.dv{font-size:17pt; font-weight:500; font-variant-numeric:tabular-nums; line-height:1.25;}
+.du{font-size:9pt; color:#52514e; font-weight:400; margin-left:3px;}
+.dt{font-size:8pt; color:#898781; font-variant-numeric:tabular-nums;}
+h1{font-size:34pt; font-weight:500; margin:0 0 2px;}
+.cop{flex:1; display:flex; flex-direction:column; justify-content:center;}
+.cop .s1{font-size:13pt; color:#52514e; margin:0 0 10mm;}
+.esito{display:inline-block; font-size:15pt; font-weight:500; padding:6px 20px; border-radius:40px; margin-bottom:10mm;}
+.ok{background:#e6f4e6; color:#0a7d0a;} .no{background:#fbe9e9; color:#c22f2f;}
+table{border-collapse:collapse; width:100%; font-size:9.5pt;}
+th,td{text-align:left; padding:4px 8px; border-bottom:.5px solid rgba(0,0,0,.1);}
+th{font-weight:500; color:#52514e; font-size:8.5pt;}
+td.n{text-align:right; font-variant-numeric:tabular-nums;}
+.ml{color:#52514e; width:52mm;}
+.b{font-size:8pt; padding:1px 8px; border-radius:20px; font-weight:500; white-space:nowrap;}
+.bp{background:#e6f4e6; color:#0a7d0a;} .bf{background:#fbe9e9; color:#c22f2f;} .bi{color:#898781;}
+.due{display:grid; grid-template-columns:1fr 1fr; gap:10mm;}
+.quattro{display:grid; grid-template-columns:1fr 1fr; gap:2mm 8mm; margin-top:auto; padding:5mm 0 3mm;}
+p.t{font-size:10pt; color:#3a3a38; margin:0 0 6px;}
+ul{margin:4px 0 0; padding-left:16px; font-size:10pt;} li{margin-bottom:3px;}
+.firma{margin-top:8mm; font-size:10pt; color:#52514e; line-height:2.6;}
+.stampa{position:fixed; top:12px; right:12px; font:inherit; font-size:13px; padding:8px 16px;
+  border-radius:8px; border:.5px solid #898781; background:#fff; cursor:pointer; z-index:9;}
+@media print{ body{background:#fff} .slide{box-shadow:none; margin:0} .stampa{display:none} }
+</style></head><body>
+<button class="stampa" onclick="print()">Stampa / salva in PDF</button>
+
+<section class="slide"><div class="cop">
+  <p class="s1">Rapporto di collaudo</p>
+  <h1>${i.matricola ?? R.k}</h1>
+  <p class="s1">${i.modello ?? 'ME1000'} — interruttore extrarapido in corrente continua (HSCB)<br>
+  ${i.prova ?? 'Acquisizione corrente principale e corsa contatti'}</p>
+  <div><span class="esito ${R.ok ? 'ok' : 'no'}">${R.ok ? 'CONFORME' : 'NON CONFORME'}</span></div>
+  <table style="max-width:150mm">
+    ${meta('Data prova', i.data_prova)}${meta('Operatore', i.operatore)}${meta('Banco', i.banco)}
+    ${meta('Analisi eseguita il', d)}
+  </table>
+</div>
+<footer><span>Collaudo ME1000 — HSCB</span><span>1 / 8</span></footer></section>
+
+${slide(2, 'Sintesi della prova', R.ok ? 'Tutte le grandezze rientrano nelle tolleranze'
+    : `${ko.length} ${ko.length > 1 ? 'grandezze fuori tolleranza' : 'grandezza fuori tolleranza'}`, `
+  <div class="dati" style="margin-bottom:8mm">
+    ${dato('Tempo di chiusura')}${dato('Tempo di apertura')}${dato('Corrente di chiusura')}
+    ${dato('Corsa (chiusura)', 'Corsa')}${dato('Durata bouncing')}
+  </div>
+  <div class="due">
+    <div><p class="t">Condizioni di prova</p>
+      <table>${meta('Corrente iniettata', (i.corrente_iniettata_nominale_A ?? '—') + ' A a bassa tensione')}
+      ${meta('Tensione bobina', (i.tensione_bobina_V ?? '—') + ' V')}
+      ${meta('Strumento', i.oscilloscopio)}
+      ${meta('Campionamento', (i.frequenza_campionamento_Sa_s ?? '—') + ' Sa/s')}
+      ${meta('Trigger', i.trigger)}</table></div>
+    <div><p class="t">${R.ok ? 'Esito' : 'Non conformità rilevate'}</p>
+      ${R.ok ? '<ul><li>Nessuna non conformità rilevata.</li></ul>'
+      : `<ul>${ko.map(m => `<li><b style="font-weight:500">${m.n}</b>: misurato ${fmt(m.v, m.d)}${m.u ? ' ' + m.u : ''}, richiesto ${m.tol}</li>`).join('')}</ul>`}
+    </div>
+  </div>
+  <div class="quattro">
+    <figure><img src="${G.ci}"><figcaption>Chiusura — corrente</figcaption></figure>
+    <figure><img src="${G.cs}"><figcaption>Chiusura — posizione</figcaption></figure>
+    <figure><img src="${G.ai}"><figcaption>Apertura — corrente</figcaption></figure>
+    <figure><img src="${G.as}"><figcaption>Apertura — posizione</figcaption></figure>
+  </div>`)}
+
+${slide(3, 'Chiusura — corrente nel circuito principale',
+    `La corrente nasce al primo contatto, a ${fmt(t0, 1)} ms dal comando bobina`,
+    coppia(G.ci, G.cid, 'Acquisizione completa', 'Dettaglio sull\'evento: si vedono gli spike di commutazione sul grezzo e le microinterruzioni da rimbalzo') +
+    `<div class="dati">${dato('Tempo di chiusura')}${dato('Corrente di chiusura')}${dato('Durata bouncing')}${dato('Microinterruzioni')}${dato('Rumore corrente (RMS)')}</div>`)}
+
+${slide(4, 'Chiusura — corsa dei contatti',
+    `Tempo morto ${fmt(C.tMorto, 1)} ms, poi corsa di ${fmt(C.corsa, 1)} mm`,
+    coppia(G.cs, G.csd, 'Acquisizione completa', 'Dettaglio sul fine corsa: rimbalzi smorzati attorno alla posizione di chiuso') +
+    `<div class="dati">${dato('Corsa (chiusura)', 'Corsa')}${dato('Tempo morto chiusura', 'Tempo morto')}${dato('Tempo di corsa chiusura (10–90%)', 'Tempo di corsa 10–90%')}${dato('Sovracorsa contatti', 'Sovracorsa')}</div>`)}
+
+${slide(5, 'Apertura — corrente nel circuito principale',
+    `La corrente si azzera alla separazione dei contatti, a ${fmt(sep, 1)} ms dal comando`,
+    coppia(G.ai, G.aid, 'Acquisizione completa', 'Dettaglio sull\'evento: azzeramento netto, a bassa tensione l\'arco non si sostiene') +
+    `<div class="dati">${dato('Tempo di apertura')}${dato('Riadescamenti')}${dato('Ritardo di rilascio')}</div>`)}
+
+${slide(6, 'Apertura — corsa dei contatti',
+    `Corsa di ${fmt(A.corsa, 1)} mm a ${fmt(A.vMedia, 1)} mm/ms di velocità media`,
+    coppia(G.as, G.asd, 'Acquisizione completa', 'Dettaglio di fine corsa: overshoot oltre la posizione di aperto e rimbalzo smorzato') +
+    `<div class="dati">${dato('Corsa (apertura)', 'Corsa')}${dato('Velocità media apertura', 'Velocità media')}${dato('Tempo di corsa apertura (90–10%)', 'Tempo di corsa 90–10%')}${dato('Overshoot apertura', 'Overshoot')}</div>`)}
+
+${slide(7, 'Quadro completo delle misure', 'Confronto con le tolleranze di collaudo', `
+  <table><thead><tr><th>Grandezza</th><th style="text-align:right">Valore</th>
+  <th style="text-align:right">Tolleranza</th><th>Esito</th></tr></thead><tbody>
+  ${M.map(m => `<tr><td>${m.n}</td><td class="n">${fmt(m.v, m.d)} ${m.u}</td><td class="n">${m.tol}</td>
+  <td>${m.esito === null ? '<span class="bi">informativa</span>'
+      : `<span class="b ${m.esito ? 'bp' : 'bf'}">${m.esito ? 'CONFORME' : 'NON CONFORME'}</span>`}</td></tr>`).join('')}
+  </tbody></table>`)}
+
+${slide(8, 'Metodo di misura e note', 'Come sono stati ottenuti i valori riportati', `
+  <div class="due">
+    <div>
+      <p class="t">Elaborazione del segnale</p>
+      <ul>
+        <li>Mediana a 5 campioni, per togliere gli spike irradiati dalla commutazione dei contatti.</li>
+        <li>Doppia media mobile a fase nulla: 7 campioni sulla corrente, 9 sulla posizione. Essendo a fase nulla non introduce ritardo, quindi non falsa i tempi.</li>
+        <li>Nei grafici la traccia grezza è in grigio sotto quella filtrata a colori. La filtrata ha una sottile guaina del colore dello sfondo, per restare in primo piano senza annegare nella banda di rumore.</li>
+        <li>Sull'acquisizione completa il rumore resta schiacciato, perché vale circa 1 A su un asse da 130 A: il dettaglio zoomato lo mostra alla scala giusta, insieme agli spike che la mediana rimuove.</li>
+      </ul>
+      <p class="t" style="margin-top:5mm">Criteri</p>
+      <ul>
+        <li>I tempi sono presi al 50% del fronte di corrente sul segnale filtrato, con t=0 sul comando bobina.</li>
+        <li>Primo contatto e separazione sono marcati dal tratteggio verticale.</li>
+        <li>La corsa è la differenza fra le posizioni stabilizzate a inizio e fine acquisizione.</li>
+      </ul>
+    </div>
+    <div>
+      <p class="t">Note operatore</p>
+      <div class="firma">_______________________________________________<br>
+      _______________________________________________<br>
+      _______________________________________________</div>
+      <div class="firma" style="margin-top:10mm">
+      Collaudatore: _______________________<br>
+      Data: _______________________<br>
+      Firma: _______________________</div>
+    </div>
+  </div>`)}
+</body></html>`;
+}
+
+$('#rep').addEventListener('click', () => {
+  if (!R) return;
+  const html = costruisciReport();
+  const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+  window.open(url, '_blank');
+  const a = document.createElement('a');
+  a.href = url; a.download = `report_${R.info.matricola ?? R.k}.html`; a.click();
+});
+</script>
+</body></html>

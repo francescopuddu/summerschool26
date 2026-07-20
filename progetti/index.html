@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>I Project Work — Summer School 2026</title>
+<meta name="description" content="Le applicazioni costruite dai partecipanti della Summer School 2026 — The Coexistence of AI and Me — Politecnico di Milano.">
+<style>
+  @font-face { font-family:"Artific"; src:url("../fonts/Artific-Light.woff2") format("woff2");     font-weight:300; font-style:normal; font-display:swap; }
+  @font-face { font-family:"Artific"; src:url("../fonts/Artific-Regular.woff2") format("woff2");   font-weight:400; font-style:normal; font-display:swap; }
+  @font-face { font-family:"Artific"; src:url("../fonts/Artific-Medium.woff2") format("woff2");    font-weight:500; font-style:normal; font-display:swap; }
+  @font-face { font-family:"Artific"; src:url("../fonts/Artific-SemiBold.woff2") format("woff2");  font-weight:600; font-style:normal; font-display:swap; }
+  @font-face { font-family:"Artific"; src:url("../fonts/Artific-Bold.woff2") format("woff2");      font-weight:700; font-style:normal; font-display:swap; }
+  @font-face { font-family:"Artific"; src:url("../fonts/Artific-SuperBold.woff2") format("woff2"); font-weight:800; font-style:normal; font-display:swap; }
+
+  :root {
+    --amber-500:#eaa832; --amber-400:#f2bd58; --amber-300:#f8d489;
+    --blue-400:#7db4e0; --blue-500:#4f96cf; --orange-500:#e2833c;
+    --slate-950:#2b313d; --slate-900:#333a48; --slate-800:#3d4554; --slate-700:#4a5265;
+    --bg:var(--slate-950); --bg-card:var(--slate-900);
+    --fg:#ffffff; --fg-2:#dbe0e9; --fg-3:#9aa4b5; --fg-4:#6d7788;
+    --border:rgba(255,255,255,.09); --border-strong:rgba(255,255,255,.2);
+    --gradient-warm:linear-gradient(135deg,#f2bd58,#eaa832 55%,#e2833c);
+    --font:"Artific",system-ui,-apple-system,"Segoe UI",sans-serif;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { font-family:var(--font); background:var(--bg); color:var(--fg); -webkit-font-smoothing:antialiased; line-height:1.5; }
+  .wrap { max-width:1180px; margin:0 auto; padding:0 24px; }
+
+  header {
+    position:sticky; top:0; z-index:10;
+    background:rgba(43,49,61,.85); backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
+  }
+  .nav { display:flex; align-items:center; justify-content:space-between; height:64px; }
+  .brand { display:flex; align-items:baseline; gap:10px; font-weight:800; font-size:18px; letter-spacing:-.02em; }
+  .brand a { color:inherit; text-decoration:none; }
+  .brand .dot { color:var(--amber-500); }
+  .brand small { font-weight:500; color:var(--fg-3); font-size:12px; letter-spacing:.08em; text-transform:uppercase; }
+  .nav a.cta {
+    font-size:13px; font-weight:600; color:var(--slate-950); text-decoration:none;
+    background:var(--amber-500); padding:8px 16px; border-radius:999px;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .nav a.cta:hover { transform:translateY(-1px); box-shadow:0 4px 20px rgba(234,168,50,.35); }
+
+  .hero { position:relative; padding:80px 0 48px; overflow:hidden; }
+  .hero::before {
+    content:""; position:absolute; inset:-40% -20% auto; height:130%;
+    background:
+      radial-gradient(600px 420px at 18% 30%, rgba(234,168,50,.22), transparent 65%),
+      radial-gradient(520px 380px at 78% 18%, rgba(125,180,224,.18), transparent 60%),
+      radial-gradient(480px 360px at 60% 70%, rgba(226,131,60,.12), transparent 60%);
+    pointer-events:none;
+  }
+  .hero .wrap { position:relative; }
+  .kicker {
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--amber-300); border:1px solid var(--border-strong);
+    padding:6px 14px; border-radius:999px; margin-bottom:28px;
+  }
+  .kicker::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--amber-500); }
+  h1 { font-size:clamp(32px,5vw,56px); font-weight:800; letter-spacing:-.03em; line-height:1.06; }
+  h1 .grad { background:var(--gradient-warm); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .hero p.sub { margin-top:20px; font-size:18px; font-weight:300; color:var(--fg-2); max-width:820px; }
+  .hero p.sub strong { font-weight:600; color:var(--fg); }
+
+  .stats { display:flex; flex-wrap:wrap; gap:14px; margin-top:36px; }
+  .stat {
+    background:var(--bg-card); border:1px solid var(--border); border-radius:14px;
+    padding:14px 22px; min-width:130px;
+  }
+  .stat b { display:block; font-size:26px; font-weight:800; letter-spacing:-.02em; color:var(--amber-400); }
+  .stat span { font-size:12px; font-weight:500; letter-spacing:.07em; text-transform:uppercase; color:var(--fg-3); }
+
+  .projects { padding:40px 0 110px; }
+  .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:22px; }
+
+  .card {
+    background:var(--bg-card); border:1px solid var(--border); border-radius:18px;
+    overflow:hidden; display:flex; flex-direction:column;
+    transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+  }
+  .card:hover { transform:translateY(-3px); border-color:var(--border-strong); box-shadow:0 14px 40px rgba(0,0,0,.35); }
+  .shot { display:block; position:relative; aspect-ratio:16/10; overflow:hidden; background:var(--slate-800); border-bottom:1px solid var(--border); }
+  .shot img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; transition:transform .3s ease; }
+  .card:hover .shot img { transform:scale(1.025); }
+
+  .card-body { padding:20px 22px 22px; display:flex; flex-direction:column; gap:10px; flex:1; }
+  .card-top { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .chip {
+    font-size:11px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+    padding:4px 11px; border-radius:999px; border:1px solid rgba(234,168,50,.5); color:var(--amber-400);
+  }
+  .who { font-size:12.5px; font-weight:500; color:var(--fg-3); }
+  .card h3 { font-size:19px; font-weight:700; letter-spacing:-.01em; }
+  .card p { font-size:14.5px; font-weight:300; color:var(--fg-2); flex:1; }
+  .card p strong { font-weight:600; color:var(--fg); }
+  .hint { font-size:12.5px; color:var(--fg-4); }
+  .hint a { color:var(--fg-3); }
+  .hint a:hover { color:var(--amber-400); }
+
+  .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:6px; }
+  .btn {
+    display:inline-flex; align-items:center; gap:7px;
+    font-size:13px; font-weight:600; text-decoration:none; border-radius:999px;
+    padding:8px 16px; transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .btn.primary { background:var(--amber-500); color:var(--slate-950); }
+  .btn.primary::after { content:"↗"; }
+  .btn.primary:hover { transform:translateY(-1px); box-shadow:0 4px 20px rgba(234,168,50,.35); }
+  .btn.ghost { border:1px solid var(--border-strong); color:var(--fg-2); }
+  .btn.ghost:hover { border-color:var(--amber-400); color:var(--amber-400); }
+
+  footer { border-top:1px solid var(--border); padding:34px 0 46px; }
+  footer .wrap { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  footer p { font-size:13px; color:var(--fg-4); }
+  footer p a { color:var(--fg-3); text-decoration:none; }
+  footer p a:hover { color:var(--fg); }
+
+  @media (max-width:840px) {
+    .grid { grid-template-columns:1fr; }
+    .hero { padding:56px 0 36px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand"><a href="../">summer school <span class="dot">’26</span></a> <small>Politecnico di Milano</small></div>
+    <a class="cta" href="../#programma">Programma</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="kicker">Project work · Edizione 2026</div>
+    <h1>Cosa hanno costruito <span class="grad">i partecipanti</span></h1>
+    <p class="sub">Cinque giorni fa quasi nessuno di loro aveva mai scritto una riga di codice. All'ultimo giorno della summer school hanno presentato <strong>undici applicazioni funzionanti</strong>, costruite con l'AI sui processi reali delle loro aziende: manutenzione predittiva, programmazione di linea, report di collaudo, pipeline commesse. Non esercizi — strumenti che risolvono problemi veri, disegnati da chi quei problemi li vive ogni giorno.</p>
+    <div class="stats">
+      <div class="stat"><b>11</b><span>applicazioni</span></div>
+      <div class="stat"><b>7</b><span>aziende</span></div>
+      <div class="stat"><b>5</b><span>giorni</span></div>
+      <div class="stat"><b>0</b><span>esperienza di codice richiesta</span></div>
+    </div>
+  </div>
+</section>
+
+<main class="projects">
+  <div class="wrap">
+    <div class="grid">
+
+      <!-- Alstom — Sara -->
+      <article class="card">
+        <a class="shot" href="https://progetto-indus.vercel.app/monitoraggio_attrezzature.html" target="_blank" rel="noopener"><img src="img/progetto-indus.jpg" alt="Monitoraggio Attrezzature e Manutenzione Predittiva — Alstom" loading="lazy"></a>
+        <div class="card-body">
+          <div class="card-top"><span class="chip">Alstom</span><span class="who">Sara</span></div>
+          <h3>Monitoraggio Attrezzature &amp; Manutenzione Predittiva</h3>
+          <p>La sala prove sotto controllo in un'unica dashboard: ore d'uso, guasti, scadenze di taratura e <strong>proiezioni predittive</strong> che segnalano quali attrezzature andranno in manutenzione prima che si fermino.</p>
+          <span class="hint">La demo online mostra l'interfaccia; i dati completi arrivano dal server locale dell'app.</span>
+          <div class="actions">
+            <a class="btn primary" href="https://progetto-indus.vercel.app/monitoraggio_attrezzature.html" target="_blank" rel="noopener">Apri la demo</a>
+            <a class="btn ghost" href="https://github.com/corsara24/progetto_indus" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Alstom — Laura -->
+      <article class="card">
+        <a class="shot" href="app/automazionecavi/" target="_blank" rel="noopener"><img src="img/automazionecavi.jpg" alt="Confronto Liste Cavi — Alstom" loading="lazy"></a>
+        <div class="card-body">
+          <div class="card-top"><span class="chip">Alstom</span><span class="who">Laura</span></div>
+          <h3>Confronto Liste Cavi</h3>
+          <p>Carichi due liste cavi Excel e ottieni il confronto e l'<strong>istruzione operativa Word già impaginata</strong> per l'industrializzazione delle modifiche sui Coradia Stream. Un lavoro di ore ridotto a un click.</p>
+          <div class="actions">
+            <a class="btn primary" href="app/automazionecavi/" target="_blank" rel="noopener">Apri la demo</a>
+            <a class="btn ghost" href="https://github.com/lauraurso/Automazionecavi" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Alstom — Nazanin -->
+      <article class="card">
+        <a class="shot" href="https://github.com/hojam18/Report-generator" target="_blank" rel="noopener"><img src="img/report-generator.jpg" alt="Fleet Reliability Report Builder — Alstom" loading="lazy"></a>
+        <div class="card-body">
+          <div class="card-top"><span class="chip">Alstom</span><span class="who">Nazanin</span></div>
+          <h3>Fleet Reliability Report Builder</h3>
+          <p>Dagli export mensili di manutenzione a un <strong>report di affidabilità flotta</strong> impaginato per capitoli, pronto da rivedere, salvare in PDF e inviare via email — tutto dentro un'unica web app.</p>
+          <span class="hint">App con backend: si esegue in locale dal repository.</span>
+          <div class="actions">
+            <a class="btn ghost" href="https://github.com/hojam18/Report-generator" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Metra — Barbara -->
+      <article class="card">
+        <a class="shot" href="https://github.com/BarbaraUde/Avanzamento-contratti" target="_blank" rel="noopener"><img src="img/avanzamento-contratti.jpg" alt="Avanzamento Contratti — Metra" loading="lazy"></a>
+        <div class="card-body">
+          <div class="card-top"><span class="chip">Metra</span><span class="who">Barbara</span></div>
+          <h3>Pipeline Commesse &amp; Avanzamento Contratti</h3>
+          <p>Contratti, spedito e fatturato in un'unica pipeline con avanzamento a colpo d'occhio, import da Excel e <strong>closure letter generata e approvata direttamente in app</strong>, email precompilata inclusa.</p>
+          <span class="hint">App con backend: si esegue in locale dal repository.</span>
+          <div class="actions">
+            <a class="btn ghost" href="https://github.com/BarbaraUde/Avanzamento-contratti" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Autoguidovie -->
+      <article class="card">
+        <a class="shot" href="app/autoguidovie/" target="_blank" rel="noopener"><img src="img/autoguidovie.jpg" alt="Occupazione attesa delle corse — Autoguidovie" loading="lazy"></a>
+        <div class="card-body">
+          <div class="card-top"><span class="chip">Autoguidovie</span><span class="who">Team Autoguidovie</span></div>
+          <h3>Previsione Occupazione Corse</h3>
+          <p>Quanto sarà piena la corsa delle 7:40? Mappa della linea, fermate e <strong>affluenza attesa corsa per corsa</strong>, con il meteo del giorno integrato nel modello di previsione.</p>
+          <div class="actions">
+            <a class="btn primary" href="app/autoguidovie/" target="_blank" rel="noopener">Apri la demo</a>
+            <a class="btn ghost" href="https://github.com/niccofiore/summer-school-projectwork" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Lucchini -->
+      <article class="card">
+        <a class="shot" href="https://github.com/LoriGH25/FatturAI/releases" target="_blank" rel="noopener"><img src="img/fatturai.jpg" alt="FatturAI — Lucchini RS" loading="lazy"></a>
+        <div class="card-body">
+          <div class="card-top"><span class="chip">Lucchini RS</span><span class="who">Team Lucchini</span></div>
+          <h3>FatturAI — Compilazione ROD Spedizioni</h3>
+          <p>Incrocia stock di magazzino e produzione in corso e <strong>compila da solo il ROD Spedizioni del mese</strong>, applicando le regole di allocazione del pianificatore — con una chat AI per interrogare il risultato. App desktop con auto-update, rilasciata via CI.</p>
+          <div class="actions">
+            <a class="btn primary" href="https://github.com/LoriGH25/FatturAI/releases" target="_blank" rel="noopener">Scarica l'app</a>
+            <a class="btn ghost" href="https://github.com/LoriGH25/FatturAI" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- ATM -->
+      <article class="card">
+        <a class="shot" href="app/atm/" target="_blank" rel="noopener"><img src="img/atm.jpg" alt="Programmazione lavori notturni Linea 1 — ATM" loading="lazy"></a>
+        <div class="card-body">
+          <div class="card-top"><span class="chip">ATM</span><span class="who">Team ATM</span></div>
+          <h3>Programmazione Lavori Notturni — Linea 1</h3>
+          <p>Manutenzioni, corse prova e trasferimenti della metro M1 in un <strong>calendario notturno con verifica automatica delle interferenze</strong>: importi gli Excel di programmazione e vedi subito cosa può convivere e cosa no.</p>
+          <span class="hint">Per provarla con i dati demo: <a href="app/atm/Manutenzioni_Programmate_20-26_luglio_2026.xlsx">manutenzioni</a> e <a href="app/atm/CorseProva_Movimentazioni_20-26_luglio_2026.xlsx">corse prova</a>, da importare nell'app.</span>
+          <div class="actions">
+            <a class="btn primary" href="app/atm/" target="_blank" rel="noopener">Apri la demo</a>
+            <a class="btn ghost" href="https://github.com/CristianoRombola96/programmazione-linea1" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Trenord — Alessandro -->
+      <article class="card">
+        <a class="shot" href="https://github.com/3107076/poc_letsencrypt" target="_blank" rel="noopener"><img src="img/poc-letsencrypt.jpg" alt="Rotazione automatica certificati SSL — Trenord" loading="lazy"></a>
+        <div class="card-body">
+          <div class="card-top"><span class="chip">Trenord</span><span class="who">Alessandro</span></div>
+          <h3>Rotazione Automatica Certificati SSL</h3>
+          <p>Un proof-of-concept infrastrutturale completo: certificati TLS che <strong>si rinnovano da soli</strong> (protocollo ACME, nginx, Docker) senza downtime — accompagnato da una spiegazione divulgativa che si legge come un piccolo corso.</p>
+          <span class="hint">PoC docker-compose: si esegue in locale dal repository.</span>
+          <div class="actions">
+            <a class="btn ghost" href="https://github.com/3107076/poc_letsencrypt" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Microelettronica — Farnaz -->
+      <article class="card">
+        <a class="shot" href="https://artamad.github.io/HSCB-Configurations/" target="_blank" rel="noopener"><img src="img/hscb-configurations.jpg" alt="Railway HSCB Selector — Microelettrica" loading="lazy"></a>
+        <div class="card-body">
+          <div class="card-top"><span class="chip">Microelettrica</span><span class="who">Farnaz</span></div>
+          <h3>Railway HSCB Selector</h3>
+          <p>Il configuratore guidato degli interruttori extrarapidi IR3000/IR4000: poche domande sull'applicazione e arrivi al <strong>codice di configurazione esatto</strong> — senza sfogliare cataloghi.</p>
+          <div class="actions">
+            <a class="btn primary" href="https://artamad.github.io/HSCB-Configurations/" target="_blank" rel="noopener">Apri la demo</a>
+            <a class="btn ghost" href="https://github.com/artamad/HSCB-Configurations" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Microelettronica — Zouhair -->
+      <article class="card">
+        <a class="shot" href="app/collaudo-me1000/" target="_blank" rel="noopener"><img src="img/collaudo-me1000.jpg" alt="Collaudo ME1000 — Microelettrica" loading="lazy"></a>
+        <div class="card-body">
+          <div class="card-top"><span class="chip">Microelettrica</span><span class="who">Zouhair</span></div>
+          <h3>Collaudo ME1000 — Analisi &amp; Report</h3>
+          <p>La catena di collaudo dell'interruttore extrarapido ME1000: dal segnale grezzo al filtraggio, alle misure (tempi, correnti, corsa, bouncing) fino al <strong>report di collaudo impaginato</strong> pronto per il PDF.</p>
+          <span class="hint">Per provarla: scarica i <a href="app/collaudo-me1000/collaudi.zip">dati di collaudo simulati</a>, estraili e seleziona la cartella nell'app.</span>
+          <div class="actions">
+            <a class="btn primary" href="app/collaudo-me1000/" target="_blank" rel="noopener">Apri la demo</a>
+            <a class="btn ghost" href="https://github.com/ZouhairEl99/project-work" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Microelettronica — Hussain -->
+      <article class="card">
+        <a class="shot" href="app/amca/" target="_blank" rel="noopener"><img src="img/amca.jpg" alt="Fan Test Suite AMCA — Microelettrica" loading="lazy"></a>
+        <div class="card-body">
+          <div class="card-top"><span class="chip">Microelettrica</span><span class="who">Hussain</span></div>
+          <h3>Fan Test Suite — AMCA 210</h3>
+          <p>La suite di prova ventilatori secondo AMCA 210: criteri di accettazione, curve di performance, vibrazioni e rumore, <strong>giudizio PASS/FAIL automatico</strong> e report di laboratorio scaricabile.</p>
+          <span class="hint">Per provarla: scarica i <a href="app/amca/plugfan_PF-1000_test_data.csv">dati di prova demo</a> e caricali nell'app (Load sample run funziona anche senza).</span>
+          <div class="actions">
+            <a class="btn primary" href="app/amca/" target="_blank" rel="noopener">Apri la demo</a>
+            <a class="btn ghost" href="https://github.com/sadafhussain-a11y/Testing-Validation" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>The Coexistence of Artificial Intelligence and Me · Summer School 2026 · Politecnico di Milano</p>
+    <p><a href="../#programma">← Torna al programma</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

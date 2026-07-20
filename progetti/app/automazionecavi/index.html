@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Confronto Liste Cavi</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="template_data.js"></script>
+<style>
+  :root{
+    /* Palette Alstom (da template aziendale) */
+    --navy:#1E3246;        /* dk1 */
+    --navy-dark:#142846;   /* accent6 */
+    --red:#DC3223;         /* dk2 / brand red */
+    --blue:#2850F0;        /* accent1 */
+    --green:#78C86E;       /* accent2 */
+    --gold:#9B875F;        /* accent4 */
+    --lav:#E6E6F0;         /* lt2 */
+    --white:#FFFFFF;
+
+    --bg:#F3F4F8; --card:var(--white); --border:#DBDEE8; --text:var(--navy); --muted:#66738A;
+    --accent:var(--red);
+    --green-bg:#E7F6E4; --green-text:#1F5A31; --green-border:var(--green);
+    --red-bg:#FBE2DF; --red-text:#7A1710; --red-border:var(--red);
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:Arial,"Helvetica Neue",Helvetica,sans-serif;
+    background:var(--bg); color:var(--text); margin:0; padding:0 0 32px;
+  }
+  header.brand{
+    background:var(--white); border-bottom:4px solid var(--red);
+    padding:18px 28px; display:flex; align-items:center; gap:18px;
+    box-shadow:0 1px 3px rgba(30,50,70,.08);
+  }
+  header.brand .logo{height:26px; width:auto; flex-shrink:0;}
+  header.brand .titles h1{font-size:19px; margin:0; color:var(--navy); font-weight:700; letter-spacing:.01em;}
+  header.brand .titles .subtitle{color:var(--muted); font-size:12.5px; margin-top:2px;}
+  main{max-width:1180px; margin:0 auto; padding:24px 28px 0;}
+  .upload-row{display:flex; gap:16px; flex-wrap:wrap; margin-bottom:20px;}
+  .upload-card{
+    flex:1; min-width:280px; background:var(--card); border:1px solid var(--border);
+    border-top:3px solid var(--navy);
+    border-radius:6px; padding:16px;
+  }
+  .upload-card h3{margin:0 0 4px; font-size:13.5px; color:var(--navy); text-transform:uppercase; letter-spacing:.03em;}
+  .upload-card .optional-tag{font-size:11px; color:var(--muted); font-weight:400; text-transform:none; letter-spacing:0;}
+  .upload-card input[type=file]{width:100%; font-size:13px; margin-top:8px;}
+  .sheet-picker{margin-top:10px; font-size:13px;}
+  .sheet-picker select{width:100%; padding:6px; border-radius:4px; border:1px solid var(--border); margin-top:4px;}
+  .file-status-row{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:8px;}
+  .file-status{font-size:12px; color:var(--muted);}
+  .remove-file-btn{
+    background:none; border:none; color:var(--red); font-size:16px; font-weight:700;
+    cursor:pointer; line-height:1; padding:2px 7px; border-radius:4px; flex-shrink:0;
+  }
+  .remove-file-btn:hover{background:var(--red-bg);}
+  .actions{margin-bottom:24px;}
+  button#compareBtn{
+    background:var(--red); color:#fff; border:none; padding:10px 22px;
+    border-radius:5px; font-size:14px; font-weight:600; cursor:pointer;
+    letter-spacing:.02em;
+  }
+  button#compareBtn:hover:not(:disabled){background:#c02a1d;}
+  button#compareBtn:disabled{background:#b8bfca; cursor:not-allowed;}
+  .card{
+    background:var(--card); border:1px solid var(--border); border-radius:6px;
+    padding:18px; margin-bottom:20px;
+  }
+  .card h2{font-size:14.5px; margin:0 0 12px; color:var(--navy); border-left:3px solid var(--red); padding-left:10px;}
+  .word-card{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+  .word-card .word-text{flex:1; min-width:260px;}
+  .word-card .word-text h2{margin-bottom:4px;}
+  button#generateWordBtn{
+    background:var(--navy); color:#fff; border:none; padding:10px 22px;
+    border-radius:5px; font-size:14px; font-weight:600; cursor:pointer; letter-spacing:.02em;
+    white-space:nowrap;
+  }
+  button#generateWordBtn:hover:not(:disabled){background:#101c2a;}
+  button#generateWordBtn:disabled{background:#b8bfca; cursor:not-allowed;}
+  .word-status{font-size:12px; color:var(--muted); margin-top:4px;}
+  .word-status.error{color:var(--red-text);}
+  table{width:100%; border-collapse:collapse; font-size:12.5px;}
+  th,td{text-align:left; padding:7px 8px; border-bottom:1px solid var(--border); vertical-align:top;}
+  th{color:var(--white); background:var(--navy); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.03em;}
+  th:first-child{border-top-left-radius:4px;}
+  th:last-child{border-top-right-radius:4px;}
+  tbody tr:nth-child(even){background:#FAFAFC;}
+  tbody tr:hover{background:var(--lav);}
+  .badge{
+    display:inline-block; padding:2px 9px; border-radius:999px; font-size:11px; font-weight:700;
+  }
+  .badge.ok{background:var(--green-bg); color:var(--green-text); border:1px solid var(--green-border);}
+  .badge.no{background:var(--red-bg); color:var(--red-text); border:1px solid var(--red-border);}
+  .two-cols{display:flex; gap:16px; flex-wrap:wrap;}
+  .col{flex:1; min-width:320px;}
+  .col h3{font-size:12.5px; margin:0 0 10px; word-break:break-all; color:var(--navy); font-weight:700;}
+  .mod-tag{font-size:10.5px; font-weight:700; padding:1px 7px; border-radius:4px; margin-right:6px; display:inline-block;}
+  .mod-add{background:var(--green-bg); color:var(--green-text);}
+  .mod-del{background:var(--red-bg); color:var(--red-text);}
+  .mod-mov{background:#F3EEE3; color:#5C4E32;}
+  .mod-same{background:var(--lav); color:var(--navy);}
+  .empty{color:var(--muted); font-size:13px; padding:8px 0;}
+  .device-group{margin-bottom:14px; border:1px solid var(--border); border-radius:5px; overflow:hidden;}
+  .device-group:last-child{margin-bottom:0;}
+  .device-group-title{
+    font-size:11.5px; font-weight:700; color:var(--white); background:var(--navy);
+    padding:6px 10px; display:flex; justify-content:space-between; align-items:center;
+  }
+  .device-group-title .device-count{font-weight:500; font-size:10.5px; opacity:.85;}
+  .device-group table{margin:0;}
+  .device-group table th{background:var(--lav); color:var(--navy);}
+  .device-group.potential-only .device-group-title{background:#9AA5B4;}
+  .dir-tag{font-size:10px; font-weight:700; padding:1px 6px; border-radius:3px; white-space:nowrap;}
+  .dir-out{background:#E1E9FE; color:#12309B;}
+  .dir-in{background:#F3EEE3; color:#5C4E32;}
+  .field-diff{margin-top:3px; font-size:12px;}
+  .field-diff:first-child{margin-top:0;}
+  .field-diff .field-name{color:var(--muted); font-weight:600;}
+  .field-diff .arrow{color:var(--muted); margin:0 3px;}
+  .field-diff .old-val{color:#8b93a1; text-decoration:line-through; text-decoration-color:#c7cbd4;}
+  .field-diff .new-val{
+    background:var(--navy); color:#fff; padding:0 5px; border-radius:3px; font-weight:600;
+  }
+  .extra-info{margin-top:3px; font-size:12px; color:var(--muted);}
+  .extra-info:first-child{margin-top:0;}
+  .extra-info .field-name{font-weight:600;}
+  .dir-filter{display:flex; align-items:center; gap:8px; margin-bottom:14px; flex-wrap:wrap;}
+  .dir-filter-label{font-size:12px; color:var(--muted); font-weight:600;}
+  .dir-filter-btn{
+    background:var(--white); border:1px solid var(--border); color:var(--navy);
+    font-size:11.5px; font-weight:600; padding:4px 12px; border-radius:999px; cursor:pointer;
+  }
+  .dir-filter-btn:hover{background:var(--lav);}
+  .dir-filter-btn.active{background:var(--navy); border-color:var(--navy); color:#fff;}
+</style>
+</head>
+<body>
+
+<header class="brand">
+  <svg class="logo" viewBox="0 0 1190 231" xmlns="http://www.w3.org/2000/svg">
+    <g transform="translate(295,-75)">
+      <path d="M660.852 131.089 649.121 143.528C668.055 173.287 670.735 211.247 653.093 242.942L659.558 242.942C681.449 207.378 681.079 164.903 660.852 131.089ZM609.406 138.183 615.779 131.458C583.914 102.066 531.082 102.711 500.325 134.221 481.945 153.017 473.355 178.171 477.512 201.849L483.885 201.665C484.254 168.589 511.316 141.408 545.491 140.671 580.404 139.749 609.406 166.377 610.145 200.375 611.068 234.465 583.729 262.567 548.816 263.488 532.191 263.949 516.027 257.96 503.743 246.72L494.691 256.025C455.437 220.185 452.666 159.375 488.596 120.125 489.335 119.296 490.166 118.467 490.904 117.637 521.661 86.035 568.858 78.8479 607.004 96.4461L607.466 96.9985 612.361 91.5632C563.778 63.461 499.771 71.3852 458.854 113.307 410.549 162.692 412.765 240.638 463.565 287.535L472.709 278.23C492.752 296.565 516.119 305.779 543.274 304.95 598.137 303.476 641.548 259.157 640.162 205.812 639.516 180.014 628.34 155.597 609.313 138.183L609.313 138.183Z" fill="#DC3223" fill-rule="evenodd"/>
+      <path d="M-17.8629 95.9325-64.0371 95.9325-64.0371 282.912 66.7281 282.912 66.7281 246.568-17.8629 246.568-17.8629 95.9325-17.8629 95.9325ZM-223.338 95.9325-295 282.912-250.303 282.912C-242.177 255.147-206.715 234.115-173.747 231.255L-180.58 214.374C-194.433 212.531-214.842 214.744-227.217 220.094L-197.019 141.041-138.469 283.005-93.8649 283.005-170.976 96.0255-223.43 96.0255ZM241.544 132.092 303.048 132.092 303.048 282.82 350.33 282.82 350.33 132.092 412.111 132.092 412.111 95.9325 241.451 95.9325 241.451 132.092 241.451 132.092ZM853.813 95.9325 799.79 166.961 746.505 95.9325 705.04 95.9325 705.04 282.912 752.322 282.912 752.322 168.714 796.649 229.135 803.391 229.135 847.625 168.714 847.625 282.912 895.001 282.912 895.001 95.9325 853.905 95.9325ZM128.14 143.9C128.14 128.865 162.309 115.765 215.501 134.86L218.549 97.9624C210.145 94.2726 186.227 88 168.035 88 129.249 88 85.2909 102.298 85.2909 148.697 85.2909 218.341 189.367 194.543 186.412 232.547 185.303 247.306 163.233 250.904 144.578 250.904 123.43 250.904 104.406 246.661 91.5705 240.572L87.1369 280.698C104.314 286.233 126.663 289.001 144.578 289.001 187.52 289.001 229.354 275.533 229.538 225.537 229.538 158.752 128.047 178.215 128.047 143.9Z" fill="#1E3246" fill-rule="evenodd"/>
+    </g>
+  </svg>
+  <div class="titles">
+    <h1>Confronto Liste Cavi</h1>
+    <div class="subtitle">Industrializzazione modifiche Coradia Stream</div>
+  </div>
+</header>
+
+<main>
+<div class="upload-row">
+  <div class="upload-card">
+    <h3>File 1</h3>
+    <input type="file" id="file1" accept=".xlsx,.xls">
+    <div class="sheet-picker" id="sheetPicker1" style="display:none;">
+      Foglio da analizzare:
+      <select id="sheetSelect1"></select>
+    </div>
+    <div class="file-status-row">
+      <div class="file-status" id="status1"></div>
+      <button class="remove-file-btn" id="removeFile1" style="display:none;" title="Rimuovi file">&times;</button>
+    </div>
+  </div>
+  <div class="upload-card">
+    <h3>File 2 <span class="optional-tag">(opzionale &mdash; per il confronto)</span></h3>
+    <input type="file" id="file2" accept=".xlsx,.xls">
+    <div class="sheet-picker" id="sheetPicker2" style="display:none;">
+      Foglio da analizzare:
+      <select id="sheetSelect2"></select>
+    </div>
+    <div class="file-status-row">
+      <div class="file-status" id="status2"></div>
+      <button class="remove-file-btn" id="removeFile2" style="display:none;" title="Rimuovi file">&times;</button>
+    </div>
+  </div>
+</div>
+
+<div class="actions">
+  <button id="compareBtn" disabled>Carica almeno un file</button>
+</div>
+
+<div class="card word-card">
+  <div class="word-text">
+    <h2>Genera istruzione operativa (Word)</h2>
+    <div class="word-status" id="wordStatus">Carica un solo file cavi e premi "Analizza" per abilitare la generazione. Per ogni device (che inizia in una nuova pagina): un titolo di livello 2 col nome del device e una tabella operazione clonata dal template (N°OP 08-00x0, "Applicabilità: CASSA &lt;foglio&gt;" e i cavi a elenco puntato nel riquadro della prima riga, codici DTR con quantità nelle righe materiali), nel capitolo 8.</div>
+  </div>
+  <button id="generateWordBtn" disabled>Genera e scarica Word</button>
+</div>
+
+<div id="results"></div>
+</main>
+
+<script>
+const HEADER_MAP = {
+  Mod: ['mod.','mod'],
+  ID: ['id'],
+  FromDevice: ['from device'],
+  PinFrom: ['pin from'],
+  ToDevice: ['to device'],
+  PinTo: ['pin to'],
+  WireSection: ['wire section'],
+  WireDesc: ['wire desc.','wire desc'],
+  FromTermCode: ['from_term.official_code'],
+  ToTermCode: ['to term official code'],
+  CableCode: ['cable_official_code']
+};
+
+const IGNORED_DIFF_HEADERS = ['fm', 'from term short code', 'to term short code'];
+const WORD_CHAPTER_NUMBER = 8;
+// Tabella riepilogo materiali: paragrafo 3.1 ("Materiali") del template.
+const WORD_MATERIALS_CHAPTER = 3;
+const WORD_MATERIALS_PARA = 1;
+
+const state = {
+  file1: {workbook:null, name:null},
+  file2: {workbook:null, name:null}
+};
+
+// ultimo risultato calcolato, per poter ri-renderizzare quando cambia solo
+// il filtro di direzione senza dover ri-analizzare i file
+let lastRender = null;
+let dirFilter = 'all'; // 'all' | 'in' | 'out'
+
+function normalize(s){ return (s===undefined||s===null) ? '' : s.toString().trim().toLowerCase(); }
+function trimmed(v){ return (v===undefined||v===null) ? '' : v.toString().trim(); }
+
+function buildColIndex(headerRow){
+  const idx = {};
+  const norm = headerRow.map(normalize);
+  for (const key in HEADER_MAP){
+    const candidates = HEADER_MAP[key];
+    let found = -1;
+    for (let i=0;i<norm.length;i++){
+      if (candidates.includes(norm[i])) { found = i; break; }
+    }
+    idx[key] = found;
+  }
+  return idx;
+}
+
+function readSheetRows(workbook, sheetName){
+  const ws = workbook.Sheets[sheetName];
+  const aoa = XLSX.utils.sheet_to_json(ws, {header:1, raw:true, defval:''});
+  if (aoa.length < 2) return {colIdx:null, rows:[], allHeaders:[]};
+  const allHeaders = aoa[0].map(trimmed);
+  const colIdx = buildColIndex(aoa[0]);
+  const rows = aoa.slice(1).filter(r => r[colIdx.ID] !== '' && r[colIdx.ID] !== undefined);
+  return {colIdx, rows, allHeaders};
+}
+
+function connOf(row, colIdx){
+  const g = (i) => (i===-1 ? '' : trimmed(row[i]));
+  return {
+    fd: g(colIdx.FromDevice), pf: g(colIdx.PinFrom),
+    td: g(colIdx.ToDevice), pt: g(colIdx.PinTo),
+    sec: g(colIdx.WireSection)
+  };
+}
+function connEq(a,b){ return a.fd===b.fd && a.pf===b.pf && a.td===b.td && a.pt===b.pt; }
+function connLabel(c){ return `${c.fd} ${c.pf} → ${c.td} ${c.pt}`; }
+
+// Caratteristiche del nuovo cavo per i cavi aggiunti: terminale from,
+// terminale to, e codice cavo.
+function extraOf(row, colIdx){
+  const g = (i) => (i===-1 ? '' : trimmed(row[i]));
+  return {
+    fromTerm: g(colIdx.FromTermCode),
+    toTerm: g(colIdx.ToTermCode),
+    cable: g(colIdx.CableCode)
+  };
+}
+
+// Confronta OGNI colonna tra la riga OLD e la riga NEW (esclusa la colonna
+// "Mod.", che per definizione vale sempre OLD/NEW e quindi "cambia" sempre,
+// piu' le colonne esplicitamente ignorate in IGNORED_DIFF_HEADERS). Questo
+// replica la convenzione della lista cavi: nel file originale, la cella
+// della riga NEW e' evidenziata in nero quando il suo valore differisce
+// dall'analoga cella della riga OLD.
+function diffFields(oldRow, newRow, allHeaders, modColIdx){
+  const changed = [];
+  for (let i=0;i<allHeaders.length;i++){
+    if (i === modColIdx) continue;
+    if (IGNORED_DIFF_HEADERS.includes(normalize(allHeaders[i]))) continue;
+    const ov = trimmed(oldRow[i]);
+    const nv = trimmed(newRow[i]);
+    if (ov !== nv){
+      changed.push({col: allHeaders[i] || ('col'+i), oldVal: ov, newVal: nv});
+    }
+  }
+  return changed;
+}
+
+function groupAndDescribe(rows, colIdx, allHeaders){
+  const groups = {};
+  rows.forEach(r => {
+    const id = trimmed(r[colIdx.ID]);
+    const mod = (colIdx.Mod===-1 ? '' : trimmed(r[colIdx.Mod]).toUpperCase());
+    if (!groups[id]) groups[id] = {};
+    groups[id][mod] = r;
+  });
+  const result = {};
+  for (const id in groups){
+    const g = groups[id];
+    if (g.OLD && g.NEW){
+      const cn = connOf(g.NEW, colIdx);
+      const changedFields = diffFields(g.OLD, g.NEW, allHeaders, colIdx.Mod);
+      const same = changedFields.length === 0;
+      result[id] = {
+        modType: same ? 'same' : 'mov',
+        label: same ? 'invariato' : 'modificato',
+        changedFields, extra: [],
+        text: same
+          ? `nessuna modifica rilevata (nessuna cella evidenziata) — ${connLabel(cn)}`
+          : changedFields.map(f => `${f.col}: ${f.oldVal || '—'} → ${f.newVal || '—'}`).join(' · '),
+        conn: cn
+      };
+    } else if (g.ADD){
+      const c = connOf(g.ADD, colIdx);
+      const ex = extraOf(g.ADD, colIdx);
+      const extra = [
+        {label:'Terminale from', value: ex.fromTerm},
+        {label:'Terminale to', value: ex.toTerm},
+        {label:'Cavo', value: ex.cable}
+      ];
+      result[id] = { modType:'add', label:'aggiunto', changedFields:[], extra, text:`aggiunto: ${connLabel(c)}${c.sec? ' (sez '+c.sec+')':''}`, conn:c };
+    } else if (g.DEL){
+      const c = connOf(g.DEL, colIdx);
+      result[id] = { modType:'del', label:'rimosso', changedFields:[], extra:[], text:`rimosso: ${connLabel(c)}`, conn:c };
+    } else {
+      const anyRow = Object.values(g)[0];
+      const c = connOf(anyRow, colIdx);
+      result[id] = { modType:'same', label:Object.keys(g).join('/'), changedFields:[], extra:[], text:`${Object.keys(g).join('/')}: ${connLabel(c)}`, conn:c };
+    }
+  }
+  return result;
+}
+
+function loadFile(inputEl, slot, statusEl, pickerEl, selectEl, removeBtn){
+  const f = inputEl.files[0];
+  if (!f) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const data = new Uint8Array(e.target.result);
+    const wb = XLSX.read(data, {type:'array'});
+    state[slot].workbook = wb;
+    state[slot].name = f.name;
+    selectEl.innerHTML = '';
+    wb.SheetNames.forEach(sn => {
+      const opt = document.createElement('option');
+      opt.value = sn; opt.textContent = sn;
+      selectEl.appendChild(opt);
+    });
+    pickerEl.style.display = 'block';
+    statusEl.textContent = `Caricato: ${f.name} (${wb.SheetNames.length} fogli)`;
+    removeBtn.style.display = 'inline-block';
+    lastRender = null;
+    document.getElementById('results').innerHTML = '';
+    updateActionState();
+    updateWordUi();
+  };
+  reader.readAsArrayBuffer(f);
+}
+
+function clearFile(slot){
+  state[slot] = {workbook:null, name:null};
+  const inputEl = document.getElementById(slot);
+  const pickerEl = document.getElementById(slot === 'file1' ? 'sheetPicker1' : 'sheetPicker2');
+  const statusEl = document.getElementById(slot === 'file1' ? 'status1' : 'status2');
+  const removeBtn = document.getElementById(slot === 'file1' ? 'removeFile1' : 'removeFile2');
+  inputEl.value = '';
+  pickerEl.style.display = 'none';
+  statusEl.textContent = '';
+  removeBtn.style.display = 'none';
+  lastRender = null;
+  document.getElementById('results').innerHTML = '';
+  updateActionState();
+  updateWordUi();
+}
+
+// Il bottone si attiva con un solo file caricato (analisi) o con entrambi
+// (confronto). L'etichetta cambia per riflettere cosa succedera'.
+function updateActionState(){
+  const btn = document.getElementById('compareBtn');
+  const hasFile1 = !!state.file1.workbook;
+  const hasFile2 = !!state.file2.workbook;
+  if (hasFile1 && hasFile2){
+    btn.disabled = false;
+    btn.textContent = 'Confronta';
+  } else if (hasFile1 || hasFile2){
+    btn.disabled = false;
+    btn.textContent = 'Analizza';
+  } else {
+    btn.disabled = true;
+    btn.textContent = 'Carica almeno un file';
+  }
+}
+
+document.getElementById('file1').addEventListener('change', (e) => loadFile(e.target, 'file1', document.getElementById('status1'), document.getElementById('sheetPicker1'), document.getElementById('sheetSelect1'), document.getElementById('removeFile1')));
+document.getElementById('file2').addEventListener('change', (e) => loadFile(e.target, 'file2', document.getElementById('status2'), document.getElementById('sheetPicker2'), document.getElementById('sheetSelect2'), document.getElementById('removeFile2')));
+document.getElementById('removeFile1').addEventListener('click', () => clearFile('file1'));
+document.getElementById('removeFile2').addEventListener('click', () => clearFile('file2'));
+
+function escapeHtml(s){
+  return (s===undefined||s===null?'':s.toString()).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function modTagHtml(type, label){
+  const cls = type==='add' ? 'mod-add' : type==='del' ? 'mod-del' : type==='mov' ? 'mod-mov' : 'mod-same';
+  return `<span class="mod-tag ${cls}">${escapeHtml(label)}</span>`;
+}
+
+// Mostra i campi modificati come nella lista cavi originale: valore vecchio
+// barrato, valore nuovo evidenziato (equivalente alla cella nera del NEW).
+function changedFieldsHtml(changedFields){
+  if (!changedFields || !changedFields.length) return '';
+  return changedFields.map(f => `<div class="field-diff">
+    <span class="field-name">${escapeHtml(f.col)}</span>:
+    <span class="old-val">${escapeHtml(f.oldVal || '—')}</span>
+    <span class="arrow">→</span>
+    <mark class="new-val">${escapeHtml(f.newVal || '—')}</mark>
+  </div>`).join('');
+}
+
+// Mostra le caratteristiche del cavo appena aggiunto (terminale from,
+// terminale to, cavo), in grigio sotto la riga.
+function extraInfoHtml(extra){
+  if (!extra || !extra.length) return '';
+  return extra.map(e => `<div class="extra-info"><span class="field-name">${escapeHtml(e.label)}</span>: ${escapeHtml(e.value || '—')}</div>`).join('');
+}
+
+function descHtml(item){
+  let out;
+  if (item.modType === 'mov' && item.changedFields && item.changedFields.length){
+    out = changedFieldsHtml(item.changedFields);
+  } else {
+    out = escapeHtml(item.text.replace(/^[^:]+:\s*/,''));
+  }
+  if (item.modType === 'add' && item.extra && item.extra.length){
+    out += extraInfoHtml(item.extra);
+  }
+  return out;
+}
+
+// Un cavo la cui UNICA modifica e' sul campo Potential non e' rilevante per
+// l'industrializzazione: va segnalato ma tenuto fuori dai raggruppamenti.
+function isPotentialOnly(item){
+  return item.modType === 'mov' && item.changedFields && item.changedFields.length === 1
+    && normalize(item.changedFields[0].col) === 'potential';
+}
+
+// Separa i cavi con sola variazione di Potential da tutti gli altri.
+function splitPotentialOnly(d){
+  const potentialOnlyIds = [];
+  const dFiltered = {};
+  Object.keys(d).forEach(id => {
+    const item = d[id];
+    if (isPotentialOnly(item)) potentialOnlyIds.push(id);
+    else dFiltered[id] = item;
+  });
+  return {dFiltered, potentialOnlyIds};
+}
+
+// Raggruppa i cavi di un file per device (di partenza o di arrivo), solo se
+// quel device compare in almeno 2 collegamenti. Un cavo puo' comparire sotto
+// piu' di un device se entrambi i suoi estremi qualificano. dirFilter
+// limita i cavi mostrati in ciascun gruppo a 'in' (from) o 'out' (to).
+function buildDeviceGroups(d, dirFilter){
+  const ids = Object.keys(d);
+  const deviceCount = {};
+  ids.forEach(id => {
+    const c = d[id].conn;
+    if (c.fd) deviceCount[c.fd] = (deviceCount[c.fd]||0) + 1;
+    if (c.td) deviceCount[c.td] = (deviceCount[c.td]||0) + 1;
+  });
+  const groups = {};
+  const usedInGroup = new Set();
+  ids.forEach(id => {
+    const item = d[id], c = item.conn;
+    let grouped = false;
+    if (c.fd && deviceCount[c.fd] >= 2){
+      (groups[c.fd] = groups[c.fd] || []).push({id, dir:'out', pinSelf:c.pf, partner:c.td, pinPartner:c.pt, item});
+      grouped = true;
+    }
+    if (c.td && deviceCount[c.td] >= 2){
+      (groups[c.td] = groups[c.td] || []).push({id, dir:'in', pinSelf:c.pt, partner:c.fd, pinPartner:c.pf, item});
+      grouped = true;
+    }
+    if (grouped) usedInGroup.add(id);
+  });
+  if (dirFilter === 'in' || dirFilter === 'out'){
+    Object.keys(groups).forEach(dev => {
+      groups[dev] = groups[dev].filter(g => g.dir === dirFilter);
+      if (groups[dev].length === 0) delete groups[dev];
+    });
+  }
+  const others = ids.filter(id => !usedInGroup.has(id));
+  return {groups, others};
+}
+
+function renderSideGrouped(d, name, filter){
+  const {dFiltered, potentialOnlyIds} = splitPotentialOnly(d);
+  const {groups, others} = buildDeviceGroups(dFiltered, filter);
+  const deviceNames = Object.keys(groups).sort((a,b) => groups[b].length - groups[a].length || a.localeCompare(b));
+  let h = `<div class="col"><h3>${escapeHtml(name)}</h3>`;
+  if (deviceNames.length === 0){
+    h += '<div class="empty">Nessun device condiviso da almeno 2 cavi con il filtro selezionato.</div>';
+  } else {
+    deviceNames.forEach(dev => {
+      const items = groups[dev];
+      h += `<div class="device-group">
+        <div class="device-group-title"><span>${escapeHtml(dev)}</span><span class="device-count">${items.length} cavi</span></div>
+        <table><thead><tr><th>ID</th><th>Dir.</th><th>Descrizione</th></tr></thead><tbody>`;
+      items.forEach(g => {
+        const dirTag = g.dir==='out' ? '<span class="dir-tag dir-out">to</span>' : '<span class="dir-tag dir-in">from</span>';
+        const verso = g.dir==='out' ? 'verso' : 'da';
+        let extraHtml = '';
+        if (g.item.modType==='mov') extraHtml = changedFieldsHtml(g.item.changedFields);
+        else if (g.item.modType==='add') extraHtml = extraInfoHtml(g.item.extra);
+        h += `<tr><td>${escapeHtml(g.id)}</td><td>${dirTag}</td>
+          <td>${modTagHtml(g.item.modType, g.item.label)} pin ${escapeHtml(g.pinSelf)} ${verso} ${escapeHtml(g.partner)} ${escapeHtml(g.pinPartner)}
+          ${extraHtml}</td></tr>`;
+      });
+      h += '</tbody></table></div>';
+    });
+  }
+  if (others.length && filter === 'all'){
+    h += `<div class="device-group"><div class="device-group-title"><span>Altri cavi</span><span class="device-count">${others.length}</span></div>
+      <table><thead><tr><th>ID</th><th>Descrizione</th></tr></thead><tbody>`;
+    others.sort().forEach(id => {
+      const item = d[id];
+      h += `<tr><td>${escapeHtml(id)}</td><td>${modTagHtml(item.modType, item.label)}${descHtml(item)}</td></tr>`;
+    });
+    h += '</tbody></table></div>';
+  }
+  if (potentialOnlyIds.length && filter === 'all'){
+    h += `<div class="device-group potential-only"><div class="device-group-title"><span>Solo variazione Potential (non rilevanti)</span><span class="device-count">${potentialOnlyIds.length}</span></div>
+      <table><thead><tr><th>ID</th><th>Potential</th></tr></thead><tbody>`;
+    potentialOnlyIds.sort().forEach(id => {
+      const f = d[id].changedFields[0];
+      h += `<tr><td>${escapeHtml(id)}</td><td><span class="old-val">${escapeHtml(f.oldVal || '—')}</span> <span class="arrow">→</span> <mark class="new-val">${escapeHtml(f.newVal || '—')}</mark></td></tr>`;
+    });
+    h += '</tbody></table></div>';
+  }
+  h += '</div>';
+  return h;
+}
+
+function dirFilterBarHtml(){
+  return `<div class="dir-filter">
+    <span class="dir-filter-label">Filtra Dir.:</span>
+    <button class="dir-filter-btn ${dirFilter==='all'?'active':''}" data-filter="all">Tutti</button>
+    <button class="dir-filter-btn ${dirFilter==='in'?'active':''}" data-filter="in">from</button>
+    <button class="dir-filter-btn ${dirFilter==='out'?'active':''}" data-filter="out">to</button>
+  </div>`;
+}
+
+function analyzeOne(slot){
+  const sheetSelect = document.getElementById(slot === 'file1' ? 'sheetSelect1' : 'sheetSelect2');
+  const sn = sheetSelect.value;
+  const {colIdx, rows, allHeaders} = readSheetRows(state[slot].workbook, sn);
+  if (!colIdx || colIdx.ID===-1) return null;
+  return groupAndDescribe(rows, colIdx, allHeaders);
+}
+
+function renderResultsFromData(){
+  if (!lastRender) return;
+  const {hasFile1, hasFile2, d1, d2, name1, name2} = lastRender;
+  const resultsEl = document.getElementById('results');
+  let html = '';
+
+  if (hasFile1 && hasFile2){
+    const ids1 = Object.keys(d1);
+    const ids2 = Object.keys(d2);
+    const common = ids1.filter(id => d2[id]).sort();
+
+    html += '<div class="card"><h2>Cavi con lo stesso ID (' + common.length + ' su ' + ids1.length + ' / ' + ids2.length + ')</h2>';
+    if (common.length === 0){
+      html += '<div class="empty">Nessun ID di cavo ricorre in entrambi i file.</div>';
+    } else {
+      html += '<table><thead><tr><th>ID</th><th>' + escapeHtml(name1) + '</th><th>' + escapeHtml(name2) + '</th><th>Esito</th></tr></thead><tbody>';
+      common.forEach(id => {
+        const a = d1[id], b = d2[id];
+        const same = connEq(a.conn, b.conn) && a.modType===b.modType;
+        html += `<tr>
+          <td><strong>${escapeHtml(id)}</strong></td>
+          <td>${modTagHtml(a.modType,a.label)} ${escapeHtml(connLabel(a.conn))}</td>
+          <td>${modTagHtml(b.modType,b.label)} ${escapeHtml(connLabel(b.conn))}</td>
+          <td>${same ? '<span class="badge ok">Analoga</span>' : '<span class="badge no">Diversa / coincidenza ID</span>'}</td>
+        </tr>`;
+      });
+      html += '</tbody></table>';
+    }
+    html += '</div>';
+
+    html += '<div class="card"><h2>Descrizione modifiche, per cavo &mdash; raggruppate per device (&ge; 2 cavi)</h2>';
+    html += dirFilterBarHtml();
+    html += '<div class="two-cols">';
+    html += renderSideGrouped(d1, name1, dirFilter);
+    html += renderSideGrouped(d2, name2, dirFilter);
+    html += '</div></div>';
+  } else {
+    const d = hasFile1 ? d1 : d2;
+    const name = hasFile1 ? name1 : name2;
+    const ids = Object.keys(d);
+    const counts = {add:0, del:0, mov:0, same:0};
+    ids.forEach(id => counts[d[id].modType] = (counts[d[id].modType]||0) + 1);
+
+    html += `<div class="card"><h2>Riepilogo &mdash; ${escapeHtml(name)}</h2>
+      <table><thead><tr><th>Aggiunti</th><th>Rimossi</th><th>Modificati</th><th>Invariati (solo presa in carico)</th><th>Totale cavi</th></tr></thead>
+      <tbody><tr>
+        <td>${counts.add||0}</td><td>${counts.del||0}</td><td>${counts.mov||0}</td><td>${counts.same||0}</td><td>${ids.length}</td>
+      </tr></tbody></table></div>`;
+
+    html += '<div class="card"><h2>Descrizione modifiche, per cavo &mdash; raggruppate per device (&ge; 2 cavi)</h2>';
+    html += dirFilterBarHtml();
+    html += '<div class="two-cols">';
+    html += renderSideGrouped(d, name, dirFilter);
+    html += '</div></div>';
+  }
+
+  resultsEl.innerHTML = html;
+  resultsEl.querySelectorAll('.dir-filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      dirFilter = btn.dataset.filter;
+      renderResultsFromData();
+    });
+  });
+}
+
+document.getElementById('compareBtn').addEventListener('click', () => {
+  const hasFile1 = !!state.file1.workbook;
+  const hasFile2 = !!state.file2.workbook;
+  const resultsEl = document.getElementById('results');
+
+  const d1 = hasFile1 ? analyzeOne('file1') : null;
+  const d2 = hasFile2 ? analyzeOne('file2') : null;
+
+  if ((hasFile1 && d1 === null) || (hasFile2 && d2 === null)){
+    resultsEl.innerHTML = '<div class="card"><div class="empty">Non riesco a trovare le colonne attese (ID, Mod., From Device, ecc). Controlla che il foglio selezionato sia quello con l\'intestazione della lista cavi.</div></div>';
+    lastRender = null;
+    updateWordUi();
+    return;
+  }
+
+  const sheet1 = hasFile1 ? document.getElementById('sheetSelect1').value : null;
+  const sheet2 = hasFile2 ? document.getElementById('sheetSelect2').value : null;
+  lastRender = { hasFile1, hasFile2, d1, d2, name1: state.file1.name, name2: state.file2.name, sheet1, sheet2 };
+  renderResultsFromData();
+  updateWordUi();
+});
+
+/* ===================== Generazione Word (template incorporato) ===================== */
+
+function updateWordUi(){
+  const btn = document.getElementById('generateWordBtn');
+  const status = document.getElementById('wordStatus');
+  status.classList.remove('error');
+
+  if (!lastRender){
+    btn.disabled = true;
+    status.textContent = "Carica un solo file cavi e premi \"Analizza\" per abilitare la generazione.";
+    return;
+  }
+  if (lastRender.hasFile1 && lastRender.hasFile2){
+    btn.disabled = true;
+    status.textContent = "Il documento Word si genera solo in modalita' analisi di un singolo file, non nel confronto tra due file.";
+    return;
+  }
+  btn.disabled = false;
+  status.textContent = "Pronto: per ogni device (in pagina nuova) un titolo di livello 2 e una copia della tabella del capitolo " + WORD_CHAPTER_NUMBER + " (N°OP 08-00x0, applicabilità e cavi a elenco nel riquadro, codici DTR con quantità nelle righe materiali). I DTR vengono riepilogati con i totali nella tabella del paragrafo 3.1.";
+}
+
+function xmlEscape(s){
+  return (s===undefined||s===null?'':s.toString()).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+}
+
+// Decodifica il template incorporato (base64, vedi template_data.js) in un
+// ArrayBuffer utilizzabile da JSZip.
+function base64ToArrayBuffer(base64){
+  const binaryString = atob(base64);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) bytes[i] = binaryString.charCodeAt(i);
+  return bytes.buffer;
+}
+
+// Individua, dentro il capitolo N-esimo di stile Titolo1 (escludendo
+// "SOMMARIO", che e' anch'esso Titolo1 ma non e' un vero capitolo), la
+// tabella "operazione" del template (N.OP / materiali / attrezzatura). E' la
+// tabella che verra' clonata una volta per ogni device/sezione.
+function findOperationTableTemplate(documentXml, chapterNumber){
+  const paraRe = /<w:p(?:\s[^>]*)?>[\s\S]*?<\/w:p>/g;
+  const paras = [];
+  let m;
+  while ((m = paraRe.exec(documentXml)) !== null){
+    paras.push({xml:m[0], start:m.index});
+  }
+  const styleOf = (p) => { const mm = /<w:pStyle w:val="([^"]+)"/.exec(p); return mm ? mm[1] : null; };
+  const textOf = (p) => (p.match(/<w:t[^>]*>([\s\S]*?)<\/w:t>/g) || []).map(x => x.replace(/<[^>]+>/g, '')).join('').trim().toLowerCase();
+
+  const titolo1Indices = [];
+  paras.forEach((p,i) => {
+    if (styleOf(p.xml) === 'Titolo1' && textOf(p.xml) !== 'sommario') titolo1Indices.push(i);
+  });
+
+  if (titolo1Indices.length < chapterNumber){
+    throw new Error(`Il template ha solo ${titolo1Indices.length} capitoli reali di primo livello: non trovo il capitolo ${chapterNumber}.`);
+  }
+
+  const chapterStart = paras[titolo1Indices[chapterNumber - 1]].start;
+  const nextChapterParaIdx = titolo1Indices[chapterNumber]; // undefined se e' l'ultimo capitolo
+  const chapterEnd = (nextChapterParaIdx !== undefined) ? paras[nextChapterParaIdx].start : documentXml.length;
+  const chapterSlice = documentXml.slice(chapterStart, chapterEnd);
+
+  const tblStartRel = chapterSlice.indexOf('<w:tbl>');
+  if (tblStartRel === -1){
+    throw new Error(`Non trovo nessuna tabella nel capitolo ${chapterNumber} del template.`);
+  }
+  const tblEndRel = chapterSlice.indexOf('</w:tbl>', tblStartRel) + '</w:tbl>'.length;
+
+  return {
+    tableXml: chapterSlice.slice(tblStartRel, tblEndRel),
+    tableStart: chapterStart + tblStartRel,
+    tableEnd: chapterStart + tblEndRel
+  };
+}
+
+// Individua la tabella del sottoparagrafo (Titolo2) N-esimo del capitolo
+// (Titolo1) M-esimo — es. capitolo 3, paragrafo 1 = 3.1 "Materiali". Ritorna
+// {tableXml, tableStart, tableEnd} in offset assoluti, o null se non la trova.
+function findChapterParagraphTable(documentXml, chapterNumber, subParaIndex){
+  const paraRe = /<w:p(?:\s[^>]*)?>[\s\S]*?<\/w:p>/g;
+  const paras = [];
+  let m;
+  while ((m = paraRe.exec(documentXml)) !== null) paras.push({xml:m[0], start:m.index, end:m.index+m[0].length});
+  const styleOf = (p) => { const mm = /<w:pStyle w:val="([^"]+)"/.exec(p); return mm ? mm[1] : null; };
+  const textOf = (p) => (p.match(/<w:t[^>]*>([\s\S]*?)<\/w:t>/g) || []).map(x => x.replace(/<[^>]+>/g, '')).join('').trim().toLowerCase();
+
+  const titolo1Indices = [];
+  paras.forEach((p,i) => { if (styleOf(p.xml) === 'Titolo1' && textOf(p.xml) !== 'sommario') titolo1Indices.push(i); });
+  if (titolo1Indices.length < chapterNumber) return null;
+
+  const chapStartIdx = titolo1Indices[chapterNumber - 1];
+  const chapEndIdx = (titolo1Indices[chapterNumber] !== undefined) ? titolo1Indices[chapterNumber] : paras.length;
+
+  // Titolo2 dentro il capitolo, in ordine
+  const subIndices = [];
+  for (let i = chapStartIdx + 1; i < chapEndIdx; i++){
+    if (styleOf(paras[i].xml) === 'Titolo2') subIndices.push(i);
+  }
+  if (subIndices.length < subParaIndex) return null;
+
+  const subStart = paras[subIndices[subParaIndex - 1]].start;
+  const subEnd = (subIndices[subParaIndex] !== undefined) ? paras[subIndices[subParaIndex]].start : paras[chapEndIdx - 1].end;
+  const slice = documentXml.slice(subStart, subEnd);
+
+  const tblStartRel = slice.indexOf('<w:tbl>');
+  if (tblStartRel === -1) return null;
+  const tblEndRel = slice.indexOf('</w:tbl>', tblStartRel) + '</w:tbl>'.length;
+  return {
+    tableXml: slice.slice(tblStartRel, tblEndRel),
+    tableStart: subStart + tblStartRel,
+    tableEnd: subStart + tblEndRel
+  };
+}
+
+// Titolo di livello 2 (Heading 2, stile "Titolo2" del template): compare
+// prima di ogni tabella e riporta il nome del device. Essendo un vero stile
+// heading, Word lo include nella navigazione e nel sommario. Con pageBreak=true
+// il paragrafo inizia in una nuova pagina (usato per staccare i device).
+function titolo2Xml(text, pageBreak){
+  const pb = pageBreak ? '<w:pageBreakBefore/>' : '';
+  return `<w:p><w:pPr><w:pStyle w:val="Titolo2"/>${pb}</w:pPr><w:r><w:t xml:space="preserve">${xmlEscape(text)}</w:t></w:r></w:p>`;
+}
+
+// rPr delle celle del corpo tabella (font Alstom, 9pt). Tre varianti: normale,
+// grassetto (nome del cavo) e "applicabilita'" (grassetto + blu brand #2850F0).
+const CELL_RPR       = '<w:rPr><w:rFonts w:ascii="Alstom" w:eastAsia="Times New Roman" w:hAnsi="Alstom" w:cs="Times New Roman"/><w:snapToGrid w:val="0"/><w:color w:val="000000"/><w:sz w:val="18"/><w:szCs w:val="18"/><w:lang w:val="it-IT" w:eastAsia="it-IT"/></w:rPr>';
+const CELL_RPR_BOLD  = '<w:rPr><w:rFonts w:ascii="Alstom" w:eastAsia="Times New Roman" w:hAnsi="Alstom" w:cs="Times New Roman"/><w:b/><w:snapToGrid w:val="0"/><w:color w:val="000000"/><w:sz w:val="18"/><w:szCs w:val="18"/><w:lang w:val="it-IT" w:eastAsia="it-IT"/></w:rPr>';
+const APPLIC_RPR     = '<w:rPr><w:rFonts w:ascii="Alstom" w:eastAsia="Times New Roman" w:hAnsi="Alstom" w:cs="Times New Roman"/><w:b/><w:snapToGrid w:val="0"/><w:color w:val="2850F0"/><w:sz w:val="18"/><w:szCs w:val="18"/><w:lang w:val="it-IT" w:eastAsia="it-IT"/></w:rPr>';
+
+// Prima riga del riquadro: "Applicabilita': CASSA <foglio>", grassetto e blu.
+function applicabilityParaXml(sheetName){
+  return `<w:p><w:pPr><w:spacing w:line="240" w:lineRule="auto"/><w:jc w:val="left"/>${APPLIC_RPR}</w:pPr><w:r>${APPLIC_RPR}<w:t xml:space="preserve">Applicabilità: CASSA ${xmlEscape(sheetName)}</w:t></w:r></w:p>`;
+}
+
+// Riga di spazio tra l'applicabilita' e l'elenco dei cavi.
+const BLANK_PARA = '<w:p><w:pPr><w:spacing w:line="240" w:lineRule="auto"/></w:pPr></w:p>';
+
+// Un cavo = un punto elenco (stile "Paragrafoelenco" + numId 1 = pallino tondo
+// del template). Il nome del cavo e' in grassetto; il resto della descrizione
+// segue normale, e le eventuali righe di dettaglio vanno a capo sotto lo stesso
+// punto (soft break, restano rientrate sotto il pallino).
+function bulletParaXml(name, rest, details){
+  let runs = `<w:r>${CELL_RPR_BOLD}<w:t xml:space="preserve">${xmlEscape(name)}</w:t></w:r>`;
+  if (rest) runs += `<w:r>${CELL_RPR}<w:t xml:space="preserve">${xmlEscape(rest)}</w:t></w:r>`;
+  (details || []).forEach(dt => {
+    runs += `<w:r>${CELL_RPR}<w:br/><w:t xml:space="preserve">${xmlEscape(dt)}</w:t></w:r>`;
+  });
+  return `<w:p><w:pPr><w:pStyle w:val="Paragrafoelenco"/><w:numPr><w:ilvl w:val="0"/><w:numId w:val="1"/></w:numPr><w:spacing w:line="240" w:lineRule="auto"/>${CELL_RPR}</w:pPr>${runs}</w:p>`;
+}
+
+// Inserisce i paragrafi gia' pronti nel riquadro piu' grande e vuoto della
+// PRIMA riga della tabella (nel template aziendale e' la cella larga ~6573 dxa
+// che si estende su 3 colonne, accanto a "N°OP" — il campo descrizione
+// operazione). La cella e' individuata dinamicamente come la <w:tc> vuota di
+// larghezza (w:tcW) massima nella prima riga, cosi' il codice regge anche
+// piccole variazioni del template. Si conserva il <w:tcPr> originale (larghezza,
+// span, merge verticale, bordi) e si sostituiscono solo i paragrafi interni.
+function fillFirstRowLargestCellXml(tableXml, innerParasXml){
+  const trMatch = /<w:tr\b[\s\S]*?<\/w:tr>/.exec(tableXml);
+  if (!trMatch) throw new Error('La tabella del template non ha righe.');
+  const rowStart = trMatch.index;
+  const rowXml = trMatch[0];
+
+  const tcRe = /<w:tc>[\s\S]*?<\/w:tc>/g;
+  let best = null, mm;
+  while ((mm = tcRe.exec(rowXml)) !== null){
+    const cellXml = mm[0];
+    const text = (cellXml.match(/<w:t[^>]*>([\s\S]*?)<\/w:t>/g) || []).map(x => x.replace(/<[^>]+>/g, '')).join('').trim();
+    if (text !== '') continue; // salta le celle gia' compilate (N°OP, SRIL...)
+    const w = parseInt((/<w:tcW w:w="(\d+)"/.exec(cellXml) || [])[1] || '0', 10);
+    if (!best || w > best.w) best = {w, start: mm.index, end: mm.index + cellXml.length, xml: cellXml};
+  }
+  if (!best) throw new Error('Non trovo una cella libera nella prima riga della tabella del template.');
+
+  const tcPrMatch = /<w:tcPr>[\s\S]*?<\/w:tcPr>/.exec(best.xml);
+  const tcPr = tcPrMatch ? tcPrMatch[0].replace('<w:vAlign w:val="center"/>', '<w:vAlign w:val="top"/>') : '';
+
+  const newCell = `<w:tc>${tcPr}${innerParasXml || '<w:p/>'}</w:tc>`;
+  const newRowXml = rowXml.slice(0, best.start) + newCell + rowXml.slice(best.end);
+  return tableXml.slice(0, rowStart) + newRowXml + tableXml.slice(rowStart + rowXml.length);
+}
+
+// Sostituisce il valore della cella sotto "N°OP" (nel template "Par.8" + "0010")
+// con il numero operazione calcolato dal numero di paragrafo, es. "08-0010" per
+// il paragrafo 8.1, "08-0020" per l'8.2, ecc. Individua la cella dal testo
+// "Par."; se il template cambia e non la trova, non blocca la generazione.
+function fillOpNumberCellXml(tableXml, opText){
+  const tcRe = /<w:tc>[\s\S]*?<\/w:tc>/g;
+  let mm, target = null;
+  while ((mm = tcRe.exec(tableXml)) !== null){
+    const text = (mm[0].match(/<w:t[^>]*>([\s\S]*?)<\/w:t>/g) || []).map(x => x.replace(/<[^>]+>/g, '')).join('');
+    if (/Par\./.test(text)){ target = {start: mm.index, end: mm.index + mm[0].length, xml: mm[0]}; break; }
+  }
+  if (!target) return tableXml;
+
+  const tcPr = (/<w:tcPr>[\s\S]*?<\/w:tcPr>/.exec(target.xml) || [''])[0];
+  const opRPr = '<w:rPr><w:rFonts w:ascii="Alstom" w:hAnsi="Alstom"/><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr>';
+  const para = `<w:p><w:pPr><w:jc w:val="center"/>${opRPr}</w:pPr><w:r>${opRPr}<w:t xml:space="preserve">${xmlEscape(opText)}</w:t></w:r></w:p>`;
+  const newCell = `<w:tc>${tcPr}${para}</w:tc>`;
+  return tableXml.slice(0, target.start) + newCell + tableXml.slice(target.end);
+}
+
+// Numero operazione dal numero di paragrafo: capitolo a 2 cifre + "-" + (indice
+// paragrafo * 10) a 4 cifre. Es. cap. 8, paragrafo 1 -> "08-0010"; paragrafo 2
+// -> "08-0020".
+function opNumberFor(chapterNumber, paraIndex){
+  return `${String(chapterNumber).padStart(2,'0')}-${String(paraIndex*10).padStart(4,'0')}`;
+}
+
+// Cerca i codici materiale (tipicamente "DTR...") inseriti nella modifica dei
+// cavi di un paragrafo e li conta. Scandisce il valore NUOVO dei campi cambiati
+// (cavi modificati) e le caratteristiche del cavo aggiunto. Restituisce un
+// array {code, qty} in ordine di prima comparsa, con qty = numero di occorrenze
+// nel paragrafo.
+function collectDtrCounts(items){
+  const dtrRe = /DTR[A-Za-z0-9._/\-]*/g;
+  const order = [], counts = {};
+  const scan = (v) => {
+    const found = String(v==null?'':v).match(dtrRe);
+    if (found) found.forEach(c => { if (!(c in counts)){ counts[c]=0; order.push(c); } counts[c]++; });
+  };
+  items.forEach(it => {
+    if (it.modType === 'mov' && it.changedFields) it.changedFields.forEach(f => scan(f.newVal));
+    else if (it.modType === 'add' && it.extra) it.extra.forEach(ex => scan(ex.value));
+  });
+  return order.map(c => ({code: c, qty: counts[c]}));
+}
+
+// Scrive i codici materiale nella tabella: un codice per riga nella colonna
+// "Cod." e la relativa quantita' nella colonna "Q.tà". Individua la riga di
+// intestazione (quella con "Cod." e "Q.tà") per ricavare gli indici di colonna,
+// poi usa le righe vuote sotto; se i codici sono piu' delle righe disponibili,
+// clona una riga vuota. Se il template cambia e non trova l'intestazione, non
+// blocca la generazione.
+function fillMaterialRowsXml(tableXml, codeCounts){
+  if (!codeCounts.length) return tableXml;
+
+  const rowRe = /<w:tr\b[\s\S]*?<\/w:tr>/g;
+  const rows = []; let m;
+  while ((m = rowRe.exec(tableXml)) !== null) rows.push({xml:m[0], start:m.index, end:m.index+m[0].length});
+
+  const cellTexts = (rowXml) => (rowXml.match(/<w:tc>[\s\S]*?<\/w:tc>/g) || [])
+    .map(c => (c.match(/<w:t[^>]*>([\s\S]*?)<\/w:t>/g) || []).map(x => x.replace(/<[^>]+>/g, '')).join('').trim());
+
+  // Normalizza l'intestazione ignorando spazi, punti e accenti: cosi' riconosce
+  // sia "Cod."/"Q.tà" (cap. 8) sia "Cod."/"Q. tà" (cap. 3 "Materiali").
+  const norm = (s) => s.toLowerCase().replace(/[.\s]/g,'').replace(/[àáâ]/g,'a');
+  let H = -1, codIdx = -1, qtaIdx = -1;
+  for (let i = 0; i < rows.length; i++){
+    const texts = cellTexts(rows[i].xml);
+    const ci = texts.findIndex(x => norm(x) === 'cod');
+    const qi = texts.findIndex(x => norm(x) === 'qta');
+    if (ci !== -1 && qi !== -1){ H = i; codIdx = ci; qtaIdx = qi; break; }
+  }
+  if (H === -1) return tableXml;
+
+  const isEmptyRow = (rowXml) => {
+    const texts = cellTexts(rowXml);
+    return texts.length > Math.max(codIdx, qtaIdx) && texts.every(t => t === '');
+  };
+  const matStart = H + 1;
+  let matEnd = matStart;
+  while (matEnd < rows.length && isEmptyRow(rows[matEnd].xml)) matEnd++;
+  const materialRows = rows.slice(matStart, matEnd);
+  if (!materialRows.length) return tableXml;
+  const emptyTemplate = materialRows[0].xml;
+
+  const setCell = (rowXml, cellIdx, text) => {
+    const cells = rowXml.match(/<w:tc>[\s\S]*?<\/w:tc>/g) || [];
+    if (cellIdx >= cells.length) return rowXml;
+    const cell = cells[cellIdx];
+    const rpr = (/<w:pPr>[\s\S]*?(<w:rPr>[\s\S]*?<\/w:rPr>)[\s\S]*?<\/w:pPr>/.exec(cell) || [])[1] || '';
+    const run = `<w:r>${rpr}<w:t xml:space="preserve">${xmlEscape(text)}</w:t></w:r>`;
+    const newCell = cell.replace('</w:p>', run + '</w:p>');
+    return rowXml.replace(cell, newCell);
+  };
+
+  const filled = [];
+  codeCounts.forEach((cc, i) => {
+    let rowXml = (i < materialRows.length) ? materialRows[i].xml : emptyTemplate;
+    rowXml = setCell(rowXml, codIdx, cc.code);
+    rowXml = setCell(rowXml, qtaIdx, String(cc.qty));
+    filled.push(rowXml);
+  });
+  for (let i = codeCounts.length; i < materialRows.length; i++) filled.push(materialRows[i].xml);
+
+  const prefixEnd = rows[matStart].start;
+  const suffixStart = (matEnd < rows.length) ? rows[matEnd].start : tableXml.lastIndexOf('</w:tbl>');
+  return tableXml.slice(0, prefixEnd) + filled.join('') + tableXml.slice(suffixStart);
+}
+
+// Comprime l'ultima riga della tabella (nel template il grande riquadro alto
+// ~6195 dxa, ormai inutilizzato) portandone l'altezza a un valore minimo, cosi'
+// ogni paragrafo/tabella sta comodamente in una pagina.
+function compressLastRowXml(tableXml){
+  const rowRe = /<w:tr\b[\s\S]*?<\/w:tr>/g;
+  let m, last = null;
+  while ((m = rowRe.exec(tableXml)) !== null) last = {start:m.index, end:m.index+m[0].length, xml:m[0]};
+  if (!last) return tableXml;
+  const newRow = last.xml.replace(/<w:trHeight w:val="\d+"([^\/]*)\/>/, '<w:trHeight w:val="340"$1/>');
+  return tableXml.slice(0, last.start) + newRow + tableXml.slice(last.end);
+}
+
+// Costruisce, per ciascun device (piu' "Altri cavi" e "Potential"), un titolo
+// di livello 2 col nome del device seguito da una copia della tabella
+// "operazione" del template: numero operazione (08-00x0) nella cella N°OP, e nel
+// riquadro grande della prima riga "Applicabilita': CASSA <foglio>" seguita
+// dall'elenco puntato dei cavi. Riusa la logica di raggruppamento della vista
+// HTML. La prima sezione prende il posto della tabella originale del template.
+function buildDocxSectionsXml(d, templateTableXml, sheetName, chapterNumber){
+  const {dFiltered, potentialOnlyIds} = splitPotentialOnly(d);
+  const {groups, others} = buildDeviceGroups(dFiltered, 'all');
+  const deviceNames = Object.keys(groups).sort((a,b) => groups[b].length - groups[a].length || a.localeCompare(b));
+
+  const sections = [];
+  let paraIndex = 0;
+
+  // Totali DTR aggregati su tutti i paragrafi (per la tabella riepilogo 3.1).
+  const dtrOrder = [], dtrSum = {};
+
+  const makeSection = (title, bulletsXml, codeCounts) => {
+    paraIndex += 1;
+    (codeCounts || []).forEach(cc => {
+      if (!(cc.code in dtrSum)){ dtrSum[cc.code] = 0; dtrOrder.push(cc.code); }
+      dtrSum[cc.code] += cc.qty;
+    });
+    let table = fillOpNumberCellXml(templateTableXml, opNumberFor(chapterNumber, paraIndex));
+    table = fillMaterialRowsXml(table, codeCounts || []);
+    const inner = applicabilityParaXml(sheetName) + BLANK_PARA + bulletsXml;
+    table = fillFirstRowLargestCellXml(table, inner);
+    table = compressLastRowXml(table);
+    // pageBreak dal 2º paragrafo in poi: il 1º resta sotto il titolo del capitolo.
+    sections.push(titolo2Xml(title, paraIndex > 1) + table);
+  };
+
+  deviceNames.forEach(dev => {
+    let bullets = '';
+    groups[dev].forEach(g => {
+      const dirLabel = g.dir==='out' ? 'to' : 'from';
+      const verso = g.dir==='out' ? 'verso' : 'da';
+      const rest = ` [${dirLabel}] — ${g.item.label}: pin ${g.pinSelf} ${verso} ${g.partner} ${g.pinPartner}`;
+      const details = [];
+      if (g.item.modType === 'mov' && g.item.changedFields.length){
+        g.item.changedFields.forEach(f => details.push(`– ${f.col}: ${f.oldVal || '—'} → ${f.newVal || '—'}`));
+      } else if (g.item.modType === 'add' && g.item.extra.length){
+        g.item.extra.forEach(ex => details.push(`– ${ex.label}: ${ex.value || '—'}`));
+      }
+      bullets += bulletParaXml(g.id, rest, details);
+    });
+    makeSection(dev, bullets, collectDtrCounts(groups[dev].map(g => g.item)));
+  });
+
+  if (others.length){
+    let bullets = '';
+    others.sort().forEach(id => {
+      const item = d[id];
+      const rest = ` — ${item.label}: ${item.text.replace(/^[^:]+:\s*/,'')}`;
+      const details = [];
+      if (item.modType === 'mov' && item.changedFields.length){
+        item.changedFields.forEach(f => details.push(`– ${f.col}: ${f.oldVal || '—'} → ${f.newVal || '—'}`));
+      } else if (item.modType === 'add' && item.extra.length){
+        item.extra.forEach(ex => details.push(`– ${ex.label}: ${ex.value || '—'}`));
+      }
+      bullets += bulletParaXml(id, rest, details);
+    });
+    makeSection('Altri cavi', bullets, collectDtrCounts(others.map(id => d[id])));
+  }
+
+  if (potentialOnlyIds.length){
+    let bullets = '';
+    potentialOnlyIds.sort().forEach(id => {
+      const f = d[id].changedFields[0];
+      bullets += bulletParaXml(id, `: Potential ${f.oldVal || '—'} → ${f.newVal || '—'}`, []);
+    });
+    makeSection('Cavi con sola variazione di Potential (non rilevanti)', bullets, []);
+  }
+
+  // Il titolo Titolo2 che apre ogni sezione fa anche da separatore tra le
+  // tabelle: senza un paragrafo in mezzo, Word fonde visivamente due tabelle
+  // adiacenti in una sola.
+  return {
+    sectionsXml: sections.join(''),
+    dtrTotals: dtrOrder.map(code => ({code, qty: dtrSum[code]}))
+  };
+}
+
+document.getElementById('generateWordBtn').addEventListener('click', async () => {
+  const status = document.getElementById('wordStatus');
+  const btn = document.getElementById('generateWordBtn');
+  if (!lastRender || lastRender.hasFile1 === lastRender.hasFile2) return;
+  if (typeof TEMPLATE_BASE64 === 'undefined'){
+    status.classList.add('error');
+    status.textContent = 'Errore: template_data.js non trovato accanto a questo file. Assicurati di averlo salvato nella stessa cartella.';
+    return;
+  }
+
+  btn.disabled = true;
+  status.classList.remove('error');
+  status.textContent = 'Generazione in corso...';
+
+  try {
+    const d = lastRender.hasFile1 ? lastRender.d1 : lastRender.d2;
+    const sourceName = lastRender.hasFile1 ? lastRender.name1 : lastRender.name2;
+    const sheetName = lastRender.hasFile1 ? lastRender.sheet1 : lastRender.sheet2;
+
+    const arrayBuffer = base64ToArrayBuffer(TEMPLATE_BASE64);
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    const docPath = 'word/document.xml';
+    const docFile = zip.file(docPath);
+    if (!docFile) throw new Error("Il template incorporato non sembra un .docx valido (manca word/document.xml).");
+
+    let docXml = await docFile.async('text');
+    const {tableXml, tableStart, tableEnd} = findOperationTableTemplate(docXml, WORD_CHAPTER_NUMBER);
+    const {sectionsXml, dtrTotals} = buildDocxSectionsXml(d, tableXml, sheetName, WORD_CHAPTER_NUMBER);
+    // Sostituisce la tabella del cap. 8 con le sezioni per device (offset alti:
+    // farlo prima non altera gli offset del cap. 3, che viene dopo).
+    docXml = docXml.slice(0, tableStart) + sectionsXml + docXml.slice(tableEnd);
+
+    // Tabella riepilogo materiali al paragrafo 3.1: tutti i DTR trovati, con la
+    // somma totale delle quantità su tutti i paragrafi.
+    if (dtrTotals.length){
+      const mat = findChapterParagraphTable(docXml, WORD_MATERIALS_CHAPTER, WORD_MATERIALS_PARA);
+      if (mat){
+        const filledMat = fillMaterialRowsXml(mat.tableXml, dtrTotals);
+        docXml = docXml.slice(0, mat.tableStart) + filledMat + docXml.slice(mat.tableEnd);
+      }
+    }
+    zip.file(docPath, docXml);
+
+    const blob = await zip.generateAsync({
+      type: 'blob',
+      mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    });
+
+    const baseName = (sourceName || 'cavi').replace(/\.[^/.]+$/, '');
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Istruzione_operativa_${baseName}.docx`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    status.textContent = 'Documento generato e scaricato.';
+  } catch (err) {
+    status.classList.add('error');
+    status.textContent = 'Errore nella generazione: ' + err.message;
+  } finally {
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
