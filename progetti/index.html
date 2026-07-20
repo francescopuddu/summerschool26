@@ -114,8 +114,13 @@
   }
   .who { font-size:12.5px; font-weight:500; color:var(--fg-3); }
   .card h3 { font-size:19px; font-weight:700; letter-spacing:-.01em; }
-  .card p { font-size:14.5px; font-weight:300; color:var(--fg-2); flex:1; }
+  .card p { font-size:14.5px; font-weight:300; color:var(--fg-2); }
   .card p strong { font-weight:600; color:var(--fg); }
+  .card ul.feats { list-style:none; display:flex; flex-direction:column; gap:7px; font-size:13.5px; color:var(--fg-2); font-weight:300; margin:2px 0; }
+  .card ul.feats li { padding-left:20px; position:relative; line-height:1.45; }
+  .card ul.feats li::before { content:"→"; position:absolute; left:0; color:var(--amber-500); font-weight:600; }
+  .card ul.feats strong { font-weight:600; color:var(--fg); }
+  .card .card-body .actions { margin-top:auto; padding-top:8px; }
   .hint { font-size:12.5px; color:var(--fg-4); }
   .hint a { color:var(--fg-3); }
   .hint a:hover { color:var(--amber-400); }
@@ -178,6 +183,11 @@
           <div class="card-top"><span class="chip">Autoguidovie</span><span class="who">Team Autoguidovie</span></div>
           <h3>Previsione Occupazione Corse</h3>
           <p>Quanto sarà piena la corsa delle 7:40? Mappa della linea, fermate e <strong>affluenza attesa corsa per corsa</strong>, con il meteo del giorno integrato nel modello di previsione.</p>
+          <ul class="feats">
+            <li>Mappa interattiva della linea con tutte le fermate e l'<strong>affluenza prevista corsa per corsa</strong>, dalla prima all'ultima della giornata.</li>
+            <li>Il modello è calibrato sui dati reali di esercizio — calendario del servizio, anagrafica mezzi, posizione fermate — e incorpora il <strong>meteo del giorno</strong> come variabile di previsione.</li>
+            <li>Pensata per chi pianifica: vedere in anticipo dove servono rinforzi e dove l'offerta basta, prima che il problema arrivi in strada.</li>
+          </ul>
           <div class="actions">
             <a class="btn primary" href="app/autoguidovie/" target="_blank" rel="noopener">Apri la demo</a>
             <a class="btn ghost" href="https://github.com/niccofiore/summer-school-projectwork" target="_blank" rel="noopener">GitHub</a>
@@ -192,6 +202,11 @@
           <div class="card-top"><span class="chip">Microelettrica</span><span class="who">Hussain</span></div>
           <h3>Fan Test Suite — AMCA 210</h3>
           <p>La suite di prova ventilatori secondo AMCA 210: criteri di accettazione, curve di performance, vibrazioni e rumore, <strong>giudizio PASS/FAIL automatico</strong> e report di laboratorio scaricabile.</p>
+          <ul class="feats">
+            <li>Procedura di prova guidata secondo <strong>AMCA 210-16, AMCA 204 e ISO 10816-3</strong>: unità in prova, criteri di accettazione, dati di test, giudizio.</li>
+            <li>Curve di performance, vibrazioni, rumore e FFT calcolate direttamente dal CSV di acquisizione, con <strong>PASS/FAIL per ogni criterio</strong>.</li>
+            <li>Il report di laboratorio esce già impaginato e scaricabile: verbali uniformi, senza fogli di calcolo compilati a mano.</li>
+          </ul>
           <span class="hint">«Load sample run» carica subito un giro di prova; volendo puoi usare i <a href="app/amca/plugfan_PF-1000_test_data.csv">dati demo CSV</a>.</span>
           <div class="actions">
             <a class="btn primary" href="app/amca/" target="_blank" rel="noopener">Apri la demo</a>
@@ -207,6 +222,11 @@
           <div class="card-top"><span class="chip">ATM</span><span class="who">Team ATM</span></div>
           <h3>Programmazione Lavori Notturni — Linea 1</h3>
           <p>Manutenzioni, corse prova e trasferimenti della metro M1 in un <strong>calendario notturno con verifica automatica delle interferenze</strong>: importi gli Excel di programmazione e vedi subito cosa può convivere e cosa no.</p>
+          <ul class="feats">
+            <li>Importa gli Excel di programmazione (manutenzioni, corse prova e trasferimenti) e <strong>verifica da solo le interferenze</strong> tra attività sulla stessa tratta e fascia oraria.</li>
+            <li>Tre viste sincronizzate sugli stessi dati: <strong>calendario notturno settimanale, mappa di linea e tabella</strong>.</li>
+            <li>Quando due lavori collidono propone la rischedulazione sulla prima notte compatibile — il coordinamento che oggi vive su fogli separati, in un'unica schermata.</li>
+          </ul>
           <span class="hint">La demo si apre già piena: la settimana di programmazione demo (<a href="app/atm/Manutenzioni_Programmate_20-26_luglio_2026.xlsx">manutenzioni</a>, <a href="app/atm/CorseProva_Movimentazioni_20-26_luglio_2026.xlsx">corse prova</a>) viene importata in automatico.</span>
           <div class="actions">
             <a class="btn primary" href="app/atm/" target="_blank" rel="noopener">Apri la demo</a>
@@ -222,6 +242,11 @@
           <div class="card-top"><span class="chip">Microelettrica</span><span class="who">Zouhair</span></div>
           <h3>Collaudo ME1000 — Analisi &amp; Report</h3>
           <p>La catena di collaudo dell'interruttore extrarapido ME1000: dal segnale grezzo al filtraggio, alle misure (tempi, correnti, corsa, bouncing) fino al <strong>report di collaudo impaginato</strong> pronto per il PDF.</p>
+          <ul class="feats">
+            <li>30 collaudi con forme d'onda realistiche, generate da un <strong>modello fisico semplificato</strong> dell'interruttore extrarapido.</li>
+            <li>Filtraggio del segnale ed estrazione automatica delle misure — tempi di chiusura/apertura, correnti, corsa, bouncing — <strong>con tolleranze ed esito CONFORME/NON CONFORME</strong>.</li>
+            <li>Report di collaudo impaginato in 8 tavole A4 orizzontali, pronto per stampa o PDF: dal dato grezzo al verbale senza passaggi manuali.</li>
+          </ul>
           <span class="hint">La demo precarica 8 collaudi simulati ed elabora il primo da sola; lo <a href="app/collaudo-me1000/collaudi.zip">zip completo (30 collaudi)</a> resta scaricabile.</span>
           <div class="actions">
             <a class="btn primary" href="app/collaudo-me1000/" target="_blank" rel="noopener">Apri la demo</a>
@@ -237,6 +262,11 @@
           <div class="card-top"><span class="chip">Metra</span><span class="who">Barbara</span></div>
           <h3>Pipeline Commesse &amp; Avanzamento Contratti</h3>
           <p>Contratti, spedito e fatturato in un'unica pipeline con avanzamento a colpo d'occhio, import da Excel e <strong>closure letter generata e approvata direttamente in app</strong>, email precompilata inclusa.</p>
+          <ul class="feats">
+            <li>Dashboard pipeline con <strong>valore totale, spedito/fatturato e residuo da spedire</strong> per ogni contratto, con avanzamento a barre e filtri per cliente, progetto e stato.</li>
+            <li>Anagrafiche complete di clienti, progetti e contratti con varianti, allegati e righe di fatturato collegate ai documenti della cartella di rete.</li>
+            <li>La <strong>closure letter si genera in app</strong>: testo precompilato, approvazione con firma ed email già pronta all'invio — la chiusura commessa smette di essere un lavoro di copia-incolla.</li>
+          </ul>
           <span class="hint">Snapshot navigabile dell'app Flask con dati demo: pipeline, clienti, progetti e dettaglio contratti si esplorano; salvataggi e filtri richiedono l'app reale.</span>
           <div class="actions">
             <a class="btn primary" href="app/avanzamento-contratti/index.html" target="_blank" rel="noopener">Apri la demo</a>
@@ -252,6 +282,11 @@
           <div class="card-top"><span class="chip">Alstom</span><span class="who">Laura</span></div>
           <h3>Confronto Liste Cavi</h3>
           <p>Carichi due liste cavi Excel e ottieni il confronto e l'<strong>istruzione operativa Word già impaginata</strong> per l'industrializzazione delle modifiche sui Coradia Stream. Un lavoro di ore ridotto a un click.</p>
+          <ul class="feats">
+            <li>Confronta due revisioni di lista cavi Excel colonna per colonna: cavi <strong>analoghi, modificati, aggiunti e rimossi</strong>, subito evidenti.</li>
+            <li>Genera l'<strong>istruzione operativa Word già impaginata sul template ufficiale</strong>: un capitolo per device, cavi a elenco puntato, codici DTR con quantità nel riepilogo materiali.</li>
+            <li>Tutto nel browser, nessun dato lascia il PC: un lavoro di ore di confronto manuale ridotto a un click.</li>
+          </ul>
           <span class="hint">La demo carica due liste cavi d'esempio e lancia il confronto da sola; puoi scaricarle (<a href="app/automazionecavi/lista_cavi_rev0_demo.xlsx">rev0</a>, <a href="app/automazionecavi/lista_cavi_rev1_demo.xlsx">rev1</a>) o sostituirle con i tuoi Excel.</span>
           <div class="actions">
             <a class="btn primary" href="app/automazionecavi/" target="_blank" rel="noopener">Apri la demo</a>
@@ -267,6 +302,11 @@
           <div class="card-top"><span class="chip">Alstom</span><span class="who">Sara</span></div>
           <h3>Monitoraggio Attrezzature &amp; Manutenzione Predittiva</h3>
           <p>La sala prove sotto controllo in un'unica dashboard: ore d'uso, guasti, scadenze di taratura e <strong>proiezioni predittive</strong> che segnalano quali attrezzature andranno in manutenzione prima che si fermino.</p>
+          <ul class="feats">
+            <li>KPI immediati sulla sala prove: attrezzature <strong>in allerta rossa, in attenzione, guasti degli ultimi 12 mesi</strong> e scadenze di taratura.</li>
+            <li><strong>Proiezioni predittive</strong> su storico d'uso e MTBF: quali attrezzature andranno in manutenzione nei prossimi 30 giorni, prima che si fermino.</li>
+            <li>Schede elettroniche più critiche aggregate per componente, con foto delle attrezzature, procedure PDF e schemi collegati: il contesto per decidere è già lì.</li>
+          </ul>
           <span class="hint">Demo con i dati d'esempio dell'app; in produzione i dati arrivano live dal server della sala prove.</span>
           <div class="actions">
             <a class="btn primary" href="app/progetto-indus/" target="_blank" rel="noopener">Apri la demo</a>
@@ -282,6 +322,11 @@
           <div class="card-top"><span class="chip">Trenord</span><span class="who">Alessandro</span></div>
           <h3>Rotazione Automatica Certificati SSL</h3>
           <p>Un proof-of-concept infrastrutturale completo: certificati TLS che <strong>si rinnovano da soli</strong> (protocollo ACME, nginx, Docker) senza downtime — accompagnato da una spiegazione divulgativa che si legge come un piccolo corso.</p>
+          <ul class="feats">
+            <li>Replica in locale il processo reale di Let's Encrypt: <strong>challenge HTTP-01, emissione, rinnovo e reload di nginx senza downtime</strong>, con la CA di test ufficiale (Pebble).</li>
+            <li>Dashboard live con countdown alla scadenza, seriale, fingerprint, storico delle emissioni e contatore del disservizio (zero).</li>
+            <li>Accompagnato da una spiegazione divulgativa che parte da "cos'è il lucchetto" e arriva al protocollo ACME: <strong>un PoC che è anche materiale formativo</strong>.</li>
+          </ul>
           <span class="hint">La dashboard originale con una CA simulata nel browser: il certificato demo vive 5 minuti e lo vedi ruotare in diretta (o forzi tu il rinnovo). L'infrastruttura vera gira in docker-compose.</span>
           <div class="actions">
             <a class="btn primary" href="app/poc-letsencrypt/" target="_blank" rel="noopener">Apri la demo</a>
@@ -297,6 +342,11 @@
           <div class="card-top"><span class="chip">Microelettrica</span><span class="who">Farnaz</span></div>
           <h3>Railway HSCB Selector</h3>
           <p>Il configuratore guidato degli interruttori extrarapidi IR3000/IR4000: poche domande sull'applicazione e arrivi al <strong>codice di configurazione esatto</strong> — senza sfogliare cataloghi.</p>
+          <ul class="feats">
+            <li>Poche domande sull'applicazione — tensione, corrente termica, montaggio, potere di interruzione — e arrivi al <strong>codice di configurazione univoco</strong> dell'interruttore.</li>
+            <li>Le specifiche sono compilate dai <strong>datasheet ufficiali delle serie IR3000 e IR4000</strong>, con immagini dei prodotti.</li>
+            <li>Da mettere in mano a tecnici commerciali e clienti: la selezione che oggi richiede di sfogliare cataloghi diventa un percorso guidato di un minuto.</li>
+          </ul>
           <div class="actions">
             <a class="btn primary" href="https://artamad.github.io/HSCB-Configurations/" target="_blank" rel="noopener">Apri la demo</a>
             <a class="btn ghost" href="https://github.com/artamad/HSCB-Configurations" target="_blank" rel="noopener">GitHub</a>
@@ -311,6 +361,11 @@
           <div class="card-top"><span class="chip">Lucchini RS</span><span class="who">Team Lucchini</span></div>
           <h3>FatturAI — Compilazione ROD Spedizioni</h3>
           <p>Incrocia stock di magazzino e produzione in corso e <strong>compila da solo il ROD Spedizioni del mese</strong>, applicando le regole di allocazione del pianificatore — con evidenziazioni, eccedenze/mancanze e una chat AI per interrogare il risultato.</p>
+          <ul class="feats">
+            <li>Tre file Excel (Stock, WIP, ordini) e un click: il foglio del mese si compila con <strong>pezzi, date di spedizione e note</strong>, evidenziando cosa arriva da magazzino e cosa da produzione.</li>
+            <li>Le <strong>regole del pianificatore sono incorporate</strong>: priorità alla data di approntamento più urgente, stock prima della produzione, budget d'ordine mai superato, note "PdC" sui prelievi da altre commesse.</li>
+            <li>Riepilogo operativo di eccedenze e ordini scoperti, più una <strong>chat AI</strong> per interrogare il risultato ("quale cliente è più a rischio ritardo?").</li>
+          </ul>
           <span class="hint">L'originale è un'app desktop (PyQt6) con auto-update, rilasciata via CI: questa è una ricreazione web dimostrativa con dati fittizi e logica semplificata.</span>
           <div class="actions">
             <a class="btn primary" href="app/fatturai/" target="_blank" rel="noopener">Apri la demo web</a>
@@ -327,6 +382,11 @@
           <div class="card-top"><span class="chip">Alstom</span><span class="who">Nazanin</span></div>
           <h3>Fleet Reliability Report Builder</h3>
           <p>Dagli export mensili di manutenzione a un <strong>report di affidabilità flotta</strong> impaginato per capitoli, pronto da rivedere, salvare in PDF e inviare via email — tutto dentro un'unica web app.</p>
+          <ul class="feats">
+            <li>Filtri incrociati per <strong>cliente, tipo treno e periodo</strong> sugli export mensili di manutenzione, con opzioni che si restringono a vicenda.</li>
+            <li>Report per capitoli con <strong>analisi scritte in automatico</strong>: classificazione delle cause di guasto, effetti sul servizio, flotte che consumano più manutenzione correttiva.</li>
+            <li>Anteprima in pagina, salvataggio PDF e invio al cliente con email precompilata e documento allegato: dal dato grezzo al deliverable firmato.</li>
+          </ul>
           <span class="hint">Interfaccia originale con 42 ticket fittizi e backend simulato: filtri e anteprima funzionano, e il PDF è stato generato col vero motore di report dell'app.</span>
           <div class="actions">
             <a class="btn primary" href="app/report-generator/" target="_blank" rel="noopener">Apri la demo</a>
