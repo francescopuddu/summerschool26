@@ -620,5 +620,27 @@ $('#rep').addEventListener('click', () => {
   const a = document.createElement('a');
   a.href = url; a.download = `report_${R.info.matricola ?? R.k}.html`; a.click();
 });
+
+/* Demo summer school: precarica 8 collaudi simulati hostati accanto all'app,
+   costruendo File compatibili col flusso del folder picker. */
+(async function autoDemoLoad(){
+  try {
+    const nomi = Array.from({length: 8}, (_, i) => 'ME1000_SN' + String(i + 1).padStart(3, '0'));
+    const files = [];
+    await Promise.all(nomi.map(async n => {
+      for (const fn of ['apertura.csv', 'chiusura.csv', 'info.json']) {
+        const r = await fetch(`collaudi/${n}/${fn}`);
+        if (!r.ok) return;
+        const f = new File([await r.blob()], fn);
+        Object.defineProperty(f, 'webkitRelativePath', { value: `collaudi/${n}/${fn}` });
+        files.push(f);
+      }
+    }));
+    if (!files.length) return;
+    caricaCartella(files);
+    $('#status').textContent = `${Object.keys(TESTS).length} collaudi demo precaricati — scegli e premi Elabora (per tutti e 30 scarica lo zip).`;
+    $('#run').click();
+  } catch(e){ console.warn('Precaricamento dati demo saltato:', e); }
+})();
 </script>
 </body></html>

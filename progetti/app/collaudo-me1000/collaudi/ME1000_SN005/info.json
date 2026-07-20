@@ -1,0 +1,16 @@
+{
+  "matricola": "ME1000-SN005",
+  "modello": "ME1000",
+  "famiglia": "HSCB",
+  "data_prova": "2026-07-06",
+  "operatore": "L. Ferrari",
+  "banco": "BANCO-HSCB-02",
+  "prova": "Acquisizione corrente principale e corsa contatti",
+  "corrente_iniettata_nominale_A": 100,
+  "tensione_bobina_V": 110,
+  "oscilloscopio": "Rigol MSO5074",
+  "ch1": "Corrente circuito principale (A) - sonda Hall 200 A",
+  "ch2": "Trasduttore di posizione contatti (mm)",
+  "frequenza_campionamento_Sa_s": 50000,
+  "trigger": "t=0 sul comando bobina"
+}

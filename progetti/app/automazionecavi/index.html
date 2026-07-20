@@ -1106,5 +1106,30 @@ document.getElementById('generateWordBtn').addEventListener('click', async () =>
   }
 });
 </script>
+<script>
+/* Demo summer school: precarica due liste cavi d'esempio (rev0 e rev1) hostate
+   accanto all'app e lancia il confronto, riusando il flusso esistente. */
+(async function autoDemoLoad(){
+  try {
+    async function setInput(url, inputId){
+      const buf = await (await fetch(url)).arrayBuffer();
+      const name = url.split('/').pop();
+      const dt = new DataTransfer();
+      dt.items.add(new File([buf], name, {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));
+      const input = document.getElementById(inputId);
+      input.files = dt.files;
+      input.dispatchEvent(new Event('change'));
+    }
+    await setInput('lista_cavi_rev0_demo.xlsx', 'file1');
+    await setInput('lista_cavi_rev1_demo.xlsx', 'file2');
+    const t0 = Date.now();
+    (function waitReady(){
+      const btn = document.getElementById('compareBtn');
+      if (btn && !btn.disabled && btn.textContent === 'Confronta') btn.click();
+      else if (Date.now() - t0 < 5000) setTimeout(waitReady, 150);
+    })();
+  } catch(e){ console.warn('Precaricamento dati demo saltato:', e); }
+})();
+</script>
 </body>
 </html>

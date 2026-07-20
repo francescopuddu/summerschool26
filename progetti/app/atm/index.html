@@ -2465,5 +2465,28 @@ initMapZoomPan();
 attachSospendiDropZone();
 renderAll();
 </script>
+<script>
+/* Demo summer school: precarica gli Excel di esempio hostati accanto all'app,
+   riusando la pipeline di import esistente ma senza la modale di conferma. */
+(async function autoDemoLoad(){
+  try {
+    const origReview = window.openImportReview;
+    window.openImportReview = function(candidates, kind){
+      candidates.forEach(c => store.push(c));
+      renderAll();
+    };
+    async function loadXlsx(url, kind){
+      const buf = await (await fetch(url)).arrayBuffer();
+      await loadSheetJS();
+      const wb = XLSX.read(new Uint8Array(buf), {type:"array"});
+      const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header:1, raw:false});
+      processImportRows(rows, kind);
+    }
+    await loadXlsx("Manutenzioni_Programmate_20-26_luglio_2026.xlsx", "manut");
+    await loadXlsx("CorseProva_Movimentazioni_20-26_luglio_2026.xlsx", "corsa");
+    window.openImportReview = origReview;
+  } catch(e){ console.warn("Precaricamento dati demo saltato:", e); }
+})();
+</script>
 </body>
 </html>
