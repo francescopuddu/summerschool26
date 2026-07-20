@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contratto CON-2026-SV-001 — METRA RAIL</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="../static/css/custom.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-metra mb-3">
+  <div class="container-fluid px-4">
+    <a class="metra-logo-wrap navbar-brand" href="../index.html">
+      <img src="../static/img/logo-icona.png" alt="METRA RAIL" class="metra-logo-img">
+      <span class="metra-logo-text">
+        <span class="brand-main">METRA</span>
+        <span class="brand-sub">RAIL</span>
+      </span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link "
+             href="../index.html">
+            <i class="bi bi-speedometer2"></i> Pipeline
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link "
+             href="../clienti.html">
+            <i class="bi bi-building"></i> Clienti
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link "
+             href="../progetti.html">
+            <i class="bi bi-diagram-3"></i> Progetti
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active"
+             href="../contratti.html">
+            <i class="bi bi-file-text"></i> Contratti
+          </a>
+        </li>
+      </ul>
+      <span class="navbar-text small" style="color:rgba(255,255,255,.45)">20/07/2026</span>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid px-4 pb-4">
+  
+  
+  
+
+  
+
+<nav aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb mb-0 small">
+    <li class="breadcrumb-item"><a href="../index.html">Pipeline</a></li>
+    <li class="breadcrumb-item"><a href="../contratti.html">Contratti</a></li>
+    <li class="breadcrumb-item active">CON-2026-SV-001</li>
+  </ol>
+</nav>
+
+
+
+<div class="card mb-3">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+      <div>
+        <h5 class="fw-bold mb-1">
+          <span class="codice-contratto">CON-2026-SV-001</span>
+          &nbsp;
+          
+            <span class="badge badge-chiuso fs-6">chiuso</span>
+          
+        </h5>
+        <div class="text-muted">
+          <i class="bi bi-building me-1"></i><strong>Serramenti Veneti S.p.A.</strong>
+          
+            &nbsp;·&nbsp;<i class="bi bi-diagram-3 me-1"></i>Fornitura profili serramenti verniciati
+          
+        </div>
+        
+        <div class="mt-1 text-secondary">Profili alluminio estruso e verniciato per serramenti — 18 mesi</div>
+        
+      </div>
+      <div class="d-flex gap-2">
+        
+        <a href="3/modifica.html" class="btn btn-outline-primary btn-sm">
+          <i class="bi bi-pencil"></i> Modifica
+        </a>
+        <form method="POST" action="http://localhost:5000/contratti/3/elimina"
+              onsubmit="return confirm('Eliminare questo contratto e tutti i dati collegati?')">
+          <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i> Elimina</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="row g-3 mb-3">
+      <div class="col-6 col-md-3">
+        <div class="small text-muted">Valore contratto</div>
+        <div class="fw-bold fs-5">€ 270.260,00</div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="small text-muted">Spedito / Fatturato</div>
+        <div class="fw-bold fs-5 text-success">€ 0,00</div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="small text-muted">Residuo</div>
+        <div class="fw-bold fs-5 text-danger">€ 270.260,00</div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="small text-muted">Varianti</div>
+        <div class="fw-bold fs-5">1</div>
+      </div>
+    </div>
+
+    <div class="mb-1 small fw-semibold text-danger">Avanzamento: 0.0%</div>
+    <div class="progress" style="height:14px">
+      <div class="progress-bar bg-danger fw-semibold"
+           style="width:0.0%; font-size:.75rem">
+        
+      </div>
+    </div>
+
+    
+    <div class="row mt-3 small text-muted g-2">
+      <div class="col-auto">Apertura: 01/11/2026</div>
+      <div class="col-auto">Chiusura prevista: 30/04/2028</div>
+      <div class="col-12 mt-1 fst-italic">DAP Treviso. Acconto 30% entro 10gg, saldo 70% a 45gg dfm. Verniciatura Qualicoat. Prezzi fissi 9 mesi.</div>
+    </div>
+    
+  </div>
+</div>
+
+
+<ul class="nav nav-tabs mb-0" id="dettaglioTabs">
+  <li class="nav-item">
+    <a class="nav-link active" href="3.html#ordini" data-bs-toggle="tab" id="tab-ordini">
+      <i class="bi bi-cart3"></i> Ordini <span class="badge bg-secondary ms-1">1</span>
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="3.html#varianti" data-bs-toggle="tab" id="tab-varianti">
+      <i class="bi bi-pencil-square"></i> Varianti <span class="badge bg-secondary ms-1">1</span>
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="3.html#allegati" data-bs-toggle="tab" id="tab-allegati">
+      <i class="bi bi-paperclip"></i> Allegati <span class="badge bg-secondary ms-1">4</span>
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="3.html#articoli" data-bs-toggle="tab" id="tab-articoli">
+      <i class="bi bi-box-seam"></i> Articoli <span class="badge bg-secondary ms-1">0</span>
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="3.html#fatturato" data-bs-toggle="tab" id="tab-fatturato">
+      <i class="bi bi-receipt"></i> Fatturato <span class="badge bg-secondary ms-1">0</span>
+    </a>
+  </li>
+</ul>
+
+<div class="tab-content card border-top-0 rounded-0 rounded-bottom">
+
+  
+  <div class="tab-pane fade show active p-3" id="ordini">
+    
+    <div class="table-responsive mb-3">
+      <table class="table table-sm table-hover mb-0">
+        <thead>
+          <tr>
+            <th>N° Ordine</th>
+            <th>Data</th>
+            <th class="text-end">Importo</th>
+            <th>Stato</th>
+            <th>Note</th>
+            <th>File</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td class="fw-semibold">ORD-SV-2026-007</td>
+            <td>10/11/2026</td>
+            <td class="text-end">€ 94.450,00</td>
+            <td>
+              
+                <span class="badge bg-secondary">aperto</span>
+              
+            </td>
+            <td class="text-muted small">Primo programma mensile. Consegna entro 25gg lavorativi. Resa DAP Treviso. Colore RAL approvato.</td>
+            <td>
+              —
+            </td>
+            <td>
+              <form method="POST" action="http://localhost:5000/ordini/3/elimina"
+                    onsubmit="return confirm('Eliminare l\'ordine?')">
+                <button class="btn btn-link btn-sm text-danger p-0"><i class="bi bi-trash"></i></button>
+              </form>
+            </td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </div>
+    
+
+    <button class="btn btn-outline-primary btn-sm" onclick="toggleAddForm('add-ordine')">
+      <i class="bi bi-plus-lg"></i> Aggiungi ordine
+    </button>
+    <div id="add-ordine" class="add-form-section mt-2" style="display:none">
+      <form method="POST" action="http://localhost:5000/contratti/3/ordini/nuovo">
+        <div class="row g-2">
+          <div class="col-12 col-md-3">
+            <label class="form-label small mb-1">N° Ordine</label>
+            <input type="text" name="numero_ordine" class="form-control form-control-sm">
+          </div>
+          <div class="col-6 col-md-2">
+            <label class="form-label small mb-1">Data</label>
+            <input type="date" name="data" class="form-control form-control-sm">
+          </div>
+          <div class="col-6 col-md-2">
+            <label class="form-label small mb-1">Importo (€)</label>
+            <input type="text" name="importo" class="form-control form-control-sm" placeholder="0,00">
+          </div>
+          <div class="col-6 col-md-2">
+            <label class="form-label small mb-1">Stato</label>
+            <select name="stato" class="form-select form-select-sm">
+              <option value="aperto">Aperto</option>
+              <option value="parziale">Parziale</option>
+              <option value="evaso">Evaso</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-3">
+            <label class="form-label small mb-1">Note</label>
+            <input type="text" name="note" class="form-control form-control-sm">
+          </div>
+          <div class="col-12">
+            <label class="form-label small mb-1">Documento allegato (opzionale)</label>
+            <div class="file-picker-field">
+              <input type="hidden" name="percorso_allegato" id="ordine-percorso">
+              <span class="file-picker-label text-muted" id="ordine-percorso-label">Nessun file selezionato</span>
+              <button type="button" class="btn btn-outline-secondary btn-sm"
+                      onclick="apriSelettoreFile('ordine-percorso', 'ordine-percorso-label')">
+                <i class="bi bi-folder2-open"></i> Sfoglia cartella documenti
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="mt-2">
+          <button type="submit" class="btn btn-primary btn-sm">Salva ordine</button>
+          <button type="button" class="btn btn-outline-secondary btn-sm"
+                  onclick="toggleAddForm('add-ordine')">Annulla</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  
+  <div class="tab-pane fade p-3" id="varianti">
+    
+    <div class="table-responsive mb-3">
+      <table class="table table-sm table-hover mb-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Data</th>
+            <th>Descrizione</th>
+            <th class="text-end">Δ Valore</th>
+            <th>Documento allegato</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td><span class="badge bg-warning text-dark">1</span></td>
+            <td>05/03/2027</td>
+            <td>Addendum n.1 — Riduzione quantitativo AL-SR-6210 (profilo anta 60mm); annullamento integrale AL-SR-7025 fermavetro (non incluso nella nuova gamma serramenti). Valore complessivo rideterminato in Allegato A.</td>
+            <td class="text-end ">
+              —
+            </td>
+            <td>
+              
+                
+                <div class="d-flex align-items-center gap-2">
+                  <span class="percorso-rete text-truncate" style="max-width:200px"
+                        data-path="C:\Users\bs_udeschini\Desktop\Progetto\Revisione3_Serramenti_Veneti.docx"
+                        onclick="copyPercorso(this)" title="C:\Users\bs_udeschini\Desktop\Progetto\Revisione3_Serramenti_Veneti.docx">
+                    <i class="bi bi-file-earmark"></i> Revisione3_Serramenti_Veneti.docx
+                  </span>
+                  <button class="btn btn-outline-secondary btn-sm py-0 px-1"
+                          data-anteprima-path="C:\Users\bs_udeschini\Desktop\Progetto\Revisione3_Serramenti_Veneti.docx"
+                          data-anteprima-nome="Revisione3_Serramenti_Veneti.docx"
+                          title="Anteprima">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  <a href="http://localhost:5000/file/serve?path=C:%5CUsers%5Cbs_udeschini%5CDesktop%5CProgetto%5CRevisione3_Serramenti_Veneti.docx"
+                     class="btn btn-outline-secondary btn-sm py-0 px-1" target="_blank"
+                     title="Apri / Scarica">
+                    <i class="bi bi-download"></i>
+                  </a>
+                </div>
+              
+            </td>
+            <td>
+              <form method="POST" action="http://localhost:5000/varianti/3/elimina"
+                    onsubmit="return confirm('Eliminare la variante?')">
+                <button class="btn btn-link btn-sm text-danger p-0"><i class="bi bi-trash"></i></button>
+              </form>
+            </td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </div>
+    
+
+    <button class="btn btn-outline-primary btn-sm" onclick="toggleAddForm('add-variante')">
+      <i class="bi bi-plus-lg"></i> Aggiungi variante
+    </button>
+    <div id="add-variante" class="add-form-section mt-2" style="display:none">
+      <form method="POST" action="http://localhost:5000/contratti/3/varianti/nuovo">
+        <div class="row g-2">
+          <div class="col-6 col-md-2">
+            <label class="form-label small mb-1">Data</label>
+            <input type="date" name="data" class="form-control form-control-sm">
+          </div>
+          <div class="col-6 col-md-2">
+            <label class="form-label small mb-1">Δ Valore (€)</label>
+            <input type="text" name="valore_delta" class="form-control form-control-sm"
+                   placeholder="0,00 (neg. per riduzione)">
+          </div>
+          <div class="col-12 col-md-4">
+            <label class="form-label small mb-1">Descrizione</label>
+            <input type="text" name="descrizione" class="form-control form-control-sm">
+          </div>
+          <div class="col-12 col-md-4">
+            <label class="form-label small mb-1">Documento allegato</label>
+            <div class="file-picker-field">
+              <input type="hidden" name="percorso_allegato" id="variante-percorso">
+              <span class="file-picker-label text-muted" id="variante-percorso-label">Nessun file selezionato</span>
+              <button type="button" class="btn btn-outline-secondary btn-sm"
+                      onclick="apriSelettoreFile('variante-percorso', 'variante-percorso-label')">
+                <i class="bi bi-folder2-open"></i> Sfoglia
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="mt-2">
+          <button type="submit" class="btn btn-primary btn-sm">Salva variante</button>
+          <button type="button" class="btn btn-outline-secondary btn-sm"
+                  onclick="toggleAddForm('add-variante')">Annulla</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  
+  <div class="tab-pane fade p-3" id="allegati">
+    
+    <div class="table-responsive mb-3">
+      <table class="table table-sm table-hover mb-0">
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Nome documento</th>
+            <th>Anteprima / Apri</th>
+            <th>Aggiunto il</th>
+            <th>Note</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          
+          
+          <tr>
+            <td><span class="badge bg-light text-dark border">offerta</span></td>
+            <td class="fw-semibold">
+              <span class="percorso-rete" data-path="C:\Users\bs_udeschini\Desktop\Progetto\Offerta_Serramenti_Veneti.pdf"
+                    onclick="copyPercorso(this)" title="Copia percorso: C:\Users\bs_udeschini\Desktop\Progetto\Offerta_Serramenti_Veneti.pdf">
+                <i class="bi bi-clipboard me-1"></i>Offerta OFF-2026-0201 — 15/10/2026
+              </span>
+            </td>
+            <td>
+              <div class="d-flex gap-1">
+                <button class="btn btn-outline-secondary btn-sm py-0 px-2"
+                        data-anteprima-path="C:\Users\bs_udeschini\Desktop\Progetto\Offerta_Serramenti_Veneti.pdf"
+                        data-anteprima-nome="Offerta OFF-2026-0201 — 15/10/2026"
+                        title="Anteprima">
+                  <i class="bi bi-eye"></i> Anteprima
+                </button>
+                <a href="http://localhost:5000/file/serve?path=C:%5CUsers%5Cbs_udeschini%5CDesktop%5CProgetto%5COfferta_Serramenti_Veneti.pdf"
+                   class="btn btn-outline-secondary btn-sm py-0 px-2" target="_blank"
+                   title="Apri o scarica il file">
+                  <i class="bi bi-download"></i> Apri
+                </a>
+              </div>
+            </td>
+            <td class="small text-muted">20/07/2026</td>
+            <td class="small text-muted">Totale offerta €270.260. Validità 30gg. Base contratto firmato 01/11/2026.</td>
+            <td>
+              <form method="POST" action="http://localhost:5000/allegati/9/elimina"
+                    onsubmit="return confirm('Eliminare l\'allegato?')">
+                <button class="btn btn-link btn-sm text-danger p-0"><i class="bi bi-trash"></i></button>
+              </form>
+            </td>
+          </tr>
+          
+          
+          <tr>
+            <td><span class="badge bg-light text-dark border">contratto</span></td>
+            <td class="fw-semibold">
+              <span class="percorso-rete" data-path="C:\Users\bs_udeschini\Desktop\Progetto\Contratto_Fornitura_Serramenti_Veneti.docx"
+                    onclick="copyPercorso(this)" title="Copia percorso: C:\Users\bs_udeschini\Desktop\Progetto\Contratto_Fornitura_Serramenti_Veneti.docx">
+                <i class="bi bi-clipboard me-1"></i>Contratto fornitura CON-2026-SV-001
+              </span>
+            </td>
+            <td>
+              <div class="d-flex gap-1">
+                <button class="btn btn-outline-secondary btn-sm py-0 px-2"
+                        data-anteprima-path="C:\Users\bs_udeschini\Desktop\Progetto\Contratto_Fornitura_Serramenti_Veneti.docx"
+                        data-anteprima-nome="Contratto fornitura CON-2026-SV-001"
+                        title="Anteprima">
+                  <i class="bi bi-eye"></i> Anteprima
+                </button>
+                <a href="http://localhost:5000/file/serve?path=C:%5CUsers%5Cbs_udeschini%5CDesktop%5CProgetto%5CContratto_Fornitura_Serramenti_Veneti.docx"
+                   class="btn btn-outline-secondary btn-sm py-0 px-2" target="_blank"
+                   title="Apri o scarica il file">
+                  <i class="bi bi-download"></i> Apri
+                </a>
+              </div>
+            </td>
+            <td class="small text-muted">20/07/2026</td>
+            <td class="small text-muted">Firmato 01/11/2026. Durata 18 mesi. Foro Bergamo.</td>
+            <td>
+              <form method="POST" action="http://localhost:5000/allegati/10/elimina"
+                    onsubmit="return confirm('Eliminare l\'allegato?')">
+                <button class="btn btn-link btn-sm text-danger p-0"><i class="bi bi-trash"></i></button>
+              </form>
+            </td>
+          </tr>
+          
+          
+          <tr>
+            <td><span class="badge bg-light text-dark border">ordine</span></td>
+            <td class="fw-semibold">
+              <span class="percorso-rete" data-path="C:\Users\bs_udeschini\Desktop\Progetto\Ordine_Serramenti_Veneti.pdf"
+                    onclick="copyPercorso(this)" title="Copia percorso: C:\Users\bs_udeschini\Desktop\Progetto\Ordine_Serramenti_Veneti.pdf">
+                <i class="bi bi-clipboard me-1"></i>Ordine ORD-SV-2026-007 — 10/11/2026
+              </span>
+            </td>
+            <td>
+              <div class="d-flex gap-1">
+                <button class="btn btn-outline-secondary btn-sm py-0 px-2"
+                        data-anteprima-path="C:\Users\bs_udeschini\Desktop\Progetto\Ordine_Serramenti_Veneti.pdf"
+                        data-anteprima-nome="Ordine ORD-SV-2026-007 — 10/11/2026"
+                        title="Anteprima">
+                  <i class="bi bi-eye"></i> Anteprima
+                </button>
+                <a href="http://localhost:5000/file/serve?path=C:%5CUsers%5Cbs_udeschini%5CDesktop%5CProgetto%5COrdine_Serramenti_Veneti.pdf"
+                   class="btn btn-outline-secondary btn-sm py-0 px-2" target="_blank"
+                   title="Apri o scarica il file">
+                  <i class="bi bi-download"></i> Apri
+                </a>
+              </div>
+            </td>
+            <td class="small text-muted">20/07/2026</td>
+            <td class="small text-muted">Primo programma mensile. Importo €94.450. Colore RAL da campione approvato.</td>
+            <td>
+              <form method="POST" action="http://localhost:5000/allegati/11/elimina"
+                    onsubmit="return confirm('Eliminare l\'allegato?')">
+                <button class="btn btn-link btn-sm text-danger p-0"><i class="bi bi-trash"></i></button>
+              </form>
+            </td>
+          </tr>
+          
+          
+          <tr>
+            <td><span class="badge bg-light text-dark border">altro</span></td>
+            <td class="fw-semibold">
+              <span class="percorso-rete" data-path="C:\Users\bs_udeschini\Desktop\Progetto\Revisione3_Serramenti_Veneti.docx"
+                    onclick="copyPercorso(this)" title="Copia percorso: C:\Users\bs_udeschini\Desktop\Progetto\Revisione3_Serramenti_Veneti.docx">
+                <i class="bi bi-clipboard me-1"></i>Addendum n.1 — 05/03/2027
+              </span>
+            </td>
+            <td>
+              <div class="d-flex gap-1">
+                <button class="btn btn-outline-secondary btn-sm py-0 px-2"
+                        data-anteprima-path="C:\Users\bs_udeschini\Desktop\Progetto\Revisione3_Serramenti_Veneti.docx"
+                        data-anteprima-nome="Addendum n.1 — 05/03/2027"
+                        title="Anteprima">
+                  <i class="bi bi-eye"></i> Anteprima
+                </button>
+                <a href="http://localhost:5000/file/serve?path=C:%5CUsers%5Cbs_udeschini%5CDesktop%5CProgetto%5CRevisione3_Serramenti_Veneti.docx"
+                   class="btn btn-outline-secondary btn-sm py-0 px-2" target="_blank"
+                   title="Apri o scarica il file">
+                  <i class="bi bi-download"></i> Apri
+                </a>
+              </div>
+            </td>
+            <td class="small text-muted">20/07/2026</td>
+            <td class="small text-muted">Annullamento AL-SR-7025 fermavetro. Riduzione AL-SR-6210.</td>
+            <td>
+              <form method="POST" action="http://localhost:5000/allegati/12/elimina"
+                    onsubmit="return confirm('Eliminare l\'allegato?')">
+                <button class="btn btn-link btn-sm text-danger p-0"><i class="bi bi-trash"></i></button>
+              </form>
+            </td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </div>
+    
+
+    <button class="btn btn-outline-primary btn-sm" onclick="toggleAddForm('add-allegato')">
+      <i class="bi bi-plus-lg"></i> Aggiungi allegato
+    </button>
+    <div id="add-allegato" class="add-form-section mt-2" style="display:none">
+      <form method="POST" action="http://localhost:5000/contratti/3/allegati/nuovo">
+        <div class="row g-2">
+          <div class="col-6 col-md-2">
+            <label class="form-label small mb-1">Tipo</label>
+            <select name="tipo" class="form-select form-select-sm">
+              <option value="contratto">Contratto</option>
+              <option value="offerta">Offerta</option>
+              <option value="ordine">Ordine</option>
+              <option value="altro">Altro</option>
+            </select>
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label small mb-1">Nome documento *</label>
+            <input type="text" name="nome" required class="form-control form-control-sm"
+                   placeholder="es. Contratto firmato rev2">
+          </div>
+          <div class="col-12 col-md-5">
+            <label class="form-label small mb-1">Documento *</label>
+            <div class="file-picker-field">
+              <input type="hidden" name="percorso" id="allegato-percorso" required>
+              <span class="file-picker-label text-muted" id="allegato-percorso-label">Nessun file selezionato</span>
+              <button type="button" class="btn btn-outline-secondary btn-sm"
+                      onclick="apriSelettoreFile('allegato-percorso', 'allegato-percorso-label')">
+                <i class="bi bi-folder2-open"></i> Sfoglia cartella documenti
+              </button>
+            </div>
+          </div>
+          <div class="col-12 col-md-2">
+            <label class="form-label small mb-1">Note</label>
+            <input type="text" name="note" class="form-control form-control-sm">
+          </div>
+        </div>
+        <div class="mt-2">
+          <button type="submit" class="btn btn-primary btn-sm">Salva allegato</button>
+          <button type="button" class="btn btn-outline-secondary btn-sm"
+                  onclick="toggleAddForm('add-allegato')">Annulla</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  
+  <div class="tab-pane fade p-3" id="articoli">
+
+    
+    <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+      <span class="small fw-semibold text-muted">Filtra:</span>
+      <div class="btn-group btn-group-sm" role="group" id="filtroArticoli">
+        <button type="button" class="btn btn-outline-secondary active"
+                onclick="filtraArticoli('tutti', this)">Tutti</button>
+        <button type="button" class="btn btn-outline-secondary"
+                onclick="filtraArticoli('da-spedire', this)">Da spedire</button>
+        <button type="button" class="btn btn-outline-secondary"
+                onclick="filtraArticoli('parziale', this)">Parziale</button>
+        <button type="button" class="btn btn-outline-secondary"
+                onclick="filtraArticoli('completo', this)">Completo</button>
+      </div>
+      
+    </div>
+
+    
+    <p class="text-muted small mb-3">Nessun articolo registrato per questo contratto.</p>
+    
+
+    <button class="btn btn-outline-primary btn-sm" onclick="toggleAddForm('add-articolo')">
+      <i class="bi bi-plus-lg"></i> Aggiungi articolo
+    </button>
+    <div id="add-articolo" class="add-form-section mt-2" style="display:none">
+      <form method="POST" action="http://localhost:5000/contratti/3/articoli/nuovo">
+        <div class="row g-2">
+          <div class="col-6 col-md-2">
+            <label class="form-label small mb-1">Codice articolo</label>
+            <input type="text" name="codice" class="form-control form-control-sm"
+                   placeholder="es. AL-PR-1042">
+          </div>
+          <div class="col-12 col-md-4">
+            <label class="form-label small mb-1">Descrizione *</label>
+            <input type="text" name="descrizione" required class="form-control form-control-sm">
+          </div>
+          <div class="col-4 col-md-1">
+            <label class="form-label small mb-1">Q. totale</label>
+            <input type="number" name="quantita_totale" class="form-control form-control-sm"
+                   placeholder="0" min="0" step="1" value="0">
+          </div>
+          <div class="col-4 col-md-1">
+            <label class="form-label small mb-1">Q. spedita</label>
+            <input type="number" name="quantita_spedita" class="form-control form-control-sm"
+                   placeholder="0" min="0" step="1" value="0">
+          </div>
+          <div class="col-4 col-md-1">
+            <label class="form-label small mb-1">U.M.</label>
+            <input type="text" name="unita_misura" class="form-control form-control-sm"
+                   placeholder="pz" value="pz">
+          </div>
+          <div class="col-6 col-md-2">
+            <label class="form-label small mb-1">Prezzo unit. (€)</label>
+            <input type="text" name="prezzo_unitario" class="form-control form-control-sm"
+                   placeholder="0,00">
+          </div>
+          <div class="col-12 col-md-1">
+            <label class="form-label small mb-1">Note</label>
+            <input type="text" name="note" class="form-control form-control-sm">
+          </div>
+          <div class="col-12">
+            <label class="form-label small mb-1">Scheda tecnica / documento (opzionale)</label>
+            <div class="file-picker-field">
+              <input type="hidden" name="percorso_allegato" id="articolo-percorso">
+              <span class="file-picker-label text-muted" id="articolo-percorso-label">Nessun file selezionato</span>
+              <button type="button" class="btn btn-outline-secondary btn-sm"
+                      onclick="apriSelettoreFile('articolo-percorso', 'articolo-percorso-label')">
+                <i class="bi bi-folder2-open"></i> Sfoglia cartella documenti
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="mt-2">
+          <button type="submit" class="btn btn-primary btn-sm">Salva articolo</button>
+          <button type="button" class="btn btn-outline-secondary btn-sm"
+                  onclick="toggleAddForm('add-articolo')">Annulla</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  
+  <div class="tab-pane fade p-3" id="fatturato">
+    
+    <p class="text-muted small mb-3">Nessuna riga di fatturato associata a questo contratto.
+      <a href="../import.html">Importa da Excel</a></p>
+    
+
+    <button class="btn btn-outline-primary btn-sm" onclick="toggleAddForm('add-fatturato')">
+      <i class="bi bi-plus-lg"></i> Aggiungi riga fatturato
+    </button>
+    <div id="add-fatturato" class="add-form-section mt-2" style="display:none">
+      <form method="POST" action="http://localhost:5000/contratti/3/fatturato/nuovo">
+        <div class="row g-2">
+          <div class="col-6 col-md-2">
+            <label class="form-label small mb-1">Data documento</label>
+            <input type="date" name="data_documento" class="form-control form-control-sm">
+          </div>
+          <div class="col-6 col-md-2">
+            <label class="form-label small mb-1">N° documento</label>
+            <input type="text" name="numero_documento" class="form-control form-control-sm">
+          </div>
+          <div class="col-6 col-md-2">
+            <label class="form-label small mb-1">Importo (€)</label>
+            <input type="text" name="importo" class="form-control form-control-sm" placeholder="0,00">
+          </div>
+          <div class="col-6 col-md-2">
+            <label class="form-label small mb-1">Fonte</label>
+            <input type="text" name="fonte" class="form-control form-control-sm" placeholder="es. DDT manuale">
+          </div>
+          <div class="col-12 col-md-4">
+            <label class="form-label small mb-1">Descrizione</label>
+            <input type="text" name="descrizione" class="form-control form-control-sm">
+          </div>
+          <div class="col-12">
+            <label class="form-label small mb-1">Documento allegato (opzionale)</label>
+            <div class="file-picker-field">
+              <input type="hidden" name="percorso_allegato" id="fatturato-percorso">
+              <span class="file-picker-label text-muted" id="fatturato-percorso-label">Nessun file selezionato</span>
+              <button type="button" class="btn btn-outline-secondary btn-sm"
+                      onclick="apriSelettoreFile('fatturato-percorso', 'fatturato-percorso-label')">
+                <i class="bi bi-folder2-open"></i> Sfoglia cartella documenti
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="mt-2">
+          <button type="submit" class="btn btn-primary btn-sm">Salva riga</button>
+          <button type="button" class="btn btn-outline-secondary btn-sm"
+                  onclick="toggleAddForm('add-fatturato')">Annulla</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+</div>
+
+
+<div class="modal fade" id="modalAnteprima" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header py-2">
+        <h6 class="modal-title fw-semibold" id="modalAnteprimaTitolo">Anteprima</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-0" id="modalAnteprimaCorpo">
+        <iframe class="preview-iframe" src="3.html" id="previewIframe" title="Anteprima documento"></iframe>
+      </div>
+      <div class="modal-footer py-2">
+        <a href="3.html#" id="previewDownloadLink" class="btn btn-outline-secondary btn-sm"
+           target="_blank"><i class="bi bi-download"></i> Scarica / Apri</a>
+        <button type="button" class="btn btn-secondary btn-sm"
+                data-bs-dismiss="modal">Chiudi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="modalSelettoreFile" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header py-2">
+        <h6 class="modal-title fw-semibold">Seleziona documento dalla cartella condivisa</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="selettoreFileFiltro" class="form-control form-control-sm mb-2"
+               placeholder="Cerca per nome file...">
+        <div id="selettoreFileLista"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../static/js/main.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const hash = window.location.hash;
+  if (hash) {
+    const tab = document.querySelector('[href="' + hash + '"]');
+    if (tab) { new bootstrap.Tab(tab).show(); }
+  }
+});
+
+function filtraArticoli(stato, btn) {
+  document.querySelectorAll('#filtroArticoli .btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#tabellaArticoli tbody tr').forEach(tr => {
+    if (stato === 'tutti') {
+      tr.style.display = '';
+    } else {
+      tr.style.display = tr.dataset.stato === stato ? '' : 'none';
+    }
+  });
+}
+</script>
+
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#242d3a;color:#cdd6e0;font-size:12px;padding:6px 14px;text-align:center;font-family:sans-serif;">Snapshot statico dimostrativo dell&#39;app Flask del team Metra (dati fittizi): la navigazione funziona, salvataggi e filtri richiedono l&#39;app reale — <a href="https://github.com/BarbaraUde/Avanzamento-contratti" style="color:#7fd39a" target="_blank" rel="noopener">repo GitHub</a></div></body>
+</html>

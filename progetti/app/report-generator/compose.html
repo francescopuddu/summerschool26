@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Send Report — Alstom</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-mark">ALSTOM</span>
+      <span class="brand-bar"></span>
+    </div>
+    <h1>Send Report to Customer</h1>
+  </header>
+
+  <main class="app-main">
+    <section class="panel">
+      <div class="compose-field">
+        <label>Customer</label>
+        <div id="customerValue" class="compose-value"></div>
+      </div>
+      <div class="compose-field">
+        <label>To</label>
+        <input id="toInput" class="compose-input" type="text" />
+      </div>
+      <div class="compose-field">
+        <label>Subject</label>
+        <input id="subjectInput" class="compose-input" type="text" />
+      </div>
+      <div class="compose-field">
+        <label>Body</label>
+        <textarea id="bodyInput" class="compose-input compose-body-input" rows="8"></textarea>
+      </div>
+
+      <p id="composeHint" class="hint">Checking Gmail connection...</p>
+      <a id="downloadLink" class="btn btn-secondary" href="/api/last-report.pdf" download>Download Report PDF</a>
+
+      <div class="compose-actions">
+        <a id="connectGmailBtn" class="btn btn-primary btn-large hidden" href="/auth/google" target="_blank">Connect Gmail</a>
+        <button id="sendGmailBtn" class="btn btn-primary btn-large hidden">Send Email (PDF attached)</button>
+        <button id="openGmailBtn" class="btn btn-secondary btn-large hidden">Open in Gmail Instead (no auto-attach)</button>
+      </div>
+      <span id="composeStatus" class="status-msg"></span>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <span>Alstom — Reliability Report Builder</span>
+  </footer>
+
+  <script src="demo-shim.js"></script>
+  <script src="compose.js"></script>
+</body>
+</html>

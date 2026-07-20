@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modifica Contratto — METRA RAIL</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="../../static/css/custom.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-metra mb-3">
+  <div class="container-fluid px-4">
+    <a class="metra-logo-wrap navbar-brand" href="../../index.html">
+      <img src="../../static/img/logo-icona.png" alt="METRA RAIL" class="metra-logo-img">
+      <span class="metra-logo-text">
+        <span class="brand-main">METRA</span>
+        <span class="brand-sub">RAIL</span>
+      </span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link "
+             href="../../index.html">
+            <i class="bi bi-speedometer2"></i> Pipeline
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link "
+             href="../../clienti.html">
+            <i class="bi bi-building"></i> Clienti
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link "
+             href="../../progetti.html">
+            <i class="bi bi-diagram-3"></i> Progetti
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active"
+             href="../../contratti.html">
+            <i class="bi bi-file-text"></i> Contratti
+          </a>
+        </li>
+      </ul>
+      <span class="navbar-text small" style="color:rgba(255,255,255,.45)">20/07/2026</span>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid px-4 pb-4">
+  
+  
+  
+
+  
+<nav aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb mb-0 small">
+    <li class="breadcrumb-item"><a href="../../contratti.html">Contratti</a></li>
+    <li class="breadcrumb-item active">Modifica Contratto</li>
+  </ol>
+</nav>
+
+<div class="card" style="max-width:700px">
+  <div class="card-header">Modifica Contratto</div>
+  <div class="card-body">
+    <form method="POST">
+      <div class="row g-3">
+        <div class="col-12 col-md-6">
+          <label class="form-label">Cliente <span class="text-danger">*</span></label>
+          <select name="cliente_id" id="sel_cliente" required class="form-select">
+            <option value="">— seleziona —</option>
+            
+            <option value="1"
+              selected>
+              Componenti Industriali Rossi S.p.A.
+            </option>
+            
+            <option value="2"
+              >
+              Meccanica Nord S.r.l.
+            </option>
+            
+            <option value="3"
+              >
+              Serramenti Veneti S.p.A.
+            </option>
+            
+          </select>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <label class="form-label">Progetto</label>
+          <select name="progetto_id" id="sel_progetto" class="form-select">
+            <option value="">— nessuno —</option>
+            
+            <option value="1"
+              selected>
+              Fornitura barre e profili alluminio (Componenti Industriali Rossi S.p.A.)
+            </option>
+            
+            <option value="2"
+              >
+              Fornitura profili alluminio estruso (Meccanica Nord S.r.l.)
+            </option>
+            
+            <option value="3"
+              >
+              Fornitura profili serramenti verniciati (Serramenti Veneti S.p.A.)
+            </option>
+            
+          </select>
+          <div class="form-text">Seleziona prima il cliente per filtrare i progetti.</div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <label class="form-label">Codice contratto</label>
+          <input type="text" name="codice" class="form-control"
+                 value="CON-2026-CR-001"
+                 placeholder="es. 2024-CLI-001">
+        </div>
+
+        <div class="col-12 col-md-4">
+          <label class="form-label">Valore totale (€)</label>
+          <input type="text" name="valore_totale" class="form-control"
+                 value="301140,00"
+                 placeholder="0,00">
+        </div>
+
+        <div class="col-12 col-md-4">
+          <label class="form-label">Stato</label>
+          <select name="stato" class="form-select">
+            <option value="aperto" >Aperto</option>
+            <option value="in corso" >In corso</option>
+            <option value="chiuso" >Chiuso</option>
+          </select>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <label class="form-label">Data apertura</label>
+          <input type="date" name="data_apertura" class="form-control"
+                 value="2026-10-01">
+        </div>
+
+        <div class="col-12 col-md-6">
+          <label class="form-label">Data chiusura prevista</label>
+          <input type="date" name="data_chiusura" class="form-control"
+                 value="2028-09-30">
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Descrizione</label>
+          <input type="text" name="descrizione" class="form-control"
+                 value="Barre, tubolari e profili speciali alluminio estruso — 24 mesi"
+                 placeholder="Breve descrizione del contratto">
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Note</label>
+          <textarea name="note" rows="3" class="form-control">FCA Ciserano. Ri.Ba. 60gg dfm (due rate per consegne &gt;50k). Fideiussione 20%. Ind. LME ±8% cap.</textarea>
+        </div>
+      </div>
+
+      <div class="d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Salva</button>
+        <a href="../../contratti.html" class="btn btn-outline-secondary">Annulla</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+</div>
+
+
+<div class="modal fade" id="modalAnteprima" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header py-2">
+        <h6 class="modal-title fw-semibold" id="modalAnteprimaTitolo">Anteprima</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-0" id="modalAnteprimaCorpo">
+        <iframe class="preview-iframe" src="modifica.html" id="previewIframe" title="Anteprima documento"></iframe>
+      </div>
+      <div class="modal-footer py-2">
+        <a href="modifica.html#" id="previewDownloadLink" class="btn btn-outline-secondary btn-sm"
+           target="_blank"><i class="bi bi-download"></i> Scarica / Apri</a>
+        <button type="button" class="btn btn-secondary btn-sm"
+                data-bs-dismiss="modal">Chiudi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="modalSelettoreFile" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header py-2">
+        <h6 class="modal-title fw-semibold">Seleziona documento dalla cartella condivisa</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="selettoreFileFiltro" class="form-control form-control-sm mb-2"
+               placeholder="Cerca per nome file...">
+        <div id="selettoreFileLista"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../../static/js/main.js"></script>
+
+<script>
+  // Filtra progetti per cliente selezionato
+  const selCliente = document.getElementById('sel_cliente');
+  const selProgetto = document.getElementById('sel_progetto');
+  const currentProgId = 1;
+
+  selCliente.addEventListener('change', function() {
+    const cid = this.value;
+    selProgetto.innerHTML = '<option value="">— nessuno —</option>';
+    if (!cid) return;
+    fetch('/api/progetti?cliente_id=' + cid)
+      .then(r => r.json())
+      .then(data => {
+        data.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.id;
+          opt.textContent = p.nome;
+          if (p.id == currentProgId) opt.selected = true;
+          selProgetto.appendChild(opt);
+        });
+      });
+  });
+</script>
+
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#242d3a;color:#cdd6e0;font-size:12px;padding:6px 14px;text-align:center;font-family:sans-serif;">Snapshot statico dimostrativo dell&#39;app Flask del team Metra (dati fittizi): la navigazione funziona, salvataggi e filtri richiedono l&#39;app reale — <a href="https://github.com/BarbaraUde/Avanzamento-contratti" style="color:#7fd39a" target="_blank" rel="noopener">repo GitHub</a></div></body>
+</html>

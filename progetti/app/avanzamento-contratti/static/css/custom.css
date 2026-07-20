@@ -1,0 +1,304 @@
+:root {
+    --metra-red:   #c41230;
+    --metra-dark:  #1a1a1a;
+    --metra-light: #f7f7f7;
+}
+
+body {
+    background-color: var(--metra-light);
+    font-size: 0.9rem;
+    color: #1a1a1a;
+}
+
+/* ---- NAVBAR ---- */
+.navbar-metra {
+    background-color: var(--metra-dark) !important;
+    border-bottom: 3px solid var(--metra-red);
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+}
+.navbar-metra .navbar-brand {
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+}
+.navbar-metra .nav-link {
+    color: rgba(255,255,255,.75) !important;
+    font-size: 0.85rem;
+}
+.navbar-metra .nav-link.active,
+.navbar-metra .nav-link:hover {
+    color: #fff !important;
+}
+.navbar-metra .nav-link.active {
+    border-bottom: 2px solid var(--metra-red);
+    padding-bottom: calc(0.5rem - 2px);
+}
+
+/* ---- BUTTONS ---- */
+.btn-primary {
+    background-color: var(--metra-red) !important;
+    border-color: var(--metra-red) !important;
+    color: #fff !important;
+}
+.btn-primary:hover, .btn-primary:focus {
+    background-color: #a00f26 !important;
+    border-color: #a00f26 !important;
+}
+.btn-outline-primary {
+    color: var(--metra-red) !important;
+    border-color: var(--metra-red) !important;
+}
+.btn-outline-primary:hover {
+    background-color: var(--metra-red) !important;
+    color: #fff !important;
+}
+
+/* ---- CARDS ---- */
+.card {
+    border: none;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+}
+.card-header {
+    background: #fff;
+    border-bottom: 2px solid var(--metra-red);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--metra-dark);
+    padding: .6rem 1rem;
+}
+
+/* ---- STAT CARDS ---- */
+.stat-card {
+    border-left: 4px solid var(--metra-dark);
+}
+.stat-card.green  { border-left-color: #28a745; }
+.stat-card.orange { border-left-color: var(--metra-red); }
+.stat-card.red    { border-left-color: #dc3545; }
+
+.stat-card .stat-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--metra-dark);
+}
+.stat-card .stat-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6c757d;
+}
+
+/* ---- TABLE ---- */
+.table th {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6c757d;
+    border-top: none;
+    white-space: nowrap;
+}
+.table td {
+    vertical-align: middle;
+}
+.table-hover tbody tr:hover {
+    background-color: #fdf1f3;
+}
+
+/* ---- PROGRESS ---- */
+.progress {
+    height: 8px;
+    border-radius: 4px;
+}
+.progress-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* ---- STATUS BADGES ---- */
+.badge-aperto    { background-color: #0d6efd; }
+.badge-chiuso    { background-color: #6c757d; }
+.badge-in-corso  { background-color: #fd7e14; }
+
+/* ---- NAV TABS ---- */
+.nav-tabs .nav-link {
+    font-size: 0.83rem;
+    color: #495057;
+    font-weight: 500;
+}
+.nav-tabs .nav-link.active {
+    color: var(--metra-red);
+    font-weight: 700;
+    border-bottom: 2px solid var(--metra-red);
+}
+
+/* ---- TEXT PRIMARY (headings) ---- */
+.text-primary {
+    color: var(--metra-dark) !important;
+}
+
+/* ---- BREADCRUMB ---- */
+.breadcrumb-item a {
+    color: var(--metra-red);
+    text-decoration: none;
+}
+
+/* ---- ADD-FORM SECTION ---- */
+.add-form-section {
+    background: #f8f9fa;
+    border: 1px dashed #ced4da;
+    border-radius: 6px;
+    padding: 1rem;
+    margin-top: 0.75rem;
+}
+
+/* ---- PERCORSO DI RETE ---- */
+.percorso-rete {
+    font-family: monospace;
+    font-size: 0.8rem;
+    word-break: break-all;
+    color: var(--metra-red);
+    cursor: pointer;
+}
+
+/* ---- FILTER BAR ---- */
+.filter-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: white;
+    padding: .75rem 1rem;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.07);
+    margin-bottom: 1rem;
+}
+
+/* ---- IMPORT STEP INDICATORS ---- */
+.step-indicator .step {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    font-size: 0.85rem;
+    color: #adb5bd;
+}
+.step-indicator .step.active {
+    color: var(--metra-red);
+    font-weight: 600;
+}
+.step-indicator .step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: #dee2e6;
+    font-size: 0.75rem;
+}
+.step-indicator .step.active .step-num {
+    background: var(--metra-red);
+    color: white;
+}
+
+/* ---- ARTICOLI: STATO PILL ---- */
+.articolo-filter .btn-check:checked + .btn {
+    background-color: var(--metra-red);
+    border-color: var(--metra-red);
+    color: #fff;
+}
+
+/* ---- FILE PREVIEW MODAL ---- */
+.preview-iframe {
+    width: 100%;
+    height: 70vh;
+    border: none;
+}
+
+/* ---- SELETTORE FILE (campo "sfoglia cartella documenti") ---- */
+.file-picker-field {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    flex-wrap: wrap;
+    background: #fff;
+    border: 1px solid #ced4da;
+    border-radius: .375rem;
+    padding: .25rem .5rem;
+}
+.file-picker-label {
+    font-size: .8rem;
+    flex: 1 1 auto;
+    min-width: 120px;
+    word-break: break-all;
+}
+#selettoreFileLista .list-group-item {
+    font-size: .85rem;
+    cursor: pointer;
+}
+
+/* ---- LOGO in NAVBAR ---- */
+.metra-logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+.metra-logo-img {
+    height: 64px;
+    width: auto;
+}
+.metra-logo-text {
+    line-height: 1.1;
+}
+.metra-logo-text .brand-main {
+    display: block;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: .05em;
+}
+.metra-logo-text .brand-sub {
+    display: block;
+    font-size: .68rem;
+    font-weight: 500;
+    color: var(--metra-red);
+    letter-spacing: .18em;
+    text-transform: uppercase;
+}
+
+/* ---- RIFERIMENTO NUMERO CONTRATTO ---- */
+.codice-contratto {
+    color: #0d6efd;
+}
+a.codice-contratto:hover {
+    color: #0a58ca;
+}
+
+/* ---- COLONNE RIDIMENSIONABILI ---- */
+.table-resizable th {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.table-resizable td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.col-resize-handle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 6px;
+    height: 100%;
+    cursor: col-resize;
+    user-select: none;
+    z-index: 2;
+}
+.col-resize-handle:hover,
+body.col-resizing .col-resize-handle {
+    background-color: var(--metra-red);
+    opacity: .5;
+}
+body.col-resizing {
+    cursor: col-resize;
+    user-select: none;
+}

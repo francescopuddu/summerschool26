@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Progetti — METRA RAIL</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="static/css/custom.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-metra mb-3">
+  <div class="container-fluid px-4">
+    <a class="metra-logo-wrap navbar-brand" href="index.html">
+      <img src="static/img/logo-icona.png" alt="METRA RAIL" class="metra-logo-img">
+      <span class="metra-logo-text">
+        <span class="brand-main">METRA</span>
+        <span class="brand-sub">RAIL</span>
+      </span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link "
+             href="index.html">
+            <i class="bi bi-speedometer2"></i> Pipeline
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link "
+             href="clienti.html">
+            <i class="bi bi-building"></i> Clienti
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active"
+             href="progetti.html">
+            <i class="bi bi-diagram-3"></i> Progetti
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link "
+             href="contratti.html">
+            <i class="bi bi-file-text"></i> Contratti
+          </a>
+        </li>
+      </ul>
+      <span class="navbar-text small" style="color:rgba(255,255,255,.45)">20/07/2026</span>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid px-4 pb-4">
+  
+  
+  
+
+  
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h5 class="fw-bold text-primary mb-0"><i class="bi bi-diagram-3 me-1"></i>Progetti</h5>
+  <a href="progetti/nuovo.html" class="btn btn-primary btn-sm">
+    <i class="bi bi-plus-lg"></i> Nuovo progetto
+  </a>
+</div>
+
+<form method="GET" class="filter-bar mb-3">
+  <div class="row g-2 align-items-end">
+    <div class="col-12 col-md-4">
+      <label class="form-label small fw-semibold mb-1">Filtra per cliente</label>
+      <select name="cliente_id" class="form-select form-select-sm" onchange="this.form.submit()">
+        <option value="">— tutti —</option>
+        
+        <option value="1" selected>Componenti Industriali Rossi S.p.A.</option>
+        
+        <option value="2" >Meccanica Nord S.r.l.</option>
+        
+        <option value="3" >Serramenti Veneti S.p.A.</option>
+        
+      </select>
+    </div>
+    <div class="col-auto">
+      <a href="progetti.html" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-x"></i> Reset
+      </a>
+    </div>
+  </div>
+</form>
+
+
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-hover mb-0">
+      <thead>
+        <tr>
+          <th>Progetto</th>
+          <th>Codice</th>
+          <th>Cliente</th>
+          <th>Stato</th>
+          <th class="text-center">Contratti</th>
+          <th>Descrizione</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td class="fw-semibold">Fornitura barre e profili alluminio</td>
+          <td class="text-muted">PROJ-CR-2026</td>
+          <td>Componenti Industriali Rossi S.p.A.</td>
+          <td>
+            
+              <span class="badge bg-success">aperto</span>
+            
+          </td>
+          <td class="text-center">
+            <a href="contratti_Q_progetto_id=1.html"
+               class="badge bg-light text-dark border text-decoration-none">
+              1
+            </a>
+          </td>
+          <td class="text-muted small">
+            Barre, tubolari e profili speciali in alluminio estruso con 
+            …
+          </td>
+          <td class="text-end">
+            <a href="progetti/1/modifica.html"
+               class="btn btn-outline-secondary btn-sm py-0 px-2 me-1">
+              <i class="bi bi-pencil"></i>
+            </a>
+            <form method="POST" action="http://localhost:5000/progetti/1/elimina"
+                  class="d-inline"
+                  onsubmit="return confirm('Eliminare il progetto?')">
+              <button class="btn btn-outline-danger btn-sm py-0 px-2">
+                <i class="bi bi-trash"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+</div>
+
+
+<div class="modal fade" id="modalAnteprima" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header py-2">
+        <h6 class="modal-title fw-semibold" id="modalAnteprimaTitolo">Anteprima</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-0" id="modalAnteprimaCorpo">
+        <iframe class="preview-iframe" src="progetti_Q_cliente_id=1.html" id="previewIframe" title="Anteprima documento"></iframe>
+      </div>
+      <div class="modal-footer py-2">
+        <a href="progetti_Q_cliente_id=1.html#" id="previewDownloadLink" class="btn btn-outline-secondary btn-sm"
+           target="_blank"><i class="bi bi-download"></i> Scarica / Apri</a>
+        <button type="button" class="btn btn-secondary btn-sm"
+                data-bs-dismiss="modal">Chiudi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="modalSelettoreFile" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header py-2">
+        <h6 class="modal-title fw-semibold">Seleziona documento dalla cartella condivisa</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="selettoreFileFiltro" class="form-control form-control-sm mb-2"
+               placeholder="Cerca per nome file...">
+        <div id="selettoreFileLista"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="static/js/main.js"></script>
+
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#242d3a;color:#cdd6e0;font-size:12px;padding:6px 14px;text-align:center;font-family:sans-serif;">Snapshot statico dimostrativo dell&#39;app Flask del team Metra (dati fittizi): la navigazione funziona, salvataggi e filtri richiedono l&#39;app reale — <a href="https://github.com/BarbaraUde/Avanzamento-contratti" style="color:#7fd39a" target="_blank" rel="noopener">repo GitHub</a></div></body>
+</html>
