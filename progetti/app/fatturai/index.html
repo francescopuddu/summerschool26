@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FatturAI — demo web · Lucchini RS</title>
+<style>
+  /* Palette ripresa dal theme.py dell'app desktop (logo LRS Group) */
+  :root {
+    --navy:#242d3a; --green:#0daa4f; --green-hover:#0c9846; --red:#ea212c;
+    --bg:#f3f5f7; --card:#ffffff; --border:#d8dee5;
+    --text:#242d3a; --text-2:#5a6572; --disabled-bg:#e6ebf0; --disabled-text:#9aa3ad;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family:-apple-system,"Segoe UI",system-ui,sans-serif; color:var(--text);
+    background:linear-gradient(180deg,#f6f8fa,var(--bg) 55%,#eef2f6);
+    min-height:100vh; display:flex; flex-direction:column;
+  }
+  .demo-note {
+    background:var(--navy); color:#cdd6e0; font-size:12.5px; padding:7px 16px; text-align:center;
+  }
+  .demo-note b { color:#fff; }
+  .demo-note a { color:#7fd39a; }
+  main { flex:1; max-width:1060px; width:100%; margin:0 auto; padding:22px 20px 180px; position:relative; z-index:1; }
+
+  .hero-card {
+    background:var(--card); border:1px solid var(--border); border-radius:14px;
+    padding:20px 24px; display:flex; gap:20px; align-items:center; flex-wrap:wrap;
+    box-shadow:0 1px 3px rgba(36,45,58,.06);
+  }
+  .hero-card img { height:52px; width:auto; }
+  .hero-card h1 { font-size:26px; letter-spacing:-.01em; }
+  .hero-card .sub { color:var(--text-2); font-size:14px; margin-top:2px; }
+  .hero-card .instr { flex-basis:100%; font-size:13.5px; color:var(--text-2); border-top:1px solid var(--border); padding-top:12px; }
+
+  .cards { display:grid; gap:14px; margin-top:16px; }
+  .upload-card {
+    background:var(--card); border:1px solid var(--border); border-radius:12px;
+    padding:16px 20px; display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+    box-shadow:0 1px 3px rgba(36,45,58,.05);
+  }
+  .upload-card.stock { background:linear-gradient(90deg,rgba(13,170,79,.07),var(--card) 45%); }
+  .upload-card.wip   { background:linear-gradient(90deg,rgba(36,90,180,.07),var(--card) 45%); }
+  .upload-card.rod   { background:linear-gradient(90deg,rgba(234,33,44,.06),var(--card) 45%); }
+  .upload-card .info { flex:1; min-width:220px; }
+  .upload-card .name { font-weight:700; font-size:15px; }
+  .upload-card .file { font-size:13px; color:var(--green); font-weight:600; margin-top:2px; }
+  .upload-card .file::before { content:"✓ "; }
+  .btn {
+    border:1px solid var(--border); background:var(--card); color:var(--text);
+    font-size:13.5px; font-weight:600; padding:9px 18px; border-radius:9px; cursor:pointer;
+    transition:background .12s ease, transform .12s ease;
+  }
+  .btn:hover { background:var(--disabled-bg); }
+  .btn.primary { background:var(--green); border-color:var(--green); color:#fff; }
+  .btn.primary:hover { background:var(--green-hover); }
+  .btn.primary:disabled { background:var(--disabled-bg); border-color:var(--disabled-bg); color:var(--disabled-text); cursor:default; }
+
+  .gen-row { display:flex; justify-content:flex-end; margin-top:16px; gap:10px; }
+
+  /* dati demo — tabelline a scomparsa */
+  .peek { display:none; flex-basis:100%; overflow-x:auto; }
+  .peek.open { display:block; }
+  .peek table { border-collapse:collapse; font-size:12px; margin-top:10px; min-width:520px; }
+  .peek th, .peek td { border:1px solid var(--border); padding:4px 9px; text-align:left; white-space:nowrap; }
+  .peek th { background:var(--disabled-bg); font-weight:600; }
+
+  /* risultato */
+  #result { margin-top:22px; display:none; }
+  #result.show { display:block; animation:fadein .35s ease; }
+  @keyframes fadein { from { opacity:0; transform:translateY(8px);} to { opacity:1; transform:none; } }
+  .result-head { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:10px; }
+  .result-head h2 { font-size:19px; }
+  .result-head .sheet-tag {
+    font-size:12px; font-weight:700; background:var(--navy); color:#fff;
+    padding:3px 12px; border-radius:999px;
+  }
+  .kpis { display:flex; gap:12px; flex-wrap:wrap; margin:12px 0 16px; }
+  .kpi { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:10px 18px; }
+  .kpi b { display:block; font-size:21px; }
+  .kpi span { font-size:11.5px; color:var(--text-2); text-transform:uppercase; letter-spacing:.05em; }
+  .kpi.good b { color:var(--green); } .kpi.bad b { color:var(--red); }
+
+  .sheet-wrap { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow-x:auto; }
+  table.sheet { border-collapse:collapse; font-size:12.5px; width:100%; min-width:900px; }
+  .sheet th, .sheet td { border:1px solid #e7ebf0; padding:5px 10px; white-space:nowrap; }
+  .sheet th { background:#eef1f5; font-weight:600; position:sticky; top:0; }
+  .sheet .block-head td { background:#f6f8fa; font-weight:700; border-top:2px solid var(--border); }
+  .sheet td.num { text-align:right; font-variant-numeric:tabular-nums; }
+  .sheet tr.from-stock td.fill { background:rgba(13,170,79,.16); }
+  .sheet td.note-pdc { background:rgba(240,190,20,.28); }
+  .sheet tr.inserted td:first-child::before { content:"➕ "; color:var(--green); }
+  .sheet .muted { color:var(--disabled-text); }
+  .legend { font-size:12px; color:var(--text-2); margin-top:8px; }
+  .legend .sw { display:inline-block; width:11px; height:11px; border-radius:3px; vertical-align:-1px; margin:0 4px 0 10px; }
+
+  /* riepilogo (SummaryDialog) */
+  .summary { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:18px; }
+  .sumbox { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 18px; }
+  .sumbox h3 { font-size:14.5px; margin-bottom:8px; }
+  .sumbox ul { list-style:none; font-size:13px; }
+  .sumbox li { padding:5px 0; border-top:1px solid #eef1f5; display:flex; justify-content:space-between; gap:10px; }
+  .sumbox li:first-child { border-top:none; }
+  .sumbox .tag { font-size:11px; font-weight:700; padding:1px 8px; border-radius:999px; }
+  .tag.short { background:rgba(234,33,44,.12); color:var(--red); }
+  .tag.left  { background:rgba(240,190,20,.25); color:#8a6d00; }
+
+  /* chat demo */
+  .chat { margin-top:14px; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 18px; }
+  .chat h3 { font-size:14.5px; }
+  .chat .disclaimer { font-size:11.5px; color:var(--disabled-text); margin:2px 0 10px; }
+  .chat .qs { display:flex; gap:8px; flex-wrap:wrap; }
+  .chat .qs button { font-size:12.5px; padding:6px 12px; border-radius:999px; }
+  .chat .answer {
+    display:none; margin-top:12px; font-size:13.5px; line-height:1.55;
+    background:#f6f8fa; border:1px solid var(--border); border-radius:10px; padding:12px 14px;
+  }
+  .chat .answer.show { display:block; animation:fadein .3s ease; }
+
+  .trains {
+    position:fixed; bottom:26px; left:0; right:0; pointer-events:none; z-index:0;
+    display:flex; gap:60px; align-items:flex-end; padding:0 30px; opacity:.13; overflow:hidden;
+  }
+  .trains img { height:34px; flex:none; }
+  .statusbar {
+    position:fixed; bottom:0; left:0; right:0; z-index:2;
+    background:var(--card); border-top:1px solid var(--border);
+    font-size:12px; color:var(--text-2); padding:5px 14px;
+  }
+  @media (max-width:720px){ .summary { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<div class="demo-note"><b>Demo web</b> ricreata per la vetrina della summer school — l'app originale del team Lucchini è un'applicazione desktop (PyQt6): <a href="https://github.com/LoriGH25/FatturAI" target="_blank" rel="noopener">repo</a> · <a href="https://github.com/LoriGH25/FatturAI/releases" target="_blank" rel="noopener">release scaricabili</a>. Dati fittizi.</div>
+
+<main>
+  <div class="hero-card">
+    <img src="assets/lrs_group_logo.svg" alt="Lucchini RS Group">
+    <div>
+      <h1>FatturAI</h1>
+      <div class="sub">Compila il FILE SPE del mese corrente a partire da Stock, WIP e ordini.</div>
+    </div>
+    <div class="instr">Carica i tre file Excel, poi premi «Genera Ordini compilato» per ottenere il FILE SPE aggiornato con pezzi e date di spedizione.</div>
+  </div>
+
+  <div class="cards">
+    <div class="upload-card stock">
+      <div class="info">
+        <div class="name">Stock (magazzino)</div>
+        <div class="file">stock_luglio26_demo.xlsx — 6 partite</div>
+      </div>
+      <button class="btn" data-peek="peekStock">Mostra dati</button>
+      <div class="peek" id="peekStock"></div>
+    </div>
+    <div class="upload-card wip">
+      <div class="info">
+        <div class="name">WIP (produzione in corso)</div>
+        <div class="file">wip_luglio26_demo.xlsx — 4 ordini di produzione</div>
+      </div>
+      <button class="btn" data-peek="peekWip">Mostra dati</button>
+      <div class="peek" id="peekWip"></div>
+    </div>
+    <div class="upload-card rod">
+      <div class="info">
+        <div class="name">ROD Spedizioni (da compilare)</div>
+        <div class="file">ROD_Spedizioni_demo.xlsm — foglio Luglio_26, 5 blocchi ordine</div>
+      </div>
+      <button class="btn" data-peek="peekRod">Mostra dati</button>
+      <div class="peek" id="peekRod"></div>
+    </div>
+  </div>
+
+  <div class="gen-row">
+    <button class="btn" id="resetBtn" style="display:none">Ripristina</button>
+    <button class="btn primary" id="genBtn">Genera Ordini compilato</button>
+  </div>
+
+  <section id="result">
+    <div class="result-head">
+      <h2>FILE SPE compilato</h2>
+      <span class="sheet-tag">Foglio Luglio_26</span>
+    </div>
+    <div class="kpis" id="kpis"></div>
+    <div class="sheet-wrap"><table class="sheet" id="sheet"></table></div>
+    <div class="legend">
+      Legenda: <span class="sw" style="background:rgba(13,170,79,.35)"></span> riga servita da stock
+      <span class="sw" style="background:rgba(240,190,20,.5)"></span> nota PdC (partita di altra commessa)
+      · ➕ riga inserita dal compilatore · WIP senza evidenziazione
+    </div>
+
+    <div class="summary">
+      <div class="sumbox">
+        <h3>Ordini non coperti (shortfall)</h3>
+        <ul id="shortfalls"></ul>
+      </div>
+      <div class="sumbox">
+        <h3>Disponibilità non piazzate (leftover)</h3>
+        <ul id="leftovers"></ul>
+      </div>
+    </div>
+
+    <div class="chat">
+      <h3>Chiedi all'AI sulla compilazione</h3>
+      <div class="disclaimer">Nell'app reale risponde un LLM con il contesto completo della compilazione; in questa demo le risposte sono precalcolate.</div>
+      <div class="qs">
+        <button class="btn" data-q="a1">Perché la serie 12291 non è stata compilata del tutto?</button>
+        <button class="btn" data-q="a2">Quale cliente è più a rischio ritardo?</button>
+        <button class="btn" data-q="a3">Cosa significa la nota "PdC da C-2044"?</button>
+      </div>
+      <div class="answer" id="a1">La serie <b>12291</b> (materiale RM-540) aveva 14 pezzi liberi a stock, ma il blocco della commessa C-2051 chiedeva solo 10 pezzi questo mese (budget in colonna D). Il compilatore non supera mai il budget dell'ordine: i <b>4 pezzi in eccedenza</b> sono stati registrati come leftover «eccedenza» e restano disponibili per il prossimo mese.</div>
+      <div class="answer" id="a2"><b>FerroTrack GmbH</b> (commessa C-2058): il blocco chiedeva 24 pezzi di AX-210 ma tra stock e WIP se ne coprono solo 15 — mancano <b>9 pezzi</b> con Data Appr. 24/07, la più vicina tra gli ordini scoperti. È lo shortfall più critico della compilazione.</div>
+      <div class="answer" id="a3">La partita usata per il blocco Baltic Wheels è stata prodotta per la commessa <b>C-2044</b>, diversa da quella del blocco (C-2090). La nota «PdC da C-2044» segnala il prelievo da altra commessa; venendo da un magazzino ZFRE riporta anche «Da Respini». La cella è evidenziata in giallo perché richiede conferma dell'operatore.</div>
+    </div>
+  </section>
+</main>
+
+<div class="trains">
+  <img src="assets/train_01.svg" alt=""><img src="assets/train_02.svg" alt=""><img src="assets/train_03.svg" alt=""><img src="assets/train_01.svg" alt="">
+</div>
+<div class="statusbar">FatturAI v0.3.0 — demo web (dati fittizi) · Summer School 2026</div>
+
+<script>
+/* ============================================================
+   Demo: versione web semplificata del rod_compiler di FatturAI.
+   Regole riprodotte: allocazione in ordine di Data Appr, stock
+   prima di WIP, cap su Qtà riga e budget blocco, serie in
+   stock+WIP → riga inserita, note PdC/Da Respini, leftover e
+   shortfall. Dati completamente fittizi.
+   ============================================================ */
+
+const STOCK = [
+  { partita:"N2291", materiale:"RM-540", commessa:"C-2051", magazzino:"MP01", qta:14 },
+  { partita:"N2288", materiale:"RM-540", commessa:"C-2044", magazzino:"ZFRE", qta:6  },
+  { partita:"N1174", materiale:"AX-210", commessa:"C-2058", magazzino:"MP01", qta:9  },
+  { partita:"E0412", materiale:"VB-118", commessa:"C-2032", magazzino:"MP02", qta:12 },
+  { partita:"N1480", materiale:"VB-118", commessa:"C-2032", magazzino:"MP01", qta:8  },
+  { partita:"N3305", materiale:"KT-660", commessa:"C-2075", magazzino:"MP01", qta:10 },
+];
+const WIP = [
+  { partita:"N1174", materiale:"AX-210", commessa:"C-2058", residuo:6,  dfp:"29/07" },
+  { partita:"N2299", materiale:"RM-540", commessa:"C-2051", residuo:8,  dfp:"24/07" },
+  { partita:"E0415", materiale:"VB-118", commessa:"C-2032", residuo:10, dfp:"31/07" },
+  { partita:"N3310", materiale:"KT-660", commessa:"C-2075", residuo:12, dfp:"27/07" },
+];
+/* Blocchi del foglio Luglio_26. richieste = [qta ordine (col D), Data Appr (col F)] */
+const BLOCKS = [
+  { cliente:"Nordbahn AG",     commessa:"C-2051", materiale:"RM-540", descr:"Ruota monoblocco Ø920",
+    richieste:[{qta:10, data:"22/07"}], righe:[{serie:"12291", qta:14},{serie:"12299", qta:8}] },
+  { cliente:"FerroTrack GmbH", commessa:"C-2058", materiale:"AX-210", descr:"Assile motore",
+    richieste:[{qta:12, data:"24/07"},{qta:12, data:"28/07"}], righe:[{serie:"11174", qta:24}] },
+  { cliente:"Stella Rail SpA", commessa:"C-2032", materiale:"VB-118", descr:"Sala montata completa",
+    richieste:[{qta:16, data:"25/07"}], righe:[{serie:"10412", qta:12}] },
+  { cliente:"Alpina Trasporti",commessa:"C-2075", materiale:"KT-660", descr:"Disco freno calettato",
+    richieste:[{qta:0, data:null}],  righe:[{serie:"13305", qta:10}] },
+  { cliente:"Baltic Wheels",   commessa:"C-2090", materiale:"RM-540", descr:"Ruota monoblocco Ø860",
+    richieste:[{qta:6, data:"30/07"}], righe:[{serie:"12288", qta:6}] },
+];
+
+const serieDiPartita = p => p.replace(/^[NE]/, "1");
+const dataOrd = d => d ? parseInt(d.slice(3)+d.slice(0,2)) : 99999;
+
+function compila(){
+  const stock = STOCK.map(s => ({...s, serie:serieDiPartita(s.partita), resto:s.qta}));
+  const wip   = WIP.map(w => ({...w, serie:serieDiPartita(w.partita), resto:w.residuo}));
+  const out = [], shortfalls = [], leftovers = [];
+
+  const ordinati = [...BLOCKS].sort((a,b) =>
+    dataOrd(a.richieste[0]?.data) - dataOrd(b.richieste[0]?.data));
+
+  for (const b of ordinati){
+    let budget = b.richieste.reduce((t,r)=>t+r.qta, 0);
+    const richiesto = budget;
+    const cursore = b.richieste.filter(r=>r.qta>0).map(r=>({...r, resto:r.qta}));
+    const prendiData = (n) => {           // demand cursor: spalma sui fabbisogni in ordine di data
+      for (const r of cursore){ if (r.resto>0){ const q=Math.min(n,r.resto); r.resto-=q; return {data:r.data, q}; } }
+      return {data:cursore.at(-1)?.data ?? "—", q:n};
+    };
+    const righeOut = [];
+    const usate = new Set();
+
+    for (const riga of b.righe){
+      let daFare = Math.min(riga.qta, budget);
+      const st = stock.find(s => s.serie===riga.serie && s.materiale===b.materiale && s.resto>0);
+      if (st && daFare>0){
+        const q = Math.min(daFare, st.resto);
+        while (daFare>0 && q>0){
+          const {data, q:qd} = prendiData(q);
+          righeOut.push({serie:riga.serie, qta:riga.qta, pcs:qd, data, fonte:"stock",
+            nota:notaPdC(st, b), inserita:false});
+          st.resto-=qd; budget-=qd; daFare-=qd; usate.add(riga.serie);
+          break; // una riga per richiesta nella demo
+        }
+      }
+      const wp = wip.find(w => w.serie===riga.serie && w.materiale===b.materiale && w.resto>0);
+      if (wp && daFare>0){
+        const q = Math.min(daFare, wp.resto);
+        righeOut.push({serie:riga.serie, qta:riga.qta, pcs:q, data:wp.dfp, fonte:"wip",
+          nota:notaPdC(wp, b), inserita:usate.has(riga.serie)});
+        wp.resto-=q; budget-=q; usate.add(riga.serie);
+      }
+      if (!righeOut.some(r=>r.serie===riga.serie))
+        righeOut.push({serie:riga.serie, qta:riga.qta, pcs:0, data:"", fonte:null, nota:"", inserita:false});
+    }
+    /* budget residuo → cerca altre serie dello stesso materiale (riga inserita) */
+    if (budget>0){
+      for (const st of stock){
+        if (budget<=0) break;
+        if (st.materiale===b.materiale && st.resto>0 && !usate.has(st.serie)){
+          const q = Math.min(budget, st.resto);
+          const {data} = prendiData(q);
+          righeOut.push({serie:st.serie, qta:q, pcs:q, data, fonte:"stock",
+            nota:notaPdC(st, b), inserita:true});
+          st.resto-=q; budget-=q; usate.add(st.serie);
+        }
+      }
+    }
+    const coperto = richiesto-budget;
+    if (richiesto>0 && budget>0)
+      shortfalls.push({cliente:b.cliente, commessa:b.commessa, materiale:b.materiale,
+        richiesto, coperto, mancante:budget, data:b.richieste[0].data});
+    out.push({...b, righeOut, totale:righeOut.reduce((t,r)=>t+r.pcs,0)});
+  }
+  for (const s of stock) if (s.resto>0)
+    leftovers.push({serie:s.serie, materiale:s.materiale, qta:s.resto,
+      reason: BLOCKS.some(b=>b.materiale===s.materiale && b.righe.some(r=>r.serie===s.serie)) ? "eccedenza" : "non_presente"});
+  for (const w of wip) if (w.resto>0)
+    leftovers.push({serie:w.serie, materiale:w.materiale, qta:w.resto, reason:"eccedenza (WIP)"});
+  return {out, shortfalls, leftovers};
+}
+function notaPdC(item, block){
+  const parti = [];
+  if (item.commessa !== block.commessa) parti.push("PdC da " + item.commessa);
+  if (item.magazzino === "ZFRE") parti.push("Da Respini");
+  return parti.join(" - ");
+}
+
+/* ---------------- rendering ---------------- */
+function peekTable(el, headers, rows){
+  el.innerHTML = "<table><tr>" + headers.map(h=>`<th>${h}</th>`).join("") + "</tr>" +
+    rows.map(r=>"<tr>"+r.map(c=>`<td>${c}</td>`).join("")+"</tr>").join("") + "</table>";
+}
+peekTable(document.getElementById("peekStock"), ["Commessa (B)","Partita (D)","Materiale (E)","Magazzino (I)","Q.tà libera (J)"],
+  STOCK.map(s=>[s.commessa,s.partita,s.materiale,s.magazzino,s.qta]));
+peekTable(document.getElementById("peekWip"), ["Commessa (B)","Partita (G)","Materiale (S)","Residuo netto (P)","DFP (X)"],
+  WIP.map(w=>[w.commessa,w.partita,w.materiale,w.residuo,w.dfp]));
+peekTable(document.getElementById("peekRod"), ["Cliente (A)","Commessa (B)","Q.tà ordine (D)","Data Appr (F)","Materiale (M)","Serie a foglio (AB)"],
+  BLOCKS.map(b=>[b.cliente,b.commessa,b.richieste.map(r=>r.qta).join(" + "),b.richieste.map(r=>r.data??"—").join(", "),b.materiale,b.righe.map(r=>r.serie).join(", ")]));
+
+document.querySelectorAll("[data-peek]").forEach(btn => btn.addEventListener("click", () => {
+  const p = document.getElementById(btn.dataset.peek);
+  p.classList.toggle("open");
+  btn.textContent = p.classList.contains("open") ? "Nascondi dati" : "Mostra dati";
+}));
+
+function genera(){
+  const {out, shortfalls, leftovers} = compila();
+  const sheet = document.getElementById("sheet");
+  let html = `<tr><th>Cliente</th><th>Commessa</th><th>Materiale</th><th>Serie (AB)</th>
+    <th>Q.tà (AC)</th><th>N°Pcs (AF)</th><th>Data Spe (AI)</th><th>Note (AJ)</th></tr>`;
+  for (const b of out){
+    html += `<tr class="block-head"><td colspan="2">${b.cliente} · ${b.commessa}</td>
+      <td colspan="4">${b.materiale} — ${b.descr} · <span class="muted">Tot Prev Mese (L): ${b.totale}</span></td>
+      <td colspan="2" class="muted">richiesto: ${b.richieste.reduce((t,r)=>t+r.qta,0) || "0 (nessun fabbisogno)"}</td></tr>`;
+    for (const r of b.righeOut){
+      const cls = (r.fonte==="stock" ? "from-stock" : "") + (r.inserita ? " inserted" : "");
+      html += `<tr class="${cls}"><td></td><td></td><td></td>
+        <td class="fill">${r.serie}</td><td class="num fill">${r.qta}</td>
+        <td class="num fill">${r.pcs || '<span class="muted">—</span>'}</td>
+        <td class="fill">${r.data || '<span class="muted">—</span>'}</td>
+        <td class="${r.nota ? "note-pdc" : "fill"}">${r.nota}</td></tr>`;
+    }
+  }
+  sheet.innerHTML = html;
+
+  const totPcs = out.reduce((t,b)=>t+b.totale,0);
+  const mancanti = shortfalls.reduce((t,s)=>t+s.mancante,0);
+  document.getElementById("kpis").innerHTML = `
+    <div class="kpi good"><b>${totPcs}</b><span>pezzi allocati</span></div>
+    <div class="kpi"><b>${out.length}</b><span>blocchi ordine</span></div>
+    <div class="kpi bad"><b>${mancanti}</b><span>pezzi mancanti</span></div>
+    <div class="kpi"><b>${leftovers.length}</b><span>leftover</span></div>`;
+
+  document.getElementById("shortfalls").innerHTML = shortfalls.length
+    ? shortfalls.map(s=>`<li><span>${s.cliente} · ${s.materiale} (Appr. ${s.data})</span>
+        <span class="tag short">${s.coperto}/${s.richiesto} — mancano ${s.mancante}</span></li>`).join("")
+    : "<li>Nessuno: tutti gli ordini del mese sono coperti.</li>";
+  document.getElementById("leftovers").innerHTML = leftovers.length
+    ? leftovers.map(l=>`<li><span>Serie ${l.serie} · ${l.materiale}</span>
+        <span class="tag left">${l.qta} pz — ${l.reason}</span></li>`).join("")
+    : "<li>Nessuna: tutta la disponibilità è stata piazzata.</li>";
+
+  document.getElementById("result").classList.add("show");
+  document.getElementById("genBtn").disabled = true;
+  document.getElementById("resetBtn").style.display = "";
+}
+document.getElementById("genBtn").addEventListener("click", genera);
+document.getElementById("resetBtn").addEventListener("click", () => {
+  document.getElementById("result").classList.remove("show");
+  document.getElementById("genBtn").disabled = false;
+  document.getElementById("resetBtn").style.display = "none";
+});
+document.querySelectorAll(".chat .qs button").forEach(btn => btn.addEventListener("click", () => {
+  document.querySelectorAll(".chat .answer").forEach(a=>a.classList.remove("show"));
+  document.getElementById(btn.dataset.q).classList.add("show");
+}));
+
+/* demo vetrina: genera da sola dopo un attimo */
+setTimeout(genera, 900);
+</script>
+</body>
+</html>
