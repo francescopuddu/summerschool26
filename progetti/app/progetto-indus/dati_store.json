@@ -1248,6 +1248,20 @@
       "tipo": "Manutenzione ordinaria",
       "descrizione": "ripristino collegamento alimentazione - cavi spezzati",
       "esito": "Positivo"
+    },
+    {
+      "codice": "S-2214",
+      "data": "2026-07-16",
+      "tipo": "Verifica straordinaria",
+      "descrizione": "sono stati ripristinati i collegamenti",
+      "esito": "Positivo"
+    },
+    {
+      "codice": "TLS-147",
+      "data": "2026-07-16",
+      "tipo": "Verifica straordinaria",
+      "descrizione": "Ok",
+      "esito": "Positivo"
     }
   ],
   "documenti_procedure": {
